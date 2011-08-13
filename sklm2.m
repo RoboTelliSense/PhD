@@ -62,9 +62,9 @@ function [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N
             S_Ntx1          =   0;
         else
             muAB_Dx1        =   mean(B_DxN2,2);
-            B_DxN2          =   B_DxN2 - repmat(muAB_Dx1,[1,n]);
+            B_zc_DxN2       =   B_DxN2 - repmat(muAB_Dx1,[1,n]);
             [U_DxNt,S_Ntx1,V]   ...
-                            =   svd(B_DxN2, 0);
+                            =   svd(B_zc_DxN2, 0);
             S_Ntx1          =   diag(S_Ntx1);
             muAB_Dx1        =   reshape(muAB_Dx1, size(muA_Dx1));
         end
@@ -83,21 +83,21 @@ function [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N
         
         if (nargin >= 4 & isempty(muA_Dx1) == false)
             %mean center B_DxN2
-            muB_Dx1         =   mean(B_DxN2,2);   
-            B_DxN2          =   B_DxN2 - repmat(muB_Dx1,[1,n]); 
+            muB_Dx1         =   mean(B_DxN2,2);                     %compute mean of new data
+            B_zc_DxN2       =   B_DxN2 - repmat(muB_Dx1,[1,n]);     %mean centered
             weight          =   sqrt(n*N2/(n+N2));
-            B_DxN2          =   [B_DxN2, weight*(muA_Dx1(:)-muB_Dx1)];
+            B_zc_DxN2       =   [B_zc_DxN2, weight*(muA_Dx1(:)-muB_Dx1)];
             muAB_Dx1        =   reshape((ff*N2*muA_Dx1(:) + n*muB_Dx1)/(n+ff*N2), size(muA_Dx1));
             n               =   n+ff*N2;
         end
         S_Ntx1              =   diag(S_N1x1);
-        %>[Q,R,E]           =   qr([ ff*U_DxN1*S_Ntx1, B_DxN2 ], 0); %> old way
+        %>[Q,R,E]           =   qr([ ff*U_DxN1*S_Ntx1, B_zc_DxN2 ], 0); %> old way
 
-        data_proj           =   U_DxN1'*B_DxN2; %> new way
-        data_res            =   B_DxN2 - U_DxN1*data_proj;
+        data_proj           =   U_DxN1'*B_zc_DxN2; %> new way
+        data_res            =   B_zc_DxN2 - U_DxN1*data_proj;
         [q, dummy]          =   qr(data_res, 0);
         Q                   =   [U_DxN1 q];
-        R                   =   [ff*diag(S_N1x1) data_proj; zeros([size(B_DxN2,2) length(S_N1x1)]) q'*data_res];
+        R                   =   [ff*diag(S_N1x1) data_proj; zeros([size(B_zc_DxN2,2) length(S_N1x1)]) q'*data_res];
 
         [U_DxNt,S_Ntx1,V]   =   svd(R, 0);
         S_Ntx1              =   diag(S_Ntx1);
