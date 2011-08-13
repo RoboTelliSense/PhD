@@ -1,84 +1,119 @@
-function [U, D, mu, n] = sklm(data, U0, D0, mu0, n0, ff, K)
-% [U, D, mu, n] = sklm(data, U0, D0, mu0, n0, ff)
-% [U, D, mu, n] = sklm(data, U0, D0, mu0, n0, ff, K)
-%                 sklm(data)  % initialize
-%    Sequential Karhunen-Loeve Transform
-%    without mu0 or mu, data is assumed as zero-mean
-%
-%  required input
-%    data (N,n) : initial/additional data
-%    U0 (N,d) : old basis
-%    D0 (d,1) : old singular values
-%  optional input
-%    mu0 (N,1) : old mean
-%    n0 : number of previous data
-%    ff : forgetting factor (def=1.0)
-%    K : maximum number of basis vectors to retain
-%
-%  output
-%    U (N,d+n) : new basis
-%    D (d+n,1) : new singular values
-%    mu (N,1) : new mean
-%    n : new number of data
+%> @file sklm.m 
+%> @brief This file computes incremental SVD (Sequential Karhunen-Loeve Transform)
+%>
+%> [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff)
+%> [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff, K)
+%>                 sklm(B_DxN2)  %> initialize
+%>
+%> without muA_Dx1 or muAB_Dx1, B_DxN2 is assumed as zero-mean
+%>
+%> required input
+%> --------------
+%> B_DxN2 (D,n)             : initial/additional B_DxN2
+%> U_DxN1 (D,N1)            : old basis
+%> S_N1x1 (N1,1)            : old singular values
+%>
+%> optional input
+%> --------------
+%> muA_Dx1 (D,1)            : old mean
+%> N2                       : number of previous B_DxN2
+%> ff                       : forgetting factor (def=1.0)
+%> K                        : maximum number of basis vectors to retain
+%>
+%> output
+%> ------
+%> U_DxNt (D,N1+n)          : new basis
+%> S_Ntx1 (N1+n,1)          : new singular values
+%> muAB_Dx1 (D,1)           : new mean
+%> n                        : new number of B_DxN2
+%>
+%> based on
+%> --------
+%> A. Levy & M. Lindenbaum 
+%> "Sequential Karhunen-Loeve Basis Extraction and its Application to Image", 
+%> IEEE Trans. on Image Processing Vol. 9, No. 8, August 2000.
+%>
+%> All changes by Salman Aslam are cosmetic, name changes, etc,
+%> functionality intact.
+%>
+%> Copyright (C) 2005 Jongwoo Lim and David Ross.  All rights reserved.  (Changed with permission by Salman Aslam) 
+%> Date created:  March 19, 2011
+%> Date modified: Aug 13, 201
 
-%% Copyright (C) 2005 Jongwoo Lim and David Ross.
-%% All rights reserved.
- 
-% Based on algorithm from A. Levy & M. Lindenbaum 
-%   "Sequential Karhunen-Loeve Basis Extraction and its Application
-%    to Image", IEEE Trans. on Image Processing Vol. 9, No. 8, 
-%    August 2000.
 
-% $Id: sklm.m,v 1.3 2007-05-25 16:27:44 dross Exp $
 
-[N,n] = size(data);
+function [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff, K)
 
-if (nargin == 1) || isempty(U0)
-  if (size(data,2) == 1)
-    mu = reshape(data(:), size(mu0));
-    U = zeros(size(data)); U(1)=1; D = 0;
-  else
-    mu = mean(data,2);
-    data = data - repmat(mu,[1,n]);
-    [U,D,V] = svd(data, 0);
-    D = diag(D);
-    mu = reshape(mu, size(mu0));
-  end
-  if nargin >= 7
-      keep = 1:min(K,length(D));
-      D = D(keep);
-      U = U(:,keep);
-  end
-else
-  if (nargin < 6)  ff = 1.0;  end
-  if (nargin < 5)  n0 = n;  end
-  if (nargin >= 4 & isempty(mu0) == false)
-    mu1 = mean(data,2);
-    data = data - repmat(mu1,[1,n]);
+%-----------------------------------------------
+%PRE-PROCESSING
+%----------------------------------------------
+    [D,n]                   =   size(B_DxN2);
 
-    data = [data, sqrt(n*n0/(n+n0))*(mu0(:)-mu1)];
-    mu = reshape((ff*n0*mu0(:) + n*mu1)/(n+ff*n0), size(mu0));
-    n = n+ff*n0;
-  end
-  D = diag(D0);
-  %[Q,R,E] = qr([ ff*U0*D, data ], 0); % old way
+%-----------------------------------------------
+%PROCESSING
+%-----------------------------------------------
   
-  data_proj = U0'*data; % new way
-  data_res = data - U0*data_proj;
-  [q, dummy] = qr(data_res, 0);
-  Q = [U0 q];
-  R = [ff*diag(D0) data_proj; zeros([size(data,2) length(D0)]) q'*data_res];
+    %part 1. user has input almost nothing
+    if (nargin == 1) || isempty(U_DxN1)
+        if (size(B_DxN2,2) == 1)
+            muAB_Dx1        =   reshape(B_DxN2(:), size(muA_Dx1));
+            U_DxNt          =   zeros(size(B_DxN2)); 
+            U_DxNt(1)       =   1; 
+            S_Ntx1          =   0;
+        else
+            muAB_Dx1        =   mean(B_DxN2,2);
+            B_DxN2          =   B_DxN2 - repmat(muAB_Dx1,[1,n]);
+            [U_DxNt,S_Ntx1,V]   ...
+                            =   svd(B_DxN2, 0);
+            S_Ntx1          =   diag(S_Ntx1);
+            muAB_Dx1        =   reshape(muAB_Dx1, size(muA_Dx1));
+        end
+        if nargin >= 7
+            keep            =   1:min(K,length(S_Ntx1));
+            S_Ntx1          =   S_Ntx1(keep);
+            U_DxNt          =   U_DxNt(:,keep);
+        end
+    
+        
+    %part 2. user has input quite a bit    
+    else
+        if (nargin < 6)  ff = 1.0;  end
+        
+        if (nargin < 5)  N2 = n;    end
+        
+        if (nargin >= 4 & isempty(muA_Dx1) == false)
+            %mean center B_DxN2
+            muB_Dx1         =   mean(B_DxN2,2);   
+            B_DxN2          =   B_DxN2 - repmat(muB_Dx1,[1,n]); 
+            weight          =   sqrt(n*N2/(n+N2));
+            B_DxN2          =   [B_DxN2, weight*(muA_Dx1(:)-muB_Dx1)];
+            muAB_Dx1        =   reshape((ff*N2*muA_Dx1(:) + n*muB_Dx1)/(n+ff*N2), size(muA_Dx1));
+            n               =   n+ff*N2;
+        end
+        S_Ntx1              =   diag(S_N1x1);
+        %>[Q,R,E]           =   qr([ ff*U_DxN1*S_Ntx1, B_DxN2 ], 0); %> old way
 
-  [U,D,V] = svd(R, 0);
-  D = diag(D);
+        data_proj           =   U_DxN1'*B_DxN2; %> new way
+        data_res            =   B_DxN2 - U_DxN1*data_proj;
+        [q, dummy]          =   qr(data_res, 0);
+        Q                   =   [U_DxN1 q];
+        R                   =   [ff*diag(S_N1x1) data_proj; zeros([size(B_DxN2,2) length(S_N1x1)]) q'*data_res];
 
-  if nargin < 7
-      cutoff = sum(D.^2) * 1e-6;
-      keep = find(D.^2 >= cutoff);
-  else
-      keep = 1:min(K,length(D));
-  end
+        [U_DxNt,S_Ntx1,V]   =   svd(R, 0);
+        S_Ntx1              =   diag(S_Ntx1);
 
-  D = D(keep);
-  U = Q * U(:, keep);
-end
+        if nargin < 7
+            cutoff          =   sum(S_Ntx1.^2) * 1e-6;
+            keep            =   find(S_Ntx1.^2 >= cutoff);
+        else
+            keep            =   1:min(K,length(S_Ntx1));
+        end
+
+        S_Ntx1              =   S_Ntx1(keep);
+        U_DxNt              =   Q * U_DxNt(:, keep);
+    end
+
+%-----------------------------------------------
+%POST-PROCESSING
+%-----------------------------------------------
+       
