@@ -1,10 +1,10 @@
-clear;
-clc;
-%close all;
-
 %---------------------------------------
 %PRE-PROCESSING
 %---------------------------------------
+    clear;
+    clc;
+    %close all;
+
     %load incremental_svd  %a snapshot of data from TRK_subspace before
     %it's entered into sklm
 
@@ -16,12 +16,12 @@ clc;
                                  0 1;
                                  0 0];
 
-    B_DxN2                  =   [0 ; 
-                                 0 ; 
-                                 1];
+    B_DxN2                  =   [2 0 ; 
+                                 0 0 ; 
+                                 0 1];
  
-    A_DxN1                  =   250*randn(D,N1);
-    B_DxN2                  =   350*randn(D,N2);
+    %A_DxN1                  =   250*randn(D,N1);
+    %B_DxN2                  =   350*randn(D,N2);
 
     [U_DxN1,S_N1xN1,W_N1xN1]=   svd   (A_DxN1, 0); 
     
