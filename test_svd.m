@@ -29,7 +29,7 @@ clc;
 %PROCESSING
 %---------------------------------------
     [U_DxNt_sklm, S_Ntx1_sklm, muAB_Dx1_sklm, temp_n] ...
-                            =   sklm  (B_DxN2, U_DxN1, diag(S_N1xN1), mean(A_DxN1,2), 1, 1);
+                            =   sklm2  (B_DxN2, U_DxN1, diag(S_N1xN1), mean(A_DxN1,2), 1, 1);
  
 %---------------------------------------
 %POST-PROCESSING
