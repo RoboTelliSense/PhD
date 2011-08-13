@@ -1,0 +1,229 @@
+% Template for IGARSS-2010 paper; to be used with:
+%          spconf.sty  - LaTeX style file, and
+%          IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+\documentclass{article}
+\usepackage{spconf,amsmath,epsfig,subfigure}
+
+% Example definitions.
+% --------------------
+\def\x{{\mathbf x}}
+\def\L{{\cal L}}
+
+% Title.
+% ------
+\title{Robust Real Time Vehicle Contour Tracking on Low Quality Aerial Infra Red Imagery}
+%
+% Single address.
+% ---------------
+\name{Salman Aslam, Aaron Bobick, Christopher Barnes}
+\address{Georgia Institute of Technology}
+%
+% For example:
+% ------------
+%\address{School\\
+%	Department\\
+%	Address}
+%
+% Two addresses (uncomment and modify for two-address case).
+% ----------------------------------------------------------
+%\twoauthors
+%  {A. Author-one, B. Author-two\sthanks{Thanks to XYZ agency for funding.}}
+%	{School A-B\\
+%	Department A-B\\
+%	Address A-B}
+%  {C. Author-three, D. Author-four\sthanks{The fourth author performed the work
+%	while at ...}}
+%	{School C-D\\
+%	Department C-D\\
+%	Address C-D}
+%
+\usepackage{setspace}
+%\singlespacing
+\onehalfspacing
+%\doublespacing
+%\setstretch{1.1}
+\begin{document}
+\onecolumn
+%\ninept
+%
+\maketitle
+
+
+%--------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{INTRODUCTION}
+%--------------------------------------------------------------------------------------------------------------------------------------------------------------
+			
+In this paper, we propose a real time, robust, contour tracker for vehicles in low contrast, grayscale, IR images captured from a remote aerial moving platform.  Poor quality imagery, lack of a background model, lack of a motion model and lack of any training data make the job challenging, but realistic.  Under these conditions, standard approaches of contour evolution using energy minimization methods perform poorly.  Moreover, such approaches are computationally expensive and are dependent on good initialization.  Our approach, based on a combined Harris corner and Elliptical Fourier strategy, works exceptionally well in real time and is robust to different initializations.
+
+			\begin{figure}
+						\centering
+						\includegraphics[width=.50\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_blockDiagram}
+						\caption{Block Diagram.}
+						\label{fig:BlockDiagram}
+			\end{figure}
+			
+%			\begin{figure}
+%						\centering
+%						\includegraphics[width=.35\textwidth]{figs/05547.eps}
+%						\caption{Vehicle captured from aerial FLIR acquisition system.  Heat points at the tires can can be used for robust tracking.}
+%						\label{fig:Car}
+%			\end{figure}
+%			
+			
+%The realistic constraints we impose are due to the following reasons:
+%
+%\begin{itemize}
+%\item \textbf{Lack of a background model.}  This is due to the fact that the remote imaging platform is moving.  Any attempt to remedy this situation using image stabilization or registration methods is not used since such steps are computationlly complex and may not be feasible in a real time scenario.
+%
+%\item \textbf{Lack of motion model.}  Since the imagery is captured by a remote platform, relative motion between target and sensor can make it difficult to model the motion of the target.  In fact, the target may appear to sway about a point in a given sequence of images.
+%
+%\item \textbf{Lack of training data.}  We do not assume any training data for realism.
+%
+%\item \textbf{Lack of color information.}  Since the imagery is IR, there is no color information.
+%
+%\item \textbf{Low quality imagery.}  The captured imagery has low contrast.  Moreover, texture information is lost to a great extent.
+%
+%\end{itemize}
+%
+%These constraints make the job of tracking quite challenging.
+
+\subsection{Current Approaches}
+%------------------------------
+To the best of our knowledge, our approach is unique.  Other researchers have used corner matching or Elliptical Fourier Transforms, but in different ways.  In \cite{2007_CNF_CornerMatching_Awrangjeb} the authors use corner matching to determine the six parameters of an affine transform between images to be matched.  Since the affine transform requires three matches, they use the three vertices created with a Delaunay triangulation.  They extend this approach by using additional metrics such as curvature.  We do not use this approach since the number of corners we have are not large enough to justify the additional computational complexity of determing a triangulation and then an image warp based on the affine parameters.  \cite{2008_CNF_CornerMatching_Yu} uses gradient information in addition to corners for corner matching.  For matching distance, traditional similarity measures include the widely used mean square difference, correlation coefficient, normalized correlation coefficient or information theoretic measures such as joint entropy, mutual information or normalized mutual information.    The latter approach is used in \cite{2004_CNF_GraphCornerMatching_Lourakis}.  For contour tracking, \cite{2006_CNF_FourierSnakes_Derrode} introduce a shape prior on the snake algorithm using Fourier descriptors, and \cite{2001_CNF_SnakeTracking_Kim} also help the snake algorithm by processing flow information.  However, this is computationlly complex and we don't use flow information.  \cite{2001_CNF_SnakeTracking_Kim} combines corners and snakes in that corners are used as energy minimization points.  \cite{2006_CNF_IRtracking_Mei} uses mixtures of probabilistic PCA on appearance models followed by particle filter tracking.
+		
+\subsection{Proposed Approach}
+%-----------------------------
+Our experiments on remote aerial IR imagery show that in many cases, of all traditional region or edge based metrics employed for target correlation, corner information can be the most useful.  This is because certain targets, including vehicles, demonstrate typical specular points in the IR domain.  For vehicles, these points can result at the tires due to the heat generated from friction.  This is shown in Figure~\ref{fig:SnakesExperiments}. 
+
+While corners can be strong and therefore a useful feature to track, IR images can be quite noisy, making it difficult to use gradient based methods for contour evolution.  Moreover, smoothing to reduce the noise can deplete the already weak boundaries.  A solution involving anisotropic diffusion coupled with contour evolution can be expensive at the very least, and quite brittle at best.  We therefore propose a solution involving Harris corners, which are are robust and computationally efficient, followed by an elliptical fourier computation for curve evolution, which again is an extremely low cost operation.  The result is robust, real time, contour tracking on vehicles acquired from remote IR acquisition systems.  Our proposed approach is shown in Figure~\ref{fig:BlockDiagram}.  %Before continuing, we go over the theoretical foundations of our approach. 
+
+\begin{figure}
+			\centering
+				
+			\subfigure[Initialization 0.]
+				{
+					\includegraphics[width=.35\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_FN_00000_snakesInitialization1}
+					\label{subfig:00000_snakes1_orig}
+				}
+			\subfigure[Gradient image]
+				{
+					\includegraphics[width=.35\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_FN_00000_snakesInitialization1_grad}
+					\label{subfig:00000_snakes1_grad}
+				}				
+			\subfigure[Initialization 1.]
+				{
+					\includegraphics[width=.35\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_FN_00000_snakesInitialization2}
+					\label{subfig:00000_snakes2_orig}
+				}
+			\subfigure[Gradient image]
+				{
+					\includegraphics[width=.35\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_FN_00000_snakesInitialization2_grad}
+					\label{subfig:00000_snakes2_grad}
+				}				
+			\subfigure[Initialization 2]
+				{
+					\includegraphics[width=.35\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_FN_00000_snakesInitialization3}
+					\label{subfig:00000_snakes3_orig}
+				}
+			\subfigure[Gradient image]
+				{
+					\includegraphics[width=.35\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_FN_00000_snakesInitialization3_grad}
+					\label{subfig:00000_snakes3_grad}
+				}				
+			\caption{Snakes curve evolution for three different initializations on the same image.  The red curve is the initialized curve that is evolved using the snakes method.  Its final evolved, and energy optimized, form is shown in blue.  Notice that this method is highly dependent on the initialization.  (Every figure on the right corresponds to the figure on its left).} 	
+			\label{fig:SnakesExperiments}	
+\end{figure}	
+
+
+%\subsection{Theory: Elliptical Fourier Components}
+%%-------------------------------------------------
+%A piecewise linear contour with control points $(x_n, y_n)$, $n\in [1..N]$  can be piecewise parameterized with parameter $t$, $t\in [0..2 \pi]$.  This resulting parameterized contour can then be expressed in closed form using the equations of the Elliptical Fourier Transform as given in Equation~\ref{eq:EllipticalFourierTransform} \cite{1992_JNL_BoundaryFinding_Staib} \cite{2007_JNL_SURVEYtrk_Mocanu} \cite{2000_JNL_SURVEYimageRetrieval_Safar}.  The resulting representation of the contour is now $C^\infty$ continuous.  Increasing the number of elliptical basis components can produce desired accuracy, albeit with an increase in oscillations.
+%
+%
+%\begin{align}
+%	\label{eq:EllipticalFourierTransform}
+%	a_0 =\frac{1}{2\pi}\int_0^{2 \pi}x(t)dt, \ \ \ c_0=\frac{1}{2\pi}\int_0^{2 \pi}y(t)dt, \ \ \    
+%	a_k=\frac{1}{\pi}\int_0^{2 \pi}x(t)cos(kt)dt, \ \ \ b_k=\frac{1}{\pi}\int_0^{2 \pi}x(t)sin(kt)dt    \notag\\
+%	c_k=\frac{1}{\pi}\int_0^{2 \pi}y(t)cos(kt)dt, \ \ \ d_k=\frac{1}{\pi}\int_0^{2 \pi}y(t)sin(kt)dt    \notag\\
+%	\left[ \begin{array}{ccc}x(t) \\y(t) \end{array}\right] =\left[ \begin{array}{ccc}a_0\\c_0 \end{array}\right] + \sum_{k=1}^K \left[ \begin{array}{ccc}a_k & b_k\\c_k & d_k \end{array}\right]\left[ \begin{array}{ccc}cos(kt)\\sin(kt) \end{array}\right]\notag
+%\end{align}
+%
+%\subsection{Theory: Snakes}
+%%--------------------------
+%A popular technique for contour evolution is the snakes method.  This method can be implemented using an optimization strategy or the level sets method.  We focus on the former approach.  The idea is to minimize the energy of a contour, as expressed in Equation~\ref{eq:SnakesEnergy1}.  The first two terms, collectively known as Interal Energy, depend only on the contour itself and are referred to as Membrane Energy and Thin Plate Energy respectively.  Notice that this formulation favors a smaller length curve, which is why initialization is done by manually drawing a curve outside the object of interest, and not inside it.  The contour then shrinks in size as it evolves.  The last term depends on the contour as well as the image itself and is called the External Energy.  This external energy is computed by evaluating the gradient along the contour.  Since we minimize the energy, the External Energy is maximized and this causes the snake to be drawn towards high gradient regions, i.e. edges.  
+%
+%\begin{equation}
+%	\label{eq:SnakesEnergy1}
+%	E=\int_0^{2 \pi} \left[\frac{\alpha}{2}(x_t^2 + y_t^2) + \frac{\beta}{2}(x_{tt}^2 + y_{tt}^2) - \left[\nabla{(x(t), y(t))}\right]\right]dt
+%\end{equation}
+%
+%If used with Elliptical Fourier components, the orthogonality of the basis functions causes the energy term to be expressed in much simpler terms as,
+%
+%\begin{align} 
+%	\label{eq:SnakesEnergy2}
+%	E&=\alpha \sum_{k=1}^K k^2(a_k^2 + b_k^2 + c_k^2 + d_k^2) +\beta   \sum_{k=1}^K k^4(a_k^2 + b_k^2 + c_k^2 + d_k^2) 
+%	        +\int_0^{2 \pi} \left[\nabla{(x(t), y(t))}\right]dt
+%\end{align}
+%
+%Notice that for a large number of elliptical components, $K$, the energy term starts becoming dominated by the Thin Plate Energy, which is why its weighting parameter $\beta$ may need to be adjusted.  Also, if the image is noisy, then the gradient information becomes less reliable and the External Energy term can cause the snake to get locked onto local minima.
+
+%--------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{EXPERIMENTS and RESULTS}
+%--------------------------------------------------------------------------------------------------------------------------------------------------------------
+We experiment with an IR sequence of images in which a police car is in hot pursuit of a target vehicle.  Tracking experiments in general include all or some of the following steps: feature selection, feature detection, i.e. getting observations, observation correspondence, data fusion, and state estimation.  We now explain our specific experiments under the broad context of these points.
+
+\subsection{Contour Evolution Using Snakes.}
+For comparison purposes, our initial experiments were with contour evolution using the snakes energy minimization technique.  This is shown in Figure~\ref{fig:SnakesExperiments}.  We manually select a piecewise linear curve, plotted in red.  This is to simulate a given time instance in the tracking sequence where you have a predicted contour and you want to evolve it for data fusion with the current measurement.  This curve is then optimized and plotted in blue.  It can be seen that a good initialization in Figure ~\ref{subfig:00000_snakes1_orig} allows the snake to evolve to a reasonable estimate of the actual contour of the vehicle.  However, in Figure~\ref{subfig:00000_snakes2_orig} the curve is attracted towards the road edge.  Figure~\ref{subfig:00000_snakes3_orig} represents yet another scenario where the contour is stuck in local minima created by noise.  This shows that results are very sensitive to initialization.  This of course is a well known phenomenon for snakes, but presents a problem in tracking situations.  The computational complexity of snakes also makes them infeasible for use in real time situations.
+
+
+\subsection{Harris Corners and Elliptical Fourier Representation.}
+We now present our approach that leads to robust real time contour tracking. The advantage of this approach is shown in Figures~\ref{fig:Corners} and \ref{fig:Contours}.  The figure shows that strongest Harris corners in the image belong to the vehicle.  This happens to be true through almost the entire sequence.  In this image, and in subsequent images, Harris corners turn out to be quite distinct, and clearly separate the foreground from the background.  We therefore decided to use Harris corner aided contour evolution. 
+
+\begin{figure}[t]
+			\centering
+			\subfigure[]
+				{
+					\includegraphics[width=.37\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_FN_00000_harrisCorners}
+					\label{subfig:00000_corners}
+				}
+			\subfigure[]
+				{
+					\includegraphics[width=.38\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_FN_03000_harrisCorners}
+					\label{subfig:03000_corners}
+				}
+			\caption{Harris corners are a good indicator of vehicles in IR images. Plotted are the strongest corners in the entire image.  Notice that this approach works well even for different rotations of the target, or different aspects.} 	
+			\label{fig:Corners}	
+\end{figure}
+
+For tracking, we have to correspond our Harris corners in subsequent images.  We do this by using the normalized correlation coefficient over a 50x50 pixel window placed over the corner to be matched.  Since the airborne imaging platform and the target vehicle are both moving, it is difficult to get a motion model for the target, and this is the reason for selecting a window all around the corner rather than only in the direction of target motion.  Once corners are matched, unmatched corners are projected using an average of all the motion vectors for the matched corners.  These corners are then fitted with an elliptical fourier curve that represents the contour of the target at that point (Figure~\ref{fig:Contours}).
+
+For quantitative results, for several thousand low quality, low contrast, images, we see that curve evolution using snakes is highly dependent on initialization and its performance is therefore difficult to quantify.  For our Harris Corner based approach, we get a correct contour in over 90\% of the cases tested.
+
+			%contours
+			\begin{figure}[t]
+						\centering
+			
+						\subfigure[]
+							{
+								\includegraphics[width=.46\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_result_FN_00030_contour}
+								\label{subfig:1250}
+							}
+						\subfigure[]
+							{
+								\includegraphics[width=.45\textwidth]{figs/TRK_IGARSS2010_contour_ellipFourier_result_FN_01277_contour}
+								\label{subfig:01277_contour}
+							}								
+						\caption{Generating contours using Harris Corners and Elliptical Fourier components.} 	
+						\label{fig:Contours}	
+			\end{figure}
+
+%%--------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{CONCLUSIONS}
+%%--------------------------------------------------------------------------------------------------------------------------------------------------------------
+Our results show using Harris corner matching followed by an elliptical fourier representation of the contour enclosing the Harris corners is an extremely efficient way of vehicle contour tracking on IR imagery from moving remote aerial platforms.  Moreover, it works well over 90\% of the time.  We show that energy minimization using the snakes algoritm can be quite brittle, and is extremely sensitive to initialization.  Our next goal is to demonstrate this approach for multiple targets.
+
+\bibliographystyle{IEEE}
+\bibliography{c:/salman/work/writing/MyCitations} 
+
+\end{document}

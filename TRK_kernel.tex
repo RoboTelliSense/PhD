@@ -1,0 +1,49 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (kernel)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\end{frame}
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+%=================================
+\subsection{\ \ \ \ 2003: kernel tracking}
+%=================================
+\begin{frame}
+\frametitle{Prior work: kernel tracking}
+\framesubtitle{2. summary}
+\mypagenum
+	\begin{itemize}
+		\item spatially mask the target with an isotropic kernel
+		\item a spatially smooth similarity function can then be defined
+		\item target localization problem is then reduced to a search in the basin of attraction of this function
+		\item since the distance function is smooth, the procedure uses gradient information which is provided by the mean shift vector
+	\end{itemize}
+\myFootnoteCitation{2003_JNL_TRKkernel_Comaniciu}{PAMI}
+\end{frame}
+
+
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

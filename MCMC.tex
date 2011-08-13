@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage{amsmath,epsfig}
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\include{figs/inkscapeLatex}
+\title{MCMC}
+\begin{document}
+\date{}
+\maketitle
+
+%=============================================
+\section{Gibbs Sampler}
+%=============================================
+\vspace{0.5in}
+\begin{enumerate}
+\item \textbf{\underline{Given}}:
+\begin{enumerate}
+\item \underline{Random variables}.  $T$ random variables, $X_1, X_2, \ldots, X_T$.
+\item \underline{Conditional distributions}.  Complete conditional distributions, $p(X_s|X_t), s \neq t, t=1, 2, \ldots, T$.
+\item \underline{Possible to sample}.  It is possible to sample from the conditional distributions.
+\item \underline{Joint distribution}.  Under mild conditions (Besag 1974), these complete conditional distributions uniquely determine the full joint distribution $p(X_1, X_2, \ldots, X_T)$, and hence all marginal distributions $p(X_t)$.
+\item \underline{Initial samples}. Arbitrary initial samples, $X_{1(1)}, X_{2(1)}, X_{3(1)}, \ldots X_{T(1)}$
+\end{enumerate}
+
+\vspace{0.5in}
+\item \textbf{\underline{Compute}}:
+Given the above, the Gibbs sampler can generate a \textbf{single} sample from the joint distribution using the steps below,
+
+\begin{enumerate}
+\item \underline{Given initial samples, draw one sample from each conditional distribution.} Draw each of the following samples:
+\begin{itemize}
+\item $X_{1(2)}$ from $p(X_1  |  X_{2(1)}, X_{3(1)}, \ldots, , X_{T(1)})$
+\item $X_{2(2)}$ from $p(X_2  |  X_{1(2)}, X_{3(1)}, \ldots, , X_{T(1)})$
+\item $\vdots$
+\item $X_{T(2)}$ from $p(X_T  |  X_{1(2)}, X_{3(2)}, \ldots, , X_{{T-1}(2)})$
+\end{itemize}
+\item \underline{Repeat above step for $L$ iterations.}  After $L$ such iterations, we will have a $T$-tuple, $\big(X_{1(L)}, X_{2(L)}, X_{3(L)}, \ldots, , X_{T(L)}\big)$.  Geman and Geman (1984) showed that under mild conditions, this $T$-tuple converges in distribution to a random observation from $p(X_1, X_2, \ldots, X_T)$ as $L \rightarrow \infty$.
+\end{enumerate}
+\end{enumerate}
+
+\vspace{0.2in}
+Repeat this process $G$ times to get $G$ samples from the joint density.  Refer to~\cite{1992_JNL_MCMC_Carlin} for more details.
+
+\vspace{0.5in}
+%We have a \emph{proposal density},
+%
+%\begin{equation}
+%\end{equation}
+%
+%We start with a sample at $t=0, x_0$
+%
+%MH is a 2 step process:
+%\begin{enumerate}
+%\item Proposal value is generated
+%\item Proposal value is accepted/rejected
+%\begin{equation}
+%a = \frac{p(x')}{p(x_t)}\frac{Q(x_t;x')}{Q(x';x_t)}
+%\end{equation}
+%\item if $a \geq 1, x_{t+1}=x'$
+%\end{enumerate}
+
+
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}

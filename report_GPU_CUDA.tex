@@ -1,0 +1,157 @@
+\documentclass{article}
+\usepackage{spconf, amsmath,epsfig,subfigure}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{color}
+
+
+% Title.
+% ------
+\title{High Performance Computing \\and\\Programming with the Nvidia GPU}
+\name{Salman Aslam}
+\address{}
+
+%\pagestyle{fancy}
+%\fancyhead{} % Clear all header fields
+%\fancyhead[C]{\includegraphics[height=18pt]{figs/logo_qualcomm.jpg}}
+%\fancyfoot{} % Clear all footer fields 
+
+%#################################################################
+\begin{document}
+%#################################################################
+\maketitle
+
+\begin{abstract}
+In this paper, we discuss high performance computing and programming using the Nvidia CUDA GPU framework.
+\end{abstract}
+
+
+%#################################################################
+\section{INTRODUCTION}
+%#################################################################
+%=================================================
+\subsection{History of high performance computing}
+%=================================================
+Figure \ref{fig:HPC} gives a graphical overview of the history of high performance computing.  The 1980s ushered in the era of the supercomputer.  Cray, Connection Machine and MasPar built machines that by the 1990s could compute up to 1 teraflops.  The late 90s saw the emergence of a competing paradigm: distributed computing.  As microprocessors got cheaper, more and more of such machines could be connected by middleware to generate immense computing power.  Beowulf was introduced and is now currently used in clusters world-wide.  Grid computing in the form of the Berkeley Open Infrastructure for Network Computing (BOINC) was introduced and with about half a million hosts and a sustained processing power of over 5 petaflops, is currently the fastest computing platform in the world.  By comparison, the fastest computer today, the Cray XT-5 Jaguar has a speed of 1.75 petaflops.  In the 2000s, the rate of increase in microprocessor speeds slowed down.  At the same time, it became evident that larger and larger clusters were becoming infeasible.  In this climate, Nvidia introduced CUDA (Compute Unified Device Architecture), a high level language designed for general purpose computations on the GPU (graphics processing unit).
+
+GPUs were initially programmed in assembly.  Higher level languages that precede CUDA are C for graphics, or $Cg$, introduced in 2002, Microsoft High Level Shading Language, or HLSL, introduced in 2004 and OpenGL Shading Language, or GLSL also introduced in 2004.  These languages are primarily written for graphics applications.  As a result, familiarity with computer graphics is required to use these languages for general purpose computations.  CUDA, introduced in 2007, enables a programmer to use GPUs for general purpose computations without any knowledge of the graphics pipeline.  The advantage of using GPUs is that they are highly parallel devices.  Algorithms that are inherently parallel, or that can take advantage of high degrees of parallelism are candidates for implementation on GPUs.
+
+%=================================================
+\subsection{GPU vs CPU}
+%=================================================
+Figure \ref{fig:GPU_Intel_vs_Nvidia} gives a comparison of computational power in floating point operations per second between Intel CPUs and Nvidia GPUs over the past few years.  The reason behind this discrepancy is that GPUs are inherently designed for simple parallel operations and therefore require less cache and flow control.  More transistors can therefore be allocated to the computational elements.
+
+
+	\begin{figure*}
+		\includegraphics[width=1.0\textwidth]{figs/GPU_history_of_HPC}
+		\caption{History of high performance computing}
+		\label{fig:HPC}
+	\end{figure*}	
+
+		\begin{figure}
+			\includegraphics[width=3in]{figs/GPU_Intel_vs_Nvidia}
+			\caption{A comparison of GPU and CPU processing power  \cite{2010_MAN_CUDA_Nvidia}.  The latest Nvidia GPU architecture, Fermi, introduced in 2010 has crossed the 1 teraflop barrier for single point operations.}
+			\label{fig:GPU_Intel_vs_Nvidia}
+		\end{figure}
+
+%=================================================
+\subsection{CUDA}
+%=================================================
+After a brief diversion of comparing Intel CPUs and Nvidia GPUs, we return to our discussion on CUDA.  We focus on three main points:
+
+\begin{figure}
+	\includegraphics[width=3in]{figs/GPU_vs_CPU_die}
+	\caption{GPUs use more transistors for processing \cite{2010_MAN_CUDA_Nvidia}.}
+	\label{fig:GPU_vs_CPU_die}
+\end{figure}
+
+ \begin{enumerate}
+	\item \textbf{Scalability}.  A compiled CUDA program can run on any number of cores.  This is shown in Figure \ref{fig:GPU_scalability}.
+	\item \textbf{C/C++ extensions}.  CUDA is implemented as a few language extensions to the C language and a runtime library.  A source file containing these extensions is compiled using the Nvidia \textbf{nvcc} compiler.
+	\item \textbf{Heterogeneous serial-parallel programming model}.  A \emph{device}, i.e., a GPU, can be used as a co-processor to a \emph{host} running the C program.  Parallel intensive operations can be run on the GPU while serial operations can be run on the host.
+\end{enumerate}
+
+We now present some of the concepts associated with GPU programming and the CUDA environment.  
+
+\begin{figure}
+	\includegraphics[width=3in]{figs/GPU_scalability}
+	\caption{Program scales automatically \cite{2010_MAN_CUDA_Nvidia}.}
+	\label{fig:GPU_scalability}
+\end{figure}
+
+%-------------------------------------------
+\subsubsection{Kernel}
+%-------------------------------------------
+A CUDA C function is called a \emph{kernel}.  A single kernel is executed in parallel $N$ times by $N$ threads.  It is declared using the $\_\_$\textbf{global}$\_\_$ identifier as shown in the example CUDA program in Figure \ref{fig:Example_CUDA_program}.  CUDA threads are organized into blocks.  As such, a kernel can be executed in parallel by all threads in a block.  Also, several blocks can also be executed in parallel.  In regards to heterogeneous computing mentioned earlier, kernels execute on a GPU while the rest of the C program executes on a CPU.  For compilation, kernels are compiled into binary code using the \textbf{nvcc} compiler.  Most GPUs can execute only one kernel concurrently.  However, the newest devices can execute up to 4 kernels concurrently.  In any case, inter-kernel communication is not defined.  	
+
+\begin{figure}
+	\includegraphics[width=3in]{figs/GPU_CUDA_example_program}
+	\caption{Example CUDA program}
+	\label{fig:Example_CUDA_program}
+\end{figure}
+
+
+%-------------------------------------------
+\subsubsection{Block}
+%-------------------------------------------
+A multi-threaded program is partitioned into blocks of threads.  When a CUDA program on the host CPU invokes a kernel, thread blocks are distributed to available multiprocessors (SMs) for execution.  The threads of a block execute concurrently on one SM.  They can be scheduled on any of the available processor cores.  This is why GPU code can scale with the number of cores.  Threads within a block can cooperate using shared memory.   Multiple thread blocks also execute concurrently on one SM.  As thread blocks terminate, new blocks are launched on the vacated multiprocessors.  This is shown in Figure \ref{fig:GPU_SM}.  
+
+An important point is that thread blocks are required to execute independently.  It is the job of the programmer to ensure that such parallel execution does not lead to incorrect results.  If some threads finish their job earlier than other threads in a block, then the earlier threads can be made to wait for all other threads.  After this synchronization, all the threads can continue execution.  
+
+A block can have a maximum of 512 threads.  A thread block size of 16x16 is a common choice.  
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figs/GPU_SM.jpg}
+	\caption{Streaming multiprocessors execute thread blocks concurrently.} 	
+	\label{fig:GPU_SM}	
+\end{figure}
+%-------------------------------------------
+\subsubsection{Warp}
+%-------------------------------------------
+When an SM is given one or more thread blocks to execute, it partitions them into groups of 32 parallel threads, called \emph{warps}.  Individual threads comprising a warp start together at the same program address but they have their own instruction address counter and register state and are therefore free to branch and execute independently.  A warp executes one common instruction at a time, so full efficiency is realized when all 32 threads of a warp agree on their execution path.  If threads of a warp diverge, each branch is executed serially until all the threads converge to the same execution path.  It is the job of the programmer to minimize warp divergence.  
+
+Also, the execution context of each warp is maintained on-chip during the entire lifetime of the warp.  Switching contexts therefore has no cost.  At every instruction issue time, the warp scheduler selects a warp that has threads ready to execute and issues the next instruction to those threads.
+
+%-------------------------------------------
+\subsubsection{Streaming Multiprocessor (SM)}
+%-------------------------------------------
+The CUDA architecture is build around a scalable array of multi-threaded \emph{Streaming Multiprocessors (SMs)}.   A GPU can have up to 30 SMs.  When a CUDA program on the host CPU invokes a kernel, thread blocks are distributed to SMs with available capacity.  These thread blocks then execute the kernel concurrently as mentioned above.  This is shown in Figure \ref{fig:GPU_SM}.  The number of thread blocks that can be executed on an SM depends on the amount of available/required registers and shared memory.  
+
+%-------------------------------------------
+\subsubsection{Cores}
+%-------------------------------------------
+Each SM has 8 or more cores for integer and floating point arithmetic operations.  The latest Fermi architecture has up to 480 cores on the GPU.  A thread of blocks can be scheduled on any of the available processor cores, in any order, concurrently or sequentially.  This is shown in Figure \ref{fig:GPU_scalability}.
+
+%-------------------------------------------
+\subsubsection{Memory Hierarchy}
+%-------------------------------------------
+CUDA threads can access data from multiple memory spaces.  These are listed below:
+\begin{itemize}
+	\item \textbf{Local memory}.  Each thread has 16 KB of local private memory (512 KB for the latest Fermi architecture).  It is important to give special attention to coalesced memory accesses.  This is described below for global memory.  
+	\item \textbf{Shared memory}.  This is an on-chip memory and access is much faster than local and global memory.  Whereas coalescence has to be given special care in local and global memory accesses, in shared memory, special care has to be given to bank conflicts.  If two addresses of a memory request fall in the same memory bank, then there is a bank conflict and the access has to be serialized.  Threads within a block share data through the shared memory.  The amount of available shared memory is 16 KB per SM, or 48 KB per SM for the Fermi architecture.
+	\item \textbf{Global memory}.  Global memory can be shared by all threads.  Memory transactions must be aligned to 32, 64 or 128 byte segments.  Global memory accesses are slow and should be minimized.  Special care has to be given to \emph{coalescence}, i.e. if a thread makes a 4-byte access, the transaction is coalesced into a 32-byte transaction, reducing the throughput by 8 times.  The amount of global memory is the amount advertised for the GPU.
+	\item \textbf{Constant memory}.  This is a read-only memory.  Variables declared with the $\_\_$\textbf{constant}$\_\_$ keyword are stored here.  The size is 64 KB.  
+	\item \textbf{Texture memory}.  This is also a read-only memory.  This memory is cached in a texture cache which is optimized for 2D spatial locality.
+\end{itemize}
+
+The global, constant and texture memory spaces are persistent across kernel launches.  
+
+%-------------------------------------------
+\subsubsection{SIMD vs SIMT}
+%-------------------------------------------
+The CUDA architecture is based on SIMT (Single-Instruction Multiple-Thread).  Although it has similarities with SIMD (Single Instruction Multiple Data), the key difference is that in SIMD, a single instruction is operated on multiple data points, whereas in SIMT, the focus is on writing thread-level parallel code.  Whereas a naive C port will work, substantial performance benefit can be achieved if the aspects of thread level parallelism, such as branch divergence, are kept in mind.
+
+
+
+%#################################################################
+\section{CONCLUSIONS}
+%#################################################################
+In this paper, we have presented a brief overview of the history of high performance computing leading up to thread level parallelism on today's GPUs.  The architecture we have explored is CUDA since it allows non-graphics algorithms to be programmed on massively parallel graphics processors while using high level extensions to a commonly used programming language, i.e. C.  
+
+
+%####################################################################################################
+\bibliographystyle{ieee}
+\bibliography{c:/salman/work/writing/MyCitations}
+\end{document}
+%####################################################################################################

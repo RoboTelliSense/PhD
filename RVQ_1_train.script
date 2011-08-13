@@ -1,0 +1,47 @@
+clear
+
+echo ========================================================================
+echo CLEAN
+echo ========================================================================
+#in my training, there are 2 less files: .smu, Linker.prm, so I have 7 in all, instead of 9
+rm snippets.raw         #file 1
+rm codebooks.ecbk       #file 2
+rm codebooks.dcbk       #file 3
+rm codebooks.nodes      #file 4
+rm gen.txt              #file 5
+rm bnd_in.txt           #file 6
+rm snippets.idx         #file 7
+
+echo cleaned files
+
+echo ========================================================================
+echo TRAINING
+echo ========================================================================
+./RVQ_0_concatenateSnippets.linux    	   reference_0_snippetExtractionDetails.csv                11 41
+./RVQ_1a_train_gen8.linux          snippets.raw        codebooks.ecbk    codebooks.dcbk    3    -S1000    -i0.0005    -j0.0005  >  gen.txt
+./RVQ_1b_train_bnd_in.linux        snippets.raw        codebooks.ecbk    codebooks.dcbk    3    -S1000    -i0.0005    -j0.0005  >  bnd_in.txt
+./RVQ_1a_train_gen8.linux          snippets.raw        codebooks.ecbk    codebooks.dcbk    3    -S1000    -l
+
+#echo ========================================================================
+#echo CHECK RESULTS
+#echo ========================================================================
+#echo compare file 1: snippets.raw
+#./UTIL_binaryFileCompare.linux                        reference_1_snippets_11x41_num25_11x6150_header512.raw        snippets.raw     > diff_snippets.txt #only bytes in the header (1 to 512) can be different
+
+#echo compare file 2, codebooks.dcbk
+#./UTIL_binaryFileCompare.linux                        reference_2_codebooks.dcbk                                    codebooks.dcbk   > diff_dcbk.txt 
+
+#echo compare file 3, codebooks.ecbk
+#./UTIL_binaryFileCompare.linux                        reference_3_codebooks.ecbk                                    codebooks.ecbk   > diff_ecbk.txt
+
+#echo compare file 4 : codebooks.nodes
+#./UTIL_binaryFileCompare.linux   					   reference_4_codebooks.nodes                                   codebooks.nodes   > diff_nodes.txt
+
+#echo compare file 5 : gen.txt
+#./UTIL_binaryFileCompare.linux   					   reference_5_gen.txt                                           gen.txt           
+
+#echo compare file 6 : bnd_in.txt
+#./UTIL_binaryFileCompare.linux   					 reference_6_bnd_in.txt                                          bnd_in.txt
+
+#echo compare file 7 : snippets.idx
+#./UTIL_binaryFileCompare.linux   					 reference_7_snippets.idx                                        snippets.idx

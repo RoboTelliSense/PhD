@@ -1,0 +1,218 @@
+\documentclass[12pt]{article}
+\usepackage[margin=0.35in]{geometry} %page layout
+\usepackage[usenames,dvipsnames]{color} %color
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\usepackage{graphicx, subfigure} %figures
+\usepackage{url, hyperref} %cross-referencing
+\usepackage{amsmath, amssymb} %math
+\usepackage{listings} %source code
+\lstset{breaklines=true,
+breakindent=0pt,
+prebreak=\mbox{\tiny$\searrow$},
+postbreak=\mbox{{\color{blue}\tiny$\rightarrow$}},
+numbers=left,
+commentstyle=\color{darkgreen},
+numberblanklines=false,
+frame=single,
+captionpos=b,
+backgroundcolor=\color{light-gray},
+keywordstyle=\color{blue},
+language=Matlab,
+keywords={
+DATAMATRIX_create_simple_DM2,
+DATAMATRIX_display_DM_as_image_col,
+DATAMATRIX_display_DM2_as_image,
+DATAMATRIX_extract_ith_image_from_DM2,
+DATAMATRIX_saveInFormat_rvq,
+RVQ__training,
+RVQ__testing,
+RVQ__read_codebook, 
+RVQ__create_posnegImage,
+UTIL_FILE_checkFileOpen, 
+UTIL_FILE_deleteFile, 
+UTIL_IMG_extract_ith_image_from_DM2, 
+UTIL_METRICS_compute_powerSignal, 
+UTIL_METRICS_compute_energy, 
+UTIL_METRICS_compute_power, 
+UTIL_METRICS_compute_rms_value, 
+UTIL_METRICS_compute_SNRdB, 
+UTIL_METRICS_compute_SNR, 
+UTIL_METRICS_compute_PSNRdB,
+UTIL_METRICS_compute_training_error,
+affparam2mat}}
+\usepackage[3D]{movie15} %for movies (needs hyperref)
+\author{Salman Aslam\\Georgia Tech\\Technical Report GT-CoveringSets-1}
+
+
+\title{Comparison of Principal Component Analysis (PCA), \\ Residual Vector Quantization (RVQ), \\Exhaustive Search Vector Quantization (ESVQ), and \\ Tree Structured Vector Quantization (TSVQ)}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+
+\begin{abstract}
+a
+\end{abstract}
+
+
+%==================================================
+\section{Introduction}
+%==================================================
+
+
+%==================================================
+\section{Experiments}
+%==================================================
+
+%==================================================
+\section{Results}
+%==================================================
+
+
+%==================================================
+\section{Conclusions}
+%==================================================
+
+      
+                    
+
+
+
+
+
+\appendix
+%===================================
+\section{Notation}
+%===================================
+\begin{itemize}
+\item $N$. Number of data points.
+\item $D$. Dimensionality of data points.
+\item \textbf{Design matrix}.  A matrix containing input data.  The terminology is used by Andrew Ng from Stanford in his Machine Learning course.  In the design matrix (DM), each row contains one data observation, i.e., there is one data vector per row.  This is a $N$x$D$ matrix.  For one data vector per column, I use DM2 which is a $D$x$N$ matrix and is simply the transpose of DM.        
+\item \textbf{cfn}.  This stands for "complete filename."
+\item \textbf{posneg image}.  A planar image with the following planes: R, G, B, 255-R, 255-G, 255-B.  A plane consists of all pixels belonging to a particular channel.  In other words, a posneg image contains all red pixels, followed by all green pixels, followed by all blue pixels, followed by the inverted channels.  To view such an image, open it in the Irfanview free software.  Make sure the image has a .raw extension.
+\end{itemize}  
+
+\tiny
+%===================================
+\newpage
+\section{Source code}
+%===================================
+
+%--------------------------------------------
+\newpage
+\subsection{Stand-alone applications for sanity checking.}
+%--------------------------------------------
+\lstinputlisting[caption={main\_compare\_bPCA\_ESVQ\_RVQ\_TSVQ.m.}, 		label=lst:main_compare_bPCA_ESVQ_RVQ_TSVQ]	{main_compare_bPCA_ESVQ_RVQ_TSVQ.m}
+
+%-------------------------------------------------------------
+\newpage
+\subsection{Training data manipulation}
+%-------------------------------------------------------------
+\lstinputlisting[caption={DATAMATRIX\_create\_simple\_DM2.m.}, 				label=lst:DATAMATRIX_create_simple_DM2]				{DATAMATRIX_create_simple_DM2.m}
+\lstinputlisting[caption="DATAMATRIX\_saveInFormat\_rvq.m.", 					label=lst:DATAMATRIX_saveInFormat_rvq]				{DATAMATRIX_saveInFormat_rvq.m}
+\lstinputlisting[caption={DATAMATRIX\_extract\_ith\_image\_from\_DM2.m.}, 	label=lst:DATAMATRIX_extract_ith_image_from_DM2]	{DATAMATRIX_extract_ith_image_from_DM2.m}
+\lstinputlisting[caption={DATAMATRIX\_display\_DM2\_as\_image.m.}, 			label=lst:DATAMATRIX_display_DM2_as_image]			{DATAMATRIX_display_DM2_as_image.m}
+\lstinputlisting[caption={DATAMATRIX\_display\_DM\_as\_image\_col.m.}, 		label=lst:DATAMATRIX_display_DM_as_image_col]		{DATAMATRIX_display_DM_as_image_col.m}
+
+
+
+%-------------------------------------------------------------
+\newpage
+\subsection{Training}
+%-------------------------------------------------------------
+\lstinputlisting[caption="RVQ\_\_training.m", 										label=lst:RVQ__training]									{RVQ__training.m}
+
+
+%-------------------------------------------------------------
+\newpage
+\subsection{Testing}
+%-------------------------------------------------------------
+\lstinputlisting[caption="RVQ\_\_testing.m", 										label=lst:RVQ__testing]									{RVQ__testing.m}
+
+
+%-------------------------------------------------------------
+\newpage
+\subsection{Tracking algorithms}
+%-------------------------------------------------------------
+\lstinputlisting[caption={TRK\_condensation.m.}, 								label=lst:TRK_condensation]								{TRK_condensation.m}
+
+
+
+%-------------------------------------------------------------
+\newpage
+\subsection{Utility functions}
+%-------------------------------------------------------------
+
+
+\subsubsection{RVQ}
+%-----------------------
+\lstinputlisting[caption="RVQ\_\_create\_posnegImage.m.", 								label=lst:RVQ__create_posnegImage]							{RVQ__create_posnegImage.m}
+
+
+\subsubsection{Signal metrics}
+%-------------------------------------
+\lstinputlisting[caption={UTIL\_METRICS\_compute\_powerSignal.m.}, 					label=lst:UTIL_METRICS_compute_powerSignal] 				{UTIL_METRICS_compute_powerSignal.m} 	%1
+\lstinputlisting[caption={UTIL\_METRICS\_compute\_energy.m.}, 						label=lst:UTIL_METRICS_compute_energy]					{UTIL_METRICS_compute_energy.m}			%2
+\lstinputlisting[caption={UTIL\_METRICS\_compute\_power.m.}, 						label=lst:UTIL_METRICS_compute_power] 					{UTIL_METRICS_compute_power.m}			%3
+\lstinputlisting[caption={UTIL\_METRICS\_compute\_rms\_value.m.}, 					label=lst:UTIL_METRICS_compute_rms_value] 				{UTIL_METRICS_compute_rms_value.m}		%4
+\lstinputlisting[caption={UTIL\_METRICS\_compute\_SNR.m.}, 							label=lst:UTIL_METRICS_compute_SNR] 						{UTIL_METRICS_compute_SNR.m}			%5
+\lstinputlisting[caption={UTIL\_METRICS\_compute\_SNRdB.m.}, 						label=lst:UTIL_METRICS_compute_SNRdB] 					{UTIL_METRICS_compute_SNRdB.m}			%6
+\lstinputlisting[caption={UTIL\_METRICS\_compute\_PSNRdB.m.}, 						label=lst:UTIL_METRICS_compute_PSNRdB] 					{UTIL_METRICS_compute_PSNRdB.m}		%7
+\lstinputlisting[caption={UTIL\_METRICS\_compute\_training\_error.m.}, 				label=lst:UTIL_METRICS_compute_training_error] 			{UTIL_METRICS_compute_training_error.m}	%8
+
+
+\subsubsection{Indexing}
+%-------------------------------------
+\lstinputlisting[caption={UTIL\_idx\_to\_xy.m.}, 											label=lst:UTIL_idx_to_xy]										{UTIL_idx_to_xy.m}
+
+\subsubsection{Plotting}
+%-------------------------------------
+\lstinputlisting[caption={UTIL\_IMG\_tightsubplot.m.}, 									label=lst:UTIL_PLOT_tightsubplot]								{UTIL_PLOT_tightsubplot.m}
+
+\subsubsection{Files}
+%-------------------------------------
+\lstinputlisting[caption={UTIL\_FILE\_checkFileOpen.m}, 								label=lst:UTIL_FILE_checkFileOpen]							{UTIL_FILE_checkFileOpen.m}
+\lstinputlisting[caption={UTIL\_FILE\_deleteFile.m}, 										label=lst:UTIL_FILE_deleteFile]								{UTIL_FILE_deleteFile.m}
+																									 
+
+
+
+
+
+
+%\lstinputlisting[language=Matlab, caption="main.m", 								label=lst:main]										{main.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_subspace\_wrapper.m", 			label=lst:TRK_subspace_wrapper]						{TRK_subspace_wrapper.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_subspace.m", 					label=lst:TRK_subspace]								{TRK_subspace.m}\newpage
+%\lstinputlisting[language=Matlab, caption="condensation2.m", 						label=lst:condensation2,morekeywords={repmat}]		{condensation2.m}\newpage
+
+%\lstinputlisting[language=Matlab, caption="TSVQ\_find\_M\_K.m", 					label=lst:TSVQ_find_M_K]								{TSVQ_find_M_K.m}
+%\lstinputlisting[language=Matlab, caption="TSVQ\_basicTrainingUnit.m", 			label=lst:TSVQ_basicTrainingUnit]						{TSVQ_basicTrainingUnit.m}\newpage
+
+%\lstinputlisting[language=Matlab, caption="UTIL\_GetZeroPrefixedFileNumber\_2.m", label=lst:UTIL_GetZeroPrefixedFileNumber_2]			{UTIL_GetZeroPrefixedFileNumber_2.m}
+%\lstinputlisting[language=Matlab, caption="UTIL\_GetZeroPrefixedFileNumber\_3.m", label=lst:UTIL_GetZeroPrefixedFileNumber_3]			{UTIL_GetZeroPrefixedFileNumber_3.m}
+%\lstinputlisting[language=Matlab, caption="UTIL\_GetZeroPrefixedFileNumber\_4.m", label=lst:UTIL_GetZeroPrefixedFileNumber_4]			{UTIL_GetZeroPrefixedFileNumber_4.m}
+%\lstinputlisting[language=Matlab, caption="UTIL\_compute\_avg.m", 				label=lst:UTIL_compute_avg]							{UTIL_compute_avg.m}
+%\lstinputlisting[language=Matlab, caption="UTIL\_update\_DM2.m", 				label=lst:UTIL_update_DM2]							{UTIL_update_DM2.m}
+%\lstinputlisting[language=Matlab, caption="UTIL\_drawQuadFrom6affineParams.m", 	label=lst:UTIL_drawQuadFrom6affineParams]			{UTIL_drawQuadFrom6affineParams.m}
+%\lstinputlisting[language=Matlab, caption="UTIL\_IMG\_display\_DM2\_as\_image.m",label=lst:DATAMATRIX_display_DM2_as_image]			{DATAMATRIX_display_DM2_as_image.m}\newpage
+%\lstinputlisting[language=Matlab, caption="warpimg.m", 							label=lst:warpimg]									{warpimg.m}
+%\lstinputlisting[language=Matlab, caption="affparaminv.m", 						label=lst:affparaminv]									{affparaminv.m}\newpage
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_1\_I.m", 					label=lst:TRK_draw_1_I]								{TRK_draw_1_I.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_2\_metrics\_trkerr.m", 		label=lst:TRK_draw_2_metrics_trkerr]					{TRK_draw_2_metrics_trkerr.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_3a\_metrics\_trg.m", 		label=lst:TRK_draw_3a_metrics_trg]					{TRK_draw_3a_metrics_trg.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_3b\_metrics\_tst.m", 		label=lst:TRK_draw_3b_metrics_tst]					{TRK_draw_3b_metrics_tst.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_4\_recon\_reconerr\_wrapper.m", label=lst:TRK_draw_4_recon_reconerr_wrapper]		{TRK_draw_4_recon_reconerr_wrapper.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_4a\_recon\_reconerr.m", 	label=lst:TRK_draw_4a_recon_reconerr]				{TRK_draw_4a_recon_reconerr.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_5\_PFcandidates\_wrapper.m",label=lst:TRK_draw_5_PFcandidates_wrapper]			{TRK_draw_5_PFcandidates_wrapper.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_5a\_PFcandidates.m", 		label=lst:TRK_draw_5a_PFcandidates]					{TRK_draw_5a_PFcandidates.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_6\_DM2.m", 				label=lst:TRK_draw_6_DM2]							{TRK_draw_6_DM2.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_draw\_7\_CB.m", 					label=lst:TRK_draw_7_CB]							{TRK_draw_7_CB.m}
+%\lstinputlisting[language=Matlab, caption="TRK\_save\_allResults.m", 				label=lst:TRK_save_allResults]							{TRK_save_allResults.m}
+
+
+
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}

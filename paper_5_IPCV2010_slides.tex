@@ -1,0 +1,199 @@
+\include{begin}
+
+
+
+%####################################################################################################
+\title{Human Action Recognition\\ using \\Hidden Markov Models \\and \\Residual Vector Quantization}
+%####################################################################################################
+\begin{frame}[plain]
+\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoTechTower
+	\tableofcontents
+\end{frame}
+
+%####################################################################################################
+\section{Introduction}
+%####################################################################################################
+\begin{frame}
+\frametitle{Introduction}
+\logoCSIPCPL
+	\begin{itemize}
+		\item What is {\color{red}action recognition}?
+			\begin{itemize}
+				\item process of recognizing human action based on several contiguous frames
+			\end{itemize}
+		\item A variety of methods have been employed
+			\begin{itemize}
+				\item HMMs are commonly used
+			\end{itemize}
+		\item What is {\color{red}our approach}?
+			\begin{enumerate}
+				\item Use Residual Vector Quantization (RVQ) to generate image descriptors 
+				\item These images descriptors are used to train HMMs
+				\item These trained HMMs are then used for action classification
+			\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Weizmann dataset}
+\logoCSIPCPL
+	10 different actions to be classified
+	\begin{figure}	
+		\includegraphics[width=1.0\textwidth]{figs/RVQ_HMM_IPCV2010_Weizmann_dataset.pdf}
+	\end{figure}
+	\hspace{0.6in}
+	\multiinclude[<+>][format=jpg, start=0, graphics={width=0.6\textwidth}]{figs/RVQ_HMM_denis_silhouette}
+\end{frame}
+
+
+%####################################################################################################
+\section{Background}
+%####################################################################################################
+\begin{frame}[plain]
+\frametitle{RVQ}
+\logoCSIPCPL
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[width=1.3\textwidth]{figs/RVQ_blockDiagram.pdf}
+			\label{fig:RVQ_SQ_DMSE}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+\frametitle{Computations}
+\logoCSIPCPL
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[width=1.0\textwidth]{figs/RVQ_stagewise.pdf}
+			\label{fig:RVQ_SQ_DMSE}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{\small Satellite imagery: Gulfport MS, post-Katrina \\(training phase)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}		
+		\includegraphics[width=1.0\textwidth]{figs/RVQ_SatelliteKatrina_1_snippets.png}			
+	\end{figure}
+	\begin{figure}		
+		\includegraphics[width=0.6\textwidth]{figs/RVQ_SatelliteKatrina_2_codebooks.png}			
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{\small Satellite imagery: Gulfport MS, post-Katrina\\(testing phase)}
+\mypagenum
+	\begin{columns}
+		\begin{column}{0.8in}
+			\begin{changemargin}{-1.3in}{0in}
+				Features detected
+				\begin{enumerate}\small
+					\item roof shingles
+					\item roof edges
+					\item house detections
+					\item wind-damaged home locations
+					\item roof damaged subfeatures
+					\item grassy fields
+					\item bare soils
+					\item asphalt and curb subfeatures
+					\item parking area
+					\item train track features
+					\item standing tree detections
+					\item obstruction points
+					\item candidate refugee sites
+					\item sand deposits
+					\item standing water
+					\item scattered shipping containers
+				\end{enumerate}
+			\end{changemargin}
+		\end{column}
+	\begin{column}{2.8in}
+			\begin{figure}		
+				\includegraphics[height=0.8\textheight]{figs/RVQ_SatelliteKatrina_3_labeling.png}
+			\end{figure}
+			\hspace{-0.2in}
+	\end{column}
+	\end{columns}
+\end{frame}
+
+
+
+
+
+
+%####################################################################################################
+\section{Experiments}
+%####################################################################################################
+\begin{frame}[plain]
+\frametitle{Experiments}
+	\begin{changemargin}{-1.3in}{0in}
+	\begin{figure}	
+		\includegraphics[width=1.35\textwidth]{figs/RVQ_HMM_IPCV2010_blockDiagram.pdf}
+	\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+
+
+
+
+
+
+%####################################################################################################
+\section{Results}
+%####################################################################################################
+
+\begin{frame}
+\frametitle{Action confusion matrix}
+\logoCSIPCPL
+	\begin{figure}
+		\centering	
+		\subfigure[Our method]
+		{
+			\includegraphics[width=.45\textwidth]{figs/Proposal_fig7a_RVQ_HMM_Weizmann_TabularResults_us.pdf}
+			\label{fig:Weizmann_TabularResults_us}	
+		}
+		\subfigure[Gorelick et al.]
+		{
+			\includegraphics[width=0.40\textwidth]{figs/Proposal_fig7b_RVQ_HMM_Weizmann_TabularResults_gorelick.pdf}
+			\label{fig:Weizmann_TabularResults_gorelick}	
+		}
+		\subfigure[Manor et al.]
+		{
+			\includegraphics[width=0.45\textwidth]{figs/Proposal_fig7c_RVQ_HMM_Weizmann_TabularResults_manor.pdf}
+			\label{fig:Weizmann_TabularResults_irani}	
+		}
+		\subfigure[Ali et al.]
+		{
+			\includegraphics[width=0.40\textwidth]{figs/Proposal_fig7d_RVQ_HMM_Weizmann_TabularResults_shah.pdf}
+			\label{fig:Weizmann_TabularResults_shah}	
+		}												
+		\label{fig:Weizmann_TabularResults}				
+	\end{figure}
+\end{frame}
+
+
+
+
+%####################################################################################################
+\include{end}
+%####################################################################################################
+
+

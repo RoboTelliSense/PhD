@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{color}
+\title{Testing}
+\newcommand{\da}{$\left[\begin{array}{llll}1 \\ 1\end{array}\right]$}
+\newcommand{\db}{$\left[\begin{array}{llll}1 \\ -\end{array}\right]$}
+\newcommand{\dc}{$\left[\begin{array}{llll}1 \\ -\end{array}\right]$}
+\newcommand{\dd}{$\left[\begin{array}{llll}1 \\ 2\end{array}\right]$}
+\newcommand{\de}{$\left[\begin{array}{llll}2 \\ 1\end{array}\right]$}
+\newcommand{\df}{$\left[\begin{array}{llll}2 \\ -\end{array}\right]$}
+\newcommand{\dg}{$\left[\begin{array}{llll}2 \\ -\end{array}\right]$}
+\newcommand{\di}{$\left[\begin{array}{llll}2 \\ 2\end{array}\right]$}
+
+\begin{document}
+\date{}
+\maketitle
+
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}\hline
+data   			& 4 & 6 & 8 & 10 & 20 & 22 & 24 & 26\\\hline
+recon 			& 4 & 7 & 7 & 10 & 20 & 23 & 23 & 26\\\hline
+error 			& 0 & -1 & 1 & 0 & 0 & -1 & 1 & 0\\\hline
+XDR (SoC)		& \da & \db & \dc & \dd & \de & \df & \dg & \di \\\hline
+\end{tabular}
+\end{table}
+
+$
+10 \log_{10}\left(\frac{4^2 + 6^2 + 8^2 + 10^2 + 20^2 + 22^2 + 24^2 + 26^2}{0^2 + (-1)^2 + 1^2 + 0^2 + 0^2 + (-1)^2 + 1^2 + 0^2 }\right) = 
+$
+
+%\bibliographystyle{IEEE}
+%\bibliography{c:/salman/work/writing/MyCitations}  
+\end{document}

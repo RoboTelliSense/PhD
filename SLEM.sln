@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProjSLEM", "SLEM\SLEM.vcproj", "{E647D455-6DEB-481D-AAD0-5011B253BC2F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "projCreateSMLSMUfilesNoDB", "projCreateSMLSMUfilesNoDB\projCreateSMLSMUfilesNoDB.vcproj", "{37E80FD6-228A-4330-88BF-911FFBD597C8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "projGetNumberOfStages", "projGetNumberOfStages\projGetNumberOfStages.vcproj", "{6D089C86-CB3A-4300-A860-17B55E36AFD0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "projFileAnalysis_stat_gen", "projFileAnalysis_stat_gen\projFileAnalysis_stat_gen.vcproj", "{5089B7DB-77AA-4C0C-B17E-3D621C189AEA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "projCreateSMLSMUfilesNoDBNoMFC", "projCreateSMLSMUfilesNoDBNoMFC\projCreateSMLSMUfilesNoDBNoMFC.vcproj", "{10C0DA28-D5C4-41A4-B47C-8D805BBF6692}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E647D455-6DEB-481D-AAD0-5011B253BC2F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E647D455-6DEB-481D-AAD0-5011B253BC2F}.Debug|Win32.Build.0 = Debug|Win32
+		{E647D455-6DEB-481D-AAD0-5011B253BC2F}.Release|Win32.ActiveCfg = Release|Win32
+		{E647D455-6DEB-481D-AAD0-5011B253BC2F}.Release|Win32.Build.0 = Release|Win32
+		{37E80FD6-228A-4330-88BF-911FFBD597C8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{37E80FD6-228A-4330-88BF-911FFBD597C8}.Debug|Win32.Build.0 = Debug|Win32
+		{37E80FD6-228A-4330-88BF-911FFBD597C8}.Release|Win32.ActiveCfg = Release|Win32
+		{37E80FD6-228A-4330-88BF-911FFBD597C8}.Release|Win32.Build.0 = Release|Win32
+		{6D089C86-CB3A-4300-A860-17B55E36AFD0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6D089C86-CB3A-4300-A860-17B55E36AFD0}.Debug|Win32.Build.0 = Debug|Win32
+		{6D089C86-CB3A-4300-A860-17B55E36AFD0}.Release|Win32.ActiveCfg = Release|Win32
+		{6D089C86-CB3A-4300-A860-17B55E36AFD0}.Release|Win32.Build.0 = Release|Win32
+		{5089B7DB-77AA-4C0C-B17E-3D621C189AEA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5089B7DB-77AA-4C0C-B17E-3D621C189AEA}.Debug|Win32.Build.0 = Debug|Win32
+		{5089B7DB-77AA-4C0C-B17E-3D621C189AEA}.Release|Win32.ActiveCfg = Release|Win32
+		{5089B7DB-77AA-4C0C-B17E-3D621C189AEA}.Release|Win32.Build.0 = Release|Win32
+		{10C0DA28-D5C4-41A4-B47C-8D805BBF6692}.Debug|Win32.ActiveCfg = Debug|Win32
+		{10C0DA28-D5C4-41A4-B47C-8D805BBF6692}.Debug|Win32.Build.0 = Debug|Win32
+		{10C0DA28-D5C4-41A4-B47C-8D805BBF6692}.Release|Win32.ActiveCfg = Release|Win32
+		{10C0DA28-D5C4-41A4-B47C-8D805BBF6692}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

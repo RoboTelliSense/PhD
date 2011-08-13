@@ -1,0 +1,29 @@
+clear
+
+echo ========================================================================
+echo CLEAN
+echo ========================================================================
+#in my RVQ, there 1 less file: Explorer.prm, so I have 3 in all, instead of 4
+rm 00472.cor
+rm 00472.stg
+rm 00472.idx
+echo cleaned 3/4 explorer files, not Explorer.prm
+
+
+echo ========================================================================
+echo TESTING
+echo ========================================================================
+./RVQ_2_test.linux reference_0_00472_640x480.raw codebooks.ecbk codebooks.dcbk codebooks.nodes 640 480 11 41 00472
+
+#echo ========================================================================
+#echo CHECK RESULTS
+#echo ========================================================================
+echo compare file 8: 00472.stg
+./UTIL_binaryFileCompare.linux                   reference_8_00472_640x480.stg         							00472.stg        #> diff_stg.txt
+												 
+
+echo compare file 9, 00472.cor
+./UTIL_binaryFileCompare.linux                   reference_9_00472_640x480.cor                                  00472.cor        #> diff_cor.txt 
+
+echo compare file 10, 00472.idx
+./UTIL_binaryFileCompare.linux                   reference_10_00472_640x480.idx                                 00472.idx        #> diff_idx.txt

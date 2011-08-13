@@ -1,0 +1,94 @@
+\include{begin}
+%####################################################################################################
+\title{Computer Science}
+%####################################################################################################
+\begin{frame}\logoTree
+	\institute{}
+	\titlepage
+\end{frame}
+
+\begin{frame}\frametitle{Outline}\logoTree
+	\tableofcontents
+\end{frame}
+
+%####################################################################################################
+\section{Introduction}
+%####################################################################################################
+\begin{frame}\frametitle{Introduction}\logoEvolution\mypagenum
+
+\end{frame}
+
+
+%####################################################################################################
+\section{Complexity}
+%####################################################################################################
+
+\begin{frame}
+\frametitle{Complexity}
+\framesubtitle{Big O notation}
+\logoEvolution\mypagenum	
+	\begin{block}{}
+		\begin{align*}
+			 f(x) &= O(g(x)) \ \text{as} \ x \rightarrow \infty \\
+			\text{if and only if} \\
+			|f(x)| &\leq  M|g(x) | \ \text{for all} \ x >x_0 \\
+		\end{align*}
+	\end{block}
+	For example,
+	\begin{align*}
+		f(x) 				&= 6x^4-2x^3+5		\\
+		|f(x)| 			&= 6x^4-|2x^3|+5	\\
+						& \leq 6x^4-2x^4+5x^4\\
+						&= M(x^4)			\\
+		\Rightarrow f(x)	&=O(x^4)
+	\end{align*}
+\end{frame}
+
+
+%####################################################################################################
+\section{Trees}
+%####################################################################################################
+
+%============================
+\subsection{Binary tree}
+%============================
+\begin{frame}
+\frametitle{Binary tree}
+\framesubtitle{introduction}
+\logoEvolution\mypagenum
+	\begin{itemize}
+		\item Each node has at most 2 children
+		\item Commonly used to implement BSTs (binary search trees)
+		\item {\color{red}height}: length of \textbf{path} from the root node to the deepest node
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Binary tree}
+\framesubtitle{some types: full, perfect, balanced, BST}
+\logoEvolution\mypagenum
+	\begin{figure}				
+		\includegraphics[width=0.7\textwidth]{figs/CS_binaryTree.pdf}
+	\end{figure}	
+	{\color{red}Binary Search Tree (BST)}: node keys
+		\begin{itemize}
+			\item less in left subtree, more in right subtree
+		\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+%####################################################################################################
+\include{end}
+%####################################################################################################

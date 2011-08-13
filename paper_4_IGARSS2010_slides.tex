@@ -1,0 +1,368 @@
+\include{begin}
+%####################################################################################################
+\title{Robust, Real-time \\Vehicle Contour Tracking \\on \\Low Quality Aerial Infra Red Imagery}
+%####################################################################################################
+
+
+\begin{frame}[plain]
+\logoTechTower\logoCSIPCPL
+	\titlepage
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Outline}
+\logoTechTower\logoCSIPCPL
+	\tableofcontents
+\end{frame}
+
+
+
+%####################################################################################################
+\section{Introduction}
+%####################################################################################################
+\begin{frame}
+\frametitle{Introduction}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item {\color{red} Imagery:} 
+			\begin{itemize}
+				\item Infra-red
+				\item low contrast, gray-scale
+			\end{itemize}
+		\item {\color{red} Camera:} 
+			\begin{itemize}
+				\item aerial, moving (hovering over target)
+				\item no background or target motion model
+			\end{itemize}
+		\item  {\color{red} Prior information:} 
+			\begin{itemize}
+				\item In IR images, corners can be strong in vicinity of vehicle contour
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+%====================
+\subsection{Scenario}
+%====================
+
+\begin{frame}
+\frametitle{Tracking scenario}
+\logoCSIPCPL\mypagenum	
+		\multiinclude[<+>][format=jpg, start=0, graphics={width=0.8\textwidth}]{figs/TRK_IGARSS2010_contour_scenario}
+\end{frame}
+
+
+
+
+%			\begin{itemize}
+%				\item Computationally expensive
+%				\item Dependent on good initialization
+%			\end{itemize}
+
+
+%====================
+\subsection{Contour representation}
+%====================
+
+\begin{frame}
+\frametitle{Contour representation}
+\framesubtitle{Polynomials}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/theory_contour_PolynomialFitting.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Contour representation}
+\framesubtitle{Elliptical Fourier components}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[height=0.8\textheight]{figs/theory_curves_ellipticalFourier.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{Contour representation}
+\framesubtitle{splines}
+	\begin{changemargin}{-1.3in}{0in} 
+		\begin{figure}
+			\includegraphics[height=0.85\textheight]{figs/theory_curves_UniformCubicBsplines.pdf}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+
+%====================
+\subsection{Contour evolution}
+%====================
+\begin{frame}
+\frametitle{Contour evolution}
+\framesubtitle{snakes}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/theory_curves_snakes.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Contour evolution}
+\framesubtitle{energy minimization}
+\logoCSIPCPL\mypagenum
+	%\begin{itemize}
+	%	\item Even though the curve has corners, the first derivative remains small
+	%\end{itemize}
+	\begin{figure}
+		\includegraphics[height=0.8\textheight]{figs/TRK_contours.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Contour evolution}
+\framesubtitle{Elliptical Fourier + snakes}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.9\textwidth]{figs/theory_curves_ellipticalFourierSnakes.pdf}
+	\end{figure}
+\end{frame}
+
+
+%====================
+\subsection{Contour tracking}
+%====================
+\begin{frame}
+\frametitle{Contour tracking}
+\framesubtitle{introduction}
+\logoCSIPCPL\mypagenum
+	\begin{enumerate}
+		\item Parameterize curve to get shape parameter $\mathbf{x}$
+			\begin{itemize}
+				\item example, use B-spline curves
+				\item control points could be used, but this would allow too many degrees of freedom
+				\item create shape space
+			\end{itemize}
+		\item Predict: Markov-chain model in shape space
+		\item Update: Fuse information from prediction and observation
+			\begin{itemize}
+				\item Kalman filter
+				\item Particle filter
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Contour tracking}
+\framesubtitle{big picture}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.9\textwidth]{figs/PRML_PGM_overview.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Contour tracking}
+\framesubtitle{Kalman filter}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TRK_KalmanFilter_equations.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Contour tracking}
+\framesubtitle{Particle Filter}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TRK_ParticleFilter_multimodalPDF.pdf}
+		\caption{Multi-modal PDF}
+	\end{figure}	
+\end{frame}
+
+
+
+%####################################################################################################
+\section{Experiments}
+%####################################################################################################
+\begin{frame}
+\frametitle{Experiments}
+\framesubtitle{our approach}
+\logoCSIPCPL\mypagenum
+	{\color{red}Commonly used method}: Using a Markov-chain model in shape space for prediction and fusion (can be expensive)
+	
+	{\color{red}Our approach}:
+	\begin{itemize}
+		\item Use a simple method to get estimate of target contour
+		\item May be enough for certain applications
+		\item Drawing contours using Fourier descriptors
+			\begin{itemize}
+				\item computationally efficient
+				\item Vehicle contour in overhead imagery can be approximated with few elliptical Fourier components
+			\end{itemize}
+		\item Occasional localization/correction using energy minimization (snakes) with Fourier descriptors is also computationally efficient
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Experiments}
+\framesubtitle{steps}
+\logoCSIPCPL\mypagenum
+		\begin{enumerate}
+		\item {\color{red}Target initialization}
+			\begin{itemize}
+				\item 4 or more corners selected on contour
+			\end{itemize}
+		\item {\color{red}Inter-frame matching}
+			\begin{itemize}
+				\item corners matched in subsequent frames
+			\end{itemize}
+		\item {\color{red}Contour generation}
+			\begin{itemize}
+				\item elliptical Fourier contours drawn using corners as anchor points 
+				\item rotation invariance
+			\end{itemize}
+		\item {\color{red}drift avoidance}
+			\begin{itemize}
+				\item occasional correction incorporating energy minimization (snakes)
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+
+%####################################################################################################
+\section{Results}
+%####################################################################################################
+\begin{frame}[plain]
+\frametitle{Results}
+\framesubtitle{Elliptical Fourier descriptors}
+\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\multiinclude[<+>][format=png, start=0, graphics={width=1.35\textwidth}]{figs/TRK_IGARSS2010_contour_ellipFourier}
+	\end{changemargin}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{Elliptical Fourier descriptors}
+\logoCSIPCPL\mypagenum
+	Corners can be inside contour, causing it to shrink
+	\begin{columns}
+		\begin{column}{1in}
+
+			\begin{figure}
+				\includegraphics[width=1.5\textwidth]{figs/TRK_IGARSS2010_matching_0_30.jpg}
+			\end{figure}
+			\begin{figure}
+				\includegraphics[width=1.5\textwidth]{figs/TRK_IGARSS2010_matching_1250_1277.jpg}
+			\end{figure}
+		\end{column}
+		\begin{column}{1in}
+			\begin{figure}
+				\includegraphics[width=1.5\textwidth]{figs/TRK_IGARSS2010_00030_contour.jpg}
+			\end{figure}
+			\begin{figure}
+				\includegraphics[width=1.5\textwidth]{figs/TRK_IGARSS2010_01277_contour.jpg}
+			\end{figure}
+		\end{column}			
+	\end{columns}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{Localization with Snakes \\{\small(with Elliptical Fourier representation)}}
+\logoCSIPCPL\mypagenum
+		\multiinclude[<+>][format=jpg, start=0, graphics={width=1.0\textwidth}]{figs/TRK_IGARSS2010_FN_00000_snakes}
+\end{frame}
+
+
+
+\begin{frame}[plain]
+\frametitle{Results}
+\framesubtitle{Elliptical Fourier descriptors}
+\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\multiinclude[<+>][format=png, start=0, graphics={width=1.35\textwidth}]{figs/TRK_IGARSS2010_contour_ellipFourier}
+	\end{changemargin}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{Elliptical Fourier descriptors}
+\logoCSIPCPL\mypagenum
+	Corners can be inside contour, causing it to shrink
+	\begin{columns}
+		\begin{column}{1in}
+
+			\begin{figure}
+				\includegraphics[width=1.5\textwidth]{figs/TRK_IGARSS2010_matching_0_30.jpg}
+			\end{figure}
+			\begin{figure}
+				\includegraphics[width=1.5\textwidth]{figs/TRK_IGARSS2010_matching_1250_1277.jpg}
+			\end{figure}
+		\end{column}
+		\begin{column}{1in}
+			\begin{figure}
+				\includegraphics[width=1.5\textwidth]{figs/TRK_IGARSS2010_00030_contour.jpg}
+			\end{figure}
+			\begin{figure}
+				\includegraphics[width=1.5\textwidth]{figs/TRK_IGARSS2010_01277_contour.jpg}
+			\end{figure}
+		\end{column}			
+	\end{columns}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{Localization with Snakes \\{\small(with Elliptical Fourier representation)}}
+\logoCSIPCPL\mypagenum
+		\multiinclude[<+>][format=jpg, start=0, graphics={width=1.0\textwidth}]{figs/TRK_IGARSS2010_FN_00000_snakes}
+\end{frame}
+
+
+%####################################################################################################
+\section{Conclusions}
+%####################################################################################################
+
+\begin{frame}
+\frametitle{Conclusions}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item Elliptical fourier descriptor based contours are a "reasonable" estimate for vehicle contours in IR imagery
+		\item This method can be used in conjunction with more computationally expensive methods
+		\item However, in certain cases, contours can shrink to inside of contour
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+%####################################################################################################
+\include{end}
+%####################################################################################################
+

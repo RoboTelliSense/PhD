@@ -1,0 +1,36 @@
+%=================================
+\subsection{2002: color particle filter (Perez)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: particle filter}
+\framesubtitle{2. summary}
+\mypagenum
+	\begin{itemize}
+		\item color histogram distance but within a probabilistic framework
+		\item populate an HS histogram only with pixels with S and V values larger than 0.1 and 0.2 respectively
+		\item remaining "color-free" pixels populate value only bins, crucial for tracking black and white regions
+		\item multi-part color modeling to capture rough spatial layout ignored by global histograms
+		\item incorporation of a background color model when appropriate
+	\end{itemize}
+\myFootnoteCitation{2002_CNF_TRKcolor_Perez}{ECCV}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: particle filter}
+\framesubtitle{2. summary (cont.)}
+\mypagenum
+	\begin{itemize}
+		\item no restriction on class of shapes
+		\item Bhattacharyya similarity coefficient, contrary to KL divergence,
+			\begin{itemize}
+				\item "proper"
+				\item within $[0,1]$
+				\item empty bins not a problem
+			\end{itemize}
+		\item when tracking multiple targets, two possible relative depth orderings of the two objects are assumed equally likely
+		\item splitting ROI into {\color{blue}2} parts with individual color models
+	\end{itemize}
+\myFootnoteCitation{2002_CNF_TRKcolor_Perez}{ECCV}
+\end{frame}

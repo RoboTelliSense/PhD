@@ -1,0 +1,145 @@
+\include{begin}
+%####################################################################################################
+\title{Multi-target Tracking\\Using\\Residual Vector Quantization}
+%####################################################################################################
+\begin{frame}[plain]
+\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}\frametitle{Outline}
+\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+
+%####################################################################################################
+\section{INTRODUCTION}
+%####################################################################################################
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{tracking: definition}
+\logoCSIPCPL\mypagenum
+	Estimate {\color{red}target state} over {\color{red}time}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TRK_overviewDiagram.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Introduction}
+\frametitle{tracking: big picture}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.9\textwidth]{figs/PRML_PGM_overview.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{Introduction}
+\framesubtitle{RVQ}
+\logoCSIPCPL\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[width=1.3\textwidth]{figs/RVQ_blockDiagram.pdf}
+			\label{fig:RVQ_SQ_DMSE}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{Introduction}
+\framesubtitle{RVQ: computations}
+\logoCSIPCPL\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[width=1.0\textwidth]{figs/RVQ_stagewise.pdf}
+			\label{fig:RVQ_SQ_DMSE}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+%####################################################################################################
+\section{PRIOR WORK}
+%####################################################################################################
+\begin{frame}
+\frametitle{Prior work}
+\framesubtitle{\small Synthetic Aperture Radar: tanks\\(training phase)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}		
+		\includegraphics[height=0.35\textheight]{figs/RVQ_SARtank_1_snippets.png}			
+	\end{figure}
+	\begin{figure}
+		\includegraphics[height=0.45\textheight]{figs/RVQ_SARtank_2_codebooks.png}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work}
+\framesubtitle{\small Synthetic Aperture Radar: tanks\\(testing phase)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}		
+		\includegraphics[height=0.8\textheight]{figs/RVQ_SARtank_3_reconstruction.png}			
+	\end{figure}
+\end{frame}
+
+
+%####################################################################################################
+\section{EXPERIMENTS}
+%####################################################################################################
+\begin{frame}
+\frametitle{Experiments}
+\framesubtitle{approach}
+\logoCSIPCPL\mypagenum
+	\begin{enumerate}		
+		\item Multi gaussian algorithm to detect foreground
+		\item Track initialization using template matching
+		\item Training examples used to train RVQ codebooks
+		\item Subsequent targets matched against existing codebooks
+		\item Best matching codebook selected and updated
+	\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Experiments}
+\logoCSIPCPL\mypagenum
+	\begin{figure}		
+		\centering		
+		\includegraphics[width=1.0\textwidth]{figs/Proposal_fig3_RVQ_MTT_snapshot_VVG}
+		\label{fig:snapshot_VVG}
+	\end{figure}	
+\end{frame}
+
+
+\begin{frame}[plain]
+	\begin{changemargin}{-1.3in}{0in}
+	\begin{figure}		
+		\includegraphics[width=1.37\textwidth]{figs/RVQ_TRK_IPCV2010_BlockDiagram_detailed.pdf}
+	\end{figure}	
+	\end{changemargin}
+\end{frame}
+
+
+%####################################################################################################
+\section{RESULTS}
+%####################################################################################################
+
+
+%####################################################################################################
+\section{CONCLUSIONS}
+%####################################################################################################
+
+
+
+%####################################################################################################
+\include{end}
+%####################################################################################################

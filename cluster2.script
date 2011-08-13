@@ -1,0 +1,5 @@
+cd /cluster/users/gtg629v/salman/portable/RVQ_xplatform1
+/usr/local/bin/matlab -nodesktop << EOF
+RVQ_3_drawAllResults($1, $2)
+exit
+EOF

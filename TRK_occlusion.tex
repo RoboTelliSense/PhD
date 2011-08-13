@@ -1,0 +1,173 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (occlusion)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{overview}
+\logoCSIPCPL\mypagenum
+\end{frame}
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+%=================================
+\subsection{1994: traffic}
+%=================================
+\begin{frame}
+\frametitle{Prior work: traffic}
+\framesubtitle{5. methodology}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{1994_TechRep_TRKocclusion_Koller}{Tech report, Berkeley}
+	occlusion reasoning:
+	\begin{enumerate}
+		\item sort objects by depth
+		\item look for overlapping regions of predicted contours
+			\begin{itemize}
+				\item in case you predict occlusion, decide if the object of interest is \emph{occluded} or will \emph{occlude}
+			\end{itemize}
+		\item 2 cases
+			\begin{itemize}
+				\item object of interest is occluding: remove occluded object, but don't remove overlapping region
+				\item object of interest is occluded: remove occluding object and use predicted contour of object of interest
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+
+%=================================
+\subsection{2005: desktop item tracking (Huang)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: desktop item tracking (Huang)}
+\framesubtitle{2. summary}
+\mypagenum
+\myFootnoteCitation{2005_CNF_TRKoccl_Huang}{CVPR}
+	\begin{itemize}
+		\item {\color{red} Updating}:  yes
+	\end{itemize}	
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: desktop item tracking (Huang)}
+\framesubtitle{7. general points}
+\mypagenum
+\myFootnoteCitation{2005_CNF_TRKoccl_Huang}{CVPR}
+	\begin{itemize}
+		\item good overview of prior work on occlusions
+		\item an object may do 5 things:
+			\begin{enumerate}
+				\item continue
+				\item merge
+				\item split
+				\item appear
+				\item disappear
+			\end{enumerate}
+	\end{itemize}	
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Prior work: desktop item tracking (Huang)}
+\framesubtitle{7. general points (cont.)}
+\mypagenum
+\myFootnoteCitation{2005_CNF_TRKoccl_Huang}{CVPR}
+	object model has 3 parts:
+	\begin{enumerate}
+		\item adaptive appearance model
+			\begin{itemize}
+				\item color histogram built over H and S channels in HSV color space
+				\item H quantized into 16 bins
+				\item S quantized into 8 bins
+			\end{itemize}
+		\item spatial distribution
+			\begin{itemize}
+				\item 1st moment: centroid
+				\item 2nd moment: full covariance matrix (i'm not sure how this is used)
+			\end{itemize}	
+		\item inter-occlusion relationships
+			\begin{itemize}
+				\item each pixel in expected region assigned to  using max likelihood
+			\end{itemize}	
+	\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Prior work: desktop item tracking (Huang)}
+\framesubtitle{7. general points (cont.)}
+\mypagenum
+\myFootnoteCitation{2005_CNF_TRKoccl_Huang}{CVPR}
+	matching:
+	\begin{itemize}
+		\item for target region, each pixel is assigned to target that has best claim to it
+		\item H quantized into 16 bins
+		\item S quantized into 8 bins
+	\end{itemize}
+\end{frame}
+
+
+%=================================
+\subsection{2002: mesh occlusion (Altunbasak)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: mesh occlusion (Altunbasak)}
+\framesubtitle{7. general points (cont.)}
+\mypagenum
+\myFootnoteCitation{2002_JNL_TRKoccl_Altunbasak}{CVPR}
+	\begin{itemize}
+		\item 
+	\end{itemize}
+\end{frame}
+
+
+%=================================
+\subsection{2011: graph cuts (Papadakis)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: graph cuts (Papadakis)}
+\framesubtitle{4. contributions}
+\mypagenum
+\myFootnoteCitation{2011_JNL_TRKocclusion_Papadakis}{PAMI}
+	\begin{itemize}
+		\item only 2 kinds of work that rely on graph cuts minimization to segment and track multiple objects while using the object velocity or a dynamical model 
+		\item contribution of this paper is that it combines both approaches
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: graph cuts (Papadakis)}
+\framesubtitle{5. methodology}
+\mypagenum
+\myFootnoteCitation{2011_JNL_TRKocclusion_Papadakis}{PAMI}
+	\begin{itemize}
+		\item {\color{red}initializations:} hand made
+	\end{itemize}
+\end{frame}
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

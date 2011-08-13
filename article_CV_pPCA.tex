@@ -1,0 +1,71 @@
+\include{begin_article}
+\title{Probabilistic PCA}
+\date{}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+
+%=================================
+\section{Given}
+%=================================
+
+%=================================
+\section{Goal}
+%=================================
+Find relationship between PCA and Max Likelihood.
+
+%=================================
+\section{Model}
+%=================================
+
+\begin{enumerate}
+\item Introduce latent variable $\mathbf{z}$ with Gaussian prior distribution $p(\mathbf{z}) \sim \mathcal{N}(0, \mathbf{I})$, and a Gaussian conditional distribution $p((\mathbf{x}|\mathbf{z})$
+
+\end{enumerate}
+
+\begin{equation}
+\mathsf{t|x} \sim \mathcal{N}(\mathsf{Wx} + \mathbf{\mu}, \sigma^2\mathbf{I})
+\end{equation}
+
+
+%=================================
+\section{Relationship with factor analysis}
+%=================================
+Exactly the same but with one difference: $\Psi$ is constrained to be a diagonal matrix, and so $t_i$ are conditionally independent given the values of the latent variables $\mathsf{x}$.
+
+								\begin{figure}
+								\centering
+								\includegraphics[width=0.6\textwidth]{figs/SP_covarianceSpectrum.pdf}
+								\caption{Covariance matrix spectrum.  If the training set size $N$ is larger than the dimensionality of the data $D$, it is possible to model the data with a full covariance matrix.} 
+								\label{fig:covariance_matrix_spectrum}
+								\end{figure}
+
+The primary goal of latent variables is to allow a complicated distribution over the observed variables to be represented in terms of a model constructed from simpler (typically exponential family) conditional distributions.
+
+If we define a joint distribution over observed and latent variables, the corresponding distribution of the observed variables alone is obtained by marginalization.  This allows relatively complex marginal distributions over observed variables to be expressed in terms of more tractable joint distributions over the expanded space of observed and latent variables.  The introduction of latent variables thereby allows complicated distributions to be formed from simpler components.  
+
+In Chapter 9, the Gaussian mixture is interpreted in terms of discrete latent variables.  
+
+Besides helping in	 simplifying complex distributions, mixture models can also be used to cluster data.
+%=================================
+\section{Advantages}
+%=================================
+\begin{itemize}
+\item PCA assigns a low reconstruction cost to data points that are close to the principal subspace even if they lie arbitrarily far from the training data.
+\end{itemize}
+
+%=================================
+\section{Solution}
+%=================================
+
+
+%=================================
+\section{Conclusion}
+%=================================
+PCA can be expressed as the maximum likelihood solution of a proababilistic latent variable model.
+
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}

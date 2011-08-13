@@ -1,0 +1,16 @@
+clear
+
+echo ========================================================================
+echo COMPILE
+echo ========================================================================
+g++ UTIL_binaryFileCompare.cpp -o UTIL_binaryFileCompare.linux
+echo compiled UTIL_binaryFileCompare.cpp
+
+g++ RVQ_0_create_posraw.cpp                 -o RVQ_0_create_posraw.linux
+echo compiled RVQ_0_create_posraw.cpp
+
+g++ RVQ_1b_train_bnd_in.cpp   -Icommon   -o RVQ_1b_train_bnd_in.linux
+echo compiled RVQ_1b_train_bnd_in.cpp
+
+g++ RVQ_2_test.cpp -Icommon   -o RVQ_2_test.linux
+echo compiled RVQ_2_test.cpp

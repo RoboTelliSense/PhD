@@ -1,0 +1,55 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (calibration)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{overview}
+\logoCSIPCPL\mypagenum
+\end{frame}
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+%=================================
+\subsection{1994: traffic}
+%=================================
+\begin{frame}
+\frametitle{Prior work: traffic}
+\framesubtitle{5. methodology}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{1994_TechRep_TRKocclusion_Koller}{Tech report, Berkeley}
+	occlusion reasoning:
+	\begin{enumerate}
+		\item sort objects by depth
+		\item look for overlapping regions of predicted contours
+			\begin{itemize}
+				\item in case you predict occlusion, decide if the object of interest is \emph{occluded} or will \emph{occlude}
+			\end{itemize}
+		\item 2 cases
+			\begin{itemize}
+				\item object of interest is occluding: remove occluded object, but don't remove overlapping region
+				\item object of interest is occluded: remove occluding object and use predicted contour of object of interest
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

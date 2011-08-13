@@ -1,0 +1,133 @@
+%=================================
+\subsection{2004: crowded (Zhao)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{1. overview}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}
+	%\begin{figure}
+	%	\includegraphics[width=1.0\textwidth]{tables/TrackingPapers_SubspaceTracking_2006_PCA_Hog.pdf}
+	%\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{2. summary}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}
+	\begin{itemize}
+		\item prior locomotion model to assist posture estimation
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{3. comparison}
+\logoCSIPCPL\mypagenum	
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}	
+	\begin{itemize}
+		\item difficulties with blob-based analysis (see pg \pageref{fig:1})
+			\begin{enumerate}
+				\item a single blob may contain multiple humans due to their physical proximity or due to camera viewing angle
+				\item a single object may be fragmented into several blobs due to low color contrast 
+				\item blobs may contain pixels corresponding to shadows or reflections
+			\end{enumerate}
+				\item blobs may go through frequent structural changes (split and merge) due to above problems
+				\item this causes combinatorial search for temporal correspondence
+				\item even if correspondence is established, what each trajectory corresponds to (e.g. object, part of an object, a few objects together) is still unknown
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{3. comparison (cont.)}
+\logoCSIPCPL\mypagenum	
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}
+	\begin{itemize}
+		\item advantages of shape based approach used
+			\begin{enumerate}
+				\item detecting individual objects is a goal
+				\item real entities do not undergo structural changes such as split and merge
+				\item constraints on (e.g. shape, size, motion) can assist segmentation and tracking
+				\item less sensitive to noise and parameters of low-level processing
+				\item a camera model provides additional constraints
+			\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{4. contributions}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{5. methodology: overview}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}
+	\begin{enumerate}
+		\item change detection
+		\item human hypotheses are computed by boundary and shape analysis using human shape and camera model
+		\item each hypothesis is tracked in 3D in the subsequent frames with a Kalman filter using the object's appearance constrained by its shape
+		\item 2D positions are mapped onto the 3D ground plane and trajectories are formed and filtered in 3D
+	\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{5. methodology: detailed}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}
+	\begin{enumerate}\setcounter{enumi}{0}
+		\item change detection
+			\begin{itemize}
+				\item single gaussian like Pfinder
+			\end{itemize}
+		\item camera model
+			\begin{itemize}
+				\item linear calibration method (\mycite{2002_BOOK_CV_Forsyth}, \mycite{1999_CNF_ModelFromIMG_Liebowitz})
+				\item self calibration from walking human (\mycite{2006_JNL_Camera_Lv})
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{figures}
+\mypagenum
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_shape_2004_Zhao_fig1.jpg}
+		\label{fig:1}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: crowded (Zhao)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{2004_JNL_TRK_shape_Zhao}{PAMI}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_shape_2004_Zhao_fig6.jpg}
+	\end{figure}
+\end{frame}

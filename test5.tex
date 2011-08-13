@@ -1,0 +1,20 @@
+\documentclass{article}
+\usepackage{amsmath,epsfig}
+\usepackage{subfigure}
+\usepackage[usenames,dvipsnames]{color}
+\include{figs/inkscapeLatex}
+\begin{document}
+
+{\Huge
+\begin{equation}
+\begin{array}{lllllllll}
+{\color{darkgreen}p(x_k|Z_{k-1})} &= \frac{p(x_k, Z_{k-1})}{p(Z_{k-1})}\\\\
+&=\frac{\int p(x_k, x_{k-1}, Z_{k-1})dx_{k-1}}{p(Z_{k-1})}\\\\
+&=\frac{\int {\color{Cyan}p(x_k|x_{k-1}, Z_{k-1})}p(x_{k-1},Z_{k-1})dx_{k-1}}{p(Z_{k-1})}\\\\
+&=\frac{\int {\color{Cyan}p(x_k|x_{k-1})}{\color{red}p(x_{k-1}|Z_{k-1})}p(Z_{k-1})dx_{k-1}}{p(Z_{k-1})}\\\\
+&=\int {\color{Cyan}p(x_k|x_{k-1})}{\color{red}p(x_{k-1}|Z_{k-1})}dx_{k-1}
+\end{array}
+\end{equation}
+}
+
+\end{document}

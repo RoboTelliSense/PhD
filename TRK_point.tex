@@ -1,0 +1,90 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (point)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{deterministic and statistical methods}
+\logoCSIPCPL\mypagenum
+	{\color{red}Deterministic methods, constraints used:}
+	\begin{itemize}
+		\item proximity
+		\item max velocity
+		\item path coherence
+			\begin{itemize}
+				\item no abrupt motion change
+			\end{itemize}
+		\item motion smoothness
+			\begin{itemize}
+				\item path coherence over long durations
+			\end{itemize}			
+		\item rigidity
+	\end{itemize}
+	\vspace{0.1in}
+	{\color{red}Statistical methods}
+	\begin{itemize}
+		\item see radar tracking slides
+	\end{itemize}
+\end{frame}
+
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+%=================================
+\subsection{2003: point correspondence}
+%=================================
+\begin{frame}
+\frametitle{Prior work: point correspondence}
+\framesubtitle{figures}
+\mypagenum
+\myFootnoteCitation{2003_JNL_TRK_matching_Chui}{CVIU}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_matching_2003_Chui_fig2.jpg}
+	\end{figure}
+\end{frame}
+
+
+%=================================
+\subsection{2005: multi-frame correspondence}
+%=================================
+\begin{frame}
+\frametitle{Prior work: multi-frame correspondence}
+\framesubtitle{figures}
+\mypagenum
+\myFootnoteCitation{2005_JNL_PointTRK_Shafique}{PAMI}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_point_2005_Shafique_fig17.jpg}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: multi-frame correspondence}
+\framesubtitle{7. general points}
+\mypagenum
+\myFootnoteCitation{2005_JNL_PointTRK_Shafique}{PAMI}
+	\begin{itemize}
+		\item only information available about feature points is position	
+	\end{itemize} 	
+\end{frame}
+
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

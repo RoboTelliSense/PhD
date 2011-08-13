@@ -1,0 +1,240 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (shape)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+
+%==============================================================
+\subsection{contour representation}
+%==============================================================
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour representation: polynomials}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/theory_contour_PolynomialFitting.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour representation: polynomials (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item convenient because they can be differentiated and integrated to get polynomials again
+		\item linear, quadratic, cubic, etc
+		\item possible oscillatory behavior
+		\item Carl Runge demonstrated the maximum error can approach $\infty$ as number of data points approaches $\infty$
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour representation: elliptical fourier descriptors}
+\mypagenum
+	\begin{figure}
+		\includegraphics[height=0.8\textheight]{figs/theory_curves_ellipticalFourier.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour representation: elliptical fourier descriptors (cont.)}
+\mypagenum
+	\begin{itemize}
+		\item extremely deformable
+		\item no prior information
+		\item relation between shape and parameters not clear
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour representation: splines}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item piece-wise polynomials
+		\item use $n$ low degree concatenated polynomial segments rather than a single high degree polynomial
+		\item joined together at \emph{breakpoints}
+		\item quadratic, order $d=3$, degree=2
+		\item cubic, order $d=4$, degree=3
+		\item useful when prior on shape not available
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[plain]
+\frametitle{Introduction}
+\framesubtitle{contour representation: splines (cont.)}
+\mypagenum
+	\begin{changemargin}{-1.3in}{0in} 
+		\begin{figure}
+			\includegraphics[height=0.85\textheight]{figs/theory_curves_UniformCubicBsplines.pdf}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+%==============================================================
+\subsection{contour evolution}
+%==============================================================
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour evolution: energy minimization}
+\logoCSIPCPL\mypagenum
+	%\begin{itemize}
+	%	\item Even though the curve has corners, the first derivative remains small
+	%\end{itemize}
+	\begin{figure}
+		\includegraphics[height=0.8\textheight]{figs/TRK_contours.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour evolution: snakes}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item Setting $\beta(s)$ to 0 at a point allows the snake
+			\begin{itemize}
+				\item to become second-order discontinuous
+				\item develop a corner
+			\end{itemize}
+	\end{itemize}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/theory_curves_snakes.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour evolution: snakes with elliptical fourier representation}
+\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/theory_curves_ellipticalFourierSnakes.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{contour evolution: snakes with elliptical fourier representation (cont.)}
+\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/theory_curves_ellipticalFourierSnakes_extra.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+%==============================================================
+\subsection{active shape models}
+%==============================================================
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{active shape models: overview}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{2000_BOOK_ActiveVision_Blake}{\emph{Active Vision}, Springer Books}
+	\begin{enumerate}\small
+		\item {\color{red} snakes}
+			\begin{itemize}\small
+				\item use prior knowledge for low-level image interpretation
+				\item rather than expecting desirable properties such as continuity and smoothness to emerge from image data, these properties are imposed from the start
+				\item specifically, an {\color{blue}elastic model of a continuous, flexible curve} is imposed upon and matched to an image
+			\end{itemize}
+		\item {\color{red} deformable templates}
+			\begin{itemize}\small
+				\item prior modeling can be made more specific by constructing {\color{blue}assemblies of flexible curves} in which a set of parameters controls kinematic variables
+				\item a powerful mechanism for locating structures in an image
+			\end{itemize}
+		\item {\color{red} dynamic contours}
+			\begin{itemize}\small
+				\item {\color{blue}curve trackers that use prior dynamical models}
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+
+
+
+%=================================
+\subsection{1994: model based recognition} 
+%=================================
+\begin{frame}
+\frametitle{Prior work: human model}
+\framesubtitle{1. overview}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{1994_JNL_Recog_shape_Rohr}{IU}
+	%\begin{figure}
+	%	\includegraphics[width=1.0\textwidth]{tables/TrackingPapers_SubspaceTracking_2006_PCA_Hog.pdf}
+	%\end{figure}
+\end{frame}
+
+
+\include{2000_JNL_W4_Haritaoglu}
+\include{2004_JNL_TRK_shape_Zhao}
+\include{2005_JNL_TRKblk_Hari}
+
+
+
+
+
+
+
+
+
+
+%####################################################################################################
+\section{METHODOLOGY}
+%####################################################################################################
+\begin{frame}
+\frametitle{Methodology}
+\framesubtitle{steps}
+\logoCSIPCPL\mypagenum
+	\begin{enumerate}
+		\item Parameterize curve to get shape parameter $\mathbf{x}$
+			\begin{itemize}
+				\item example, use B-spline curves
+				\item control points could be used, but this would allow too many degrees of freedom
+				\item create shape space
+			\end{itemize}
+		\item Predict: Markov-chain model in shape space
+		\item Update: Fuse information from prediction and observation
+	\end{enumerate}
+\end{frame}
+
+
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

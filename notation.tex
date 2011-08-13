@@ -1,0 +1,166 @@
+\documentclass{article}
+\usepackage{longtable}
+\usepackage{color}
+
+\include{figs/inkscapeLatex}
+
+\begin{document}
+
+\begin{longtable}{llllp{3in}}
+\textbf{\color{red} \underline{general}}&&&&\\
+&$C$   						&=&& number of classes, $c=1, 2, \ldots C$						\\
+&$\mathcal{C}_c$			&=&& $c$-th class 												\\
+&$N$   					&=&& number of data points, $n =1, 2, \ldots N	$				\\
+&$N_{trg}$   				&=&& number of training examples, $a =1, 2, \ldots N_{trg}$	\\
+&$N_{tst}$  				&=&& number of test examples, $b= 1, 2, \ldots N_{tst}$		\\
+&$H$ 						&=&& entropy														\\ 
+&$I(.)$						&=&& indicator function											\\\\
+
+
+\textbf{\color{red} \underline{images}}&&&&																				\\
+&\textbf{\underline{input image}}&&&																						\\	
+&$\mathbf{I}_f$    		&=&& at frame $f$																				\\
+&$\mathbf{I}_w$    		&=&& width																						\\
+&$\mathbf{I}_h$    		&=&& height																						\\
+&$\mathbf{I}_N$    		&=&& number of pixels, $\mathbf{I}_N=\mathbf{I}_w*\mathbf{I}_h$							\\
+&$\mathbf{I}_c$    		&=&& number of channels																		\\ \\
+
+&\textbf{\underline{inner input image}}&&&																					\\
+&$\mathbf{I}_{if}$    		&=&& at frame $f$																				\\
+&$\mathbf{I}_{il}$   		&=&& left-most pixel index, $\mathbf{I}_{il} = \frac{s_w-1}{2}$ (for C-style indexing), $\mathbf{I}_{il} = \frac{s_w-1}{2}+1$ (for Matlab-style indexing)										\\
+&$\mathbf{I}_{ir}$   		&=&& right-most pixel index, $\mathbf{I}_{ir} = \mathbf{I}_w - \frac{s_w-1}{2} - 1$ (for C-style indexing), $\mathbf{I}_{ir} = \mathbf{I}_w - \frac{s_w-1}{2}$ (for Matlab-style indexing)	\\
+&$\mathbf{I}_{it}$   		&=&& top-most pixel index, $\mathbf{I}_{it} = \frac{s_h-1}{2}$ (for C-style indexing), $\mathbf{I}_{it} = \frac{s_h-1}{2}+1$ (for Matlab-style indexing)										\\
+&$\mathbf{I}_{ib}$   		&=&& bottom-most pixel index, $\mathbf{I}_{ib} = \mathbf{I}_h - \frac{s_h-1}{2} - 1$ (for C-style indexing), $\mathbf{I}_{ib} = \mathbf{I}_h - \frac{s_h-1}{2}$ (for Matlab-style indexing)\\
+&$\mathbf{I}_{iw}$   		&=&& width, $\mathbf{I}_{iw} = \mathbf{I}_{ir} - \mathbf{I}_{il} + 1$ (for C-style and Matlab-style indexing) 																					\\
+&$\mathbf{I}_{ih}$   		&=&& height, $\mathbf{I}_{ih} = \mathbf{I}_{ib} - \mathbf{I}_{it} + 1$ (for C-style and Matlab-style indexing) 																					\\
+&$\mathbf{I}_{iN}$   		&=&& number of pixels, $\mathbf{I}_{iN}=\mathbf{I}_{iw}*\mathbf{I}_{ih}$					\\ \\
+
+&\textbf{\underline{pixels}}&&&																								\\ \\
+
+
+
+
+\textbf{\color{red} \underline{RVQ}}&&&&\\
+&SoC 						&=&& Sum-of-Codevectors descriptor 																				\\
+&$e$						&=&& mean squared error between inputs and reconstructed inputs												\\\\
+
+&\textbf{\underline{dimensions}}&&&																											\\
+&$T$    					&=&& number of stages in RVQ $\sigma$-tree, $t=1, 2, \ldots T$ 													\\
+&$M$    					&=&& number of templates per stage in RVQ $\sigma$-tree															\\\\
+
+&\textbf{\underline{clusters}}&&&																												\\
+&$\mathcal{K}_k$			&=&& $k$-th cluster, $k=1, 2, \ldots K$																				\\
+&$\mathcal{H}_{t, m}$	&=&& cluster of points that map to $\phi_{t, m}$ stage-codevector													\\\\
+
+&$K$    					&=&& number of equivalent codevectors (number of clusters),  														\\
+&$N_{\mathcal{K}_k}$ 	&=&& number of input data points that map to the $k$-th cluster													\\\\
+&$N_{\mathcal{H}_{k, t, m}}$	
+							&=&& number of data points from cluster $\mathcal{K}_k$ that also lie in cluster $\mathcal{H}_{t, m}$			\\\\
+
+&\textbf{\underline{codevectors}}&&&																											\\
+&$\hat{\mu}_k$			&=&& equivalent code-vector $k$-th mean, uses $k$-th SoC descriptor for construction								\\
+&$\phi_{k(t)}$				&=&& stage code-vector, $t$-th additive component of $\hat{\mu}_k$												\\
+&$\phi_{t, m}$			&=&& stage-codevector at $t$-th stage and $m$-th template  $\hat{\mu}_j=\sum\limits_{s=1}^{N_{stg}}\phi_s^{(j)} = \sum\limits_{s=1 \atop s \neq \xi}^{N_{stg}}\phi_s^{(j)} + \phi_\xi^{(j)}, j={1, 2, \dots, N_K}$														\\
+&$e$						&=&&$\KmeansError = {(x_1 - \hat{x}_1)}^2 + {(x_2 - \hat{x}_2)}^2 + \ldots + {(x_N - \hat{x}_N)}^2$ 																										\\
+&$\Phi$					&=&& codebooks																										\\
+&$\Phi_s$					&=&& scaled codebooks so they can be viewed as images															\\\\
+
+
+
+&\textbf{\underline{intermediate images}}&&&																									\\
+&$\mathbf{I}_{snr}$			&=&& a 2D matrix (image) containing reconsruction SNR values of every pixel in inner image					\\
+&$\mathbf{I}_{stg}$			&=&& a 2D matrix (image) containing reconsruction stages of every pixel in inner image						\\
+&$\mathbf{I}_{lglik}$			&=&& a 2D matrix (image) containing log likelihoods of every pixel in inner image								\\\\
+
+
+
+&\textbf{\underline{snippets}}&&&																												\\
+&$s_{w}$   				&=&& width in pixels (always taken as odd)																			\\
+&$s_{h}$  					&=&& height in pixels (always taken as odd)																			\\
+&$s_{hc}$  				&=&& height in bytes of planar (non-interleaved) channels, $s_{hc} =s_h * s_c$									\\
+&$s_{c}$  					&=&& number of channels																							\\
+&$s_{b}$  					&=&& bytes, $s_{b} = s_{w} * s_{h} * s_{c}$																		\\ \\
+
+&$N_{s_x}$   				&=&& training snippets, number per class in x direction 																\\
+&$N_{s_y}$  	 			&=&& training snippets, number per class in y direction																\\
+&$N_{s_x} * N_{s_y}$    	&=&& training snippets, total number per class, $N_{trg} = N_{s_x} * N_{s_y} * C$									\\
+&$s_{dx}$   				&=&& training snippets, spacing in x direction																		\\
+&$s_{dy}$  				&=&& training snippets, spacing in y direction																		\\ \\
+
+&$s_X$  					&=&& training snippets, set of x-coordinates of snippet centers in input image										\\ 
+&$s_Y$  					&=&& training snippets, set of y-coordinates of snippet centers in input image										\\
+&$s_{iX}$  				&=&& training snippets, set of x-coordinates of snippet centers in input inner image								\\ 
+&$s_{iY}$  				&=&& training snippets, set of y-coordinates of snippet centers in input inner image								\\ \\
+
+
+&snippet extraction details file   				&=&& a comma separated file containing snippet extraction details, each row has the following 5 values in comma separated format: class\_label, image\_name, $I_w, I_h$, snippet\_center\_x, snippet\_center\_y, image name is the name of the image from which to extract the snippet, notice that $s_w$ and $s_h$ are not specified here\\ \\
+
+
+&\textbf{\underline{SoC descriptors}}&&&																															\\
+&$\mathbf{a}_a$  		&=&&  training SoC descriptor, a $T$-tuple 																																	\\
+&$\mathbf{b}_b$ 			&=&&  test SoC descriptor, could be truncated if monotonic PSNR increase is a condition in reconstruction, in this case $M+1$ is used as filler to make it a $T$-tuple	\\
+&$\mathbf{A}$  			&=&&  $N_{trg}$x$T$ matrix of training SoC descriptors, one observation, i.e. SOC descriptor $\mathbf{a}_a$ per row 													\\
+&$\mathbf{B}$  			&=&&  $N_{tst}$x$T$ matrix of testing SoC descriptors, one observation, i.e. SOC descriptor $\mathbf{b}_b$ per row 													\\ \\
+
+&\textbf{\underline{thresholds}}&&&																															\\
+&$\gamma_{SNRfrac}$  		&=&&  reconstruction SNR fraction threshold 																																	\\
+&$\gamma_{SNR}$  		&=&&  reconstruction SNR threshold 																																	\\
+&$\gamma_{stg}$  		&=&&  reconstruction stages threshold 																																	\\
+&$\gamma_{lglik}$  		&=&&  log likelihood threshold 																																	\\ \\
+
+&\textbf{\underline{stage random variables}}&&&\\																															\\
+&$X_t$ 					&=&& for a given column in $\mathbf{A}$, use its rows to create random variable $X_t$ for stage $t$ during training phase, $X_t = \{1,2 \ldots M \}$ 					\\
+&$Y_t$ 					&=&& for a given column in $\mathbf{B}$, use its rows to create random variable $Y_t$ for stage $t$ during testing phase, $Y_t = \{1,2 \ldots M+1 \}$ 				\\
+&$\mathbf{X}$  			&=&& random process, $\mathbf{X} = (X_1, X_2, \ldots, X_T)$																												\\
+&$\mathbf{Y}$  			&=&& random process, $\mathbf{Y} = (Y_1, Y_2, \ldots, Y_T)$																												\\ \\
+&$p(\mathbf{X}|\mathcal{C}_c)$ 
+							&=&& class conditional density created from $\mathbf{A}$ 																													\\ 
+&$p(X_1=1)$  				&=&& $\frac{N_{t=1, m=1}}{N_{trg}}$\\
+&$p(\mathbf{Y})$ 		&=&& data probability																																							\\ \\ \\ \\
+
+
+\textbf{\color{red} \underline{tracking}}&&&&\\
+&\textbf{\underline{frames}}&&&	\\
+&fn 						&=&& abbreviation for file name\\
+&cfn 						&=&& abbreviation for complete file name, i.e. directory and filename\\\\
+
+&$f$ 						&=&&  index of frames that need to be tracked, $f_I, \ldots, f_F$\\
+&str\_f 						&=&&  a string that has enough zeros prefixed to $f$ to so that it is 5 characters long\\
+&$f_{idx}$ 				&=&&  index for total frames processed, training and testing\\ 
+&$f_{tst}$ 					&=&&  index for testing frames\\ \\
+
+&\textbf{\underline{frames for target $t$}}&&&	\\
+&$f_{tI}$ 					&=&& initial frame for target $t$\\
+&$f_{tF}$ 					&=&& final frame for target $t$\\
+&$f_{tN}$ 					&=&&  total number of frames in which target $t$ is tracked, $f_{tN}=f_{tF} - f_{tI} + 1$\\
+&$f_t$ 						&=&&  index for target t, it is 1 when target $t$ enters frame, $f_t = 1, 2, ... f_{tN}$ \\ \\
+
+
+
+&\textbf{\underline{bounding boxes}}\\	
+&$R_{f,r}$ 				&=&& $(x, y, w, h)$, a 4-tuple describing the $r$-th BB in the $f$-th frame, $x, y$ are the coordinates of the top left corner\\
+&$G_{f,g}$ 				&=&& $(x, y, w, h)$, a 4-tuple describing the $g$-th target's BB in the $f$-th frame, $x, y$ are the coordinates of the top left corner\\ \\
+&$W_{f, g}$ 				&=&& $(x, y, w, h)$, a 4-tuple describing the $g$-th target's search window in the $f$-th frame, $x, y$ are the coordinates of the top left corner\\
+
+&GT(g) 					&=&&  a matrix containing the $g$-th target's ground truth data, each row has the following $[f \  x \ y \ w \ h]$, $x, y$ are the coordinates of the top left corner\\
+&BB 						&:&&  abbreviation for bounding box rectangle\\ \\
+
+
+&$\mathcal{B}_{f,r}$ 		&=&& set of pixels that lie in $R_{f,r}$\\
+&$\mathcal{G}_{f,g}$ 	&=&& set of pixels that lie in $G_{f,g}$\\ \\
+
+&\textbf{\underline{ROC curves}}&&&	\\
+&$\theta_{TP}(g)$ 		&=&& true positive for $g$-th target\\
+&$\theta_{FN}(g)$ 		&=&& false negative for $g$-th target\\ 
+&$\theta_{HR}(g)$ 		&=&& hit rate for $g$-th target\\ \\
+
+&$\theta_{TN}(g)$ 		&=&& true negative for $g$-th target\\
+&$\theta_{FP}(g)$ 		&=&& false positive for $g$-th target\\
+&$\theta_{FAR}(g)$ 		&=&& false alarm (positive) rate for $g$-th target\\
+
+\caption{Notation}
+\label{tab:notation}
+\end{longtable}
+
+
+\end{document}

@@ -1,0 +1,77 @@
+%\documentclass[12pt,letterpaper,doublespaced,ETD,dvips]{gt-ece-thesis}
+\documentclass[12pt,letterpaper,doublespaced,ETD]{gt-ece-thesis} %taking dvips out enable pdf bookmark generation as well as the logo printing on the first page
+
+\title{Target Tracking Using Residual Vector Quantization}
+\author{Salman Aslam}
+\copyrightyear{2011}
+\graddate{20 June 2011}  
+\approvaldate{June 2011}  
+
+\addadvisor{Dr. Christopher F. Barnes}{Assoc. Professor, School of ECE}{Georgia Institute of Technology}
+\addchair{Dr. David V. Anderson}{Assoc. Professor, School of ECE}{Georgia Institute of Technology}
+\addreader{Dr. Aaron F. Bobick, Co-advisor}{Professor, School of Interactive Computing}{Georgia Institute of Technology}
+\addreader{Dr. Vijay Madisetti}{Professor, School of ECE}{Georgia Institute of Technology}
+\addreader{Dr. Patricio Vela}{Asst. Professor, School of ECE}{Georgia Institute of Technology}
+\addreader{Dr. Santanu Dey}{Asst. Professor, School of ISYE}{Georgia Institute of Technology}
+
+
+\bibfiles{f:/salman/work/writing/MyCitations}
+
+\titlepagetrue
+\figurespagetrue
+\tablespagetrue
+\contentspagetrue
+\symbolspagefalse
+\glossarypagefalse 
+\bibpagetrue
+\mastersthesisfalse 
+\multivolumefalse
+\singlespacednotestrue
+
+
+\usepackage{graphicx, subfigure, verbatim}
+\usepackage{insfig}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage[usenames,dvipsnames]{color}
+\definecolor{light-gray}{gray}{0.95}
+\usepackage{amsmath,epsfig,verbatim,listings}
+\lstset{breaklines=true,breakindent=0pt,
+        prebreak=\mbox{\tiny$\searrow$},
+        postbreak=\mbox{{\color{blue}\tiny$\rightarrow$}},
+	tabsize=2,
+linewidth=1.1\linewidth,
+xleftmargin=-0.8in,
+basicstyle=\tiny,
+numbers=left,
+frame=single,
+captionpos=t,
+title=\lstname,
+backgroundcolor=\color{light-gray}}
+
+
+\setchaptertocdepth{2}
+\setappendixtocdepth{2}
+
+\settocstring{Table of Contents}
+\setlofstring{List of Figures}
+%\setlotstring{List of Tables}
+\setbibstring{References}
+\setindstring{Index}
+\setdedstring{Dedication}
+\setglostring{List of Terms}
+\setchpstring{Chapter}
+\setappstring{Appendix}
+\setprtstring{Volume}
+\setabsstring{Summary}
+\setlosstring{List of Symbols}
+\setackstring{Acknowledgment}
+
+\setfrontpagestyle{plain}
+\setbodypagestyle{plain}
+\setendpagestyle{plain}
+
+\pagestyle{plain}
+\bibliographystyle{ieeetr}

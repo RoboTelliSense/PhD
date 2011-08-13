@@ -1,0 +1,36 @@
+\include{begin_article}
+\title{Covering vs Packing}
+\date{}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+
+%=================================
+\section{Notation}
+%=================================
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}\hline
+Size & $S$\\\hline
+Dimensionality & $D$\\\hline
+Number of data points & $K$\\\hline
+\end{tabular}
+\end{table}
+
+%=================================
+\section{Given}
+%=================================
+
+
+\begin{equation}
+\begin{array}{lllllll}
+\mathrm{packing:} &\max &\mathbf{c}^T\mathbf{x}, & \ \ \ \ \mathrm{\ subject \ to\ } \mathbf{Ax}                    &\leq \mathbf{b}, &\mathbf{x} \geq 0 \\
+\mathrm{covering:} &\min &\mathbf{b}^T\mathbf{y}, & \ \ \ \ \mathrm{\ subject \ to\ } \mathbf{A}^T\mathbf{y} &\geq \mathbf{c}, &\mathbf{y} \geq 0 \\
+\end{array}
+\end{equation}
+
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}

@@ -1,0 +1,361 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (appearance)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{overview}
+\logoCSIPCPL\mypagenum
+	\begin{enumerate}
+		\item Template matching
+			\begin{itemize}
+				\item fixed templates: reliable over short durations
+			\end{itemize}
+		\item Subspace methods
+			\begin{itemize}
+				\item usually learned with PCA
+				\item model variations in lighting and pose
+				\item disadvantages: object specific, training
+			\end{itemize}			
+		\item Probability density
+			\begin{itemize}
+				\item robustness under image distortions and occlusions
+				\item fast to learn
+				\item disadvantage: lack of expressiveness, registration can be difficult
+			\end{itemize}
+		\item Motion
+			\begin{itemize}
+				\item optical flow works well for small displacements
+				\item block matching for large motion
+				\item computing motion vectors is computationally complex
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{template matching}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item Templates tend to become stale over time
+	\end{itemize}
+	\href{run:distribute/run_TRK_templateMatching.bat}{{\color{blue}\underline {Template matching}}}
+\end{frame}
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+%=================================
+\subsection{1996: illum./geometry (Hallinan)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: illumination and geometry}
+\framesubtitle{5. methodology}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{1994_TRK_subspace_Hallinan}{CVPR}
+	\begin{itemize}
+		\item illumination: basis functions
+		\item geometry: warping
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: illum./geometry (Hallinan)}
+\framesubtitle{7. general points}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{1994_TRK_subspace_Hallinan}{CVPR}
+	\begin{itemize}
+		\item SSD-based tracking methods tend to concentrate on handling geometry 
+			\begin{itemize}
+				\item most implementations of SSD tracking only solve for a rigid translation of the target region
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=================================
+\subsection{1998: IIR templates (Lipton)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: template matching}
+\framesubtitle{1. overview}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{tables/TrackingPapers_AppearanceTracking_1998_Lipton.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{5. methodology}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{itemize}
+		\item tracking process involves correlation matching between a template and the current motion region (obtained by DT, i.e. temporal differencing)
+		\item the motion region with the best correlation is tracked and is used to update the template for subsequent tracking
+		\item template update is done using 	
+		\begin{equation*}
+			R_n = \alpha M_n + (1- \alpha)R_{n-1}
+		\end{equation*}
+		here $M_n$ is the motion region, i.e. current template
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{7. general points}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{tables/TrackingPapers_AppearanceTracking_1998_Lipton_DTvsTM.pdf}
+	\end{figure}
+	\begin{itemize}
+		\item Kalman filter of limited use since based on unimodal Gaussian densities and hence cannot support simultaneous alternative motion hypotheses
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_template_1998_Lipton_fig1.jpg}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_template_1998_Lipton_fig2.jpg}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_template_1998_Lipton_fig3.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_template_1998_Lipton_fig4.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_template_1998_Lipton_fig5.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_template_1998_Lipton_fig6.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_template_1998_Lipton_fig7.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_template_1998_Lipton_fig8.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_template_1998_Lipton_fig9.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_template_1998_Lipton_fig10.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work: IIR templates (Lipton)}
+\framesubtitle{figures (cont.)}
+\mypagenum
+\myFootnoteCitation{1998_CNF_Tracking_Lipton}{WACV}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_template_1998_Lipton_table1.jpg}
+	\end{figure}
+\end{frame}
+
+
+%=================================
+\subsection{2000: deform. templates (Zhong)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: deform. templates (Zhong)}
+\framesubtitle{figures}
+\mypagenum
+\myFootnoteCitation{2000_JNL_TRK_region_Zhong}{PAMI}
+	\begin{figure}
+		\includegraphics[height=0.75\textheight]{figs/TrackingPapers_deformableTemplates_2000_Zhong_fig3.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+%=================================
+\subsection{2003: adaptive appearance (Jepson)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: adaptive appearance (Jepson)}
+\framesubtitle{1. overview}
+\mypagenum
+\myFootnoteCitation{2003_JNL_TRKsubspace_Jepson}{PAMI}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{tables/TrackingPapers_SubspaceTracking_2003_AdaptiveAppearance.pdf}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: adaptive appearance (Jepson)}
+\framesubtitle{2. summary}
+\mypagenum
+\myFootnoteCitation{2003_JNL_TRKsubspace_Jepson}{PAMI}
+	\begin{itemize}
+		\item adaptive phase-based appearance model	
+		\item goal is to get optimal image warp from the stable properties of image appearance
+		\item 3 components
+			\begin{itemize}
+				\item $\mathcal{W}$: wandering component, tracking portion (gaussian density)
+				\item $\mathcal{S}$: stable model, captures behavior of temporally stable and slowly varying image observations, when and where they occur (gaussian density)
+				\item $\mathcal{L}$: lost component, data outliers (uniform density), 
+			\end{itemize}
+		\item these 3 are combined into a probabilistic mixture model (generative)
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: adaptive appearance (Jepson)}
+\framesubtitle{figures}
+\mypagenum
+\myFootnoteCitation{2003_JNL_TRKsubspace_Jepson}{PAMI}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_descriptors_2003_Jepson_fig5.jpg}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+
+
+%=================================
+\subsection{2008: OpenCV book (Bradski)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: OpenCV book (Bradski)}
+\framesubtitle{figures}
+\mypagenum
+\myFootnoteCitation{2008_BOOK_OpenCV_Bradski}{O'Reilly}
+	\begin{figure}
+		\includegraphics[height=0.5\textheight]{figs/Books_OpenCV_1998_Bradski_fig7_11.jpg}
+	\end{figure}
+	\begin{itemize}
+		\item in outdoor images, better to use normalized method (i.e. 0 to 1 output)
+		\item correlation coefficient works best in above example, but at greater computational cost
+	\end{itemize}
+\end{frame}
+
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

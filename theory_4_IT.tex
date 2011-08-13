@@ -1,0 +1,125 @@
+\include{begin}
+%####################################################################################################
+\title{Information Theory}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{Entropy}
+\logoCSIPCPL\mypagenum
+	\begin{figure}				
+		\includegraphics[width=1.0\textwidth]{figs/IT_entropy.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{Asymptotic Equipartition Property (AEP)}
+\logoCSIPCPL\mypagenum
+\myFootnoteCitation{1948_JNL_Comm_Shannon}{Bell System Technical Journal}
+	\begin{itemize}
+		\item AEP is anolog of Law of Large Numbers
+		\item we have $n$ i.i.d. random variables, for large $n$
+			\begin{equation*}
+				\begin{array}{lll}
+				\mbox{LLN: }&	\frac{1}{n}\sum\limits_{i=1}^n X_i &\mbox{ is close to } E[X] \\
+				\mbox{AEP: }&	\frac{1}{n}\log \frac{1}{p(X_1, X_2, \ldots X_n)} &\mbox{ is close to entropy } H
+				\end{array}
+			\end{equation*}
+	\end{itemize}	
+\end{frame}
+
+
+
+
+%=============================================
+\subsection{similarity functions}
+%=============================================
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{Kullback-Leibler (KL) divergence}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item {\color {red} author/year}
+			\begin{itemize}				
+				\item originally introduced by Solomon Kullback and Richard Leibler in 1951
+			\end{itemize}
+		\item {\color {red} other names}
+			\begin{itemize}
+				\item information divergence
+				\item information gain
+				\item relative entropy
+			\end{itemize}
+		\item {\color {red} category}
+			\begin{itemize}
+				\item special case of a broader class of divergences called \emph{f}-divergences
+			\end{itemize}
+		\item {\color {red} attributes}
+			\begin{itemize}
+				\item {\color {blue} metric}: no (for instance it's not symmetric)
+				\item {\color {blue} symmetric}: no
+			\end{itemize}
+	\end{itemize}	
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{Kullback-Leibler (KL) divergence (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item average of the logarithmic difference between the probabilities $P$ and $Q$ when the average is taken using the probabilities $P$
+			\begin{figure}				
+				\includegraphics[width=0.9\textwidth]{figs/IT_KLdivergence.pdf}
+			\end{figure}
+		where $P$ is the "true" distribution, measure $Q$ typically represents a theory, model, description or approximation of $P$
+	\end{itemize}	
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{Bhattacharya coefficient}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item {\color {red} attributes}
+			\begin{itemize}
+				\item {\color {blue} metric}: yes (for instance it's not symmetric)
+				\item {\color {blue} symmetric}: yes (since it's a metric)
+			\end{itemize}
+		\item see \mycite{2003_JNL_TRKkernel_Comaniciu} for details
+	\end{itemize}	
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{Packing vs Covering}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item Packing: maximize minimum distance
+		\item Covering: In the facility location problem, minimize maximum distance that a customer has to travel to new facility{\color{blue}\href{http://en.wikipedia.org/wiki/Smallest_circle_problem}{(wikipedia)}}, also known as \emph{smallest circle problem}
+	\end{itemize}	
+\end{frame}
+
+
+%#######################################################################
+\printbibliography
+\end{document}
+%#######################################################################

@@ -1,0 +1,202 @@
+\include{begin}
+
+%####################################################################################################
+\title{RVQ \\ extenstive training}
+%####################################################################################################
+\begin{frame}\logoTechTower
+	\author{Salman Aslam}
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoTechTower\logoCSIPCPL
+	\tableofcontents
+\end{frame}
+
+%----------------------------------------
+\section{RVQ training}
+%----------------------------------------
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+	In the following slides, 
+		\begin{itemize}
+			\item We train RVQ with all 165 images in the Yale dataset
+			\item The goal is to see codebook evolution for different number of templates/stage ($M$) as we vary the target SNR value
+			\item Note that varying the target SNR value controls the number of stages
+			\item $M$ varies from 2 to 16 ($M=1$ is not allowed)
+			\item For every value of $M$, target SNR varies from 0 to 39.8 dB with 0.2 dB increments
+		\end{itemize}
+\end{frame}
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 2}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 2 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.5\textheight}]{figs/RVQ_yaleFaces_dcbk_02_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 3}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 3 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.5\textheight}]{figs/RVQ_yaleFaces_dcbk_03_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 4}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 4 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.5\textheight}]{figs/RVQ_yaleFaces_dcbk_04_templatesPerStage_padded}
+\end{frame}
+
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 5}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 5 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.5\textheight}]{figs/RVQ_yaleFaces_dcbk_05_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 6}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 6 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.5\textheight}]{figs/RVQ_yaleFaces_dcbk_06_templatesPerStage_padded}
+\end{frame}
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 7}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 7 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.5\textheight}]{figs/RVQ_yaleFaces_dcbk_07_templatesPerStage_padded}
+\end{frame}
+
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 8}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 8 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.5\textheight}]{figs/RVQ_yaleFaces_dcbk_08_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 9}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 9 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.48\textheight}]{figs/RVQ_yaleFaces_dcbk_09_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 10}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 10 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.48\textheight}]{figs/RVQ_yaleFaces_dcbk_10_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 11}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 11 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.48\textheight}]{figs/RVQ_yaleFaces_dcbk_11_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 12}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 12 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.48\textheight}]{figs/RVQ_yaleFaces_dcbk_12_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 13}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 13 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.48\textheight}]{figs/RVQ_yaleFaces_dcbk_13_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 14}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 14 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.48\textheight}]{figs/RVQ_yaleFaces_dcbk_14_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 15}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 15 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=199, graphics={height=0.48\textheight}]{figs/RVQ_yaleFaces_dcbk_15_templatesPerStage_padded}
+\end{frame}
+
+
+%====================
+\subsection{\ \ \ \ \ \ \ \ M: 16}
+%====================
+\begin{frame}
+\frametitle{Training}
+\framesubtitle{M: 16 (SNR: 0:0.2:39.8)}
+\logoCSIPCPL\mypagenum
+	\multiinclude[<+>][format=jpg, start=0, end=1, graphics={height=0.48\textheight}]{figs/RVQ_yaleFaces_dcbk_16_templatesPerStage_padded}
+\end{frame}
+
+
+%####################################################################################################
+\include{end}
+%####################################################################################################

@@ -1,0 +1,1 @@
+c:\salman_programs\ffmpeg -r 5 -i PETS2001_4\trkRVQ_PETS2001_%05d.jpg -vcodec libxvid -qscale 1 out.mp4

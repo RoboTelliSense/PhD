@@ -1,0 +1,245 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (Multi-view classifier)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\end{frame}
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+
+%=======================
+\subsection{\ \ \ \ 2004: Avidan}
+%=======================
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{1. overview}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{tables/TrackingPapers_SubspaceTracking_2001_Avidan.pdf}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{2. summary}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item vehicle tracking using support vector tracking (SVT)
+		\item vehicles cannot be well spanned by eigenimages
+	\end{itemize}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{3. comparison}
+\logoCSIPCPL\mypagenum		
+	\begin{itemize}
+		\item similar to \mycite{1998_JNL_Eigentracking_Black} but SVM used instead of PCA
+		\item sequential usage of tracker and classifier (tracker finds where object moved to and classifier gives it a score)	
+			\begin{itemize}
+				 \item integrated usage of tracker and classifier (tracker tries to maximize classifier score)
+			\end{itemize}
+	\end{itemize}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{4. contributions}
+\logoCSIPCPL\mypagenum		
+	\begin{enumerate}
+		\item integrated usage of classification and tracking
+	\end{enumerate}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{5. methodology}
+\logoCSIPCPL\mypagenum		
+	\begin{enumerate}
+		\item Training
+			\begin{itemize}
+				\item 10,000 images of vehicles and non-vehicles
+				\item Vehicles include cars, SUVs and trucks in different colors and sizes
+			\end{itemize}
+		\item Testing
+			\begin{itemize}
+				\item detection
+					\begin{itemize}
+						\item edge map produces candidates
+						\item SVM used to decide if candidate image patch is a vehicle
+					\end{itemize}
+				\item tracking (SVT)
+					\begin{itemize}
+						\item picks best candidate based on SVM score
+						\item if score positive, candidate declared vehicle and optical flow tracking starts
+					\end{itemize}
+			\end{itemize}		
+	\end{enumerate}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{6. computational issues}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item Reduced Set Method: reduced number of support vectors from 2000 to 400 to speed up classificaiton
+		\item SVT slower than SVD tracking
+	\end{itemize}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{7. general points}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item motion of one pixel can cause SVM score to change from negative to positive (i.e. non-vehicle to vehicle)
+		\item SVT used with homogeneous quadratic polynomial kernel so that motion equations will be linear
+	\end{itemize}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{8. limitations}
+\logoCSIPCPL\mypagenum
+	\begin{enumerate}
+		\item cannot handle partial occlusions
+		\item cannot handle momentary disappearance and reappearance
+		\item no guarantee that SVT will not switch from one vehicle to the other
+		\item does not integrate temporal information
+	\end{enumerate}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{figures}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_SVTtracking_Avidan2004_fig1.jpg}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{figures (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.85\textwidth]{figs/TrackingPapers_SVTtracking_Avidan2004_fig2.jpg}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{figures (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.85\textwidth]{figs/TrackingPapers_SVTtracking_Avidan2004_fig3.jpg}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{figures (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.85\textwidth]{figs/TrackingPapers_SVTtracking_Avidan2004_fig4.jpg}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{figures (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.85\textwidth]{figs/TrackingPapers_SVTtracking_Avidan2004_fig5.jpg}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{figures (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.85\textwidth]{figs/TrackingPapers_SVTtracking_Avidan2004_fig6.jpg}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.85\textwidth]{figs/TrackingPapers_SVTtracking_Avidan2004_fig7.jpg}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work (2004: Avidan)}
+\framesubtitle{figures (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.5\textwidth]{figs/TrackingPapers_SVTtracking_Avidan2004_author.jpg}
+	\end{figure}
+\footnote{\tiny \myFootnoteCitation{2004_JNL_SVMtracking_Avidan}{PAMI}}
+\end{frame}
+
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

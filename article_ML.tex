@@ -1,0 +1,129 @@
+\include{begin_article}
+\title{Model Finding\\Using\\Curve Fitting as an Example}
+\date{}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+
+%=================================
+\section{Given}
+%=================================
+A set of input and output points of a system.
+
+Specifically, we have a training set with $N$ data points $\mathsf{x} = (x_1, x_2, \ldots, x_N)^T$ and $N$ corresponding labels, some possibly incorrect, $\mathsf{t} = (t_1, t_2, \ldots, t_N)^T$.
+
+
+%=================================
+\section{Goal}
+%=================================
+Find the mapping (model) between input and output.  Specifically for the curve fitting case, find a polynomial curve,
+
+\begin{equation}
+{\color{red}y(x,\mathbf{w})} = w_0 + w_1x + w_2 x^2 + \ldots + w_Mx^M = \sum\limits_{j=0}^M w_jx^j
+\end{equation}
+
+that best describes the training set.
+
+%=================================
+\section{Solution}
+%=================================
+\begin{enumerate}
+
+%least squares%
+{\color{blue}\item \underline{Least squares approach.}}
+\begin{enumerate}
+\item \underline{Model}.  Minimize the vertical distance error shown in Figure~\ref{fig:curve_fitting} and given by,
+\begin{equation}
+E(\mathbf{w}) = \sum\limits_{n=1}^N\big({\color{red}y(x_n,\mathbf{w})} - t_n\big)^2
+\end{equation}
+This error function is quadratic in $\mathbf{w}$.  Its derivatives wrt $\mathbf{w}$ are therefore linear and a unique minimum can therefore be found.
+\item \underline{Goal}.  Estimate $\mathbf{w}$.
+\item \underline{Solution}.  Construct $\mathbf{H}$ from $\mathsf{x}$.  Then,
+\begin{equation}
+\mathbf{w} = (\mathbf{H^TH})^{-1} \mathbf{H^T}\mathsf{t}
+\end{equation}
+\item \underline{Shortcomings}.  
+\begin{itemize}
+\item Determining $M$, the \emph{order} of the polynomial, i.e., \emph{model selection}.
+\item This is a specific case of ML and therefore suffers from over-fitting.    
+\end{itemize}
+\end{enumerate}
+
+%least squares with regularization%
+{\color{blue}\item \underline{Least squares approach with regularization.}}
+\begin{enumerate}
+\item \underline{Model}.
+\begin{equation}
+E(\mathbf{w}) = \sum\limits_{n=1}^N\big({\color{red}y(x_n,\mathbf{w})} - t_n\big)^2 + \lambda{\|\mathbf{w}^2\|}
+\end{equation}
+\end{enumerate}
+
+								\begin{figure}[t]
+								\centering
+								\subfigure[Deterministic approach: least squares.]{\includegraphics[width=0.4\textwidth]{figs/CV_curveFitting.png}}
+								\subfigure[Probabilistic approach: maximum likelihood.]{\includegraphics[width=0.47\textwidth]{figs/CV_curveFitting2.png}}
+								\caption{Curve fitting~\cite{2007_BOOK_PRML_Bishop}.}
+								\label{fig:curve_fitting}
+								\end{figure}
+
+
+%max likelihood%
+{\color{blue}\item \underline{Maximum Likelihood.}}  
+\begin{enumerate}
+\item \underline{Model}.  Consider each of the $N$ labels, $t_1, t_2, \ldots, t_N$ a separate gaussian random variable,  
+\begin{equation}
+p(t|x, \mathbf{w}, \beta) = \mathcal{N}(t|{\color{red}y(x,\mathbf{w})}, \beta^{-1})
+\end{equation}
+One of these variables is depicted in Figure~\ref{fig:curve_fitting}.  The joint distribution of these probabilistic labels, the \emph{total likelihood function} is given by,
+\begin{equation}
+\begin{array}{lllllllll}
+p(\mathsf{t}|\mathsf{x}, \mathbf{w}, \beta) &= \prod\limits_{n=1}^N\mathcal{N}(t_n|{\color{red}y(x_n,\mathbf{w})}, \beta^{-1})\\
+&=\mathcal{N}(t_1|{\color{red}y(x_1,\mathbf{w})}, \beta^{-1}).\mathcal{N}(t_2|{\color{red}y(x_2,\mathbf{w})}, \beta^{-1}). \ \ \ldots \ \ \mathcal{N}(t_n|y(x_n,\mathbf{w}), \beta^{-1})\\
+&=\frac{1}{(\sqrt{2\pi})^N |\Sigma|^{1/2}}\exp\big\{-\frac{1}{2}({\color{red}y(\mathsf{x},\mathbf{w})}-t)^T\Sigma^{-1}({\color{red}y(\mathsf{x},\mathbf{w})}-t)\big\}
+\end{array}
+\end{equation}
+
+\item \underline{Goal}.  Estimate $\mathbf{w}$ and $\beta$.
+\item \underline{Solution}. 
+\begin{align}
+\ln p(\mathsf{t}|\mathsf{x}, \mathbf{w}, \beta) &= -\frac{\beta}{2} \sum\limits_{n=1}^N\big({\color{red}y(x_n,\mathbf{w})} - t_n\big)^2 + \frac{N}{2}\ln(\beta) -  \frac{N}{2}\ln(2\pi)\\\notag
+\frac{1}{\beta} &= \frac{1}{N} \sum\limits_{n=1}^N\big({\color{red}y(x_n,\mathbf{w})} - t_n\big)^2
+\end{align}
+\item \underline{Relationship with notation in Kay~\cite{1993_BOOK_SSP_Kay}}.
+So, ML under the Gaussian noise assumption is equivalent o minimizing least squares.
+
+
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=1.0\textwidth]{figs/CV_ML_notation.pdf}
+								\caption{Notation difference in Kay~\cite{1993_BOOK_SSP_Kay} and Bishop~\cite{2007_BOOK_PRML_Bishop}.}
+								\label{fig:curve_fitting}
+								\end{figure}
+
+\end{enumerate}
+
+
+
+%semi-Bayesian%
+{\color{blue}\item \underline{Semi-Bayesian.}}  
+\item \underline{Model}.
+\begin{equation}
+p(\mathsf{w}| \mathsf{x, t}, \alpha, \beta) = 
+\end{equation}
+
+
+
+%Bayesian%
+{\color{blue}\item \underline{Bayesian.}} 
+
+
+\end{enumerate}
+
+
+
+
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}

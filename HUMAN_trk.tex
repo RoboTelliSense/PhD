@@ -1,0 +1,145 @@
+\include{begin}
+%####################################################################################################
+\title{Human tracking}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\end{frame}
+
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+\begin{frame}
+\frametitle{Prior work}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\end{frame}
+
+
+\include{2000_JNL_W4_Haritaoglu}
+%============================
+\subsection{2001: BRAmblE (Isard)}
+%============================
+\begin{frame}
+\frametitle{Prior work: BRAmblE (Isard)}
+\framesubtitle{2. summary}
+\mypagenum
+	\begin{itemize}
+		\item unified approach to background/foreground modeling
+	\end{itemize}
+\myFootnoteCitation{2001_CNF_TRKhuman_Isard}{ICCV}
+\end{frame}
+
+
+
+\include{2002_CNF_TRKcolor_Perez}
+\include{2004_JNL_TRK_shape_Zhao}
+\include{2006_CNF_TRKhuman_Brostow}
+
+
+
+
+
+%============================
+\subsection{2007: Colombari}
+%============================
+\begin{frame}
+\frametitle{Prior work: blobs}
+\framesubtitle{7. general points}
+\mypagenum
+\myFootnoteCitation{2007_JNL_TRK_Colombari}{PR}
+	each blob is described by a feature vector $\mathbf{b}$:
+	\begin{itemize}
+		\item solidity
+		\item eccentricity
+		\item orientation
+		\item area
+		\item dimensions of bounding box
+		\item average color
+		\item contrast (std dev of color)
+		\item position of centroid
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: blobs}
+\framesubtitle{7. general points}
+\mypagenum
+\myFootnoteCitation{2007_JNL_TRK_Colombari}{PR}
+	the dissimilarity of blobs $I_i$ and $J_j$ is computed as the Mahalanobis distance between the respective feature vectors:
+	\begin{equation*}
+		d_{ij} = (\mathbf{b}_i-\mathbf{b}_j)^T(\Lambda_I + \Lambda_J)^{-1}(\mathbf{b}_i-\mathbf{b}_j)
+	\end{equation*}
+	where $\Lambda_I$ and $\Lambda_J$ are the covariance matrices of the feature vectors in images $I$ and $J$ respectively
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: blobs}
+\framesubtitle{7. general points}
+\mypagenum
+\myFootnoteCitation{2007_JNL_TRK_Colombari}{PR}
+	\begin{itemize}
+		\item the use of Mahalanobis distance is customary in data association \mycite{1993_JNL_SURVEYcorresp_Cox} but it is often used in a nearest neighbor scheme ({\color{blue}proximity principle})
+		\item the approach here extends it by introducing also the {\color{blue} exclusion principle}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Prior work: blobs}
+\framesubtitle{7. general points}
+\mypagenum
+\myFootnoteCitation{2007_JNL_TRK_Colombari}{PR}
+	\begin{itemize}
+		\item segmentation is posed as an outlier rejection problem and solved by applying the X-84 outlier rejection rule
+	\end{itemize}
+\end{frame}
+
+
+
+%============================
+\subsection{2008: Chen}
+%============================
+\begin{frame}
+\frametitle{Prior work: motion analysis}
+\framesubtitle{7. general points}
+\mypagenum
+\myFootnoteCitation{JNL_TRKhuman_Chen}{IEEE Trans. Multimedia}	
+	features used:
+	\begin{enumerate}
+		\item bounding ellipse: eccentricity
+		\item bounding ellipse: orientation of major axis
+		\item peak position of normalized horizontal/vertical projection of moving target
+		\item pixel percentage of peak in normalized horizontal vertical projection
+		\item difference in pixel density of moving target's bounding box for two consecutive frames
+		\item difference between first 4 eigenvalues of the moving target in two consecutive frames
+	\end{enumerate}
+\end{frame}
+
+
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

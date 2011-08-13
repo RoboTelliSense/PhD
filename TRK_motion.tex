@@ -1,0 +1,78 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (motion)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\end{frame}
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+%=================================
+\subsection{1994: clustering optical flow (Wang)}
+%=================================
+\begin{frame}
+\frametitle{Prior work: clustering optical flow (Wang)}
+\framesubtitle{2. summary}
+\mypagenum
+\myFootnoteCitation{1994_JNL_TRKmotion_Wang}{IEEE Trans. Image Proc.}
+	\begin{itemize}
+		\item according to \mycite{2005_JNL_TRKblk_Hari}, first work on motion tracking
+		\item $k$-means clustering of optical flow motion vectors
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: motion tracking}
+\framesubtitle{7. general points (cont.)}
+\mypagenum
+\myFootnoteCitation{1994_JNL_TRKmotion_Wang}{IEEE Trans. Image Proc.}
+	\begin{itemize}
+		\item in standard optical flow algos, velocity is smoothed
+			\begin{itemize}
+				\item claimed that this {\color{blue}rubber sheet model} of the world is incorrect
+				\item allowing sharp breaks in the velocity field (regularization) is better
+				\item this paper's approach: straight lines
+			\end{itemize}
+	\end{itemize}
+	\begin{figure}
+		\includegraphics[width=0.5\textwidth]{figs/1994_JNL_TRKmotion_Wang_fig9.jpg}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior work: motion tracking}
+\framesubtitle{7. general points (cont.)}
+\mypagenum
+\myFootnoteCitation{1994_JNL_TRKmotion_Wang}{IEEE Trans. Image Proc.}
+	\begin{itemize}
+		\item search keywords: optic, cluster
+	\end{itemize}
+\end{frame}
+
+\include{2005_JNL_TRKblk_Hari}
+\include{2006_CNF_TRKhuman_Brostow}
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################

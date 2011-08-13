@@ -1,0 +1,71 @@
+\include{begin}
+%####################################################################################################
+\title{Visual Tracking \\ (codebook methods)}
+%####################################################################################################
+\begin{frame}[plain]\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%#######################################################################
+\section{INTRODUCTION}
+%#######################################################################
+\begin{frame}
+\frametitle{Introduction}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\end{frame}
+
+%#######################################################################
+\section{PRIOR WORK}
+%#######################################################################
+%=================================
+\subsection{2000: multi-gaussian background}
+%=================================
+\begin{frame}
+\frametitle{Prior work: multi-gaussian background}
+\framesubtitle{overview}
+\mypagenum
+	\begin{itemize}
+		\item codebook as a density approximator
+		\item classification method
+			\begin{itemize}
+				\item VQ
+				\item automatically tracked sequences are used to define a co-occurrence matrix over the prototypes in the codebook
+				\item the co-occurence data is used to probabilistically break apart the prototypes in the codebook into a binary tree representation
+			\end{itemize}
+	\end{itemize}
+\footnote{\tiny \myFootnoteCitation{2000_JNL_MG_Stauffer}{PAMI}}
+\end{frame}
+
+
+%=================================
+\subsection{2005: background modeling}
+%=================================
+\begin{frame}
+\frametitle{Prior work: learning the background}
+\framesubtitle{overview}
+\mypagenum
+	\begin{itemize}
+		\item for each pixel, build a codebook of one or more codewords
+		\item finding foreground: distance of pixel from nearest mean
+	\end{itemize}
+\footnote{\tiny \myFootnoteCitation{2005_JNL_CodebookFGBG_Kim}{Proc. IEEE}}
+\end{frame}
+
+
+
+
+
+
+
+%####################################################################################################
+\printbibliography
+\include{end}
+%####################################################################################################
