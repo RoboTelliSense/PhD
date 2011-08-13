@@ -3,31 +3,31 @@
 %>
 %> usage
 %> -----
-%> [U_DxNt, S_Ntx1, muAB_Dx1, N2] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff)
-%> [U_DxNt, S_Ntx1, muAB_Dx1, N2] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff, K)
+%> [U_DxNt, S_Ntx1, muAB_Dx1, N] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff)
+%> [U_DxNt, S_Ntx1, muAB_Dx1, N] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff, K)
 %>                                  sklm(B_DxN2)  
 %>    
 %> Without muA_Dx1 or muAB_Dx1, B_DxN2 is assumed as zero-mean
 %>
 %> required input
 %> --------------
-%> B_DxN2 (D,N2)            :   initial/additional B_DxN2
+%> B_DxN2 (D,N)             :   initial/additional data
 %> U_DxN1 (D,N1)            :   old basis
 %> S_N1x1 (N1,1)            :   old singular values
 %>
 %> optional input
 %> --------------
 %> muA_Dx1 (D,1)            :   old mean
-%> N2                       :   number of previous B_DxN2
+%> N2                       :   number of previous data
 %> ff                       :   forgetting factor (def=1.0)
 %> K                        :   maximum number of basis vectors to retain
 %>
 %> output
 %> ------
-%> U_DxNt (D,N1+N2)         :   new basis
-%> S_Ntx1 (N1+N2,1)         :   new singular values
+%> U_DxNt (D,N1+N)          :   new basis
+%> S_Ntx1 (N1+N,1)          :   new singular values
 %> muAB_Dx1 (D,1)           :   new mean
-%> N2                       :   new number of B_DxN2
+%> N                        :   new number of data
 %>
 %> based on
 %> --------
@@ -44,7 +44,7 @@
 
 
 
-function [U_DxNt, S_Ntx1, muAB_Dx1, N2] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff, K)
+function [U_DxNt, S_Ntx1, muAB_Dx1, N2] = sklm2(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff, K)
 
 %-----------------------------------------------
 %PRE-PROCESSING
