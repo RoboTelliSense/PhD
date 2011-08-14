@@ -4,6 +4,8 @@
 %> A is old data matrix
 %> B is new data matrix
 %> C                                =   [A B];
+%> Nt                               =   N + M;
+%>
 %> [Utilde, Stilde, meanC_Dx1, n]   =   sklm(B_DxM, U_DxN1, S_N1x1, meanA_Dx1, M, ff)
 %> [Utilde, Stilde, meanC_Dx1, n]   =   sklm(B_DxM, U_DxN1, S_N1x1, meanA_Dx1, M, ff, K)
 %>                                      sklm(B_DxM)  %> initialize
@@ -30,6 +32,10 @@
 %> Stilde (N+n,1)           : new singular values
 %> meanC_Dx1 (D,1)          : new mean
 %> n                        : new number of B_DxM
+%>
+%> known issues
+%> ------------ 
+%> returns error if M>=D
 %>
 %> based on
 %> --------

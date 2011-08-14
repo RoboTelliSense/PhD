@@ -1,38 +1,37 @@
-%Nt = N + M;
-%C  = [A B];
+%> @file demo_iPCA.m 
+%> @brief This file demos the use of incremental SVD (Sequential Karhunen-Loeve Transform)
+%>
+%> Copyright (c) Salman Aslam.  All rights reserved.
+%> Date created:  Aug 12, 2011
+%> Date modified: Aug 15, 201
 
 %---------------------------------------
 %INITIALIZATION
 %---------------------------------------
     clear;
     clc;
-    %close all;
+    close all;
 
-    %load incremental_svd  %a snapshot of data from TRK_subspace before
-    %it's entered into sklm
-
-    %dataset1
-%     D                       =   1000;
-%     N                       =   40;
-%     M                       =   30; 
-%     
-%     A_DxN                   =   250*randn(D,N);
-%     B_DxM                   =   350*randn(D,M);
+    datasetCode             =   1;
     
-    %dataset2
-    A_DxN                   =   [1 0;
+    if (datasetCode==1) 
+        D                   =   1000;
+        N                   =   40;
+        M                   =   30; 
+        A_DxN               =   250*randn(D,N);
+        B_DxM               =   350*randn(D,M);
+    elseif (datasetCode==2)   
+        A_DxN               =   [1 0;
                                  0 1;
                                  0 0];
-    [D,N]                   =   size(A_DxN);
-
-%     B_DxM                 =   [2 0 0 ; 
-%                                0 4 0 ; 
-%                                0 0 1];
-    B_DxM                   =   [0 ; 
-                                 0 ; 
-                                 1];                           
-    [D,M]                   =   size(B_DxM); 
-
+        [D,N]               =   size(A_DxN);
+        B_DxM               =   [0 0 ; 
+                                 0 4 ; 
+                                 1 0];                           
+        [D,M]               =   size(B_DxM); 
+    elseif (datasetCode==3)   %must have incremental_svd.mat in current directory to use this option
+        load incremental_svd  %a snapshot of data from TRK_subspace.m before it's entered into sklm
+    end
 
 %---------------------------------------
 %PRE-PROCESSING
