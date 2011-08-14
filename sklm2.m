@@ -1,31 +1,35 @@
 %> @file sklm.m 
 %> @brief This file computes incremental SVD (Sequential Karhunen-Loeve Transform)
 %>
-%> [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff)
-%> [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff, K)
-%>                 sklm(B_DxN2)  %> initialize
+%> A is old data matrix
+%> B is new data matrix
+%> C                                =   [A B];
+%> [Utilde, Stilde, meanC_Dx1, n]   =   sklm(B_DxM, U_DxN1, S_N1x1, meanA_Dx1, M, ff)
+%> [Utilde, Stilde, meanC_Dx1, n]   =   sklm(B_DxM, U_DxN1, S_N1x1, meanA_Dx1, M, ff, K)
+%>                                      sklm(B_DxM)  %> initialize
 %>
-%> without muA_Dx1 or muAB_Dx1, B_DxN2 is assumed as zero-mean
+%> without meanA_Dx1 or meanC_Dx1, B_DxM is assumed as zero-mean
 %>
+%> wmd                      : weighted mean diff
 %> required input
 %> --------------
-%> B_DxN2 (D,n)             : initial/additional B_DxN2
-%> U_DxN1 (D,N1)            : old basis
-%> S_N1x1 (N1,1)            : old singular values
+%> B_DxM (D,n)              : initial/additional B_DxM
+%> U_DxN1 (D,N)             : old basis
+%> S_N1x1 (N,1)             : old singular values
 %>
 %> optional input
 %> --------------
-%> muA_Dx1 (D,1)            : old mean
-%> N2                       : number of previous B_DxN2
+%> meanA_Dx1 (D,1)            : old mean
+%> M                        : number of previous B_DxM
 %> ff                       : forgetting factor (def=1.0)
-%> K                        : maximum number of basis vectors to retain
+%> K                        : maximeanm number of basis vectors to retain
 %>
 %> output
 %> ------
-%> U_DxNt (D,N1+n)          : new basis
-%> S_Ntx1 (N1+n,1)          : new singular values
-%> muAB_Dx1 (D,1)           : new mean
-%> n                        : new number of B_DxN2
+%> Utilde (D,N+n)           : new basis
+%> Stilde (N+n,1)           : new singular values
+%> meanC_Dx1 (D,1)          : new mean
+%> n                        : new number of B_DxM
 %>
 %> based on
 %> --------
@@ -42,12 +46,12 @@
 
 
 
-function [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N2, ff, K)
+function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN1, S_N1x1, meanA_Dx1, M, ff, K)
 
 %-----------------------------------------------
 %PRE-PROCESSING
 %----------------------------------------------
-    [D,n]                   =   size(B_DxN2);
+    [D,n]                   =   size(B_DxM);
 
 %-----------------------------------------------
 %PROCESSING
@@ -55,23 +59,23 @@ function [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N
   
     %part 1. user has input almost nothing
     if (nargin == 1) || isempty(U_DxN1)
-        if (size(B_DxN2,2) == 1)
-            muAB_Dx1        =   reshape(B_DxN2(:), size(muA_Dx1));
-            U_DxNt          =   zeros(size(B_DxN2)); 
-            U_DxNt(1)       =   1; 
-            S_Ntx1          =   0;
+        if (size(B_DxM,2) == 1)
+            meanC_Dx1       =   reshape(B_DxM(:), size(meanA_Dx1));
+            Utilde          =   zeros(size(B_DxM)); 
+            Utilde(1)       =   1; 
+            Stilde          =   0;
         else
-            muAB_Dx1        =   mean(B_DxN2,2);
-            B_zc_DxN2       =   B_DxN2 - repmat(muAB_Dx1,[1,n]);
-            [U_DxNt,S_Ntx1,V]   ...
-                            =   svd(B_zc_DxN2, 0);
-            S_Ntx1          =   diag(S_Ntx1);
-            muAB_Dx1        =   reshape(muAB_Dx1, size(muA_Dx1));
+            meanC_Dx1       =   mean(B_DxM,2);
+            B_mr_DxM        =   B_DxM - repmat(meanC_Dx1,[1,n]);
+            [Utilde,Stilde,Vtilde]   ...
+                            =   svd(B_mr_DxM, 0);
+            Stilde          =   diag(Stilde);
+            meanC_Dx1       =   reshape(meanC_Dx1, size(meanA_Dx1));
         end
         if nargin >= 7
-            keep            =   1:min(K,length(S_Ntx1));
-            S_Ntx1          =   S_Ntx1(keep);
-            U_DxNt          =   U_DxNt(:,keep);
+            keep            =   1:min(K,length(Stilde));
+            Stilde          =   Stilde(keep);
+            Utilde          =   Utilde(:,keep);
         end
     
         
@@ -79,41 +83,52 @@ function [U_DxNt, S_Ntx1, muAB_Dx1, n] = sklm(B_DxN2, U_DxN1, S_N1x1, muA_Dx1, N
     else
         if (nargin < 6)  ff = 1.0;  end
         
-        if (nargin < 5)  N2 = n;    end
+        if (nargin < 5)  M  = n;    end
         
-        if (nargin >= 4 & isempty(muA_Dx1) == false)
-            %mean center B_DxN2
-            muB_Dx1         =   mean(B_DxN2,2);                     %compute mean of new data
-            B_zc_DxN2       =   B_DxN2 - repmat(muB_Dx1,[1,n]);     %mean centered
-            weight          =   sqrt(n*N2/(n+N2));
-            B_zc_DxN2       =   [B_zc_DxN2, weight*(muA_Dx1(:)-muB_Dx1)];
-            muAB_Dx1        =   reshape((ff*N2*muA_Dx1(:) + n*muB_Dx1)/(n+ff*N2), size(muA_Dx1));
-            n               =   n+ff*N2;
+        if (nargin >= 4 & isempty(meanA_Dx1) == false)
+            
+            %step 1. compute mean of C=[A B]
+            meanB_Dx1       =   mean(B_DxM,2);                              %new data
+            newM            =   ff*M;
+            meanC_Dx1       =  (newM*meanA_Dx1 + n*meanB_Dx1)/(n+newM);     %combined data
+            
+            %step 2. augment mean removed B with wmd (weighted mean difference)
+            B_mr_DxM        =   B_DxM - repmat(meanB_Dx1,[1,n]);            %mean removed B  
+            w               =   sqrt(n*M/(n+M));
+            wmd_old_new     =   w*(meanA_Dx1 - meanB_Dx1);                  %wmd is weighted mean difference
+            B_hat_DxMp1     =   [B_mr_DxM      wmd_old_new];     
+            
+            n               =   n+newM;
         end
-        S_Ntx1              =   diag(S_N1x1);
-        %>[Q,R,E]           =   qr([ ff*U_DxN1*S_Ntx1, B_zc_DxN2 ], 0); %> old way
+        Stilde              =   diag(S_N1x1);
+        %>[new_basis,R,E]           =   qr([ ff*U_DxN1*Stilde, B_hat_DxMp1 ], 0); %> old way
 
-        data_proj           =   U_DxN1'*B_zc_DxN2; %> new way
-        data_res            =   B_zc_DxN2 - U_DxN1*data_proj;
-        [q, dummy]          =   qr(data_res, 0);
-        Q                   =   [U_DxN1 q];
-        R                   =   [ff*diag(S_N1x1) data_proj; zeros([size(B_zc_DxN2,2) length(S_N1x1)]) q'*data_res];
-
-        [U_DxNt,S_Ntx1,V]   =   svd(R, 0);
-        S_Ntx1              =   diag(S_Ntx1);
-
+		%step 3.
+        Bproj_MxNp1         =   U_DxN1'*B_hat_DxMp1;            %> projections on U
+        Bin_DxNp1           =   U_DxN1*Bproj_MxNp1;
+        Bout_DxNp1          =   B_hat_DxMp1 - Bin_DxNp1;
+        [Btilde_DxNp1, dummy] ...
+                            =   qr(Bout_DxNp1, 0);
+        new_basis           =   [U_DxN1 Btilde_DxNp1];                      %spans A (old) and B (new)
+        R                   =   [ff*diag(S_N1x1)                               Bproj_MxNp1; ...
+                                 zeros([size(B_hat_DxMp1,2) length(S_N1x1)])   Btilde_DxNp1'*Bout_DxNp1];
+	
+		%step 4.
+        [Utilde,Stilde,Vtilde]  ...
+                            =   svd(R, 0);
+        
+		%step 5.
+		Stilde              =   diag(Stilde);
         if nargin < 7
-            cutoff          =   sum(S_Ntx1.^2) * 1e-6;
-            keep            =   find(S_Ntx1.^2 >= cutoff);
+            cutoff          =   sum(Stilde.^2) * 1e-6;
+            keep            =   find(Stilde.^2 >= cutoff);
         else
-            keep            =   1:min(K,length(S_Ntx1));
+            keep            =   1:min(K,length(Stilde));
         end
-
-        S_Ntx1              =   S_Ntx1(keep);
-        U_DxNt              =   Q * U_DxNt(:, keep);
+        Stilde              =   Stilde(keep);
+        Utilde              =   new_basis * Utilde(:, keep);
     end
 
 %-----------------------------------------------
 %POST-PROCESSING
 %-----------------------------------------------
-       
