@@ -1,6 +1,11 @@
 %> @file demo_iPCA.m 
 %> @brief This file demos the use of incremental SVD (Sequential Karhunen-Loeve Transform)
 %>
+%> A is initial data matrix.  Its SVD is computed.
+%> After this B data matrix arrives and we would like to compute the SVD of
+%> C=[A B].  However, we would like to use incremental SVD so that we can use our existing computation
+%> of A's SVD.
+%>
 %> Copyright (c) Salman Aslam.  All rights reserved.
 %> Date created:  Aug 12, 2011
 %> Date modified: Aug 15, 201
@@ -36,7 +41,7 @@
 %---------------------------------------
 %PRE-PROCESSING
 %---------------------------------------    
-    [U_DxN,S_NxN,W_NxN]     =   svd   (A_DxN, 0); 
+    [U_DxN,S_NxN,W_NxN]     =   svd   (A_DxN, 0);  %initial SVD
     
     
 %---------------------------------------
