@@ -1,0 +1,125 @@
+\include{begin_article}
+\title{Incremental SVD with Mean Update}
+\author{Salman Aslam\\ Georgia Institute of Technology}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+%================================
+\section{Introduction}
+%================================
+Dimensionality reduction is a commonly used method to remove redundancies in data.  In tracking applications, a dimensionality reduction method such as PCA can be used to create an eigenbasis based appearance model.  Using a batch approach in which the eigenbasis is recomputed at every frame is costly in terms of memory and computations.  Therefore, in online applications, it is desired to have an incremental update to the eigenbasis.  This can be performed using an incremental SVD procedure.
+
+We assume that we start with some initial data, such as $N$ vectors in $\mathbb{R}^D$.  Each of these vectors could represent a vectorized training image.  These vectors are arranged in a $D$x$N$ data matrix for which the SVD is computed such that $\mathbf{A}=\mathbf{U}\mathbf{\Lambda}\mathbf{V}^T$.  Now, an additional $M$ vectors are made available in an online framework.  These vectors are placed in a $D$x$M$ data matrix $\mathbf{B}$.  The goal is to compute the SVD of $\mathbf{C} = [\mathbf{A} \ \ \mathbf{B}]$.  The naive approach is to recompute the SVD of this augmented data matrix.  If this naive approach is used whenever new data arrives, it is clear that the computations will grow as more and more data arrives.  Moreover, all data will have to be stored.
+
+We now explain the incremental SVD approach in which the existing SVD is used and all prior data is discarded.  For our example, this would mean that $\mathbf{A}$ could be discarded, and only $\mathbf{U}$ and $\mathbf{B}$ would be used to compute the SVD of $\mathbf{C}$.
+
+%================================
+\section{Theory}
+%================================
+The augmented data matrix $\mathbf{C}$ can be written as follows,
+
+\scriptsize
+\begin{equation}
+\begin{array}{llll}
+\mathbf{C}_{D\mathrm{x}(N+M)} &= \left[{\mathbf{A}_{D\mathrm{x}N}} \ \ {\color{red}{\color{red}\mathbf{B}_{D\mathrm{x}M}}}\right]\\
+&= \left[{\color{darkgreen}\mathbf{U}_{D\mathrm{x}N}}\mathbf{\Lambda}_{N\mathrm{x}N}\mathbf{V}_{N\mathrm{x}N}^T \ \ {\color{darkgreen}\mathbf{U}_{D\mathrm{x}N}}{\color{darkgreen}\mathbf{U}_{D\mathrm{x}N}}^T\mathbf{B}_{D\mathrm{x}M} + {\color{blue}\mathbf{\tilde{B}}_{D\mathrm{x}(M+1)}} {{\color{blue}\mathbf{\tilde{B}}_{D\mathrm{x}(M+1)}}^T}{\color{red}{\color{red}\mathbf{B}_{D\mathrm{x}M}}}\right]_{D\mathrm{x}(N+M)}\\
+&= \left[{\color{darkgreen}\mathbf{U}_{D\mathrm{x}N}} \ \ {\color{blue}\mathbf{\tilde{B}}_{D\mathrm{x}(M+1)}}\right]_{D\mathrm{x}(N+M+1)}\left[\begin{array}{llll}\mathbf{\Lambda}_{N\mathrm{x}N}\mathbf{V}_{N\mathrm{x}N}^T &{\color{darkgreen}\mathbf{U}_{D\mathrm{x}N}}^T{\color{red}{\color{red}\mathbf{B}_{D\mathrm{x}M}}}\\ \mathbf{0}_{(M+1)\mathrm{x}N} & {\color{blue}\mathbf{\tilde{B}}_{D\mathrm{x}(M+1)}}^T{\color{red}{\color{red}\mathbf{B}_{D\mathrm{x}M}}}\end{array}\right]_{(N+M+1)\mathrm{x}(N+M)}\\
+&= \left[{\color{darkgreen}\mathbf{U}_{D\mathrm{x}N}} \ \ {\color{blue}\mathbf{\tilde{B}}_{D\mathrm{x}(M+1)}}\right]_{D\mathrm{x}(N+M+1)}\left[\begin{array}{llll}\mathbf{\Lambda}_{N\mathrm{x}N} & {\color{darkgreen}\mathbf{U}_{D\mathrm{x}N}}^T{\color{red}{\color{red}\mathbf{B}_{D\mathrm{x}M}}}\\ \mathbf{0}_{(M+1)\mathrm{x}N} & {\color{blue}\mathbf{\tilde{B}}_{D\mathrm{x}(M+1)}}^T{\color{red}{\color{red}\mathbf{B}_{D\mathrm{x}M}}}\end{array}\right]_{(N+M+1)\mathrm{x}(N+M)} \left[\begin{array}{llll}\mathbf{V}_{N\mathrm{x}N}^T & \mathbf{0}_{M\mathrm{x}M}\\ \mathbf{0}_{M\mathrm{x}M} & \mathbf{I}_{M\mathrm{x}M}\end{array}\right]_{(N+M)\mathrm{x}(N+M)}\\
+&= \left[{\color{darkgreen}\mathbf{U}_{D\mathrm{x}N}} \ \ {\color{blue}\mathbf{\tilde{B}}_{D\mathrm{x}(M+1)}}\right]_{D\mathrm{x}(N+M+1)}\mathbf{R}_{(N+M+1)\mathrm{x}(N+M)} \left[\begin{array}{llll}\mathbf{V}_{N\mathrm{x}N}^T & \mathbf{0}_{M\mathrm{x}M}\\ \mathbf{0}_{M\mathrm{x}M} & \mathbf{I}_{M\mathrm{x}M}\end{array}\right]_{(N+M)\mathrm{x}(N+M)}
+\end{array}
+\label{Eqn:long}
+\end{equation}
+\normalsize
+
+For completeness, the dimensions of all matrices are written explicitly in the above equation.  However, for clarity, we rewrite it in compact form as follows,
+
+\begin{equation}
+\begin{array}{llll}
+\mathbf{C} &= \left[{\mathbf{A}} \ \ {\color{red}{\color{red}\mathbf{B}}}\right]\\
+&= \left[{\color{darkgreen}\mathbf{U}}\mathbf{\Lambda}\mathbf{V}^T \ \ {\color{darkgreen}\mathbf{U}}{\color{darkgreen}\mathbf{U}}^T\mathbf{B} + {\color{blue}\mathbf{\tilde{B}}} {{\color{blue}\mathbf{\tilde{B}}}^T}{\color{red}{\color{red}\mathbf{B}}}\right]\\
+&= \left[{\color{darkgreen}\mathbf{U}} \ \ {\color{blue}\mathbf{\tilde{B}}}\right]\left[\begin{array}{llll}\mathbf{\Lambda}\mathbf{V}^T &{\color{darkgreen}\mathbf{U}}^T{\color{red}{\color{red}\mathbf{B}}}\\ \mathbf{0} & {\color{blue}\mathbf{\tilde{B}}}^T{\color{red}{\color{red}\mathbf{B}}}\end{array}\right]\\
+&= \left[{\color{darkgreen}\mathbf{U}} \ \ {\color{blue}\mathbf{\tilde{B}}}\right]\left[\begin{array}{llll}\mathbf{\Lambda} & {\color{darkgreen}\mathbf{U}}^T{\color{red}{\color{red}\mathbf{B}}}\\ \mathbf{0} & {\color{blue}\mathbf{\tilde{B}}}^T{\color{red}{\color{red}\mathbf{B}}}\end{array}\right] \left[\begin{array}{llll}\mathbf{V}^T & \mathbf{0}\\ \mathbf{0} & \mathbf{I}\end{array}\right]\\
+&= \left[{\color{darkgreen}\mathbf{U}} \ \ {\color{blue}\mathbf{\tilde{B}}}\right]\mathbf{R} \left[\begin{array}{llll}\mathbf{V}^T & \mathbf{0}\\ \mathbf{0} & \mathbf{I}\end{array}\right]
+\end{array}
+\label{Eqn:short}
+\end{equation}
+\normalsize
+
+Two questions remain, what is the significance of this decomposition, and how to compute $\mathbf{\tilde{B}}$.  It turns out that these two questions are inter-related.  We now show how.
+
+In Equation~\ref{Eqn:short} we can compute the SVD of the matrix $\mathbf{R}$ such that $\mathbf{R}=\mathbf{\tilde{U}}\mathbf{\tilde{\Lambda}}\mathbf{\tilde{V}}^T$.  Then,
+
+\begin{equation}
+\begin{array}{llllll}
+\mathbf{C} &= \left[{\color{darkgreen}\mathbf{U}} \ \ {\color{blue}\mathbf{\tilde{B}}}\right]\mathbf{\tilde{U}}\mathbf{\tilde{\Lambda}}\mathbf{\tilde{V}}^T \left[\begin{array}{llll}\mathbf{V}^T & \mathbf{0}\\ \mathbf{0} & \mathbf{I}\end{array}\right]\\
+&= \bigg(\left[{\color{darkgreen}\mathbf{U}} \ \ {\color{blue}\mathbf{\tilde{B}}}\right]\mathbf{\tilde{U}}\bigg) \mathbf{\tilde{\Lambda}} \bigg(\mathbf{\tilde{V}}^T \left[\begin{array}{llll}\mathbf{V}^T & \mathbf{0}\\ \mathbf{0} & \mathbf{I}\end{array}\right]\bigg)\\
+&=\mathbf{U'}\mathbf{\tilde{\Lambda}}\mathbf{V'}^T
+\end{array}
+\label{Eq:summary}
+\end{equation}
+
+Therefore, the SVD we are interested in is
+
+\begin{equation}
+\boxed{\mathbf{C}=\mathbf{U'}\mathbf{\tilde{\Lambda}}\mathbf{V'}^T}
+\end{equation}
+
+This SVD depends on the computation of $\mathbf{\tilde{B}}$.  But what is $\mathbf{\tilde{B}}$?  We know from Equations~\ref{Eqn:long} and~\ref{Eqn:short} that $\mathbf{B}={\color{darkgreen}\mathbf{U}}{\color{darkgreen}\mathbf{U}}^T\mathbf{B} + {\color{blue}\mathbf{\tilde{B}}} {{\color{blue}\mathbf{\tilde{B}}}^T}{\color{red}{\color{red}\mathbf{B}}}$.  Here, $\mathbf{U}\mathbf{U}^T\mathbf{B}$ is a matrix of projections of $\mathbf{B}$ onto the subspace $\mathbf{U}$.  Similarly, ${\color{blue}\mathbf{\tilde{B}}} {{\color{blue}\mathbf{\tilde{B}}}^T}{\color{red}{\color{red}\mathbf{B}}}$ is a matrix of projections of $\mathbf{B}$ onto the subspace ${\color{blue}\mathbf{\tilde{B}}}$.  This tells us that the goal of ${\color{blue}\mathbf{\tilde{B}}}$ is to capture the variation in the data that is orthogonal to the existing subspace $\mathbf{U}$.  Therefore, ${\color{blue}\mathbf{\tilde{B}}}$ has to be computed so that it forms a basis that is orthogonal to $\mathbf{U}$.  
+
+Therefore, the computation of our goal, the SVD of $\mathbf{C}$, is a four step process: (a) Compute ${\color{blue}\mathbf{\tilde{B}}}$, (b) Use ${\color{blue}\mathbf{\tilde{B}}}$ to compute $\mathbf{R}$ as given in Equation~\ref{Eqn:short}, (c) compute the SVD of $\mathbf{R}$, and (d) Use the SVD of $\mathbf{R}$ to to compute the SVD of $\mathbf{C}$ as given in Equation~\ref{Eq:summary}.  The last 3 steps are straightforward and their equations have been presented.  Moreover, none of these four steps depend on $\mathbf{A}$, which means that $\mathbf{A}$ can be discarded.  We now turn to the first step, the computation of $\mathbf{\tilde{B}}$.  Quite simply, the matrix ${\color{blue}\mathbf{\tilde{B}}}$ can be computed using a QR decomposition of $\mathbf{B}-{\color{darkgreen}\mathbf{U}}{\color{darkgreen}\mathbf{U}}^T\mathbf{B}$.  
+
+Two issues now remain.  What can be said of the covariance matrix and mean of $\left[{\mathbf{A}} \ \ {\color{red}{\color{red}\mathbf{B}}}\right]$ in relation to this incremental SVD procedure?  We now address these questions.
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=0.8\textwidth]{figs/iPCA_results.pdf}
+								\caption{Error in basis between incremental and batch SVD.}
+								\label{iPCA_results}
+								\end{figure}
+
+\subsection{Covariance matrix of incremental SVD}
+to do
+
+\subsection{Mean of incremental SVD}
+to do
+%\begin{enumerate}
+%\item \underline{Subtract mean from $\mathbf{B}$}.  Compute mean removed $\mathbf{B}_{mr} = \mathbf{B} - \mu_\mathbf{B}$, where $\mu_\mathbf{B}$ is the mean of $\mathbf{B}$.
+%\item \underline{Compute weight $w$}.  Compute weight $w=(N*M)/(N+M)$.
+%\item \underline{Compute weighted mean difference}.  $\mathrm{wmd}_{A\_B} = w(\mu_\mathbf{A}-\mu_\mathbf{B})$.
+%\item \underline{Augment $\mathbf{B}$ with weighted mean difference}. $\hat{\mathbf{B}}=\left[\mathbf{B} \ \ \mathrm{wmd}_{A\_B}\right]$
+%\item \underline{Find component of $\mathbf{B}$ orthogonal to $\color{darkgreen}\mathbf{U}$}.
+%\end{enumerate}
+
+\cite{2008_JNL_subspaceTRK_Ross}
+
+%================================
+\section{Experiments}
+%================================
+In order to show that incremental SVD produces results close to batch SVD, we run two experiments.
+
+In the first experiment, we create matrix $\mathbf{A}$ as 400 observations of a gaussian random variable with unit variance in $\mathbb{R}^{10000}$.  Matrix ${\color{red}\mathbf{B}}$ is created as 300 observations of a gaussian random variable with unit variance in $\mathbb{R}^{10000}$.  
+
+In the second experiment, we create matrix $\mathbf{A}$ as 10 observations of a gaussian random variable with unit variance in $\mathbb{R}^{1089}$ to simulate a 33x33 image snippet.  Matrix ${\color{red}\mathbf{B}}$ is created as 5 observations of a gaussian random variable with unit variance in $\mathbb{R}^{1089}$. 
+
+
+
+%================================
+\section{Results}
+%================================
+In the first experiment, the rmse of the error in the basis is 0.0143.
+
+In the second experiment, the rmse of the error in the basis is 0.0378.  A plot of the error values for every point in the basis is given in Figure~\ref{iPCA_results}.
+
+
+
+
+%================================
+\section{Conclusions}
+%================================
+In this report, we have shown that the incremental SVD method produces results very close to batch SVD.
+
+
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}
