@@ -78,24 +78,22 @@ function TRK_subspace_wrapper(Np, Nw, bWeighting,   ipca_Neig,    rvq_maxP, rvq_
     max_signal_value        =   255;
 
 
-
-    if      (datasetCode==1) datasetName = 'Dudek';         fullDatasetName='1___Dudek__________';
-    elseif  (datasetCode==2) datasetName = 'davidin300';    fullDatasetName='2___davidin300_____';
-    elseif  (datasetCode==3) datasetName = 'sylv';          fullDatasetName='3___sylv___________';
-    elseif  (datasetCode==4) datasetName = 'trellis70';     fullDatasetName='4___trellis70______';
-    elseif  (datasetCode==5) datasetName = 'fish';          fullDatasetName='5___fish__________';
-    elseif  (datasetCode==6) datasetName = 'car4';          fullDatasetName='6___car4___________';
-    elseif  (datasetCode==7) datasetName = 'car11';         fullDatasetName='7___car11__________';
-    elseif  (datasetCode==8) datasetName = 'PETS2001rcf';   fullDatasetName='8___PETS2001rcf____';
-    elseif  (datasetCode==9) datasetName = 'PETS2009';      fullDatasetName='9___PETS2009_______';
+%datasets
+    if      (datasetCode==1)  datasetName = 'Dudek';        fullDatasetName='1___Dudek__________';
+    elseif  (datasetCode==2)  datasetName = 'davidin300';   fullDatasetName='2___davidin300_____';
+    elseif  (datasetCode==3)  datasetName = 'sylv';         fullDatasetName='3___sylv___________';
+    elseif  (datasetCode==4)  datasetName = 'trellis70';    fullDatasetName='4___trellis70______';
+    elseif  (datasetCode==5)  datasetName = 'fish';         fullDatasetName='5___fish__________';
+    elseif  (datasetCode==6)  datasetName = 'car4';         fullDatasetName='6___car4___________';
+    elseif  (datasetCode==7)  datasetName = 'car11';        fullDatasetName='7___car11__________';
+    elseif  (datasetCode==8)  datasetName = 'PETS2001rcf';  fullDatasetName='8___PETS2001rcf____';
+    elseif  (datasetCode==9)  datasetName = 'PETS2009';     fullDatasetName='9___PETS2009_______';
     elseif  (datasetCode==10) datasetName = 'AVSS2007_1';   fullDatasetName='10__AVSS2007_1_____';
     elseif  (datasetCode==11) datasetName = 'AVSS2007_2';   fullDatasetName='11__AVSS2007_2_____'; 
     elseif  (datasetCode==12) datasetName = 'AVSS2007_3';   fullDatasetName='12__AVSS2007_3_____'; 
     elseif  (datasetCode==13) datasetName = 'motinasFast';  fullDatasetName='13__motinasFast____';  
     end
    
-
-
     switch (datasetName)
         case 'Dudek';       p=[133,127,110,130,-0.08];sOptions=struct('Np',Np,'condenssig',0.25,'ff',1,  'batchsize',5,'vecAff_variance_1x6',[9,9,.05,.05,.005,.001]); 
         case 'davidin300';  p=[129 67 62 78 -0.02];   sOptions=struct('Np',Np,'condenssig',0.75,'ff',.99,'batchsize',5,'vecAff_variance_1x6',[5,5,.01,.02,.002,.001]); 
@@ -114,54 +112,51 @@ function TRK_subspace_wrapper(Np, Nw, bWeighting,   ipca_Neig,    rvq_maxP, rvq_
         case 'motinas_fast';p=[474 60 43 67 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[15,15,.05,.05,.005,.002]); 
         otherwise;  error(['unknown datasetName ' datasetName]);
     end
-
-    p(1)                    =   p(1) + round(p(3)/2); %i added this because initially 
+    p(1)                    =   p(1) + round(p(3)/2); %i added this because initially, p(1) and p(2) were the center of the bounding box, i wanted them to be top left coordinates 
     p(2)                    =   p(2) + round(p(4)/2);
 
+    %check if the dataset exists
+    if (~exist('datatitle') | ~strcmp(datasetName,datatitle))
+        if (exist('datatitle') & ~strcmp(datasetName,datatitle))
+            disp(['datasetName does not match.. ' datasetName ' : ' datatitle ', continue?']);
+            pause;
+        end
+        disp(['loading ' datasetName '...']);
+        clear truepts;
+        load([datasetName '.mat'],'data','datatitle','truepts');
+    end
 
-
-if (~exist('datatitle') | ~strcmp(datasetName,datatitle))
-  if (exist('datatitle') & ~strcmp(datasetName,datatitle))
-    disp(['datasetName does not match.. ' datasetName ' : ' datatitle ', continue?']);
-    pause;
-  end
-  disp(['loading ' datasetName '...']);
-  clear truepts;
-  load([datasetName '.mat'],'data','datatitle','truepts');
-end
-
-load RandomData 
+%random data    
+    load RandomData             %for the particle filter
 
 
 %!!caution: should i change 32 to 33? !!
-vecAff_1x6 = [p(1), p(2), p(3)/32, p(5), p(4)/p(3), 0]; %x, y, width/32, angle, height/width, 0
-vecAff_1x6 = affparam2mat(vecAff_1x6);
+    vecAff_1x6              =   [p(1), p(2), p(3)/32, p(5), p(4)/p(3), 0]; %x, y, width/32, angle, height/width, 0
+    vecAff_1x6              =   affparam2mat(vecAff_1x6);
 
-sOptions.dump = dump_frames;
-if (sOptions.dump & exist('dump') ~= 7)
-  error('dump directory does not exist.. turning dump option off..');
-  sOptions.dump = 0;
-end
+    sOptions.dump           =   dump_frames;
+    if (sOptions.dump & exist('dump') ~= 7)
+        error('dump directory does not exist.. turning dump option off..');
+        sOptions.dump       =   0;
+    end
 
+%directory names
+                  centerText=   [];
+                  centerText=   [centerText '__iPCA_'  UTIL_GetZeroPrefixedFileNumber_3(ipca_Neig)];
+    if (bUsebPCA) centerText=   [centerText '__bPCA_'  UTIL_GetZeroPrefixedFileNumber_3(bpca_Neig)];                                                                                                   end
+    if (bUseRVQ)  centerText=   [centerText '__RVQ__'  UTIL_GetZeroPrefixedFileNumber_2(rvq_maxP) '_' UTIL_GetZeroPrefixedFileNumber_2(rvq_M) '_'  UTIL_GetZeroPrefixedFileNumber_4(rvq_targetSNR)];   end
+    if (bUseTSVQ) centerText=   [centerText '__TSVQ_'  UTIL_GetZeroPrefixedFileNumber_2(tsvq_P)];                                                                                                      end
 
-%dir_out = 'test_out';
-centerText = [];
-
-                centerText = [centerText '__iPCA_'  UTIL_GetZeroPrefixedFileNumber_3(ipca_Neig)];
-if  (bUsebPCA)  centerText = [centerText '__bPCA_'  UTIL_GetZeroPrefixedFileNumber_3(bpca_Neig)];                                                                                                   end
-if  (bUseRVQ)   centerText = [centerText '__RVQ__'  UTIL_GetZeroPrefixedFileNumber_2(rvq_maxP) '_' UTIL_GetZeroPrefixedFileNumber_2(rvq_M) '_'  UTIL_GetZeroPrefixedFileNumber_4(rvq_targetSNR)];   end
-if  (bUseTSVQ)  centerText = [centerText '__TSVQ_'  UTIL_GetZeroPrefixedFileNumber_2(tsvq_P)];                                                                                                      end
-
-dir_out_wo_slash = ['results_'   fullDatasetName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(bWeighting) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) centerText];
-dir_out = UTIL_addSlash(dir_out_wo_slash);
-mkdir(dir_out)
+    dir_out_wo_slash        =   ['results_'   fullDatasetName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(bWeighting) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) centerText];
+    dir_out                 =   UTIL_addSlash(dir_out_wo_slash);
+                                mkdir(dir_out)
             
 %complete filenames: images
     cfn_posraw              =   [dir_out 'positiveExamples.raw'];
     cfn_poscsv              =   [dir_out 'positiveExamples.csv'];      %file 1, this is the only file which maintains temporal info     
     cfn_dcbk                =   [dir_out 'codebook.dcbk'];                  %file 4
     cfn_gen_txt             =   [dir_out 'gen.txt'];
-    rvq__cfn_6_numStages      =   [dir_out 'rvq__tst_numStages.csv'];
+    rvq__cfn_6_numStages    =   [dir_out 'rvq__tst_numStages.csv'];
     
 %complete filenames: csv files    
     ipca_cfn_1_affineParams =   [dir_out 'affineParams_1_ipca.csv'];
@@ -190,46 +185,54 @@ mkdir(dir_out)
     rvq__cfn_5_tsterr       =   [dir_out 'errTst_5_rvq.csv'];
     tsvq_cfn_5_tsterr       =   [dir_out 'errTst_5_tsvq.csv'];    
    
-      
-    
-                            UTIL_FILE_deleteFile(cfn_poscsv);  
-                              
+                                UTIL_FILE_deleteFile(cfn_poscsv);  
                             
-                            UTIL_FILE_deleteFile(ipca_cfn_1_affineParams);
-                            UTIL_FILE_deleteFile(bpca_cfn_1_affineParams);
-                            UTIL_FILE_deleteFile(rvq__cfn_1_affineParams);
-                            UTIL_FILE_deleteFile(tsvq_cfn_1_affineParams);
+                                UTIL_FILE_deleteFile(ipca_cfn_1_affineParams);
+                                UTIL_FILE_deleteFile(bpca_cfn_1_affineParams);
+                                UTIL_FILE_deleteFile(rvq__cfn_1_affineParams);
+                                UTIL_FILE_deleteFile(tsvq_cfn_1_affineParams);
 
-                            UTIL_FILE_deleteFile(gt___cfn_2_featurePts);
-                            UTIL_FILE_deleteFile(ipca_cfn_2_featurePts);  
-                            UTIL_FILE_deleteFile(bpca_cfn_2_featurePts);  
-                            UTIL_FILE_deleteFile(rvq__cfn_2_featurePts);  
-                            UTIL_FILE_deleteFile(tsvq_cfn_2_featurePts);  
+                                UTIL_FILE_deleteFile(gt___cfn_2_featurePts);
+                                UTIL_FILE_deleteFile(ipca_cfn_2_featurePts);  
+                                UTIL_FILE_deleteFile(bpca_cfn_2_featurePts);  
+                                UTIL_FILE_deleteFile(rvq__cfn_2_featurePts);  
+                                UTIL_FILE_deleteFile(tsvq_cfn_2_featurePts);  
 
-                            UTIL_FILE_deleteFile(ipca_cfn_3_trkerr);      
-                            UTIL_FILE_deleteFile(bpca_cfn_3_trkerr);      
-                            UTIL_FILE_deleteFile(rvq__cfn_3_trkerr);      
-                            UTIL_FILE_deleteFile(tsvq_cfn_3_trkerr);      
+                                UTIL_FILE_deleteFile(ipca_cfn_3_trkerr);      
+                                UTIL_FILE_deleteFile(bpca_cfn_3_trkerr);      
+                                UTIL_FILE_deleteFile(rvq__cfn_3_trkerr);      
+                                UTIL_FILE_deleteFile(tsvq_cfn_3_trkerr);      
 
-                            UTIL_FILE_deleteFile(ipca_cfn_4_trgerr);      
-                            UTIL_FILE_deleteFile(bpca_cfn_4_trgerr);      
-                            UTIL_FILE_deleteFile(rvq__cfn_4_trgerr);      
-                            UTIL_FILE_deleteFile(tsvq_cfn_4_trgerr);      
+                                UTIL_FILE_deleteFile(ipca_cfn_4_trgerr);      
+                                UTIL_FILE_deleteFile(bpca_cfn_4_trgerr);      
+                                UTIL_FILE_deleteFile(rvq__cfn_4_trgerr);      
+                                UTIL_FILE_deleteFile(tsvq_cfn_4_trgerr);      
 
-                            UTIL_FILE_deleteFile(ipca_cfn_5_tsterr);      
-                            UTIL_FILE_deleteFile(bpca_cfn_5_tsterr);      
-                            UTIL_FILE_deleteFile(rvq__cfn_5_tsterr);      
-                            UTIL_FILE_deleteFile(tsvq_cfn_5_tsterr); 
+                                UTIL_FILE_deleteFile(ipca_cfn_5_tsterr);      
+                                UTIL_FILE_deleteFile(bpca_cfn_5_tsterr);      
+                                UTIL_FILE_deleteFile(rvq__cfn_5_tsterr);      
+                                UTIL_FILE_deleteFile(tsvq_cfn_5_tsterr); 
+
+                                UTIL_FILE_deleteFile(rvq__cfn_6_numStages);
                             
-                            UTIL_FILE_deleteFile(rvq__cfn_6_numStages);
-                            
-F = size(data,3);
-colormap('gray');
-                            TRK_subspace
+%number of frames    
+    F                       =   size(data,3);
+                                colormap('gray');
+
+%------------------------------------------------
+%PROCESSING
+%------------------------------------------------
+                                TRK_subspace
 
 
 
 
+                                
+                                
+                                
+                                
+                                
+                                
 % Use the following set of parameters for the ground truth experiment.
 % It's much slower, but more accuracte.
 %case 'dudek';  p = [188,192,110,130,-0.08];
