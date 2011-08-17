@@ -68,73 +68,55 @@
 
 function TRK_subspace_wrapper(Np, Nw, bWeighting,   ipca_Neig,    rvq_maxP, rvq_M, rvq_targetSNR,   tsvq_P, tsvq_M,     bUsebPCA, bUseRVQ, bUseTSVQ, datasetCode)
 
-%clear;
-%clc;
-%close all;
-%datasetCode =   1;    
-%rvq_maxP    =   8;
-%rvq_M       =   2;
-%Np          =   600;
-%Nw        =   -1;
 
-%bMode       =   2; %1: PCA, 2: RVQ, 3: TSVQ
-bpca_Neig = ipca_Neig;
-dump_frames =   false;
-max_signal_value = 255;
+%-------------------------------------------------
+%PRE-PROCESSING
+%-------------------------------------------------
+%overall settings
+    bpca_Neig               =   ipca_Neig;
+    dump_frames             =   false;
+    max_signal_value        =   255;
 
 
 
-if      (datasetCode==1) datasetName = 'Dudek';         fullDatasetName='1___Dudek__________';
-elseif  (datasetCode==2) datasetName = 'davidin300';    fullDatasetName='2___davidin300_____';
-elseif  (datasetCode==3) datasetName = 'sylv';          fullDatasetName='3___sylv___________';
-elseif  (datasetCode==4) datasetName = 'trellis70';     fullDatasetName='4___trellis70______';
-elseif  (datasetCode==5) datasetName = 'fish';          fullDatasetName='5___fish__________';
-elseif  (datasetCode==6) datasetName = 'car4';          fullDatasetName='6___car4___________';
-elseif  (datasetCode==7) datasetName = 'car11';         fullDatasetName='7___car11__________';
-elseif  (datasetCode==8) datasetName = 'PETS2001rcf';   fullDatasetName='8___PETS2001rcf____';
-elseif  (datasetCode==9) datasetName = 'PETS2009';      fullDatasetName='9___PETS2009_______';
-elseif  (datasetCode==10) datasetName = 'AVSS2007_1';   fullDatasetName='10__AVSS2007_1_____';
-elseif  (datasetCode==11) datasetName = 'AVSS2007_2';   fullDatasetName='11__AVSS2007_2_____'; 
-elseif  (datasetCode==12) datasetName = 'AVSS2007_3';   fullDatasetName='12__AVSS2007_3_____'; 
-elseif  (datasetCode==13) datasetName = 'motinasFast';  fullDatasetName='13__motinasFast____';  
-end
+    if      (datasetCode==1) datasetName = 'Dudek';         fullDatasetName='1___Dudek__________';
+    elseif  (datasetCode==2) datasetName = 'davidin300';    fullDatasetName='2___davidin300_____';
+    elseif  (datasetCode==3) datasetName = 'sylv';          fullDatasetName='3___sylv___________';
+    elseif  (datasetCode==4) datasetName = 'trellis70';     fullDatasetName='4___trellis70______';
+    elseif  (datasetCode==5) datasetName = 'fish';          fullDatasetName='5___fish__________';
+    elseif  (datasetCode==6) datasetName = 'car4';          fullDatasetName='6___car4___________';
+    elseif  (datasetCode==7) datasetName = 'car11';         fullDatasetName='7___car11__________';
+    elseif  (datasetCode==8) datasetName = 'PETS2001rcf';   fullDatasetName='8___PETS2001rcf____';
+    elseif  (datasetCode==9) datasetName = 'PETS2009';      fullDatasetName='9___PETS2009_______';
+    elseif  (datasetCode==10) datasetName = 'AVSS2007_1';   fullDatasetName='10__AVSS2007_1_____';
+    elseif  (datasetCode==11) datasetName = 'AVSS2007_2';   fullDatasetName='11__AVSS2007_2_____'; 
+    elseif  (datasetCode==12) datasetName = 'AVSS2007_3';   fullDatasetName='12__AVSS2007_3_____'; 
+    elseif  (datasetCode==13) datasetName = 'motinasFast';  fullDatasetName='13__motinasFast____';  
+    end
    
-% switch (datasetName)
-% case 'Dudek';     p=[188,192,110,130,-0.08];sOptions=struct('Np',Np,'condenssig',0.25,'ff',1,  'batchsize',5,'vecAff_variance_1x6',[9,9,.05,.05,.005,.001]); fullDatasetName='1';txt2='Dudek';
-% case 'davidin300';p=[160 106 62 78 -0.02];  sOptions=struct('Np',Np,'condenssig',0.75,'ff',.99,'batchsize',5,'vecAff_variance_1x6',[5,5,.01,.02,.002,.001]); fullDatasetName='2';txt2='davidin300';
-% case 'sylv';      p=[145 81 53 53 -0.2];    sOptions=struct('Np',Np,'condenssig',0.75,'ff',.95,'batchsize',5,'vecAff_variance_1x6',[7,7,.01,.02,.002,.001]); fullDatasetName='3';txt2='sylv';
-% case 'trellis70'; p=[200 100 45 49 0];      sOptions=struct('Np',Np,'condenssig',0.2, 'ff',.95,'batchsize',5,'vecAff_variance_1x6',[4,4,.01,.01,.002,.001]); fullDatasetName='4';txt2='trellis70';
-% case 'fish';      p=[165 102 62 80 0];      sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[7,7,.01,.01,.002,.001]); fullDatasetName='5';txt2='fish';
-% case 'car4';      p=[245 180 200 150 0];    sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[5,5,.025,.01,.002,.001]);fullDatasetName='6';txt2='car4';
-% case 'car11';     p=[89 140 30 25 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[5,5,.01,.01,.001,.001]); fullDatasetName='7';txt2='car11';
-% case 'PETS2001rcf';p=[421 360 13 37 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[1,1,.01,.01,.001,.001]); fullDatasetName='8';txt2='PETS2001rcf'; %rcf: red coat female
-% case 'PETS2006pcf';p=[606 304 41 62 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[3,3,.05,.05,.002,.002]); fullDatasetName='8';txt2='PETS2006pcf'; %rcf: red coat female    
-% case 'PETS2007';    p=[16 214 20 61 0];    sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[5,5,.05,.05,.001,.001]); fullDatasetName='8';txt2='PETS2006pcf'; %rcf: red coat female    
-% case 'PETS2009';   p=[338 237 9 40 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[3,3,.05,.05,.002,.002]); fullDatasetName='8';txt2='PETS2009'; %rcf: red coat female    
-% otherwise;  error(['unknown datasetName ' datasetName]);
-% end
 
-switch (datasetName)
-case 'Dudek';       p=[133,127,110,130,-0.08];sOptions=struct('Np',Np,'condenssig',0.25,'ff',1,'batchsize',5,'vecAff_variance_1x6',[9,9,.05,.05,.005,.001]); 
-case 'davidin300';  p=[129 67 62 78 -0.02]; sOptions=struct('Np',Np,'condenssig',0.75,'ff',.99,'batchsize',5,'vecAff_variance_1x6',[5,5,.01,.02,.002,.001]); 
-case 'sylv';        p=[118 54 53 53 -0.2];  sOptions=struct('Np',Np,'condenssig',0.75,'ff',.95,'batchsize',5,'vecAff_variance_1x6',[7,7,.01,.02,.002,.001]); 
-case 'trellis70';   p=[178 76 45 49 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',.95,'batchsize',5,'vecAff_variance_1x6',[4,4,.01,.01,.002,.001]); 
-case 'fish';        p=[134 62 62 80 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[7,7,.01,.01,.002,.001]); 
-case 'car4';        p=[145 105 200 150 0];  sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[5,5,.025,.01,.002,.001]);
-case 'car11';       p=[74 128 30 25 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[5,5,.01,.01,.001,.001]); 
-case 'PETS2001rcf'; p=[414 341 13 37 0];    sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[1,1,.01,.01,.001,.001]); 
-case 'PETS2009';    p=[333 217 9 40 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[3,3,.05,.05,.002,.002]); 
-case 'AVSS2007_1';  p=[69 232 43 40 .07];   sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[3,3,.05,.05,.002,.002]); 
-case 'AVSS2007_2';  p=[60 234 37 37 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[3,3,.05,.05,.002,.002]); 
-case 'AVSS2007_3';  p=[213 67 14 14 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[2,2,.05,.05,.002,.002]); 
-%case 'motinas_fast';p=[218 95 48 72 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[15,15,.05,.05,.005,.002]); 
-%case 'motinas_fast';p=[38 140 41 65 0];    sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[12,12,.03,.03,.005,.001]); 
-case 'motinas_fast';p=[474 60 43 67 0];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[15,15,.05,.05,.005,.002]); 
-otherwise;  error(['unknown datasetName ' datasetName]);
-end
 
-p(1) = p(1) + round(p(3)/2);
-p(2) = p(2) + round(p(4)/2);
+    switch (datasetName)
+        case 'Dudek';       p=[133,127,110,130,-0.08];sOptions=struct('Np',Np,'condenssig',0.25,'ff',1,  'batchsize',5,'vecAff_variance_1x6',[9,9,.05,.05,.005,.001]); 
+        case 'davidin300';  p=[129 67 62 78 -0.02];   sOptions=struct('Np',Np,'condenssig',0.75,'ff',.99,'batchsize',5,'vecAff_variance_1x6',[5,5,.01,.02,.002,.001]); 
+        case 'sylv';        p=[118 54 53 53 -0.2];    sOptions=struct('Np',Np,'condenssig',0.75,'ff',.95,'batchsize',5,'vecAff_variance_1x6',[7,7,.01,.02,.002,.001]); 
+        case 'trellis70';   p=[178 76 45 49 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',.95,'batchsize',5,'vecAff_variance_1x6',[4,4,.01,.01,.002,.001]); 
+        case 'fish';        p=[134 62 62 80 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[7,7,.01,.01,.002,.001]); 
+        case 'car4';        p=[145 105 200 150 0];    sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[5,5,.025,.01,.002,.001]);
+        case 'car11';       p=[74 128 30 25 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[5,5,.01,.01,.001,.001]); 
+        case 'PETS2001rcf'; p=[414 341 13 37 0];      sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[1,1,.01,.01,.001,.001]); 
+        case 'PETS2009';    p=[333 217 9 40 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[3,3,.05,.05,.002,.002]); 
+        case 'AVSS2007_1';  p=[69 232 43 40 .07];     sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[3,3,.05,.05,.002,.002]); 
+        case 'AVSS2007_2';  p=[60 234 37 37 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[3,3,.05,.05,.002,.002]); 
+        case 'AVSS2007_3';  p=[213 67 14 14 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[2,2,.05,.05,.002,.002]); 
+        %case 'motinas_fast';p=[218 95 48 72 0];      sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[15,15,.05,.05,.005,.002]); 
+        %case 'motinas_fast';p=[38 140 41 65 0];      sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[12,12,.03,.03,.005,.001]); 
+        case 'motinas_fast';p=[474 60 43 67 0];       sOptions=struct('Np',Np,'condenssig',0.2, 'ff',1,  'batchsize',5,'vecAff_variance_1x6',[15,15,.05,.05,.005,.002]); 
+        otherwise;  error(['unknown datasetName ' datasetName]);
+    end
+
+    p(1)                    =   p(1) + round(p(3)/2); %i added this because initially 
+    p(2)                    =   p(2) + round(p(4)/2);
 
 
 

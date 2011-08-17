@@ -1,4 +1,4 @@
-%> @file sklm.m 
+%> @file sklm2.m 
 %> @brief This file computes incremental SVD (Sequential Karhunen-Loeve Transform)
 %>
 %> A is old data matrix
@@ -6,8 +6,8 @@
 %> C                                =   [A B];
 %> Nt                               =   N + M;
 %>
-%> [Utilde, Stilde, meanC_Dx1, n]   =   sklm(B_DxM, U_DxN1, S_N1x1, meanA_Dx1, M, ff)
-%> [Utilde, Stilde, meanC_Dx1, n]   =   sklm(B_DxM, U_DxN1, S_N1x1, meanA_Dx1, M, ff, K)
+%> [Utilde, Stilde, meanC_Dx1, n]   =   sklm(B_DxM, U_DxN, S_Nx1, meanA_Dx1, M, ff)
+%> [Utilde, Stilde, meanC_Dx1, n]   =   sklm(B_DxM, U_DxN, S_Nx1, meanA_Dx1, M, ff, K)
 %>                                      sklm(B_DxM)  %> initialize
 %>
 %> without meanA_Dx1 or meanC_Dx1, B_DxM is assumed as zero-mean
@@ -16,12 +16,12 @@
 %> required input
 %> --------------
 %> B_DxM (D,n)              : initial/additional B_DxM
-%> U_DxN1 (D,N)             : old basis
-%> S_N1x1 (N,1)             : old singular values
+%> U_DxN (D,N)              : old basis
+%> S_Nx1 (N,1)              : old singular values
 %>
 %> optional input
 %> --------------
-%> meanA_Dx1 (D,1)            : old mean
+%> meanA_Dx1 (D,1)          : old mean
 %> M                        : number of previous B_DxM
 %> ff                       : forgetting factor (def=1.0)
 %> K                        : maximeanm number of basis vectors to retain
@@ -52,7 +52,8 @@
 
 
 
-function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN1, S_N1x1, meanA_Dx1, M, ff, K)
+function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN, S_Nx1, meanA_Dx1, M, ff, K)
+
 
 %-----------------------------------------------
 %PRE-PROCESSING
@@ -64,7 +65,7 @@ function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN1, S_N1x1, meanA_Dx1
 %-----------------------------------------------
   
     %part 1. user has input almost nothing
-    if (nargin == 1) || isempty(U_DxN1)
+    if (nargin == 1) || isempty(U_DxN)
         if (size(B_DxM,2) == 1)
             meanC_Dx1       =   reshape(B_DxM(:), size(meanA_Dx1));
             Utilde          =   zeros(size(B_DxM)); 
@@ -101,23 +102,23 @@ function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN1, S_N1x1, meanA_Dx1
             %step 2. augment mean removed B with wmd (weighted mean difference)
             B_mr_DxM        =   B_DxM - repmat(meanB_Dx1,[1,n]);            %mean removed B  
             w               =   sqrt(n*M/(n+M));
-            wmd_old_new     =   w*(meanA_Dx1 - meanB_Dx1);                  %wmd is weighted mean difference
-            B_hat_DxMp1     =   [B_mr_DxM      wmd_old_new];     
+            wmd_A_B         =   w*(meanA_Dx1 - meanB_Dx1);                  %weighted mean difference between A and B
+            B_hat_DxMp1     =   [B_mr_DxM      wmd_A_B];     
             
             n               =   n+newM;
         end
-        Stilde              =   diag(S_N1x1);
-        %>[new_basis,R,E]           =   qr([ ff*U_DxN1*Stilde, B_hat_DxMp1 ], 0); %> old way
+        Stilde              =   diag(S_Nx1);
+        %>[Bspan_DxNpMp1,R,E]=   qr([ ff*U_DxN*Stilde, B_hat_DxMp1 ], 0); %> old way
 
 		%step 3.
-        Bproj_MxNp1         =   U_DxN1'*B_hat_DxMp1;            %> projections on U
-        Bin_DxNp1           =   U_DxN1*Bproj_MxNp1;
-        Bout_DxNp1          =   B_hat_DxMp1 - Bin_DxNp1;
-        [Btilde_DxNp1, dummy] ...
-                            =   qr(Bout_DxNp1, 0);
-        new_basis           =   [U_DxN1 Btilde_DxNp1];                      %spans A (old) and B (new)
-        R                   =   [ff*diag(S_N1x1)                               Bproj_MxNp1; ...
-                                 zeros([size(B_hat_DxMp1,2) length(S_N1x1)])   Btilde_DxNp1'*Bout_DxNp1];
+        Bproj_NxMp1         =   U_DxN'*B_hat_DxMp1;            %> projections on U
+        Bin_DxMp1           =   U_DxN*Bproj_NxMp1;
+        Bout_DxMp1          =   B_hat_DxMp1 - Bin_DxMp1;
+        [Btilde_DxMp1, dummy] ...
+                            =   qr(Bout_DxMp1, 0);
+        Bspan_DxNpMp1       =   [U_DxN Btilde_DxMp1];                       %spans A (old) and B (new), NpMp1 = N+M+1
+        R                   =   [ff*diag(S_Nx1)                               Bproj_NxMp1; ...
+                                 zeros([size(B_hat_DxMp1,2) length(S_Nx1)])   Btilde_DxMp1'*Bout_DxMp1];
 	
 		%step 4.
         [Utilde,Stilde,Vtilde]  ...
@@ -132,7 +133,7 @@ function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN1, S_N1x1, meanA_Dx1
             keep            =   1:min(K,length(Stilde));
         end
         Stilde              =   Stilde(keep);
-        Utilde              =   new_basis * Utilde(:, keep);
+        Utilde              =   Bspan_DxNpMp1 * Utilde(:, keep);
     end
 
 %-----------------------------------------------

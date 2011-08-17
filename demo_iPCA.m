@@ -16,22 +16,23 @@
     clear;
     clc;
     close all;
+    format compact;
 
     datasetCode             =   1;
     
     if (datasetCode==1) 
-        D                   =   1000;
-        N                   =   40;
-        M                   =   30; 
-        A_DxN               =   250*randn(D,N);
-        B_DxM               =   350*randn(D,M);
+        D                   =   1089;
+        N                   =   10;
+        M                   =   5; 
+        A_DxN               =   randn(D,N);
+        B_DxM               =   randn(D,M);
     elseif (datasetCode==2)   
         A_DxN               =   [1 0;
                                  0 1;
                                  0 0];
         [D,N]               =   size(A_DxN);
         B_DxM               =   [0 0 ; 
-                                 0 4 ; 
+                                 0 1; 
                                  1 0];                           
         [D,M]               =   size(B_DxM); 
     elseif (datasetCode==3)   %must have incremental_svd.mat in current directory to use this option
@@ -58,12 +59,16 @@
 %reference    
     [U_DxNt S_NtxNt W_NtxNt]=   svd([A_DxN B_DxM],0);
     
-    err_DxNt                =   U_DxNt_sklm - U_DxNt;
-    rmse                    =   UTIL_METRICS_compute_rms_value(err_DxNt(:))
-                                surf(err_DxNt)
-                                %whos;
+    err1_DxNt               =   U_DxNt_sklm  - U_DxNt; %sklm is original code by David Ross
+    err2_DxNt               =   U_DxNt_sklm2 - U_DxNt; %my code with cosmetic changes to make more readable
+    rmse1                   =   UTIL_METRICS_compute_rms_value(err1_DxNt(:))
+    rmse2                   =   UTIL_METRICS_compute_rms_value(err2_DxNt(:))
+                                surf(err1_DxNt)
                                 
     err1                    =   U_DxNt_sklm - U_DxNt_sklm2;
     norm(err1(:))
+    
+    h                       =   gcf;
+    UTIL_FILE_save2pdf('out.pdf', h, 300);
 
     
