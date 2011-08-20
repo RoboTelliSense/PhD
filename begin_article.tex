@@ -18,4 +18,19 @@ frame=single,
 captionpos=b,
 backgroundcolor=\color{light-gray}}
 \usepackage[3D]{movie15} %for movies (needs hyperref)
+	\newenvironment{changemargin}[2]
+	{
+	  	\begin{list}{}
+		{
+			\setlength{\topsep}{0pt}%
+			\setlength{\leftmargin}{#1}%
+			\setlength{\rightmargin}{#2}%
+			\setlength{\listparindent}{\parindent}%
+			\setlength{\itemindent}{\parindent}%
+			\setlength{\parsep}{\parskip}%
+		}
+	  	\item[]
+		}
+		{\end{list}
+	}
 \author{Salman Aslam\\Georgia Tech}

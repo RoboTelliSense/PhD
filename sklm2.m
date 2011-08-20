@@ -73,9 +73,9 @@ function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN, S_Nx1, meanA_Dx1, 
             Stilde          =   0;
         else
             meanC_Dx1       =   mean(B_DxM,2);
-            B_mr_DxM        =   B_DxM - repmat(meanC_Dx1,[1,n]);
+            Bz_DxM        =   B_DxM - repmat(meanC_Dx1,[1,n]);
             [Utilde,Stilde,Vtilde]   ...
-                            =   svd(B_mr_DxM, 0);
+                            =   svd(Bz_DxM, 0);
             Stilde          =   diag(Stilde);
             meanC_Dx1       =   reshape(meanC_Dx1, size(meanA_Dx1));
         end
@@ -100,10 +100,9 @@ function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN, S_Nx1, meanA_Dx1, 
             meanC_Dx1       =  (newM*meanA_Dx1 + n*meanB_Dx1)/(n+newM);     %combined data
             
             %step 2. augment mean removed B with wmd (weighted mean difference)
-            B_mr_DxM        =   B_DxM - repmat(meanB_Dx1,[1,n]);            %mean removed B  
-            w               =   sqrt(n*M/(n+M));
-            wmd_A_B         =   w*(meanA_Dx1 - meanB_Dx1);                  %weighted mean difference between A and B
-            B_hat_DxMp1     =   [B_mr_DxM      wmd_A_B];     
+            Bz_DxM          =   B_DxM - repmat(meanB_Dx1,[1,n]);            %z: centered around zero, i.e. mean removed
+            extra_term      =   sqrt(n*M/(n+M))*(meanA_Dx1 - meanB_Dx1);    %extra term is weighted mean difference between means of A and B
+            B_hat_DxMp1     =   [Bz_DxM      extra_term];     
             
             n               =   n+newM;
         end
