@@ -1,31 +1,35 @@
-\include{begin}
+\include{begin_article}
+\begin{document}
+
+The covariance matrix $\mathbf{\Sigma}_C$ of input matrix $\mathbf{C}$ is given by,
+
+\begin{equation}
+\begin{array}{llll}
+\mathbf{\Sigma}_C &= \mathbb{E}[(\mathbf{C}-\mathbf{\mu}_\mathbf{C})(\mathbf{C}-\mu_\mathbf{C})^T] & \textrm{\scriptsize (subtract $\mathbf{\mu}_\mathbf{C}$ from every column of \textbf{C})}\\
+&=\frac{1}{N+M}\sum\limits_{i=1}^{N+M} (\mathbf{c}_i-\mathbf{\mu}_\mathbf{C})(\mathbf{c}_i-\mu_\mathbf{C})^T & \textrm{\scriptsize ($\mathbf{c}_i$ is the $i$-th column of matrix $\mathbf{C}$)}\\
+\end{array}
+\end{equation}
+
+The \emph{scatter matrix} $\mathbf{S}_C$ of input matrix $\mathbf{C}$ is given by,
+
+\begin{equation}
+\begin{array}{llll}
+\mathbf{S}_C &= (N+M) * \mathbf{\Sigma}_C \\
+&= \sum\limits_{i=1}^{N+M} (\mathbf{c}_i-\mathbf{\mu}_\mathbf{C})(\mathbf{c}_i-\mu_\mathbf{C})^T \\
+&= \sum\limits_{i=1}^{N} (\mathbf{c}_i-\mathbf{\mu}_\mathbf{C})(\mathbf{c}_i-\mu_\mathbf{C})^T &+ \sum\limits_{i=N+1}^{N+M} (\mathbf{c}_i-\mathbf{\mu}_\mathbf{C})(\mathbf{c}_i-\mu_\mathbf{C})^T\\
+&= \sum\limits_{i=1}^{N}
+ (\mathbf{c}_i-\mathbf{\mu}_\mathbf{A} +\mathbf{\mu}_\mathbf{A} - \mathbf{\mu}_\mathbf{C}) (\mathbf{c}_i-\mathbf{\mu}_\mathbf{A} +\mathbf{\mu}_\mathbf{A} - \mathbf{\mu}_\mathbf{C})^T &+  \sum\limits_{i=N+1}^{N+M}
+ (\mathbf{c}_i-\mathbf{\mu}_\mathbf{B} +\mathbf{\mu}_\mathbf{B} - \mathbf{\mu}_\mathbf{C}) (\mathbf{c}_i-\mathbf{\mu}_\mathbf{B} &+\mathbf{\mu}_\mathbf{B} - \mathbf{\mu}_\mathbf{C})^T \\
+&=\mathbf{S}_A + N(\mathbf{\mu}_\mathbf{A} - \mathbf{\mu}_\mathbf{C}) &+ \mathbf{S}_B +  N(\mathbf{\mu}_\mathbf{B} - \mathbf{\mu}_\mathbf{C})
+\end{array}
+\end{equation}
+
+
+
+
+
 
 %####################################################################################################
-\title{test}
-%####################################################################################################
 
-
-\begin{frame}
-\frametitle{Weak Law of Large Numbers}
-\logoEvolution\mypagenum
-	\begin{itemize}
-		\item Take 2 random variables $X$ and $Y$
-		\item If they are uncorrelated, we want to know what is $E[X_c Y_c]=E[(X-\mu_X)(Y-\mu_Y)]$
-		\item centered around 0, i.e., $E[X]=0, E[Y]=0$, we want to know what is $E[XY]$
-		\begin{equation*}
-		\begin{
-		$E[X_c Y_c]=E[(X-\mu_X)(Y-\mu_Y)]$
-		\end{equation*}
-	\end{itemize}
-\end{frame}
-
-
-
-
-
-
-
-%####################################################################################################
-\printbibliography
-\include{end}
+\end{document}
 %####################################################################################################

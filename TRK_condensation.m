@@ -96,16 +96,18 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, sOptio
         end
 
         
-        
+        temp_DxNp = zeros(D,Np);
     elseif(algo_code==3) %i.e. RVQ
         err_0to1_DxNp     	= 	[];
-        sAlgo.rule_stop_decoding = 'monotonic_PSNR';
+        %sAlgo.rule_stop_decoding = 'monotonic_PSNR';
         sAlgo.rule_stop_decoding = 'realm_of_experience';
         for i = 1:Np
             Itst          	=   255*PFcandidateSnippets_0t1(:,:,i);
             sAlgo           =   RVQ__testing_grayscale(Itst(:), sAlgo);
-            %err_0to1_DxNp(:,i)   =   sAlgo.tst_err_Dx1/255;                                
-			err_0to1_DxNp(:,i)   	=   sAlgo.tst_err_Dx1/sAlgo.P;                                
+            %err_0to1_DxNp(:,i)  ...
+            %                =   sAlgo.tst_err_Dx1/255;                                
+            err_0to1_DxNp(:,i)  ...
+                            =   (abs(sAlgo.tst_err_Dx1) + 0.5*(sAlgo.maxP-sAlgo.P))/255;
         end
         
         
