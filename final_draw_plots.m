@@ -4,7 +4,7 @@ close all;
 
 
 Np          =   600;
-bUsebPCA    =   1;
+bUseBPCA     =   1;
 bUseRVQ     =   1;
 bUseTSVQ    =   1;
 
@@ -22,7 +22,7 @@ j=0;
 k=0;
 avg_trk_err = -1*zeros(4,4);
 for datasetCode=1:1
-    [datasetName, fullDatasetName] = dataset_getName(datasetCode);
+    [CONFIG.datasetName, CONFIG.fullDatasetName] = dataset_getName(datasetCode);
     
     for Nw = 2;%[2 4 8 16 32 64 128 10000]
         
@@ -36,29 +36,29 @@ for datasetCode=1:1
                 rvq_targetSNR   =   config(c,4);
                 tsvq_T          =   config(c,5);
                 j               =   j+1
-                [dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(fullDatasetName, bUsebPCA, bUseRVQ, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
-                cfn             =   [dir_out 'errTrk_3_ipca.csv'];
+                [dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(CONFIG.fullDatasetName, bUseBPCA , bUseRVQ, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+                cfn             =   [dir_out 'FPerr_3_ipca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
                     f               =   size(a,1);  %last frame number
                     avg_trk_err(c,1)=   [avg_trk_err a(f,3)];
                     k=k+1;
                 end
-                cfn             =   [dir_out 'errTrk_3_bpca.csv'];
+                cfn             =   [dir_out 'FPerr_3_bpca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
                     f               =   size(a,1);  %last frame number
                     avg_trk_err(c,2)=   [avg_trk_err a(f,3)];
                     k=k+1;
                 end
-                cfn             =   [dir_out 'errTrk_3_rvq.csv'];
+                cfn             =   [dir_out 'FPerr_3_rvq.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
                     f               =   size(a,1);  %last frame number
                     avg_trk_err(c,3)=   [avg_trk_err a(f,3)];
                     k=k+1;
                 end
-                cfn             =   [dir_out 'errTrk_3_tsvq.csv'];
+                cfn             =   [dir_out 'FPerr_3_tsvq.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
                     f               =   size(a,1);  %last frame number

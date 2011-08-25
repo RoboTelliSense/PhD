@@ -12,7 +12,7 @@ function numFramesInOutput = RVQ_0_cleanOutOldestFrameSnippetsFromSEDfile(cfn_se
         lastLineNumberToWrite               =   firstLineNumberToWrite + numLinesToWrite - 1;
         
                                                 %2. delete the .sed file
-                                                UTIL_FILE_deleteFile(cfn_sed);
+                                                UTIL_FILE_delete(cfn_sed);
 
     %3. open file for writing (discard existing contents, if any.
         fid                                 =   fopen(cfn_sed, 'w');

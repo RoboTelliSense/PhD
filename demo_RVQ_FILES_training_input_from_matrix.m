@@ -23,19 +23,19 @@
     DM2                     =   1:256;          %input data matrix, DxN                       
     [D,N]                   =   size(DM2);      %
     
-    sRVQ.maxP               =   8;              %max number of stages, sRVQ.P contains actual number of stages 
-    sRVQ.M                  =   2;              %number of codevectors/stage
-    sRVQ.targetSNR          =   1000;
-    sRVQ.sw                 =   1;              %snippet width
-    sRVQ.sh                 =   1;              %snippet height
-    sRVQ.dir_out            =   '';             %directory where output files are saved
+    RVQ.maxP               =   8;              %max number of stages, RVQ.P contains actual number of stages 
+    RVQ.M                  =   2;              %number of codevectors/stage
+    RVQ.targetSNR          =   1000;
+    RVQ.sw                 =   1;              %snippet width
+    RVQ.sh                 =   1;              %snippet height
+    RVQ.dir_out            =   '';             %directory where output files are saved
 
 %-------------------------------
 % PROCESSING
 %-------------------------------
     %training (gen -l will test training examples as well)
-    sRVQ                    =   RVQ__training       (DM2, sRVQ);    %creates the .sml file for RVQ, then runs gen.exe for training
+    RVQ                    =   RVQ__training       (DM2, RVQ);    %creates the .sml file for RVQ, then runs gen.exe for training
                                                                     %codebooks, then runs gen.exe -l to test training vectors and 
                                                                     %saves results in positiveExamples.idx
 
-                                sRVQ.CB_r                           %display the codebook
+                                RVQ.CB_r                           %display the codebook

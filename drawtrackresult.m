@@ -11,7 +11,7 @@ function drawopt = drawtrackresult(drawopt, fno, frame, tmpl, param, pts)
 %   frame(fh,fw) : current frame
 %   tmpl.mean(th,tw) : mean image
 %       .basis(tN,nb) : basis
-%   param.best_vecAff_1x6 : current estimate
+%   param.best_affineROI_1x6 : current estimate
 %        .bestimg : warped image
 %       [.err,mask] : error, mask image
 %       [.param,conf] : condensation
@@ -50,7 +50,7 @@ imagesc(frame, [0,1]); hold on;
 if (drawopt.showcondens && isfield(param,'param') && isfield(param,'conf'))
   p = affparam2mat(param.param(:,find(param.conf > drawopt.thcondens)));
   for i = 1:size(p,2)
-    UTIL_drawQuadFrom6affineParams(sz, p(:,i), 'Color','g');
+    UTIL_drawQuadFrom6affine_1x6(sz, p(:,i), 'Color','g');
   end
 end
 if (exist('pts'))
@@ -58,7 +58,7 @@ if (exist('pts'))
   if (size(pts,3) > 2)  plot(pts(1,:,3),pts(2,:,3),'rx','MarkerSize',10);  end;
 end
 text(5, 18, num2str(fno), 'Color','y', 'FontWeight','bold', 'FontSize',18);
-UTIL_drawQuadFrom6affineParams(sz, param.best_vecAff_1x6, 'Color','r', 'LineWidth',2.5);
+UTIL_drawQuadFrom6affine_1x6(sz, param.best_affineROI_1x6, 'Color','r', 'LineWidth',2.5);
 axis equal tight off; hold off;
 
 if (isfield(curaxis,'basis'))

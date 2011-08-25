@@ -1,5 +1,5 @@
-function UTIL_drawQuadFrom6affineParams(varargin)
-% function UTIL_drawQuadFrom6affineParams(width,height, param, properties)
+function UTIL_drawQuadFrom6affine_1x6(varargin)
+% function UTIL_drawQuadFrom6affine_1x6(width,height, param, properties)
 %                 ([width,height], param, properties)
 %
 %   param, properties are optional

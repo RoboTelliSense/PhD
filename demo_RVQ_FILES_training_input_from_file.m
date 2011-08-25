@@ -16,8 +16,8 @@
 %-------------------------------
 % PRE-PROCESSING
 %-------------------------------
-    UTIL_FILE_deleteFile('referenceRVQ\F1.ecbk');
-    UTIL_FILE_deleteFile('referenceRVQ\F1.dcbk');
+    UTIL_FILE_delete('referenceRVQ\F1.ecbk');
+    UTIL_FILE_delete('referenceRVQ\F1.dcbk');
     
 %-------------------------------
 % PROCESSING

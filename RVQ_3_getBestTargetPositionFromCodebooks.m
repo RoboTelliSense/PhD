@@ -22,7 +22,7 @@ function [cix_best, ciy_best] = RVQ_3_getBestTargetPositionFromCodebooks(dir_out
 %                                                         str = sprintf('               %d of %d: delete %s if it exists', i, totalPixelsToTest, cfn_sed_temp);
 %                                                         disp(str);
 %                                                         disp('               ----')
-                UTIL_FILE_deleteFile     (cfn_sed_temp);
+                UTIL_FILE_delete     (cfn_sed_temp);
                 
 %                                                         disp('               ----')
 %                                                         str = sprintf('               %d of %d: copy %s to %s', i, totalPixelsToTest, cfn_sed, cfn_sed_temp);

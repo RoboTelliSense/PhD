@@ -29,16 +29,16 @@
 % Date last modified : July 30, 2011.
 %%
 
-function sRVQ = RVQ__testing_grayscale(x_Dx1, sRVQ)
+function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
 
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   sRVQ.CB_r;   %1 channel codebook, get it from the red, green or blue channel
-    P                       =   sRVQ.P;      %actual number of stages in the codebook
-    M                       =   sRVQ.M;      %number of codevectors/stage
-    sw                      =   sRVQ.sw;     %snippet width
-    sh                      =   sRVQ.sh;     %snippet height
+    CB_DxMP                 =   RVQ.CB_r;   %1 channel codebook, get it from the red, green or blue channel
+    P                       =   RVQ.P;      %actual number of stages in the codebook
+    M                       =   RVQ.M;      %number of codevectors/stage
+    sw                      =   RVQ.sw;     %snippet width
+    sh                      =   RVQ.sh;     %snippet height
     D                       =   sw*sh;       %dimension of data
     partialP                =   0;
 %-------------------------------
@@ -82,11 +82,11 @@ function sRVQ = RVQ__testing_grayscale(x_Dx1, sRVQ)
         
         
         %part3: should we continue or exit?
-        if      (strcmp(sRVQ.rule_stop_decoding, 'realm_of_experience'))
-            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (sRVQ.trg_XDRs_PxN, temp2_XDR_parPx1);
-        elseif  (strcmp(sRVQ.rule_stop_decoding, 'monotonic_PSNR'))
+        if      (strcmp(RVQ.rule_stop_decoding, 'realm_of_experience'))
+            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_XDRs_PxN, temp2_XDR_parPx1);
+        elseif  (strcmp(RVQ.rule_stop_decoding, 'monotonic_PSNR'))
             continue_decoding   =   RVQ_RULES_DECODE_STOPPING_monotonic_PSNR       (temp2_PSNRdB, PSNRdB_prev);
-        elseif  (strcmp(sRVQ.rule_stop_decoding, 'full_stage'))
+        elseif  (strcmp(RVQ.rule_stop_decoding, 'full_stage'))
             continue_decoding   =   true;
         end
         
@@ -112,11 +112,11 @@ function sRVQ = RVQ__testing_grayscale(x_Dx1, sRVQ)
 %-------------------------------
 %POST-PROCESSING
 %-------------------------------
-    sRVQ.tst_xhat_Dx1       =   xhat_Dx1;                           %(a) reconstruction
-    sRVQ.tst_err_Dx1        =   err_Dx1;                            %(b) residual error
-    sRVQ.tst_XDR_Px1        =   XDR_Px1;                            %(c) save RVQ path
+    RVQ.tst_xhat_Dx1       =   xhat_Dx1;                           %(a) reconstruction
+    RVQ.tst_err_Dx1        =   err_Dx1;                            %(b) residual error
+    RVQ.tst_XDR_Px1        =   XDR_Px1;                            %(c) save RVQ path
 
-    sRVQ.tst_partialP       =   partialP;                           %(d) metrics            
-    sRVQ.tst_SNRdB          =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  err_Dx1);  
-    sRVQ.tst_rmse           =   UTIL_METRICS_compute_rms_value   (        err_Dx1);
-    sRVQ.tst_PSNRdB         =   UTIL_METRICS_compute_PSNRdB      (255,    err_Dx1);
+    RVQ.tst_partialP       =   partialP;                           %(d) metrics            
+    RVQ.tst_SNRdB          =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  err_Dx1);  
+    RVQ.tst_rmse           =   UTIL_METRICS_compute_rms_value   (        err_Dx1);
+    RVQ.tst_PSNRdB         =   UTIL_METRICS_compute_PSNRdB      (255,    err_Dx1);

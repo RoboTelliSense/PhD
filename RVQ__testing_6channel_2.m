@@ -1,17 +1,17 @@
-function sRVQ = RVQ__testing_grayscale(tst_Dx1, sRVQ)
+function RVQ = RVQ__testing_grayscale(tst_Dx1, RVQ)
 
     tst_6Dx1                            =   RVQ_FILES_create_posnegImage(tst_Dx1, '', 0, 0);
 
-    CB_r                               =   sRVQ.CB_r;
-    CB_g                               =   sRVQ.CB_g;
-    CB_b                               =   sRVQ.CB_b;
-    CBn_r                              =   sRVQ.CBn_r;
-    CBn_g                              =   sRVQ.CBn_g;
-    CBn_b                              =   sRVQ.CBn_b;
-    T                                   =   sRVQ.T;
-    S                                   =   sRVQ.S;
-    sw                                  =   sRVQ.sw;
-    sh                                  =   sRVQ.sh;
+    CB_r                               =   RVQ.CB_r;
+    CB_g                               =   RVQ.CB_g;
+    CB_b                               =   RVQ.CB_b;
+    CBn_r                              =   RVQ.CBn_r;
+    CBn_g                              =   RVQ.CBn_g;
+    CBn_b                              =   RVQ.CBn_b;
+    T                                   =   RVQ.T;
+    S                                   =   RVQ.S;
+    sw                                  =   RVQ.sw;
+    sh                                  =   RVQ.sh;
     D                                   =   sw*sh;
     
     SoC                                 =   T + ones(T,1);  %i initialize with T+1 because T+1 is the code for early termination
@@ -69,12 +69,12 @@ function sRVQ = RVQ__testing_grayscale(tst_Dx1, sRVQ)
 
         
     %pass out
-        sRVQ.tst_recon_Dx1    =   recon_6Dx1;
-        sRVQ.tst_err_Dx1      =   err_6Dx1;
-        sRVQ.tst_XDR_Px1   =   SoC;
+        RVQ.tst_recon_Dx1    =   recon_6Dx1;
+        RVQ.tst_err_Dx1      =   err_6Dx1;
+        RVQ.tst_XDR_Px1   =   SoC;
         
-        sRVQ.tst_partialP =   numStagesUsed;
+        RVQ.tst_partialP =   numStagesUsed;
                 
-        sRVQ.tst_SNRdB      =   UTIL_METRICS_compute_SNRdB       (tst_6Dx1,   err_6Dx1);  %for PSNR, you only give error signal
-        sRVQ.tst_rmse     =   UTIL_METRICS_compute_rms_value   (           err_6Dx1);
-        sRVQ.tst_PSNRdB     =   max(PSNR_dB);
+        RVQ.tst_SNRdB      =   UTIL_METRICS_compute_SNRdB       (tst_6Dx1,   err_6Dx1);  %for PSNR, you only give error signal
+        RVQ.tst_rmse     =   UTIL_METRICS_compute_rms_value   (           err_6Dx1);
+        RVQ.tst_PSNRdB     =   max(PSNR_dB);

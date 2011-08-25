@@ -25,37 +25,37 @@ sh                  =   33;
 
 
 %file names
-    cfn_truepts         =   [dir_out 'truepts.csv'];
+    cfn_truepts         =   [dir_out 'GT.csv'];
 
     cfn_RVQtrackpts     =   [dir_out 'RVQtrackpts.csv'];
     cfn_PCAtrackpts     =   [dir_out 'PCAtrackpts.csv'];
     cfn_myPCAtrackpts   =   [dir_out 'myPCAtrackpts.csv'];
     cfn_TSVQtrackpts    =   [dir_out 'TSVQtrackpts.csv'];
 
-    cfn_RVQaffineParams     =   [dir_out 'RVQaffine.csv'];
-    cfn_PCAaffineParams     =   [dir_out 'PCAaffine.csv'];
-    cfn_myPCAaffineParams   =   [dir_out 'myPCAaffine.csv'];
-    cfn_TSVQaffineParams    =   [dir_out 'TSVQaffine.csv'];
+    cfn_RVQaffine_1x6     =   [dir_out 'RVQaffine.csv'];
+    cfn_PCAaffine_1x6     =   [dir_out 'PCAaffine.csv'];
+    cfn_myPCAaffine_1x6   =   [dir_out 'myPCAaffine.csv'];
+    cfn_TSVQaffine_1x6    =   [dir_out 'TSVQaffine.csv'];
 
 %ground truth    
 %     if exist(cfn_truepts,'file')
-%         truepts = csvread(cfn_truepts);
+%         GT = csvread(cfn_truepts);
 %         RVQtrackpts = csvread(cfn_RVQtrackpts);
 %         mypts=[];
 %     end
 
 %affine parameters    
-    %if exist(cfn_PCAaffineParams,'file')    bUsePCA=1;      end
-    %if exist(cfn_myPCAaffineParams,'file')  bUseMyPCA=1;    end
-    %if exist(cfn_RVQaffineParams,'file')    bUseRVQ=1;      end
-    %if exist(cfn_TSVQaffineParams,'file')   bUseTSVQ=1;     end
+    %if exist(cfn_PCAaffine_1x6,'file')    bUsePCA=1;      end
+    %if exist(cfn_myPCAaffine_1x6,'file')  bUseMyPCA=1;    end
+    %if exist(cfn_RVQaffine_1x6,'file')    bUseRVQ=1;      end
+    %if exist(cfn_TSVQaffine_1x6,'file')   bUseTSVQ=1;     end
     
-    if (bUsePCA)    PCAaffineParams     =   csvread(cfn_PCAaffineParams); end
-    if (bUseMyPCA)  myPCAaffineParams   =   csvread(cfn_myPCAaffineParams); end
-    if (bUseRVQ)    RVQaffineParams     =   csvread(cfn_RVQaffineParams); end
-    if (bUseTSVQ)   TSVQaffineParams    =   csvread(cfn_TSVQaffineParams); end
+    if (bUsePCA)    PCAaffine_1x6     =   csvread(cfn_PCAaffine_1x6); end
+    if (bUseMyPCA)  myPCAaffine_1x6   =   csvread(cfn_myPCAaffine_1x6); end
+    if (bUseRVQ)    RVQaffine_1x6     =   csvread(cfn_RVQaffine_1x6); end
+    if (bUseTSVQ)   TSVQaffine_1x6    =   csvread(cfn_TSVQaffine_1x6); end
 
-    [F, temp] = size(PCAaffineParams);
+    [F, temp] = size(PCAaffine_1x6);
 
 
 for f=1:F
@@ -66,7 +66,7 @@ for f=1:F
     hold on;
 %     if exist(cfn_truepts,'file')
 %         
-%         a = truepts(f,:);
+%         a = GT(f,:);
 %         b = RVQtrackpts(f,:);
 %         mypts(1,1:7,2) = a(2:8);
 %         mypts(2,1:7,2) = a(9:15);
@@ -77,10 +77,10 @@ for f=1:F
 %         plot(mypts(1,:,2),mypts(2,:,2),'yx','MarkerSize',10);
 %         plot(mypts(1,:,3),mypts(2,:,3),'rx','MarkerSize',10);
 %     end
-    if (bUsePCA)    drawbox([sh sw], PCAaffineParams(f, 2:7), 'Color','r', 'LineWidth',2.5);    end
-    if (bUseMyPCA)  drawbox([sh sw], myPCAaffineParams(f, 2:7), 'Color','y', 'LineWidth',2.5);  end
-    if (bUseRVQ)    drawbox([sh sw], RVQaffineParams(f, 2:7), 'Color','g', 'LineWidth',2.5);   end
-    if (bUseTSVQ)   drawbox([sh sw], TSVQaffineParams(f, 2:7), 'Color','b', 'LineWidth',2.5);   end
+    if (bUsePCA)    drawbox([sh sw], PCAaffine_1x6(f, 2:7), 'Color','r', 'LineWidth',2.5);    end
+    if (bUseMyPCA)  drawbox([sh sw], myPCAaffine_1x6(f, 2:7), 'Color','y', 'LineWidth',2.5);  end
+    if (bUseRVQ)    drawbox([sh sw], RVQaffine_1x6(f, 2:7), 'Color','g', 'LineWidth',2.5);   end
+    if (bUseTSVQ)   drawbox([sh sw], TSVQaffine_1x6(f, 2:7), 'Color','b', 'LineWidth',2.5);   end
     %pause
     hold off;
     title(str_f);

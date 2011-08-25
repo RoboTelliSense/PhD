@@ -82,7 +82,7 @@ bSave                   =   true;
 
         %bootsrap
         %--------
-                                        UTIL_FILE_deleteFile                                 ('test_out\positiveExamples.csv');
+                                        UTIL_FILE_delete                                 ('test_out\positiveExamples.csv');
             if (ispc)                   UTIL_copyFile                                   (cfn_gt, 'test_out\positiveExamples.csv');
             elseif (isunix)             UTIL_copyFile                                   (cfn_gt, 'test_out/positiveExamples.csv');
             end
@@ -355,8 +355,8 @@ bSave                   =   true;
 
             %1. training
             %-----------   
-%                                             UTIL_FILE_deleteFile(cfn_poscsv_temp);
-%                                             UTIL_FILE_deleteFile(cfn_poscsv);
+%                                             UTIL_FILE_delete(cfn_poscsv_temp);
+%                                             UTIL_FILE_delete(cfn_poscsv);
                             %                 for i=1:length(GT) %if you have ground truth, use it to create snippet extraction details file, if not, you should have one created manually by now
                             %                     [tgtID, Bx,By,Bw,Bh,gx,gy] =    RVQ_0_readGroundTruth(GT{i}, f1); %get ground truth target center
                             %                     if (i==1)

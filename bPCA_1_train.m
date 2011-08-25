@@ -7,7 +7,7 @@
 %DM1 is design matrix, NxD, i.e. input vectors are in rows
 %DM2 is design matrix, DxN, i.e. input vectors are in columns
 %for images, another consideration is how the input vectors themselves were generated, were the pixels concatenated row wise or column wise
-function sBPCA = bPCA_1_train(DM2, sBPCA)
+function BPCA = bPCA_1_train(DM2, BPCA)
 
     [D, N]                      =   size                (DM2);
     
@@ -16,12 +16,12 @@ function sBPCA = bPCA_1_train(DM2, sBPCA)
     
     [U, S, V]                   =   svd                 (DM2_mr, 0);  %svd(X,0) produces the "economy size" decomposition. If X is m-by-n with m > n, then svd computes only the first n columns of U and S is n-by-n.      
 
-    sBPCA.trgout_U_DxD  	=	U;  %normally DxD
-	sBPCA.trgout_S_DxD      =	S;	%DxD
-	sBPCA.trgout_V_NxN  	=	V;	%normally NxN
-	sBPCA.trgout_M_Dx1      =	meanSignal;
+    BPCA.trgout_U_DxD  	=	U;  %normally DxD
+	BPCA.trgout_S_DxD      =	S;	%DxD
+	BPCA.trgout_V_NxN  	=	V;	%normally NxN
+	BPCA.trgout_M_Dx1      =	meanSignal;
     
-    sBPCA                   =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, sBPCA, 2);   %2 is the algo code
+    BPCA                   =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, BPCA, 2);   %2 is the algo code
     
     
 	

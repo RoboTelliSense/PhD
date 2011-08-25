@@ -1,4 +1,4 @@
-function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,row_recon, row_recon_err, fs, algo_code)
+function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CONFIG.plot_row2, CONFIG.plot_row3, CONFIG.plot_title_fontsize, algo_code)
 
         if      (algo_code==1)  str='iPCA';     color = 'r';    
         elseif  (algo_code==2)  str='bPCA';     color = 'm';
@@ -7,7 +7,7 @@ function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,ro
         end
     
     %reconstruction
-        row_idx = row_recon;
+        row_idx = CONFIG.plot_row2;
         if      (algo_code==1)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+1);     
         elseif  (algo_code==2)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+2);    
         elseif  (algo_code==3)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+3);    
@@ -17,12 +17,12 @@ function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,ro
         colormap('gray')
         imagesc(recon);
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle([str ', reconstruction'], color, fs);
+        UTIL_makeTitle([str ', reconstruction'], color, CONFIG.plot_title_fontsize);
         axis equal
         axis tight
 
     %reconstruction err_0t1or
-        row_idx = row_recon_err;
+        row_idx = CONFIG.plot_row3;
         if      (algo_code==1)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+1);    
         elseif  (algo_code==2)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+2);    
         elseif  (algo_code==3)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+3);    
@@ -32,6 +32,6 @@ function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,ro
         colormap('gray')
         imagesc(err_0t1);
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle([str ', recon. error'], color, fs);
+        UTIL_makeTitle([str ', recon. error'], color, CONFIG.plot_title_fontsize);
         axis equal
         axis tight

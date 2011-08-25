@@ -7,24 +7,24 @@
 %
 % sCondensation is the structure that holds information about the
 % condensation algorithm.  It has the following members:
-%    (a) best_vecAff_1x6: MAP estimate of best affine parameters that describe target bounding region
+%    (a) best_affineROI_1x6: MAP estimate of best affine parameters that describe target bounding region
 %    (b) affineCandidates_6xNp: possible affine candidates that describe target bounding region
 %    weights
 %    coef
-%    tst_bestPFcandidate_0t1
+%    tst_best_0t1
 %    err_0to1_DxNp
 %    recon
-%    tst_snr
+%    tst_SNRdB
 %    tst_rmse
 %
-% sOptions.vecAff_variance_1x6
+% CONFIG.tgt_affineROIvar_1x6
 %
 % Copyright (C) Jongwoo Lim and David Ross (modified by Salman Aslam with permission)
 % Date created      : April 25, 2011
 % Date last modified: July 14, 2011
 %%
 
-function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, sOptions, RandomData_sample, RandomData_cdf, algo_code)
+function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, CONFIG, RandomData_sample, RandomData_cdf, algo_code)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
@@ -33,7 +33,7 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, sOptio
     sz                      =   [sh sw];    
     D                       =   sw*sh;                   %dimensionality of input data
     
-    Np                      =   sOptions.Np;       %particle filter: # of particles (samples) from density)
+    Np                      =   CONFIG.in_Np;       %particle filter: # of particles (samples) from density)
     rn1                     =   RandomData_cdf(f,:);     %pre-stored random numbers to ensure repeatability    
     rn2(:,:)                =   RandomData_sample(f,:,:);%same as above
     
@@ -47,7 +47,7 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, sOptio
     if ~isfield(sCondensation,'affineCandidates_6xNp')
         %one time: initialize 6 affine parameters, one for each of the Np candidate snippets
         sCondensation.affineCandidates_6xNp       ...  %initialized with hand labeled parameters
-                            =   repmat(  affparam2geom(sCondensation.best_vecAff_1x6(:)), [1,Np]  );        %initialize candidates (one time)
+                            =   repmat(  affparam2geom(sCondensation.best_affineROI_1x6(:)), [1,Np]  );        %initialize candidates (one time)
     else
         %recurring: resample distribution in 3 lines (read details of this in my article on resampling)
         cumconf             =   cumsum(sCondensation.weights);
@@ -57,7 +57,7 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, sOptio
     end
 
 %2. apply motion model (brownian, so just add randomness)
-    delta_affineCandidates_6xNp=   rn2.*repmat(sOptions.vecAff_variance_1x6(:),[1,Np]); %rn2 is 
+    delta_affineCandidates_6xNp=   rn2.*repmat(CONFIG.tgt_affineROIvar_1x6(:),[1,Np]); %rn2 is 
     sCondensation.affineCandidates_6xNp           ...
                             =   sCondensation.affineCandidates_6xNp + delta_affineCandidates_6xNp;
 
@@ -122,29 +122,29 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, sOptio
     end
 
 %3b. raise distances to exponentials
-    if (~isfield(sOptions,'errfunc'))  
-        sOptions.errfunc ...
+    if (~isfield(CONFIG,'errfunc'))  
+        CONFIG.con_errfunc ...
                             =   [];  
     end
 
-    switch (sOptions.errfunc)
+    switch (CONFIG.con_errfunc)
         case 'robust';
             sCondensation.weights ...
-                            =   exp(-sum(err_0to1_DxNp.^2./(err_0to1_DxNp.^2+sOptions.rsig.^2))./sOptions.condenssig)';
+                            =   exp(-sum(err_0to1_DxNp.^2./(err_0to1_DxNp.^2+CONFIG.rsig.^2))./CONFIG.con_stddev)';
         case 'ppca';
             sCondensation.weights ...
-                            =   exp(-(sum(err_0to1_DxNp.^2) + sum(coefdiff.^2))./sOptions.condenssig)';
+                            =   exp(-(sum(err_0to1_DxNp.^2) + sum(coefdiff.^2))./CONFIG.con_stddev)';
         otherwise;
             sCondensation.weights ...
-                            =   exp(-sum(err_0to1_DxNp.^2)./sOptions.condenssig)';
+                            =   exp(-sum(err_0to1_DxNp.^2)./CONFIG.con_stddev)';
     end
 
 %4. pick MAP estimate
     sCondensation.weights     =   sCondensation.weights ./ sum(sCondensation.weights);            %normalize weights
     [maxprob,maxidx]        =   max(sCondensation.weights);                                   %MAP estimate: pick best index
-    sCondensation.best_vecAff_1x6 ...
+    sCondensation.best_affineROI_1x6 ...
                             =   affparam2mat(sCondensation.affineCandidates_6xNp(:,maxidx));  %MAP estimate: pick best affine parameters based on best index          
-    sCondensation.tst_bestPFcandidate_0t1 ...
+    sCondensation.tst_best_0t1 ...
                             =   PFcandidateSnippets_0t1(:,:,maxidx);                        %MAP estimate: pick best candidate snippet based on best index                
         
 
@@ -156,9 +156,9 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, sOptio
     if 	   (algo_code==1) 
         sCondensation.err_0to1_sw_x_sh =   -sCondensation.err_0to1_sw_x_sh; 
     end
-    sCondensation.recon       =   sCondensation.tst_bestPFcandidate_0t1 - sCondensation.err_0to1_sw_x_sh; %get reconstructed image
+    sCondensation.recon       =   sCondensation.tst_best_0t1 - sCondensation.err_0to1_sw_x_sh; %get reconstructed image
 
 %metrics    
-    sCondensation.tst_snr  =   UTIL_METRICS_compute_SNR       (sCondensation.tst_bestPFcandidate_0t1, sCondensation.err_0to1_sw_x_sh);
+    sCondensation.tst_SNRdB  =   UTIL_METRICS_compute_SNR       (sCondensation.tst_best_0t1, sCondensation.err_0to1_sw_x_sh);
     sCondensation.tst_rmse =   UTIL_METRICS_compute_rms_value (sCondensation.err_0to1_sw_x_sh(:)*255);
                                                                                          

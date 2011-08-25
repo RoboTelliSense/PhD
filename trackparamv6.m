@@ -114,8 +114,8 @@ if (~exist('datatitle') | ~strcmp(title,datatitle))
     pause;
   end
   disp(['loading ' title '...']);
-  clear truepts;
-  load([title 'v6.mat'],'data','datatitle','truepts');
+  clear GT;
+  load([title 'v6.mat'],'data','datatitle','GT');
 end
 
 param0 = [p(1), p(2), p(3)/32, p(5), p(4)/p(3), 0];

@@ -18,8 +18,8 @@ pts2 = points;
 pts1_new = reshape(pts1, 2,1,N);
 pts2_new = reshape(pts2, 2,1,N);
 %pts3_new = reshape(pts3, 2,1,N);
-%truepts = cat(2, pts1_new, pts2_new, pts3_new);
-truepts = cat(2, pts1_new, pts2_new);
+%GT = cat(2, pts1_new, pts2_new, pts3_new);
+GT = cat(2, pts1_new, pts2_new);
 
 clear points;
 clear pts1;

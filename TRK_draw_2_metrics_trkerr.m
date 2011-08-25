@@ -1,41 +1,39 @@
-    if (exist('truepts','var'))
+function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_metricstrk_rmse(CONFIG, trkIPCA, trkBPCA, trkRVQ, trkTSVQ)
+
+    
                                         figure(2);
                                         
                                         
                                         
                                         
-            ipca_trackpts(:,:,f)     =   sIPCA_cond.best_vecAff_1x6([3,4,1;5,6,2])*[pts0; ones(1,npts)];
-            ipca_pts                 =   cat(3, pts0+repmat(sz'/2,[1,npts]), truepts(:,:,f), ipca_trackpts(:,:,f));
-            PCAidx                  =   find(ipca_pts(1,:,2) > 0);
+            trkIPCA.FP_est(:,:,f)     =   trkIPCA.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.pts0; ones(1,CONFIG.numFP)];
+            trkIPCA.FP_gt                 =   cat(3, CONFIG.pts0+repmat(sz'/2,[1,CONFIG.numFP]), GT(:,:,f), trkIPCA.FP_est(:,:,f));
+            PCAidx                  =   find(trkIPCA.FP_gt(1,:,2) > 0);
             if (length(PCAidx) > 0)
-                ipca_trackerr(f)      =   sqrt(mean(sum((ipca_pts(:,PCAidx,2)-ipca_pts(:,PCAidx,3)).^2,1)));
+                trkIPCA.FPerr(f)      =   sqrt(mean(sum((trkIPCA.FP_gt(:,PCAidx,2)-trkIPCA.FP_gt(:,PCAidx,3)).^2,1)));
             else
-                ipca_trackerr(f)      =   nan;
+                trkIPCA.FPerr(f)      =   nan;
             end
-            ipca_trackerr_mean(f)           =   mean(ipca_trackerr(~isnan(ipca_trackerr)&(ipca_trackerr>0)));
-            if (exist('dispstr','var'))  
-                                        fprintf(repmat('\b',[1,length(dispstr)]));  
-            end;
-            %dispstr                 =   sprintf('frame %d, iPCA: %.4f / %.4f\n',f,ipca_trackerr(f),ipca_trackerr_mean(f));
-            %                            fprintf(dispstr);
+            trkIPCA.FPerr_avg(f)           =   mean(trkIPCA.FPerr(~isnan(trkIPCA.FPerr)&(trkIPCA.FPerr>0)));
+
                                         
                                         subplot(out_num_rows,out_num_cols,2)
-                                        plot(1:f, ipca_trackerr(1:f),'r');
+                                        plot(1:f, trkIPCA.FPerr(1:f),'r');
                                         set(gca, 'FontSize', 8);
-                                        if ~isfield(sRVQ,'T')
+                                        if ~isfield(RVQ,'T')
                                             str='tracking error';
                                         else
-                                            str=['tracking error, (' num2str(sRVQ.tst_partialP) '/' num2str(sRVQ.T) ')'];
+                                            str=['tracking error, (' num2str(RVQ.tst_partialP) '/' num2str(RVQ.T) ')'];
                                         end
-                                        title(str, 'fontsize', fs);
+                                        title(str, 'fontsize', CONFIG.plot_title_fontsize);
                                         %axis tight
                                         hold on
                                         grid on
                                         
                                         subplot(out_num_rows,out_num_cols,6)
-                                        plot(1:f, ipca_trackerr_mean(1:f),'r');
+                                        plot(1:f, trkIPCA.FPerr_avg(1:f),'r');
                                         set(gca, 'FontSize', 8);
-                                        title('mean tracking error', 'fontsize', fs);
+                                        title('mean tracking error', 'fontsize', CONFIG.plot_title_fontsize);
                                         %axis tight
                                         hold on
                                         grid on
@@ -45,31 +43,26 @@
             %h1_pos                  =   get(h1, 'Position');
             %                            set(h1, 'Position', [10, 90, h1_pos(3), h1_pos(4)]);
 
-        if (bUsebPCA)
-            bpca_trackpts(:,:,f)      =   sBPCA_cond.best_vecAff_1x6([3,4,1;5,6,2])*[pts0; ones(1,npts)];
-            bpca_pts                  =   cat(3, pts0+repmat(sz'/2,[1,npts]), truepts(:,:,f), bpca_trackpts(:,:,f));
-            bPCAidx                  =   find(bpca_pts(1,:,2) > 0);
+        if (bUseBPCA )
+            BPCA.FP_est(:,:,f)      =   trkBPCA.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.pts0; ones(1,CONFIG.numFP)];
+            trkBPCA.FP_gt                  =   cat(3, CONFIG.pts0+repmat(sz'/2,[1,CONFIG.numFP]), GT(:,:,f), BPCA.FP_est(:,:,f));
+            bPCAidx                  =   find(trkBPCA.FP_gt(1,:,2) > 0);
             if (length(bPCAidx) > 0)
-              % ipca_trackerr(f) = mean(sqrt(sum((ipca_pts(:,idx,2)-ipca_pts(:,idx,3)).^2,1)));
-                bpca_trackerr(f)      =   sqrt(mean(sum((bpca_pts(:,bPCAidx,2)-bpca_pts(:,bPCAidx,3)).^2,1)));
+              % trkIPCA.FPerr(f) = mean(sqrt(sum((trkIPCA.FP_gt(:,idx,2)-trkIPCA.FP_gt(:,idx,3)).^2,1)));
+                BPCA.FPerr(f)      =   sqrt(mean(sum((trkBPCA.FP_gt(:,bPCAidx,2)-trkBPCA.FP_gt(:,bPCAidx,3)).^2,1)));
             else
-                bpca_trackerr(f)      =   nan;
+                BPCA.FPerr(f)      =   nan;
             end
-            bpca_trackerr_mean(f)           =   mean(bpca_trackerr(~isnan(bpca_trackerr)&(bpca_trackerr>0)));
-            if (exist('dispstr','var'))  
-                                        fprintf(repmat('\b',[1,length(dispstr)]));  
-            end;
-            %dispstr                 =   sprintf('frame %d, bPCA: %.4f / %.4f\n',f,bpca_trackerr(f),bpca_trackerr_mean(f));
-            %                            fprintf(dispstr);
+            BPCA.FPerr_avg(f)           =   mean(BPCA.FPerr(~isnan(BPCA.FPerr)&(BPCA.FPerr>0)));
                                         
                                         subplot(out_num_rows,out_num_cols,2)
-                                        plot(1:f, bpca_trackerr(1:f),'m');
+                                        plot(1:f, BPCA.FPerr(1:f),'m');
                                         %axis tight
                                         hold on
                                         grid on
                                         
                                         subplot(out_num_rows,out_num_cols,6)
-                                        plot(1:f, bpca_trackerr_mean(1:f),'m');
+                                        plot(1:f, BPCA.FPerr_avg(1:f),'m');
                                         %axis tight
                                         hold on
                                         grid on                                    
@@ -79,32 +72,27 @@
         
                
         if (bUseTSVQ)
-            tsvq_trackpts(:,:,f)      =   sTSVQ_cond.best_vecAff_1x6([3,4,1;5,6,2])*[pts0; ones(1,npts)];
-            tsvq_pts                  =   cat(3, pts0+repmat(sz'/2,[1,npts]), truepts(:,:,f), tsvq_trackpts(:,:,f));
-            TSVQidx                  =   find(tsvq_pts(1,:,2) > 0);
+            TSVQ.FP_est(:,:,f)      =   trkTSVQ.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.pts0; ones(1,CONFIG.numFP)];
+            trkTSVQ.FP_gt                  =   cat(3, CONFIG.pts0+repmat(sz'/2,[1,CONFIG.numFP]), GT(:,:,f), TSVQ.FP_est(:,:,f));
+            TSVQidx                  =   find(trkTSVQ.FP_gt(1,:,2) > 0);
             if (length(TSVQidx) > 0)
-              % ipca_trackerr(f) =
-              % mean(sqrt(sum((ipca_pts(:,idx,2)-ipca_pts(:,idx,3)).^2,1)))
+              % trkIPCA.FPerr(f) =
+              % mean(sqrt(sum((trkIPCA.FP_gt(:,idx,2)-trkIPCA.FP_gt(:,idx,3)).^2,1)))
               % ;
-                tsvq_trackerr(f)      =   sqrt(mean(sum((tsvq_pts(:,TSVQidx,2)-tsvq_pts(:,TSVQidx,3)).^2,1)));
+                TSVQ.FPerr(f)      =   sqrt(mean(sum((trkTSVQ.FP_gt(:,TSVQidx,2)-trkTSVQ.FP_gt(:,TSVQidx,3)).^2,1)));
             else
-                tsvq_trackerr(f)      =   nan;
+                TSVQ.FPerr(f)      =   nan;
             end
-            tsvq_trackerr_mean(f)           =   mean(tsvq_trackerr(~isnan(tsvq_trackerr)&(tsvq_trackerr>0)));
-            if (exist('dispstr','var'))  
-                                        fprintf(repmat('\b',[1,length(dispstr)]));  
-            end;
-            %dispstr                 =   sprintf('frame %d, TSVQ: %.4f / %.4f\n',f,tsvq_trackerr(f),tsvq_trackerr_mean(f));
-            %                            fprintf(dispstr);
+            TSVQ.FPerr_avg(f)           =   mean(TSVQ.FPerr(~isnan(TSVQ.FPerr)&(TSVQ.FPerr>0)));
                                         
                                         subplot(out_num_rows,out_num_cols,2)
-                                        plot(1:f, tsvq_trackerr(1:f),'b');
+                                        plot(1:f, TSVQ.FPerr(1:f),'b');
                                         %axis tight
                                         hold on
                                         grid on
                                         
                                         subplot(out_num_rows,out_num_cols,6)
-                                        plot(1:f, tsvq_trackerr_mean(1:f),'b');
+                                        plot(1:f, TSVQ.FPerr_avg(1:f),'b');
                                         %axis tight
                                         hold on
                                         grid on
@@ -113,29 +101,24 @@
         
         
         if (bUseRVQ)
-            rvq__trackpts(:,:,f)      =   sRVQ__cond.best_vecAff_1x6([3,4,1;5,6,2])*[pts0; ones(1,npts)];
-            rvq__pts                  =   cat(3, pts0+repmat(sz'/2,[1,npts]), truepts(:,:,f), rvq__trackpts(:,:,f));
-            RVQidx                  =   find(rvq__pts(1,:,2) > 0);
+            RVQ.FP_est(:,:,f)      =   trkRVQ.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.pts0; ones(1,CONFIG.numFP)];
+            trkRVQ.FP_gt                  =   cat(3, CONFIG.pts0+repmat(sz'/2,[1,CONFIG.numFP]), GT(:,:,f), RVQ.FP_est(:,:,f));
+            RVQidx                  =   find(trkRVQ.FP_gt(1,:,2) > 0);
             if (length(RVQidx) > 0)
-                rvq__trackerr(f)      =   sqrt(mean(sum((rvq__pts(:,RVQidx,2)-rvq__pts(:,RVQidx,3)).^2,1)));
+                RVQ.FPerr(f)      =   sqrt(mean(sum((trkRVQ.FP_gt(:,RVQidx,2)-trkRVQ.FP_gt(:,RVQidx,3)).^2,1)));
             else
-                rvq__trackerr(f)      =   nan;
+                RVQ.FPerr(f)      =   nan;
             end
-            rvq__trackerr_mean(f)           =   mean(rvq__trackerr(~isnan(rvq__trackerr)&(rvq__trackerr>0)));
-            if (exist('dispstr','var'))  
-                                        fprintf(repmat('\b',[1,length(dispstr)]));  
-            end;
-            %dispstr                 =   sprintf('frame %d, RVQ : %.4f / %.4f\n',f,rvq__trackerr(f),rvq__trackerr_mean(f));
-            %                            fprintf(dispstr);
+            RVQ.FPerr_avg(f)           =   mean(RVQ.FPerr(~isnan(RVQ.FPerr)&(RVQ.FPerr>0)));
                                         
                                         subplot(out_num_rows,out_num_cols,2)
-                                        plot(1:f, rvq__trackerr(1:f),'g');
+                                        plot(1:f, RVQ.FPerr(1:f),'g');
                                         %axis tight
                                         hold on
                                         grid on
                                         
                                         subplot(out_num_rows,out_num_cols,6)
-                                        plot(1:f, rvq__trackerr_mean(1:f),'g');
+                                        plot(1:f, RVQ.FPerr_avg(1:f),'g');
                                         %axis tight
                                         hold on
                                         grid on                                       
@@ -148,4 +131,4 @@
         
         
         hold off;
-    end
+    

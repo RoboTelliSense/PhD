@@ -107,7 +107,7 @@ function [Utilde, Stilde, meanC_Dx1, n] = sklm2(B_DxM, U_DxN, S_Nx1, meanA_Dx1, 
             n               =   n+newM;
         end
         Stilde              =   diag(S_Nx1);
-        %>[Bspan_DxNpMp1,R,E]=   qr([ ff*U_DxN*Stilde, B_hat_DxMp1 ], 0); %> old way
+        [Bspan_DxNpMp1_old,R_old,E_old]=   qr([ ff*U_DxN*Stilde, B_hat_DxMp1 ], 0); %> old way
 
 		%step 3.
         Bproj_NxMp1         =   U_DxN'*B_hat_DxMp1;            %> projections on U

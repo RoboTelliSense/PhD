@@ -37,8 +37,8 @@ pca_maxBasis            =   16;
 
 %particle filter
 Np                      =   600;
-%RVQaffineParams         =   [];
-%PCAaffineParams         =   [];
+%RVQaffine_1x6         =   [];
+%PCAaffine_1x6         =   [];
 
                 h           =   figure;
                 w         =   0.2;
@@ -73,15 +73,15 @@ Np                      =   600;
                             m                                           =   M_rvq(midx);
                             dir_in                                      =   ['results_' txt1 '_maxT_' num2str(t) '_M_' num2str(m) '_Np_' num2str(Np) '_Nict_' num2str(Nict) '_PCA_' num2str(pca_maxBasis) '_' txt2];
                             dir_in                                      =   UTIL_addSlash(dir_in)    ;
-                            cfn_PCAaffineParams                         =   [dir_in 'PCAaffine.csv'];
-                            cfn_RVQaffineParams                         =   [dir_in 'RVQaffine.csv'];
-                            cfn_myPCAaffineParams                       =   [dir_in 'PCAaffine.csv'];
-                            cfn_TSVQaffineParams                        =   [dir_in 'PCAaffine.csv'];
-                            PCAaffineParams{tidx}{midx}                 =   csvread(cfn_PCAaffineParams);
-                            if (bUseMyPCA) RVQaffineParams{tidx}{midx}  =   csvread(cfn_myPCAaffineParams); end
-                            if (bUseRVQ) RVQaffineParams{tidx}{midx}    =   csvread(cfn_RVQaffineParams); end
-                            if (bUseTSVQ) RVQaffineParams{tidx}{midx}   =   csvread(cfn_TSVQaffineParams); end
-                            [F(ridx), temp]                             =   size(PCAaffineParams{1}{1});
+                            cfn_PCAaffine_1x6                         =   [dir_in 'PCAaffine.csv'];
+                            cfn_RVQaffine_1x6                         =   [dir_in 'RVQaffine.csv'];
+                            cfn_myPCAaffine_1x6                       =   [dir_in 'PCAaffine.csv'];
+                            cfn_TSVQaffine_1x6                        =   [dir_in 'PCAaffine.csv'];
+                            PCAaffine_1x6{tidx}{midx}                 =   csvread(cfn_PCAaffine_1x6);
+                            if (bUseMyPCA) RVQaffine_1x6{tidx}{midx}  =   csvread(cfn_myPCAaffine_1x6); end
+                            if (bUseRVQ) RVQaffine_1x6{tidx}{midx}    =   csvread(cfn_RVQaffine_1x6); end
+                            if (bUseTSVQ) RVQaffine_1x6{tidx}{midx}   =   csvread(cfn_TSVQaffine_1x6); end
+                            [F(ridx), temp]                             =   size(PCAaffine_1x6{1}{1});
                         end
                     end
 
@@ -106,8 +106,8 @@ Np                      =   600;
                                                               set(gca, 'XTickLabel', [])
                                                               set(gca, 'YTickLabel', [])
                                                                 hold on;
-                                                                drawbox([sh sw], PCAaffineParams{tidx}{midx}(f, 2:7), 'Color','r', 'LineWidth',1);
-                                                                drawbox([sh sw], RVQaffineParams{tidx}{midx}(f, 2:7), 'Color','g', 'LineWidth',1);
+                                                                drawbox([sh sw], PCAaffine_1x6{tidx}{midx}(f, 2:7), 'Color','r', 'LineWidth',1);
+                                                                drawbox([sh sw], RVQaffine_1x6{tidx}{midx}(f, 2:7), 'Color','g', 'LineWidth',1);
                                                                 hold off; 
                                                                 title(['\color[rgb]{0.0 .7 0}' num2str(m) 'x' num2str(t)]);
                                                                 drawnow

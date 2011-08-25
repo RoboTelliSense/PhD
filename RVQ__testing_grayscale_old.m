@@ -21,16 +21,16 @@
 % Date last modified : July 7, 2011.
 %%
 
-function sRVQ = RVQ__testing_grayscale_old(x_Dx1, sRVQ)
+function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
 
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   sRVQ.CB_r;   %1 channel codebook, get it from the red, green or blue channel
-    P                       =   sRVQ.P;      %actual number of stages in the codebook
-    M                       =   sRVQ.M;      %number of codevectors/stage
-    sw                      =   sRVQ.sw;     %snippet width
-    sh                      =   sRVQ.sh;     %snippet height
+    CB_DxMP                 =   RVQ.CB_r;   %1 channel codebook, get it from the red, green or blue channel
+    P                       =   RVQ.P;      %actual number of stages in the codebook
+    M                       =   RVQ.M;      %number of codevectors/stage
+    sw                      =   RVQ.sw;     %snippet width
+    sh                      =   RVQ.sh;     %snippet height
     D                       =   sw*sh;       %dimension of data
     
     XDR                     =   P + ones(P,1);      %i initialize with P+1, the code for early termination
@@ -93,12 +93,12 @@ function sRVQ = RVQ__testing_grayscale_old(x_Dx1, sRVQ)
 %POST-PROCESSING
 %-------------------------------
 %pass out
-    sRVQ.tst_xhat_Dx1    =   xhat_Dx1;
-    sRVQ.tst_err_Dx1     =   R_Dx1;
-    sRVQ.tst_XDR_Px1  =   XDR;
+    RVQ.tst_xhat_Dx1    =   xhat_Dx1;
+    RVQ.tst_err_Dx1     =   R_Dx1;
+    RVQ.tst_XDR_Px1  =   XDR;
         
-    sRVQ.tst_partialP=   partialP;
+    RVQ.tst_partialP=   partialP;
 
-    sRVQ.tst_SNRdB     =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  R_Dx1);  %for PSNR, you only give error signal
-    sRVQ.tst_rmse    =   UTIL_METRICS_compute_rms_value   (        R_Dx1);
-    sRVQ.tst_PSNRdB    =   max(successive_PSNRdB);
+    RVQ.tst_SNRdB     =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  R_Dx1);  %for PSNR, you only give error signal
+    RVQ.tst_rmse    =   UTIL_METRICS_compute_rms_value   (        R_Dx1);
+    RVQ.tst_PSNRdB    =   max(successive_PSNRdB);

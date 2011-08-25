@@ -34,18 +34,18 @@
 % Date last modified : July 27, 2011
 %%
 
-function sRVQ = RVQ__training(DM2_DxN, sRVQ)
+function RVQ = RVQ__training(DM2_DxN, RVQ)
 
 %---------------
 %INITIALIZATIONS
 %---------------
     DM2_u8                  =   uint8(DM2_DxN);  %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
-    M                       =   sRVQ.M;          %number of templates per stage
-    maxP                    =   sRVQ.maxP;       %max number of stages
-    sw                      =   sRVQ.sw;         %snippet width
-    sh                      =   sRVQ.sh;         %snippet height
-    targetSNR               =   sRVQ.targetSNR;  %desired SNR
-    dir_out                 =   sRVQ.dir_out;    %directory to store results in
+    M                       =   RVQ.M;          %number of templates per stage
+    maxP                    =   RVQ.maxP;       %max number of stages
+    sw                      =   RVQ.sw;         %snippet width
+    sh                      =   RVQ.sh;         %snippet height
+    targetSNR               =   RVQ.targetSNR;  %desired SNR
+    dir_out                 =   RVQ.dir_out;    %directory to store results in
 
 %!! attention: these should be parameters but I'm fixing them !!  
     iFlag                   =   0.0005;
@@ -61,13 +61,13 @@ function sRVQ = RVQ__training(DM2_DxN, sRVQ)
     cfn_trgsoc              =   [dir_out 'positiveExamples.idx']; %file 7, XDRs for training examples,   (F1.idx)
 
 %delete existing training files
-                                UTIL_FILE_deleteFile(cfn_trgvec);%file 1
-                                UTIL_FILE_deleteFile(cfn_ecbk);        %file 2
-                                UTIL_FILE_deleteFile(cfn_dcbk);        %file 3
-                                UTIL_FILE_deleteFile(cfn_nodes);       %file 4
-                                UTIL_FILE_deleteFile(cfn_gentxt);      %file 5
-                                UTIL_FILE_deleteFile(cfn_bndintxt);    %file 6
-                                UTIL_FILE_deleteFile(cfn_trgsoc);      %file 7
+                                UTIL_FILE_delete(cfn_trgvec);%file 1
+                                UTIL_FILE_delete(cfn_ecbk);        %file 2
+                                UTIL_FILE_delete(cfn_dcbk);        %file 3
+                                UTIL_FILE_delete(cfn_nodes);       %file 4
+                                UTIL_FILE_delete(cfn_gentxt);      %file 5
+                                UTIL_FILE_delete(cfn_bndintxt);    %file 6
+                                UTIL_FILE_delete(cfn_trgsoc);      %file 7
 %-------------------
 %PRE-PROCESSING
 %-------------------
@@ -108,31 +108,31 @@ function sRVQ = RVQ__training(DM2_DxN, sRVQ)
     end   
 
 %save to structure that will be passed back from function
-    sRVQ.P          =   actualP;
-    sRVQ.CB_r       =   CB_r;
-    sRVQ.CB_g       =   CB_g;
-    sRVQ.CB_b       =   CB_b;
-    sRVQ.CB_nr      =   CBn_r; %sRVQ.CB_nr = 255 - sRVQ.CB_r
-    sRVQ.CB_ng      =   CBn_g; %"
-    sRVQ.CB_nb      =   CBn_b; %"
+    RVQ.P          =   actualP;
+    RVQ.CB_r       =   CB_r;
+    RVQ.CB_g       =   CB_g;
+    RVQ.CB_b       =   CB_b;
+    RVQ.CB_nr      =   CBn_r; %RVQ.CB_nr = 255 - RVQ.CB_r
+    RVQ.CB_ng      =   CBn_g; %"
+    RVQ.CB_nb      =   CBn_b; %"
 
 %test training examples
     %method 1: my matlab code
     %same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
     %such as dataset 4 created by DATAMATRIX_create_random_DM2, probably because the max value there is >255
-    sRVQ.rule_stop_decoding =  'full_stage';
+    RVQ.rule_stop_decoding =  'full_stage';
     [D, N]                  =   size(DM2_DxN);
     E_DxN                   =   zeros(D,N);
-    sRVQ.trg_XDRs_PxN       =   zeros(sRVQ.P,N);
+    RVQ.trg_XDRs_PxN       =   zeros(RVQ.P,N);
     for n=1:N
         tst_vec_Dx1         =   DM2_DxN(:,n);
-        sRVQ                =   RVQ__testing_grayscale(tst_vec_Dx1, sRVQ);
-        sRVQ.trg_XDRs_PxN(:,n)  ...
-                            =   sRVQ.tst_XDR_Px1;
-        E_DxN(:,n)          =   sRVQ.tst_err_Dx1;               %like training data is in DM2, make a similar matrix with errors     
+        RVQ                =   RVQ__testing_grayscale(tst_vec_Dx1, RVQ);
+        RVQ.trg_XDRs_PxN(:,n)  ...
+                            =   RVQ.tst_XDR_Px1;
+        E_DxN(:,n)          =   RVQ.tst_err_Dx1;               %like training data is in DM2, make a similar matrix with errors     
     end
-    sRVQ.trg_SNRdB          =   UTIL_METRICS_compute_SNRdB       (DM2_DxN(:), E_DxN(:)); %S_NDx1 is now one big signal
-    sRVQ.trg_rmse           =   UTIL_METRICS_compute_rms_value   (E_DxN(:));
+    RVQ.trg_SNRdB          =   UTIL_METRICS_compute_SNRdB       (DM2_DxN(:), E_DxN(:)); %S_NDx1 is now one big signal
+    RVQ.trg_rmse           =   UTIL_METRICS_compute_rms_value   (E_DxN(:));
     %trg_SNRdB               =  RVQ_FILES_read_dSNR_from_genstat_file(cfn_gentxt);  %use this line if you want to see what training 
                                                     %SNR RVQ reports.  i checked and it uses all 6 channels.  if i use all 6 channels, 
                                                     %then my reported value and this value reported by RVQ are exactly the same.
@@ -156,7 +156,7 @@ function sRVQ = RVQ__training(DM2_DxN, sRVQ)
 %             system(['./RVQ__training_gen16.linux' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);        
 %         end
 %     end
-%     sRVQ.trg_XDRs_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxP, M, true);    %notice that I do not use actualP but maxP
+%     RVQ.trg_XDRs_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxP, M, true);    %notice that I do not use actualP but maxP
 
 
 

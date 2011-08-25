@@ -37,13 +37,13 @@
 % Date last modified : July 19, 2011.
 %%
 
-function sTSVQ = TSVQ_1_train(DM2, sTSVQ)
+function TSVQ = TSVQ_1_train(DM2, TSVQ)
 
 %------------------------------
 % INITIALIZATION
 %------------------------------
-    M                       =   sTSVQ.M;
-    P                       =   sTSVQ.P;
+    M                       =   TSVQ.M;
+    P                       =   TSVQ.P;
 
 %------------------------------
 % PRE-PROCESSING
@@ -65,10 +65,10 @@ function sTSVQ = TSVQ_1_train(DM2, sTSVQ)
 %------------------------------
 % POST-PROCESSING
 %------------------------------    
-   sTSVQ.CB_DxKt            =   CB_DxKt;  %terminal and non-terminal codevectors
-   sTSVQ.CB_DxK             =   CB_DxKt(:, M+1:M+K);
-   sTSVQ.partitionedData    =   partitionedData;
+   TSVQ.CB_DxKt            =   CB_DxKt;  %terminal and non-terminal codevectors
+   TSVQ.CB_DxK             =   CB_DxKt(:, M+1:M+K);
+   TSVQ.partitionedData    =   partitionedData;
    
-   sTSVQ                    =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, sTSVQ, 4);  
-   sTSVQ.K                  =   K;
+   TSVQ                    =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, TSVQ, 4);  
+   TSVQ.K                  =   K;
    

@@ -49,15 +49,15 @@ sz = size(tmpl.mean);
 N = sz(1)*sz(2);
 
 param = [];
-param.tst_bestAffineParams = param0;
+param.tst_bestaffine_1x6 = param0;
 param.wimg = tmpl.mean;
-if (exist('truepts','var'))
-  npts = size(truepts,2);
-  aff0 = affparaminv(param.tst_bestAffineParams);
-  pts0 = aff0([3,4,1;5,6,2]) * [truepts(:,:,1); ones(1,npts)];
-  pts = cat(3, pts0 + repmat(sz'/2,[1,npts]), truepts(:,:,1));
-  trackpts = zeros(size(truepts));
-  trackerr = zeros(1,npts); meanerr = zeros(1,npts);
+if (exist('GT','var'))
+  numFP = size(GT,2);
+  CONFIG.aff0 = affparaminv(param.tst_bestaffine_1x6);
+  pts0 = CONFIG.aff0([3,4,1;5,6,2]) * [GT(:,:,1); ones(1,numFP)];
+  pts = cat(3, pts0 + repmat(sz'/2,[1,numFP]), GT(:,:,1));
+  trackpts = zeros(size(GT));
+  trackerr = zeros(1,numFP); meanerr = zeros(1,numFP);
 else
   pts = [];
 end
@@ -153,9 +153,9 @@ for f = 1:size(data,3)
   
   duration = duration + toc;
   % draw result
-  if (exist('truepts','var'))
-    trackpts(:,:,f) = param.tst_bestAffineParams([3,4,1;5,6,2])*[pts0; ones(1,npts)];
-    pts = cat(3, pts0+repmat(sz'/2,[1,npts]), truepts(:,:,f), trackpts(:,:,f));
+  if (exist('GT','var'))
+    trackpts(:,:,f) = param.tst_bestaffine_1x6([3,4,1;5,6,2])*[pts0; ones(1,numFP)];
+    pts = cat(3, pts0+repmat(sz'/2,[1,numFP]), GT(:,:,f), trackpts(:,:,f));
     idx = find(pts(1,:,2) > 0);
     if (length(idx) > 0)
       % trackerr(f) = mean(sqrt(sum((pts(:,idx,2)-pts(:,idx,3)).^2,1)));

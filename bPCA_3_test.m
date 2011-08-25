@@ -2,11 +2,11 @@
 %D is number of pixels, i.e. dimensions
 %N is number of images
 
-function sBPCA = bPCA_3_test(tst_vec_Dx1, sBPCA)
+function BPCA = bPCA_3_test(tst_vec_Dx1, BPCA)
 
-        U_DxD                       =   sBPCA.trgout_U_DxD;
-        M_Dx1                       =   sBPCA.trgout_M_Dx1;
-        Neig                        =   sBPCA.tstprm_Neig_1x1;
+        U_DxD                       =   BPCA.trgout_U_DxD;
+        M_Dx1                       =   BPCA.trgout_M_Dx1;
+        Neig                        =   BPCA.Neig_1x1;
         
         [D, N]                      =   size(U_DxD); %U_DxD is DxD if N>D, otherwise it's DxN
         tst_vec_Dx1_mr              =   tst_vec_Dx1 - M_Dx1;  %mean removed
@@ -28,11 +28,11 @@ function sBPCA = bPCA_3_test(tst_vec_Dx1, sBPCA)
         rmse                        =   UTIL_METRICS_compute_rms_value(err_Dx1);
         
     %pass out
-        sBPCA.tst_recon_Dx1=   recon_Dx1;
-        sBPCA.tst_err_Dx1  =   err_Dx1;
-        sBPCA.tst_SNRdB  =   snr_dB;
-        sBPCA.tst_rmse =   rmse;
-        sBPCA.tst_XDR_Px1 = [];
+        BPCA.tst_recon_Dx1=   recon_Dx1;
+        BPCA.tst_err_Dx1  =   err_Dx1;
+        BPCA.tst_SNRdB  =   snr_dB;
+        BPCA.tst_rmse =   rmse;
+        BPCA.tst_XDR_Px1 = [];
         
         
 

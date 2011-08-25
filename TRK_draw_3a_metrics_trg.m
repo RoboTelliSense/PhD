@@ -1,4 +1,4 @@
-function TRK_draw_3a_metrics_trg(trgSNR, trgRMSE, trgAVGRMSE, f, f_trg, fs, algo_code) 
+function TRK_draw_3a_metrics_trg(trgSNR, trg_RMSE, trg_RMSEavg, f, CONFIG.trg_frames, CONFIG.plot_title_fontsize, algo_code) 
 
     if      (algo_code==1)  str='iPCA';     color = 'r';    
     elseif  (algo_code==2)  str='bPCA';     color = 'm';
@@ -11,8 +11,8 @@ function TRK_draw_3a_metrics_trg(trgSNR, trgRMSE, trgAVGRMSE, f, f_trg, fs, algo
     %SNR
 %         subplot(5,4,5);     
 %         hold on; 
-%         plot(f_trg, trgSNR,  [color '-']);    
-%         UTIL_makeTitle('SNR (dB)', 'k', fs);     
+%         plot(CONFIG.trg_frames, trgSNR,  [color '-']);    
+%         UTIL_makeTitle('SNR (dB)', 'k', CONFIG.plot_title_fontsize);     
 %         %axis tight
 %         grid on;   
 %         hold off;
@@ -21,9 +21,9 @@ function TRK_draw_3a_metrics_trg(trgSNR, trgRMSE, trgAVGRMSE, f, f_trg, fs, algo
     %RMSE
         subplot(5,4,3);
         hold on;
-        plot(f_trg, trgRMSE,  [color '-']);  
+        plot(CONFIG.trg_frames, trg_RMSE,  [color '-']);  
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle('training rmse', 'k', fs);       
+        UTIL_makeTitle('training rmse', 'k', CONFIG.plot_title_fontsize);       
         %axis tight
         grid on;   
         hold off; 
@@ -32,9 +32,9 @@ function TRK_draw_3a_metrics_trg(trgSNR, trgRMSE, trgAVGRMSE, f, f_trg, fs, algo
     %AVG RMSE
         subplot(5,4,7); 
         hold on;
-        plot(f_trg, trgAVGRMSE,  [color '-']);
+        plot(CONFIG.trg_frames, trg_RMSEavg,  [color '-']);
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle('mean training rmse', 'k', fs);   
+        UTIL_makeTitle('mean training rmse', 'k', CONFIG.plot_title_fontsize);   
         %axis tight
         grid on;   
         hold off;  

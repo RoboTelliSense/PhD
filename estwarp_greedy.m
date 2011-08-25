@@ -11,7 +11,7 @@ sz = size(tmpl.mean);
 N = sz(1)*sz(2);
 
 if ~isfield(param,'param')
-  param.param = repmat(affparam2geom(param.tst_bestAffineParams(:)), [1,n]);
+  param.param = repmat(affparam2geom(param.tst_bestaffine_1x6(:)), [1,n]);
 % else
 %   cumconf = cumsum(param.conf);
 %   idx = floor(sum(repmat(rand(1,n),[n,1]) > repmat(cumconf,[1,n])))+1;
@@ -30,7 +30,7 @@ else
 end
 param.conf = param.conf ./ sum(param.conf);
 [maxprob,maxidx] = max(param.conf);
-param.tst_bestAffineParams = affparam2mat(param.param(:,maxidx));
+param.tst_bestaffine_1x6 = affparam2mat(param.param(:,maxidx));
 param.param = repmat(param.param(:,maxidx),[1,n]);
 param.wimg = wimgs(:,:,maxidx);
 param.err = reshape(diff(:,maxidx), sz);
