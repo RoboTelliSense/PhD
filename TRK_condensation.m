@@ -5,7 +5,7 @@
 % I_0t1 is the input image.
 % f is the frame number.
 %
-% sCondensation is the structure that holds information about the
+% TRK is the structure that holds information about the
 % condensation algorithm.  It has the following members:
 %    (a) best_affineROI_1x6: MAP estimate of best affine parameters that describe target bounding region
 %    (b) affineCandidates_6xNp: possible affine candidates that describe target bounding region
@@ -17,19 +17,19 @@
 %    tst_SNRdB
 %    tst_rmse
 %
-% CONFIG.tgt_affineROIvar_1x6
+% CONFIG.var_affineROI_1x6
 %
 % Copyright (C) Jongwoo Lim and David Ross (modified by Salman Aslam with permission)
 % Date created      : April 25, 2011
 % Date last modified: July 14, 2011
 %%
 
-function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, CONFIG, RandomData_sample, RandomData_cdf, algo_code)
+function TRK = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_sample, RandomData_cdf, algo_code)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
-    sw                      =   sAlgo.sw;          %snippet width
-    sh                      =   sAlgo.sh;          %snippet height
+    sw                      =   ALGO.sw;          %snippet width
+    sh                      =   ALGO.sh;          %snippet height
     sz                      =   [sh sw];    
     D                       =   sw*sh;                   %dimensionality of input data
     
@@ -44,25 +44,25 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, CONFIG
 %the reason is that in the first run, initialization is done, but not resampling.
 %then motion model is applied after resampling.  so after the initialization)
 
-    if ~isfield(sCondensation,'affineCandidates_6xNp')
+    if ~isfield(TRK,'affineCandidates_6xNp')
         %one time: initialize 6 affine parameters, one for each of the Np candidate snippets
-        sCondensation.affineCandidates_6xNp       ...  %initialized with hand labeled parameters
-                            =   repmat(  affparam2geom(sCondensation.best_affineROI_1x6(:)), [1,Np]  );        %initialize candidates (one time)
+        TRK.affineCandidates_6xNp       ...  %initialized with hand labeled parameters
+                            =   repmat(  affparam2geom(TRK.best_affineROI_1x6(:)), [1,Np]  );        %initialize candidates (one time)
     else
         %recurring: resample distribution in 3 lines (read details of this in my article on resampling)
-        cumconf             =   cumsum(sCondensation.weights);
+        cumconf             =   cumsum(TRK.weights);
         idx                 =   floor(sum(  repmat(rn1,[Np,1]) > repmat(cumconf,[1,Np])  ))+1; 
-        sCondensation.affineCandidates_6xNp       ...
-                            =   sCondensation.affineCandidates_6xNp(:,idx);  %keep only good candidates (resample)
+        TRK.affineCandidates_6xNp       ...
+                            =   TRK.affineCandidates_6xNp(:,idx);  %keep only good candidates (resample)
     end
 
 %2. apply motion model (brownian, so just add randomness)
-    delta_affineCandidates_6xNp=   rn2.*repmat(CONFIG.tgt_affineROIvar_1x6(:),[1,Np]); %rn2 is 
-    sCondensation.affineCandidates_6xNp           ...
-                            =   sCondensation.affineCandidates_6xNp + delta_affineCandidates_6xNp;
+    delta_affineCandidates_6xNp=   rn2.*repmat(CONFIG.var_affineROI_1x6(:),[1,Np]); %rn2 is 
+    TRK.affineCandidates_6xNp           ...
+                            =   TRK.affineCandidates_6xNp + delta_affineCandidates_6xNp;
 
     %extract the candidate snippets from the image based on motion model above
-    PFcandidateSnippets_0t1 =   warpimg(I_0t1, affparam2mat(sCondensation.affineCandidates_6xNp), sz);  %now create actual snippet candidates
+    PFcandidateSnippets_0t1 =   warpimg(I_0t1, affparam2mat(TRK.affineCandidates_6xNp), sz);  %now create actual snippet candidates
     
 %----------------------------
 %PROCESSING
@@ -70,18 +70,18 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, CONFIG
 %3a. weighting (find how well the algorithm model explains each snippet, find distances)
     if (algo_code==1) %i.e. iPCA    
         
-        err_0to1_DxNp            =   repmat(sAlgo.mean(:),[1,Np]) - reshape(PFcandidateSnippets_0t1,[D,Np]); %err_0to1_DxNp: (sw)(sh) x Np
+        err_0to1_DxNp            =   repmat(ALGO.mean(:),[1,Np]) - reshape(PFcandidateSnippets_0t1,[D,Np]); %err_0to1_DxNp: (sw)(sh) x Np
         coefdiff            =   0;
         
-        if (size(sAlgo.basis,2) > 0)
-            coef            =   sAlgo.basis'*err_0to1_DxNp;
-            err_0to1_DxNp        	=   err_0to1_DxNp - sAlgo.basis*coef;
-            if (isfield(sCondensation,'coef'))
-                coefdiff    =   (abs(coef)-abs(sCondensation.coef))*sAlgo.reseig./repmat(sAlgo.eigval,[1,Np]);
+        if (size(ALGO.basis,2) > 0)
+            coef            =   ALGO.basis'*err_0to1_DxNp;
+            err_0to1_DxNp        	=   err_0to1_DxNp - ALGO.basis*coef;
+            if (isfield(TRK,'coef'))
+                coefdiff    =   (abs(coef)-abs(TRK.coef))*ALGO.reseig./repmat(ALGO.eigval,[1,Np]);
             else
-                coefdiff    =   coef .* sAlgo.reseig ./ repmat(sAlgo.eigval,[1,Np]);
+                coefdiff    =   coef .* ALGO.reseig ./ repmat(ALGO.eigval,[1,Np]);
             end
-            sCondensation.coef=   coef;
+            TRK.coef=   coef;
         end
         
 	
@@ -91,23 +91,23 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, CONFIG
         err_0to1_DxNp       = 	[];
         for i = 1:Np
             Itst            =   255*PFcandidateSnippets_0t1(:,:,i);
-            sAlgo     		=   bPCA_3_test(Itst(:), sAlgo);
-            err_0to1_DxNp(:,i)   	=   sAlgo.tst_err_Dx1/255;                                
+            ALGO     		=   bPCA_3_test(Itst(:), ALGO);
+            err_0to1_DxNp(:,i)   	=   ALGO.tst_err_Dx1/255;                                
         end
 
         
         temp_DxNp = zeros(D,Np);
     elseif(algo_code==3) %i.e. RVQ
         err_0to1_DxNp     	= 	[];
-        %sAlgo.rule_stop_decoding = 'monotonic_PSNR';
-        sAlgo.rule_stop_decoding = 'realm_of_experience';
+        %ALGO.rule_stop_decoding = 'monotonic_PSNR';
+        ALGO.rule_stop_decoding = 'realm_of_experience';
         for i = 1:Np
             Itst          	=   255*PFcandidateSnippets_0t1(:,:,i);
-            sAlgo           =   RVQ__testing_grayscale(Itst(:), sAlgo);
+            ALGO           =   RVQ__testing_grayscale(Itst(:), ALGO);
             %err_0to1_DxNp(:,i)  ...
-            %                =   sAlgo.tst_err_Dx1/255;                                
+            %                =   ALGO.tst_err_Dx1/255;                                
             err_0to1_DxNp(:,i)  ...
-                            =   (abs(sAlgo.tst_err_Dx1) + 0.5*(sAlgo.maxP-sAlgo.P))/255;
+                            =   (abs(ALGO.tst_err_Dx1) + 0.5*(ALGO.maxP-ALGO.P))/255;
         end
         
         
@@ -116,35 +116,26 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, CONFIG
         err_0to1_DxNp      	= 	[];
         for i = 1:Np
             Itst        	=   255*PFcandidateSnippets_0t1(:,:,i);
-            sAlgo     		=   TSVQ_3_test(Itst(:), sAlgo);
-            err_0to1_DxNp(:,i)   	=   sAlgo.tst_err_Dx1/255;                                
+            ALGO     		=   TSVQ_3_test(Itst(:), ALGO);
+            err_0to1_DxNp(:,i)   	=   ALGO.tst_err_Dx1/255;                                
         end
     end
 
 %3b. raise distances to exponentials
-    if (~isfield(CONFIG,'errfunc'))  
-        CONFIG.con_errfunc ...
-                            =   [];  
-    end
-
+    stddev                  =   CONFIG.con_stddev;
+    err                     =   err_0to1_DxNp;
     switch (CONFIG.con_errfunc)
-        case 'robust';
-            sCondensation.weights ...
-                            =   exp(-sum(err_0to1_DxNp.^2./(err_0to1_DxNp.^2+CONFIG.rsig.^2))./CONFIG.con_stddev)';
-        case 'ppca';
-            sCondensation.weights ...
-                            =   exp(-(sum(err_0to1_DxNp.^2) + sum(coefdiff.^2))./CONFIG.con_stddev)';
-        otherwise;
-            sCondensation.weights ...
-                            =   exp(-sum(err_0to1_DxNp.^2)./CONFIG.con_stddev)';
+        case 'robust'; TRK.weights =   exp(- sum(err.^2./(err.^2 + CONFIG.rsig.^2))                   ./stddev)';%CONFIG.rsig never defined
+        case 'ppca';   TRK.weights =   exp(-(sum(err.^2                           )+ sum(coefdiff.^2))./stddev)';
+        otherwise;     TRK.weights =   exp(- sum(err.^2                           )                   ./stddev)';
     end
 
 %4. pick MAP estimate
-    sCondensation.weights     =   sCondensation.weights ./ sum(sCondensation.weights);            %normalize weights
-    [maxprob,maxidx]        =   max(sCondensation.weights);                                   %MAP estimate: pick best index
-    sCondensation.best_affineROI_1x6 ...
-                            =   affparam2mat(sCondensation.affineCandidates_6xNp(:,maxidx));  %MAP estimate: pick best affine parameters based on best index          
-    sCondensation.tst_best_0t1 ...
+    TRK.weights     =   TRK.weights ./ sum(TRK.weights);            %normalize weights
+    [maxprob,maxidx]        =   max(TRK.weights);                                   %MAP estimate: pick best index
+    TRK.best_affineROI_1x6 ...
+                            =   affparam2mat(TRK.affineCandidates_6xNp(:,maxidx));  %MAP estimate: pick best affine parameters based on best index          
+    TRK.tst_best_0t1 ...
                             =   PFcandidateSnippets_0t1(:,:,maxidx);                        %MAP estimate: pick best candidate snippet based on best index                
         
 
@@ -152,13 +143,22 @@ function sCondensation = TRK_condensation(I_0t1, f, sAlgo, sCondensation, CONFIG
 %POST-PROCESSING
 %----------------------------
 %error and reconstruction
-    sCondensation.err_0to1_sw_x_sh     =   reshape(err_0to1_DxNp(:,maxidx), sz);                            %get reconstruction error
+    TRK.err_0to1_sw_x_sh    =   reshape(err_0to1_DxNp(:,maxidx), sz);                            %get reconstruction error
     if 	   (algo_code==1) 
-        sCondensation.err_0to1_sw_x_sh =   -sCondensation.err_0to1_sw_x_sh; 
+        TRK.err_0to1_sw_x_sh=   -TRK.err_0to1_sw_x_sh; 
     end
-    sCondensation.recon       =   sCondensation.tst_best_0t1 - sCondensation.err_0to1_sw_x_sh; %get reconstructed image
+    TRK.recon               =   TRK.tst_best_0t1 - TRK.err_0to1_sw_x_sh; %get reconstructed image
 
 %metrics    
-    sCondensation.tst_SNRdB  =   UTIL_METRICS_compute_SNR       (sCondensation.tst_best_0t1, sCondensation.err_0to1_sw_x_sh);
-    sCondensation.tst_rmse =   UTIL_METRICS_compute_rms_value (sCondensation.err_0to1_sw_x_sh(:)*255);
-                                                                                         
+    TRK.tst_SNRdB           =   UTIL_METRICS_compute_SNR       (TRK.tst_best_0t1, TRK.err_0to1_sw_x_sh);
+    TRK.tst_rmse            =   UTIL_METRICS_compute_rms_value (TRK.err_0to1_sw_x_sh(:)*255);
+    
+%DM2
+    %update
+    ALGO.DM2                =   [ALGO.DM2 TRK.tst_best_0t1(:)];%update snippet library
+    
+    %incorporate weighting and forgetting factor
+    if 	   (algo_code==2 || algo_code==3 || algo_code==4) %not needed for IPCA since it has its own forgetting factor
+		ALGO.DM2_weighted =   DATAMATRIX_pick_last_Nw_values_in_DM2(ALGO.DM2, CONFIG.Nw, CONFIG.bWeighting); 
+    end                                                                                                       
+    
