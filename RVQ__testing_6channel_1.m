@@ -2,9 +2,9 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
 
     tst_6Dx1                            =   RVQ_FILES_create_posnegImage(tst_Dx1, '', 0, 0);
 
-    CB_r                               =   RVQ.CB_r;
-    CB_g                               =   RVQ.CB_g;
-    CB_b                               =   RVQ.CB_b;
+    mdl_CBr_DxMP                               =   RVQ.mdl_CBr_DxMP;
+    mdl_CBg_DxMP                               =   RVQ.mdl_CBg_DxMP;
+    mdl_CBb_DxMP                               =   RVQ.mdl_CBb_DxMP;
     CBn_r                              =   RVQ.CBn_r;
     CBn_g                              =   RVQ.CBn_g;
     CBn_b                              =   RVQ.CBn_b;
@@ -31,7 +31,7 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
             %for this stage: go over all codevectors
             for s=1:S 
                 idx                     =   UTIL_xy_to_idx(s, t, S);
-				CB_6Dx1				=	[CB_r(:,idx);CB_g(:,idx);CB_b(:,idx);CBn_r(:,idx);CBn_g(:,idx);CBn_b(:,idx)];
+				CB_6Dx1				=	[mdl_CBr_DxMP(:,idx);mdl_CBg_DxMP(:,idx);mdl_CBb_DxMP(:,idx);CBn_r(:,idx);CBn_g(:,idx);CBn_b(:,idx)];
                 e                       =   err_6Dx1-CB_6Dx1;                    
                 d                       =   norm(  e, 2  ); %if e is a matrix, this is largest eigenvalue, if it's a vector, it's L2 norm              
                 if (d<dmin)
@@ -42,7 +42,7 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
             
             %for this stage: temporarily store metrics
             best_idx                   	=   UTIL_xy_to_idx(s_best, t, S);
-			best_CB 					=	[CB_r(:,best_idx);CB_g(:,best_idx);CB_b(:,best_idx);CBn_r(:,best_idx);CBn_g(:,best_idx);CBn_b(:,best_idx)];
+			best_CB 					=	[mdl_CBr_DxMP(:,best_idx);mdl_CBg_DxMP(:,best_idx);mdl_CBb_DxMP(:,best_idx);CBn_r(:,best_idx);CBn_g(:,best_idx);CBn_b(:,best_idx)];
             temp_recon_6Dx1				=   recon_6Dx1 + best_CB;    
             temp_err_6Dx1				=   tst_6Dx1 - temp_recon_6Dx1;
             temp_psnr_dB				=   UTIL_METRICS_compute_PSNRdB (255,      temp_err_6Dx1);

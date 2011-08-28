@@ -1,32 +1,36 @@
 %-------------------------------------------------------------------------
 %
 %-------------------------------------------------------------------------
-function [IPCA, trkIPCA] = ipca_1_train(DM2, IPCA, trkIPCA, CONFIG)
+function IPCA = ipca_1_train(DM2, IPCA)
 
     
-    if (isfield(trkIPCA,'coef'))
-        ncoef                                                               =   size(trkIPCA.coef,2);
-        recon                                                               =   repmat(IPCA.mean(:),[1,ncoef]) + IPCA.basis * trkIPCA.coef;
-        [IPCA.basis, IPCA.eigval, IPCA.mean, IPCA.Np]   =   sklm(DM2, IPCA.basis, IPCA.eigval, IPCA.mean, IPCA.Np, CONFIG.ff);
-        trkIPCA.coef                                                  =   IPCA.basis'*(recon - repmat(IPCA.mean(:),[1,ncoef]));
+    if (isfield(IPCA,'projScalars'))
+        num_projScalars     =   size(IPCA.projScalars,2);
+        recon               =   repmat(IPCA.mdl_mu_Dx1(:),[1,num_projScalars]) + IPCA.U_DxB * IPCA.projScalars;
+        [IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_mu_Dx1, IPCA.Np] ...
+                            =   sklm2(DM2, IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_mu_Dx1, IPCA.Np, IPCA.ff);
+        
+        %update projection scalars (only place where an assignment to projScalars takes place)
+        IPCA.projScalars =   IPCA.U_DxB'*(recon - repmat(IPCA.mdl_mu_Dx1(:),[1,num_projScalars]));
     else
-        [IPCA.basis, IPCA.eigval, IPCA.mean, IPCA.Np]   =   sklm(DM2, IPCA.basis, IPCA.eigval, IPCA.mean, IPCA.Np, CONFIG.ff);
+        [IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_mu_Dx1, IPCA.Np] ...
+                            =   sklm2(DM2, IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_mu_Dx1, IPCA.Np, IPCA.ff);
     end
 
-
-    if (size(IPCA.basis,2) > CONFIG.in_maxbasis)
-        %IPCA.reseig = CONFIG.ff^2 * IPCA.reseig + sum(IPCA.eigval(IPCA.maxbasis+1:end).^2);
-        IPCA.reseig                                                    =   CONFIG.ff * IPCA.reseig + sum(IPCA.eigval(CONFIG.in_maxbasis+1:end));
-        IPCA.basis                                                     =   IPCA.basis(:,1:CONFIG.in_maxbasis);
-        IPCA.eigval                                                    =   IPCA.eigval(1:CONFIG.in_maxbasis);
-        if (isfield(trkIPCA,'coef'))
-            trkIPCA.coef                                              =   trkIPCA.coef(1:CONFIG.in_maxbasis,:);
+%------------------------------------------------------
+% POST-PROCESSING
+%------------------------------------------------------
+%limit to Q
+    if (size(IPCA.U_DxB,2) > IPCA.Q)
+        %IPCA.reseig         = IPCA.ff^2 *IPCA.reseig + sum(IPCA.S_Bx1(IPCA.maxbasis+1:end).^2);
+        IPCA.reseig         =   IPCA.ff * IPCA.reseig + sum(IPCA.S_Bx1(IPCA.Q+1:end));
+        IPCA.U_DxB          =   IPCA.U_DxB(:,1:IPCA.Q);
+        IPCA.S_Bx1              =   IPCA.S_Bx1(1:IPCA.Q);
+        if (isfield(IPCA,'projScalars'))
+            IPCA.projScalars    =   IPCA.projScalars(1:IPCA.Q,:);
         end
     end
 
     %find training error
-    IPCA.trgout_U_DxD                                                =   IPCA.basis;
-    IPCA.trgout_M_Dx1                                                =   IPCA.mean(:);
-    IPCA.Neig_1x1                                             =   CONFIG.in_maxbasis; 
-
-    IPCA                                                             =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, IPCA, 1);   %2 is the algo code
+    IPCA                    =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, IPCA, 1);   %2 is the algo code
+    

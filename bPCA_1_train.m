@@ -1,38 +1,56 @@
-%U and W have eigenvectors, S has eigenvalues
-%DM2 is for PCA, otherwise my convention is NxD
-%N is number of training data points
-%D is dimensionality of data
-%_mr means mean removed
-%bPCA stands for batch PCA (i.e. the standard method) rather than incremental PCA_1_train
-%DM1 is design matrix, NxD, i.e. input vectors are in rows
-%DM2 is design matrix, DxN, i.e. input vectors are in columns
-%for images, another consideration is how the input vectors themselves were generated, were the pixels concatenated row wise or column wise
-function BPCA = bPCA_1_train(DM2, BPCA)
+%> @file bPCA_1_train.m
+%> @brief Creates PCA eigenvectors
+%>
+%> N                        :   number of training vectors
+%> D                        :   dimensionality of training vectors
+%> U_DxN                    :   eigenvectors for AA^T.  If N<D which I assume will normally be the 
+%>                              case, then U is DxN, otherwise, it will be DxD
+%> W_NxN                    :   eigenvectors for A^TA 
+%> S                        :   eigenvalues
+%> DM                       :   NxD design matrix, has training vectors, i.e. input vectors are in rows
+%> DM2                      :   DxN design matrix, has training vectors, i.e. input vectors are in cols
+%> DM2z                     :   zero centered, i.e., mean removed
+%> bPCA stands for batch PCA (i.e. the standard method) rather than incremental PCA_1_train
+%> for images, another consideration is how the input vectors themselves were generated, were the pixels concatenated row wise or column wise
+%>
+%> Copyright (c) Salman Aslam.  All rights reserved.
+%> Date created             :   around Feb 2011  
+%> Date modified            :   Aug 27, 2011
 
-    [D, N]                      =   size                (DM2);
-    
-    meanSignal                  =   mean                (DM2, 2);
-    DM2_mr         				=   DM2  - repmat(meanSignal, 1, N); %repeat N columns because there are N data points and there's one data point per column
-    
-    [U, S, V]                   =   svd                 (DM2_mr, 0);  %svd(X,0) produces the "economy size" decomposition. If X is m-by-n with m > n, then svd computes only the first n columns of U and S is n-by-n.      
+function PCA = bPCA_1_train(DM2, PCA)
 
-    BPCA.trgout_U_DxD  	=	U;  %normally DxD
-	BPCA.trgout_S_DxD      =	S;	%DxD
-	BPCA.trgout_V_NxN  	=	V;	%normally NxN
-	BPCA.trgout_M_Dx1      =	meanSignal;
+%------------------------------------------
+% PRE-PROCESSING
+%------------------------------------------
+    [D, N]                  =   size(DM2);
     
-    BPCA                   =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, BPCA, 2);   %2 is the algo code
+    mu_Dx1                  =   mean(DM2, 2);
+    DM2z         			=   DM2  - repmat(mu_Dx1, 1, N); %repeat N columns because there are N data points and there's one data point per column
+
+%------------------------------------------
+% PROCESSING
+%------------------------------------------
+%compute model 
     
     
-	
-	
-%if you have a design matrix where inputs are along rows, i.e. DM instead of DM2, you can use this	
-% function [U, S, V, meanSignal] = PCA_1_train(DM)
-% 
-%     [N, D]                         	=   size(DM);
-%     
-%     meanSignal                       	=   mean(DM);
-%     DM_mr                				=   DM  - repmat(meanSignal, N,1);
-%     DM_mr_t     						=   DM_mr';  
-%     
-%     [U, S, V] = svd(DM_mr_t, 0);       
+        [U, S, V]               =   svd(DM2z, 0);    %notice i do not remove the mean for SVD
+                                                %svd(X,0) produces the "economy size" decomposition. 
+                                                %If X is DxN with D > N, then svd computes only the 
+                                                %first N columns of U and S is NxN. 
+%4 part model    
+    PCA.mdl_mu_Dx1              =	mu_Dx1;         %4 part model: 1. mean
+    PCA.mdl_U_DxN               =	U;              %4 part model: 2. eigenvectors of AA^T
+	PCA.mdl_S_NxN               =	S;              %4 part model: 3. squared eigenvalues
+	PCA.mdl_V_NxN               =	V;              %4 part model: 4. eigenvectors of A^TA
+                                               
+%------------------------------------------
+% POST-PROCESSING
+%------------------------------------------
+%reconstruction
+    PCA.trg_DM2projScalars_NxN  =   PCA.mdl_U_DxN' * DM2z;                                              %trg1. descriptor
+    PCA.trg_DM2recon_DxN        =   PCA.mdl_U_DxN * PCA.trg_DM2projScalars_NxN + repmat(mu_Dx1, 1, N);  %trg2. reconstructed signal
+
+%3 part training metrics    
+    PCA.trg_err_DxN             =   PCA.trg_DM2recon_DxN - DM2;                                     %trg3. error vector
+    PCA.trg_SNRdB               =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.trg_err_DxN(:));  %trg4. SNRdB
+    PCA.trg_rmse                =   UTIL_METRICS_compute_rms_value   (PCA.trg_err_DxN(:));          %trg5. rmse

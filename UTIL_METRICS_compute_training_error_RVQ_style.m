@@ -24,7 +24,7 @@ function algo_struct = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo_s
     [D, N]                  =   size(DM2);
     S_NDx1                  =   [];             %all N D-dimensional training vectors are concatentated to form a large signal
     E_NDx1                  =   [];             %all N D-dimensional error vectors are concatentated to form a large signal
-    algo_struct.trg_XDRs_PxN = [];        %the above step is carried out to be compatible with the way Explorer computes training error
+    algo_struct.mdl_XDRs_PxN = [];        %the above step is carried out to be compatible with the way Explorer computes training error
 
 %-------------------
 %PRE-PROCESSING

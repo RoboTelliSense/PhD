@@ -76,11 +76,11 @@ for f = 1:size(data,3)
   wimgs = [wimgs, param.wimg(:)];
   if (size(wimgs,2) >= opt.batchsize)
     if (isfield(param,'coef'))
-      ncoef = size(param.coef,2);
-      recon = repmat(tmpl.mean(:),[1,ncoef]) + tmpl.basis * param.coef;
+      num_projScalars = size(param.coef,2);
+      recon = repmat(tmpl.mean(:),[1,num_projScalars]) + tmpl.basis * param.coef;
       [tmpl.basis, tmpl.eigval, tmpl.mean, tmpl.numsample] = ...
         hall(wimgs, tmpl.basis, tmpl.eigval, tmpl.mean, tmpl.numsample, opt.ff);
-      param.coef = tmpl.basis'*(recon - repmat(tmpl.mean(:),[1,ncoef]));
+      param.coef = tmpl.basis'*(recon - repmat(tmpl.mean(:),[1,num_projScalars]));
     else
       [tmpl.basis, tmpl.eigval, tmpl.mean, tmpl.numsample] = ...
         hall(wimgs, tmpl.basis, tmpl.eigval, tmpl.mean, tmpl.numsample, opt.ff);

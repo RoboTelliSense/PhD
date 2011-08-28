@@ -28,8 +28,8 @@
 % POST-PROCESSING
 %-------------------------------
 % read codebook
-    [actualP, M_check, sw_check, sh_check, CB_r, CB_g, CB_b, CBn_r, CBn_g, CBn_b]  ...
+    [actualP, M_check, sw_check, sh_check, mdl_CBr_DxMP, mdl_CBg_DxMP, mdl_CBb_DxMP, CBn_r, CBn_g, CBn_b]  ...
                             =  RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.ecbk'); 
     
 %display codebook                        
-    DATAMATRIX_display_DM2_as_image(CB_r, 41, 11, actualP, M_check); %the snippets are wxh=11x41
+    DATAMATRIX_display_DM2_as_image(mdl_CBr_DxMP, 41, 11, actualP, M_check); %the snippets are wxh=11x41

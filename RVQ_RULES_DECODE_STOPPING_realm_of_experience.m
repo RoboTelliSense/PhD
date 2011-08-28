@@ -11,14 +11,14 @@
 %> Date created       : July 29, 2011.
 %> Date last modified : July 29, 2011.
 
-function continue_decoding = RVQ_RULES_DECODE_STOPPING_realm_of_experience(trg_XDRs_PxN, tst_XDR_parPx1)
+function continue_decoding = RVQ_RULES_DECODE_STOPPING_realm_of_experience(mdl_XDRs_PxN, tst_XDR_parPx1)
     
-    [P, N]                  =   size(trg_XDRs_PxN);
+    [P, N]                  =   size(mdl_XDRs_PxN);
     parP                    =   length(tst_XDR_parPx1);
     continue_decoding       =   false;
     
     for n=1:N  %go over all training XDRs
-        trg_XDR_parPx1      =   trg_XDRs_PxN(1:parP, n);
+        trg_XDR_parPx1      =   mdl_XDRs_PxN(1:parP, n);
         if (sum(tst_XDR_parPx1 - trg_XDR_parPx1)==0)
             continue_decoding   ...
                             =   true;

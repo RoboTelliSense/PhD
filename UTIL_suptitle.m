@@ -1,4 +1,4 @@
-function hout=suptitle(str, CONFIG.plot_title_fontsize)
+function hout=suptitle(str, CONFIG.plot_title_fontsz)
 %SUPTITLE Puts a title above all subplots.
 %	SUPTITLE('text') adds text to the top of the figure
 %	above all subplots (a "super title"). Use this function
@@ -19,7 +19,7 @@ titleypos  = .97;
 
 % Fontsize for supertitle
 if nargin < 2
-  CONFIG.plot_title_fontsize = get(gcf,'defaultaxesfontsize')+4;
+  CONFIG.plot_title_fontsz = get(gcf,'defaultaxesfontsize')+4;
 end
 
 % Fudge factor to adjust y spacing between subplots
@@ -38,7 +38,7 @@ figunits = get(gcf,'units');
 	else,
 		pos = get(gcf,'position');
 	end
-	ff = (CONFIG.plot_title_fontsize-4)*1.27*5/pos(4)*fudge;
+	ff = (CONFIG.plot_title_fontsz-4)*1.27*5/pos(4)*fudge;
 
         % The 5 here reflects about 3 characters of height below
         % an axis and 2 above. 1.27 is pixels per point.
@@ -95,8 +95,8 @@ if (oldtitle),
 end
 ha=axes('pos',[0 1 1 1],'visible','off','Tag','suptitle');
 ht=text(.05,titleypos-1,str, 'Interpreter','None');
-%set(ht,'horizontalalignment','center','fontsize',CONFIG.plot_title_fontsize);
-set(ht,'fontsize',CONFIG.plot_title_fontsize);
+%set(ht,'horizontalalignment','center','fontsize',CONFIG.plot_title_fontsz);
+set(ht,'fontsize',CONFIG.plot_title_fontsz);
 set(gcf,'nextplot',np);
 axes(haold);
 if nargout,

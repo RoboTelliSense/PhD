@@ -1,52 +1,33 @@
-%Neig is how many dimensions you want to retain
+%Q is how many dimensions you want to retain
 %D is number of pixels, i.e. dimensions
 %N is number of images
 
-function BPCA = bPCA_3_test(tst_vec_Dx1, BPCA)
+function BPCA = bPCA_3_test(x_Dx1, BPCA)
 
-        U_DxD                       =   BPCA.trgout_U_DxD;
-        M_Dx1                       =   BPCA.trgout_M_Dx1;
-        Neig                        =   BPCA.Neig_1x1;
+%--------------------------------------------
+% PRE-PROCESSING
+%--------------------------------------------
+        U_DxN                       =   BPCA.mdl_U_DxN;
+        mu_Dx1                      =   BPCA.mdl_mu_Dx1;
+        Q                           =   BPCA.Q;
         
-        [D, N]                      =   size(U_DxD); %U_DxD is DxD if N>D, otherwise it's DxN
-        tst_vec_Dx1_mr              =   tst_vec_Dx1 - M_Dx1;  %mean removed
+        [D, N]                      =   size(x_Dx1);        %U_DxN is DxD if N>D, otherwise it's DxN
+        xz_Dx1                      =   x_Dx1 - mu_Dx1;     %zero centered, i.e., mean removed
 
-    %scalar projection on each dimension
-        proj_Dx1                    =   U_DxD' * tst_vec_Dx1_mr; %the PCA descriptor is a sequence of eigenvalues
+%--------------------------------------------
+% PROCESSING
+%--------------------------------------------      
+    %scalar projection on each of the N dimensions (I'm assuming D > N, so only N eigenvectors)
+        tst_projScalars_Nx1         =   U_DxN' * xz_Dx1; %the PCA descriptor is a sequence of eigenvalues
               
-    %image on each dimension
-        for i=1:min(N, Neig)
-            recon_mr(:,i)           =   proj_Dx1(i) * U_DxD(:,i);
-        end
-        
-    %output image and error
-        recon_Dx1                   =   M_Dx1 + sum(recon_mr,2);
-        err_Dx1                     =   tst_vec_Dx1 - recon_Dx1;
-        
-    %statistics
-        snr_dB                      =   UTIL_METRICS_compute_SNRdB(tst_vec_Dx1, err_Dx1);  %for PSNR, you only give error signal
-        rmse                        =   UTIL_METRICS_compute_rms_value(err_Dx1);
-        
-    %pass out
-        BPCA.tst_recon_Dx1=   recon_Dx1;
-        BPCA.tst_err_Dx1  =   err_Dx1;
-        BPCA.tst_SNRdB  =   snr_dB;
-        BPCA.tst_rmse =   rmse;
-        BPCA.tst_XDR_Px1 = [];
-        
-        
+    %reconstruction
+        temp                        =   min(N, Q);
+        BPCA.tst_recon_Dx1          =   U_DxN(:,1:temp) * tst_projScalars_Nx1(1:temp,:) + repmat(mu_Dx1, 1, N); %tst1. reconstructed signal
 
-%     %plot
-%     if (bVisualize)
-%         figure;                    
-%         colormap(gray);
-%         axis off;
-%         set(gcf, 'Name', 'Reconstructions');
-%         idx = 1;
-%         imsize=size(recon);
-%         for i = 1:Neig
-%            TEMP1 = reshape( recon(:,i), size(mean_signal) );
-%            tightsubplot( 13, idx, TEMP1 );
-%            idx = idx + 1;
-%         end;    
-%     end
+%--------------------------------------------
+% POST-PROCESSING
+%--------------------------------------------        
+%4 part testing results
+    BPCA.tst_err_Dx1                =   x_Dx1 - BPCA.tst_recon_Dx1;                             %tst2. reconstruction error
+    BPCA.tst_SNRdB                  =   UTIL_METRICS_compute_SNRdB(x_Dx1, BPCA.tst_err_Dx1);    %tst3. SNRdB
+    BPCA.tst_rmse                   =   UTIL_METRICS_compute_rms_value(BPCA.tst_err_Dx1);       %tst4. rmse

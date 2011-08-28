@@ -29,6 +29,7 @@
 %>                              sw pixels by sh pixels.  If your initial window (given by affineROI_1x6) is very large you may need to increase this.
 %> maxbasis                 :   The number of basis vectors to keep in the learned apperance model.
 %> I_0t1                    :   Input image scaled between 0 and 1
+%> B                        :   training update interval
 %>
 %> abbreviations
 %> -------------
@@ -56,7 +57,7 @@ close all;
 Np=600;
 Nw=4;
 bWeighting=0;
-pca_Neig=16;
+pca_Q=16;
 rvq_maxP=8;
 rvq_M=2;
 rvq_targetSNR=1000;
@@ -70,7 +71,7 @@ datasetCode=1;
 
 %#######################################################################
 % function TRK_subspace(  Np, Nw, bWeighting,                     ...
-%                         pca_Neig,                               ...
+%                         pca_Q,                               ...
 %                         rvq_maxP, rvq_M, rvq_targetSNR,         ...
 %                         tsvq_P, tsvq_M,                         ...
 %                         bUseIPCA , bUseBPCA , bUseRVQ, bUseTSVQ,  ...
@@ -83,8 +84,7 @@ datasetCode=1;
     CONFIG.in_Np            =   Np;  %number of particles
     CONFIG.in_Nw            =   Nw;  %number of images for training, (training window)
     CONFIG.in_bWeighting    =   bWeighting;
-    CONFIG.in_pca_Neig      =   pca_Neig;
-    CONFIG.in_maxbasis      =   pca_Neig;       %duplicate?
+    CONFIG.in_pca_Q         =   pca_Q;
     CONFIG.in_rvq_maxP      =   rvq_maxP;
     CONFIG.in_rvq_M         =   rvq_M;
     CONFIG.in_rvq_targetSNR =   rvq_targetSNR;
@@ -95,16 +95,22 @@ datasetCode=1;
     CONFIG.in_bUseRVQ       =   bUseRVQ;
     CONFIG.in_bUseTSVQ      =   bUseTSVQ;
     CONFIG.in_datasetCode   =   datasetCode;
-    clear Np Nw bWeighting pca_Neig rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode
+    clear Np Nw bWeighting pca_Q rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode
     
-    [CONFIG, IPCA, BPCA, RVQ, TSVQ, trkIPCA, trkBPCA, trkRVQ, trkTSVQ] = TRK_initialization(CONFIG);
+    [I_HxWxF, RandomData_sample, RandomData_cdf, CONFIG, IPCA, BPCA, RVQ, TSVQ, trkIPCA, trkBPCA, trkRVQ, trkTSVQ] ...
+                            =   TRK_initialization(CONFIG);
 
 %-----------------------------------------
 %PROCESSING
 %-----------------------------------------5
     duration=0;    
-    for f = CONFIG.trg_updateInterval+1:F
+    for f = CONFIG.trg_B+1 : CONFIG.F
         tic
+        f
+        CONFIG.str_f        =   UTIL_GetZeroPrefixedFileNumber(f);
+        cfn_Ioverlaid       =   [CONFIG.dir_out 'out_' CONFIG.str_f '.png'];
+        I_0t1               =   double(I_HxWxF(:,:,f))/256;
+        
 		%testing: condensation
 		if (CONFIG.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, trkIPCA, CONFIG, RandomData_sample, RandomData_cdf, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, CONFIG);
 		if (CONFIG.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, trkBPCA, CONFIG, RandomData_sample, RandomData_cdf, 2); end
@@ -112,7 +118,7 @@ datasetCode=1;
 		if (CONFIG.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, trkTSVQ, CONFIG, RandomData_sample, RandomData_cdf, 4); end
 	
 		%training (update model) every few frames
-        if (mod(f,CONFIG.trg_updateInterval)==0) %i.e.train every batchsize images
+        if (mod(f,CONFIG.trg_B)==0) %i.e.train every batchsize images
 			CONFIG.trg_frames = [CONFIG.trg_frames, f];
 			if (CONFIG.in_bUseIPCA)	 [IPCA, trkIPCA] =   ipca_1_train  (IPCA.DM2, IPCA, trkIPCA, CONFIG);	 IPCA.DM2 =   [];	end		
             if (CONFIG.in_bUseBPCA)   BPCA           =   bpca_1_train  (BPCA.DM2_weighted * max_signal_val,   BPCA);   end

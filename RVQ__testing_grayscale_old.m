@@ -10,7 +10,7 @@
 % processes the 3 channel image as if it were RGB.  However, the
 % codevectors for the red, green and blue channels are exactly the same.
 % This is why I use CB_DxMP (i.e., the red channel of the codebook).  I could
-% just as well have used CB_g or CB_b since they are all exactly the same
+% just as well have used mdl_CBg_DxMP or mdl_CBb_DxMP since they are all exactly the same
 % as CB_DxMP.
 %
 % In CB_DxMP, 1st col is the (p,m)=(1,1) codevector, second col is the
@@ -26,7 +26,7 @@ function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   RVQ.CB_r;   %1 channel codebook, get it from the red, green or blue channel
+    CB_DxMP                 =   RVQ.mdl_CBr_DxMP;   %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.P;      %actual number of stages in the codebook
     M                       =   RVQ.M;      %number of codevectors/stage
     sw                      =   RVQ.sw;     %snippet width
@@ -93,7 +93,7 @@ function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
 %POST-PROCESSING
 %-------------------------------
 %pass out
-    RVQ.tst_xhat_Dx1    =   xhat_Dx1;
+    RVQ.tst_recon_Dx1    =   xhat_Dx1;
     RVQ.tst_err_Dx1     =   R_Dx1;
     RVQ.tst_XDR_Px1  =   XDR;
         

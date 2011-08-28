@@ -36,7 +36,7 @@
         
         
         %4. training error (rmse, avg rmse, snr)
-	if (Ntrg_snp             >=  CONFIG.trg_updateInterval) %i.e.train every batchsize images
+	if (Ntrg_snp             >=  CONFIG.trg_B) %i.e.train every batchsize images
         clear struct1;
                         struct1.data(1) = IPCA.trg_SNRdB;          struct1.data(2) =  IPCA.trg_rmse;         struct1.data(3) = temp1;                         UTIL_savecsv_struct(trkIPCA.cfn_4_trg_rmse,      f, struct1);
         if (bUseBPCA )   struct1.data(1) = BPCA.trg_SNRdB;          struct1.data(2) =  BPCA.trg_rmse;         struct1.data(3) = temp2;                         UTIL_savecsv_struct(trkBPCA.cfn_4_trg_rmse,      f, struct1); end

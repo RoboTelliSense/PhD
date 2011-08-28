@@ -14,9 +14,9 @@
 % channel by replicating the grayscale channel to all 3 channels.  RVQ then
 % processes the 3 channel image as if it were RGB.  However, the
 % codevectors for the red, green and blue channels are exactly the same.
-% This is why I use CB_r, the red channel of the codebook.  I could
-% just as well have used CB_g or CB_b since they are all exactly the same
-% as CB_r.  I go on to call this single channel codebook CB_DxMP, since it
+% This is why I use mdl_CBr_DxMP, the red channel of the codebook.  I could
+% just as well have used mdl_CBg_DxMP or mdl_CBb_DxMP since they are all exactly the same
+% as mdl_CBr_DxMP.  I go on to call this single channel codebook CB_DxMP, since it
 % has D rows and MP codevectors.  The D-dimensional MP codevectors are
 % stacked column wise next to each other.
 %
@@ -34,7 +34,7 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   RVQ.CB_r;   %1 channel codebook, get it from the red, green or blue channel
+    CB_DxMP                 =   RVQ.mdl_CBr_DxMP;   %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.P;      %actual number of stages in the codebook
     M                       =   RVQ.M;      %number of codevectors/stage
     sw                      =   RVQ.sw;     %snippet width
@@ -83,7 +83,7 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
         
         %part3: should we continue or exit?
         if      (strcmp(RVQ.rule_stop_decoding, 'realm_of_experience'))
-            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_XDRs_PxN, temp2_XDR_parPx1);
+            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.mdl_XDRs_PxN, temp2_XDR_parPx1);
         elseif  (strcmp(RVQ.rule_stop_decoding, 'monotonic_PSNR'))
             continue_decoding   =   RVQ_RULES_DECODE_STOPPING_monotonic_PSNR       (temp2_PSNRdB, PSNRdB_prev);
         elseif  (strcmp(RVQ.rule_stop_decoding, 'full_stage'))
@@ -112,11 +112,13 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
 %-------------------------------
 %POST-PROCESSING
 %-------------------------------
-    RVQ.tst_xhat_Dx1       =   xhat_Dx1;                           %(a) reconstruction
-    RVQ.tst_err_Dx1        =   err_Dx1;                            %(b) residual error
-    RVQ.tst_XDR_Px1        =   XDR_Px1;                            %(c) save RVQ path
+    RVQ.tst_recon_Dx1       =   xhat_Dx1;                           %tst1. 
+    RVQ.tst_err_Dx1        =   err_Dx1;                             %tst2. error vector
+    
 
     RVQ.tst_partialP       =   partialP;                           %(d) metrics            
     RVQ.tst_SNRdB          =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  err_Dx1);  
     RVQ.tst_rmse           =   UTIL_METRICS_compute_rms_value   (        err_Dx1);
     RVQ.tst_PSNRdB         =   UTIL_METRICS_compute_PSNRdB      (255,    err_Dx1);
+    
+    RVQ.tst_XDR_Px1        =   XDR_Px1;                            %(c) save RVQ path

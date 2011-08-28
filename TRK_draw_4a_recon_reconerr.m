@@ -1,4 +1,4 @@
-function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CONFIG.plot_row2, CONFIG.plot_row3, CONFIG.plot_title_fontsize, algo_code)
+function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CONFIG.plot_row2, CONFIG.plot_row3, CONFIG.plot_title_fontsz, algo_code)
 
         if      (algo_code==1)  str='iPCA';     color = 'r';    
         elseif  (algo_code==2)  str='bPCA';     color = 'm';
@@ -17,7 +17,7 @@ function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CO
         colormap('gray')
         imagesc(recon);
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle([str ', reconstruction'], color, CONFIG.plot_title_fontsize);
+        UTIL_makeTitle([str ', reconstruction'], color, CONFIG.plot_title_fontsz);
         axis equal
         axis tight
 
@@ -32,6 +32,6 @@ function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CO
         colormap('gray')
         imagesc(err_0t1);
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle([str ', recon. error'], color, CONFIG.plot_title_fontsize);
+        UTIL_makeTitle([str ', recon. error'], color, CONFIG.plot_title_fontsz);
         axis equal
         axis tight

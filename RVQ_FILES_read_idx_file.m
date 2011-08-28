@@ -56,8 +56,8 @@ function XDRs = RVQ_FILES_read_idx_file(cfn_idx, maxP, M, bLinkerNotExplorerStyl
         
         %Linker generated idx file
         temp                =   reshape(data,N, maxP);     %training XDRs matrix
-        trg_XDRs_PxN         =   temp';
-        XDRs                =   trg_XDRs_PxN;            %this is what will be returned from the function
+        mdl_XDRs_PxN         =   temp';
+        XDRs                =   mdl_XDRs_PxN;            %this is what will be returned from the function
 
     
     else

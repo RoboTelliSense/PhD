@@ -4,7 +4,7 @@
 %
 % sw=1, sh=1 means scalar example
 % 
-% RVQ.trg_XDRs_PxN: training XDRs from using gen.exe -l or my Matlab software
+% RVQ.mdl_XDRs_PxN: training XDRs from using gen.exe -l or my Matlab software
 %
 % gen.exe -l crashes on dataset 4, and so i'm not using it any more instead, i have my own matlab code for it
 % I think gen.exe -l may be crashing because I have values higher than 255
@@ -16,7 +16,7 @@
 % dataset     =   2
 % RVQ.maxP   =   8
 % RVQ.M      =   2
-% Then RVQ.CB_r (the red channel of the codebooks) is 
+% Then RVQ.mdl_CBr_DxMP (the red channel of the codebooks) is 
 %       m=1   m=2
 %       ---   ---
 % p=1  192.5  64.5
@@ -29,13 +29,13 @@
 % p=8   -0.5   0.5
 % The green and the blue channels are also the same.
 % This behavior is correct, as confirmed by Dr Barnes.
-% The first M=2 numbers in RVQ.CB_r are the scalar codevectors for stage 1,
+% The first M=2 numbers in RVQ.mdl_CBr_DxMP are the scalar codevectors for stage 1,
 % the second M=2 numbers are the scalar codevectors for stage 2, and so on.
 % 
-% If test point is 192, trg_XDRs_PxN(:,192) produced by RVQ.rule_stop_decoding='monotonic_PSNR' will give 
+% If test point is 192, mdl_XDRs_PxN(:,192) produced by RVQ.rule_stop_decoding='monotonic_PSNR' will give 
 % [1;9;9;9;  9;9;9;9], the 9's, i.e., P+1s, showing early termination.
 % So, the reproduction value is 192 and the error is 0.5.  
-% trg_XDRs_PxN produced by gen.exe -l or RVQ.rule_stop_decoding='full_path' always gives full path,
+% mdl_XDRs_PxN produced by gen.exe -l or RVQ.rule_stop_decoding='full_path' always gives full path,
 % and the answer is [1;1;2;2   2;2;2;2].  So the reproduction value is also 192, and the error is again 0.5 
 % 
 % If test point is 253, my software gives reproduction of 252.5, an error of 0.5: 192.5 + 32 + 16 + 8 + 4              = 252.5 
@@ -77,7 +77,7 @@
     format compact;
 
 %data input (5 different datasets, pick one of them)
-    dataset                 =   2;                                          %change this to 1, 2, 3, 4 or 5
+    dataset                 =   5;                                          %change this to 1, 2, 3, 4 or 5
     
     %deterministic, simple scalar examples
     if     (dataset==1) DM2 =   [4 6 8 10 20 22 24 26];       sw=1; sh=1;   %simplest possible, i've worked this out by hand in a pdf
@@ -98,45 +98,34 @@
     
 %algorithm parameters
     %bpca
-    BPCA.Neig_1x1   =   16;                                         
-    BPCA.trg_XDRs_PxN      =   [];
-    BPCA.tst_XDR_Px1       =   [];
+    BPCA.Q                  =   16;                                         
+    BPCA.mdl_XDRs_PxN       =   [];
+    BPCA.tst_XDR_Px1        =   [];
     
     %tsvq
-    TSVQ.P                 =   3;                                          %number of stages
-    TSVQ.M                 =   2;                                          %2 is for binary TSVQ
-    TSVQ.trg_XDRs_PxN      =   []; 
-    TSVQ.tst_XDR_Px1       =   [];
+    TSVQ.P                  =   3;                                          %number of stages
+    TSVQ.M                  =   2;                                          %2 is for binary TSVQ
+    TSVQ.mdl_XDRs_PxN       =   []; 
+    TSVQ.tst_XDR_Px1        =   [];
     
     %rvq    
-    RVQ__old.maxP            =   8;                                          %number of stages  
-    RVQ__old.M               =   2;                                          %number of codevectors/stage
-    RVQ__old.targetSNR       =   1000;
-    RVQ__old.sw              =   sw;                                         %snippet width
-    RVQ__old.sh              =   sh;                                         %snippet height
-    RVQ__old.dir_out         =   '';
-    RVQ__old.trg_XDRs_PxN    =   [];
-    RVQ__old.tst_XDR_Px1     =   [];
-
-    %rvq    
-    RVQ.maxP               =   8;                                          %number of stages  
-    RVQ.M                  =   2;                                          %number of codevectors/stage
-    RVQ.targetSNR          =   1000;
-    RVQ.sw                 =   sw;                                         %snippet width
-    RVQ.sh                 =   sh;                                         %snippet height
-    RVQ.dir_out            =   '';
-    RVQ.trg_XDRs_PxN       =   [];
-    RVQ.tst_XDR_Px1        =   [];
+    RVQ.maxP                =   8;                                          %number of stages  
+    RVQ.M                   =   2;                                          %number of codevectors/stage
+    RVQ.targetSNR           =   1000;
+    RVQ.sw                  =   sw;                                         %snippet width
+    RVQ.sh                  =   sh;                                         %snippet height
+    RVQ.dir_out             =   '';
+    RVQ.mdl_XDRs_PxN        =   [];
+    RVQ.tst_XDR_Px1         =   [];
       
 
 %-----------------------------
 % PROCESSING
 %-----------------------------
 %training    
-    BPCA                   =   bPCA_1_train        (DM2, BPCA); 
-    RVQ__old                =   RVQ__training       (DM2, RVQ__old); 
-    RVQ                    =   RVQ__training       (DM2, RVQ);           %!caution!: in this new version, decoding rule here is changed to 'full_stage' to mimic gen.exe -l functionality   
-    TSVQ                   =   TSVQ_1_train        (DM2, TSVQ); 
+    BPCA                   =   bPCA_1_train     (DM2, BPCA); 
+    RVQ                    =   RVQ__training    (DM2, RVQ);           %!caution!: in this new version, decoding rule here is changed to 'full_stage' to mimic gen.exe -l functionality   
+    TSVQ                   =   TSVQ_1_train     (DM2, TSVQ); 
     
 %test vector    
     tst_idx                 =   8;                                          %any number between 1 and N, index                                                                        %of training data that you want to test
@@ -146,10 +135,7 @@
     BPCA                   =   bPCA_3_test                 (tst_Dx1, BPCA);
 
 %RVQ    
-    RVQ__old                =   RVQ__testing_grayscale_old  (tst_Dx1, RVQ__old); %this always uses the 'monotonic_PSNR' decoding rule
-    %RVQ.rule_stop_decoding =   'realm_of_experience';
-    %RVQ.rule_stop_decoding =   'monotonic_PSNR';
-    RVQ.rule_stop_decoding =   'full_stage';
+    RVQ.rule_stop_decoding =   'full_stage'; %'monotonic_PSNR', 'realm_of_experience';
     RVQ                    =   RVQ__testing_grayscale      (tst_Dx1, RVQ);%here, the rule is always monotonic PSNR
 
 %TSVQ    
@@ -161,21 +147,8 @@
 %view
     numDisplayRows          =   5;
     numDisplayCols          =   10;
-                                DATAMATRIX_display_DM2_as_image(DM2,                sh, sw, numDisplayRows, numDisplayCols);
-                                DATAMATRIX_display_DM2_as_image(BPCA.trgout_U_DxD, sh, sw, numDisplayRows, numDisplayCols);
-    
-%print
-	%[DM2(:,tst_idx)      BPCA.tst_recon_Dx1     RVQ.tst_recon_Dx1      TSVQ.tst_recon_Dx1]
-    codebook_diff           =   norm(RVQ__old.CB_r(:) - RVQ.CB_r(:));
-    XDR_diff                =   norm(RVQ__old.tst_XDR_Px1(:) - RVQ.tst_XDR_Px1(:));
-    
-    [BPCA.tst_SNRdB    RVQ__old.tst_SNRdB      RVQ.tst_SNRdB   TSVQ.tst_SNRdB        codebook_diff]
-    [BPCA.tst_rmse     RVQ__old.tst_rmse       RVQ.tst_rmse    TSVQ.tst_rmse         XDR_diff]
-    
-                                                
-                                        
-                                        
-                                        
-                                        % for scalar training data in this file, 1:1:256, codebooks are as follows:
-
-
+                                DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols);
+                                DATAMATRIX_display_DM2_as_image(BPCA.mdl_U_DxN, sh, sw, numDisplayRows, numDisplayCols);
+        
+    [BPCA.tst_SNRdB    RVQ.tst_SNRdB   TSVQ.tst_SNRdB        ]
+    [BPCA.tst_rmse     RVQ.tst_rmse    TSVQ.tst_rmse         ]

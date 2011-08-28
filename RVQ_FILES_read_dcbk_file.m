@@ -6,7 +6,7 @@
 % Date last modified : July 20, 2011
 %%
 
-function [T, S, sw, sh, CB_r, CB_g, CB_b, CBn_r, CBn_g, CBn_b] = RVQ_FILES_read_dcbk_file(cfn_dcbk)
+function [T, S, sw, sh, mdl_CBr_DxMP, mdl_CBg_DxMP, mdl_CBb_DxMP] = RVQ_FILES_read_dcbk_file(cfn_dcbk)
 
     %parameters that i've decided to fix
         sc                      =   6;      %number of channels   
@@ -154,9 +154,9 @@ function [T, S, sw, sh, CB_r, CB_g, CB_b, CBn_r, CBn_g, CBn_b] = RVQ_FILES_read_
                 end
             end
                     
-            CB_r=[];
-            CB_g=[];
-            CB_b=[];
+            mdl_CBr_DxMP=[];
+            mdl_CBg_DxMP=[];
+            mdl_CBb_DxMP=[];
         %create 3 channel codebooks (CB)
         %--------------------------------
             for t=1:T
@@ -170,9 +170,9 @@ function [T, S, sw, sh, CB_r, CB_g, CB_b, CBn_r, CBn_g, CBn_b] = RVQ_FILES_read_
 %                     CBn{t}{m}(:,:,3)    =   Bn{t}{m};
                     
                     idx                 =   UTIL_xy_to_idx(m, t, S);
-                    CB_r(:,idx)        =   R{t}{m}(:);
-                    CB_g(:,idx)        =   G{t}{m}(:);
-                    CB_b(:,idx)        =   B{t}{m}(:);
+                    mdl_CBr_DxMP(:,idx)        =   R{t}{m}(:);
+                    mdl_CBg_DxMP(:,idx)        =   G{t}{m}(:);
+                    mdl_CBb_DxMP(:,idx)        =   B{t}{m}(:);
                     CBn_r(:,idx)       =   Rn{t}{m}(:);
                     CBn_g(:,idx)       =   Gn{t}{m}(:);
                     CBn_b(:,idx)       =   Bn{t}{m}(:);                    

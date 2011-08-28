@@ -25,7 +25,7 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
                                         else
                                             str=['tracking error, (' num2str(RVQ.tst_partialP) '/' num2str(RVQ.T) ')'];
                                         end
-                                        title(str, 'fontsize', CONFIG.plot_title_fontsize);
+                                        title(str, 'fontsize', CONFIG.plot_title_fontsz);
                                         %axis tight
                                         hold on
                                         grid on
@@ -33,7 +33,7 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
                                         subplot(out_num_rows,out_num_cols,6)
                                         plot(1:f, trkIPCA.FPerr_avg(1:f),'r');
                                         set(gca, 'FontSize', 8);
-                                        title('mean tracking error', 'fontsize', CONFIG.plot_title_fontsize);
+                                        title('mean tracking error', 'fontsize', CONFIG.plot_title_fontsz);
                                         %axis tight
                                         hold on
                                         grid on

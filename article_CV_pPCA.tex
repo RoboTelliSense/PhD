@@ -7,19 +7,31 @@
 \tableofcontents
 \rule[0pt]{\textwidth}{1pt}
 
-%=================================
-\section{Given}
-%=================================
+
 
 %=================================
-\section{Goal}
+\section{Introduction}
 %=================================
 Find relationship between PCA and Max Likelihood.
 
-%=================================
-\section{Model}
-%=================================
+%----------------------------------------
+\subsection{Advantages}
+%----------------------------------------
+\begin{itemize}
+\item PCA assigns a low reconstruction cost to data points that are close to the principal subspace even if they lie arbitrarily far from the training data.
+\end{itemize}
 
+
+%=================================
+\section{Theory}
+%=================================
+One of the most critical failings of PCA is that translating points by arbitrary amounts inside the principal subspace has no effect on the model error~\cite{1999_JNL_Gaussian_roweis}.
+
+
+
+%----------------------------------------
+\subsection{Model}
+%----------------------------------------
 \begin{enumerate}
 \item Introduce latent variable $\mathbf{z}$ with Gaussian prior distribution $p(\mathbf{z}) \sim \mathcal{N}(0, \mathbf{I})$, and a Gaussian conditional distribution $p((\mathbf{x}|\mathbf{z})$
 
@@ -30,9 +42,10 @@ Find relationship between PCA and Max Likelihood.
 \end{equation}
 
 
-%=================================
-\section{Relationship with factor analysis}
-%=================================
+%----------------------------------------
+\subsection{Relationship with factor analysis}
+%----------------------------------------
+
 Exactly the same but with one difference: $\Psi$ is constrained to be a diagonal matrix, and so $t_i$ are conditionally independent given the values of the latent variables $\mathsf{x}$.
 
 								\begin{figure}
@@ -49,17 +62,17 @@ If we define a joint distribution over observed and latent variables, the corres
 In Chapter 9, the Gaussian mixture is interpreted in terms of discrete latent variables.  
 
 Besides helping in	 simplifying complex distributions, mixture models can also be used to cluster data.
-%=================================
-\section{Advantages}
-%=================================
-\begin{itemize}
-\item PCA assigns a low reconstruction cost to data points that are close to the principal subspace even if they lie arbitrarily far from the training data.
-\end{itemize}
+
+
+
 
 %=================================
-\section{Solution}
+\section{Experiments}
 %=================================
 
+%=================================
+\section{Results}
+%=================================
 
 %=================================
 \section{Conclusion}

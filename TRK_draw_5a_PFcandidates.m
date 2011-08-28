@@ -1,4 +1,4 @@
-function TRK_draw_5_PF_candidates(I, sz, PFcandidates_6xNp, out_num_rows, out_num_cols, CONFIG.plot_row4, CONFIG.plot_title_fontsize, algo_code)
+function TRK_draw_5_PF_candidates(I, sz, PFcandidates_6xNp, out_num_rows, out_num_cols, CONFIG.plot_row4, CONFIG.plot_title_fontsz, algo_code)
 
     if      (algo_code==1)  str='iPCA';     color = 'r';    
     elseif  (algo_code==2)  str='bPCA';     color = 'm';
@@ -24,7 +24,7 @@ function TRK_draw_5_PF_candidates(I, sz, PFcandidates_6xNp, out_num_rows, out_nu
         UTIL_drawQuadFrom6affine_1x6(sz, affparam2mat(PFcandidates_6xNp(:,i)), 'Color', color, 'LineWidth',1); 
     end
     
-    UTIL_makeTitle([str ', PF candidates'], color, CONFIG.plot_title_fontsize);
+    UTIL_makeTitle([str ', PF candidates'], color, CONFIG.plot_title_fontsz);
     axis equal
     axis tight
     hold off;

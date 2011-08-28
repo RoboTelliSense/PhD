@@ -19,7 +19,7 @@
     RVQ.sw                 =   sw;                                         %snippet width
     RVQ.sh                 =   sh;                                         %snippet height
     RVQ.dir_out            =   '';
-    RVQ.trg_XDRs_PxN =   [];
+    RVQ.mdl_XDRs_PxN =   [];
     RVQ.tst_XDR_Px1  =   [];
 
     %test image
@@ -30,10 +30,10 @@
 %PRE-PROCESSING
 %-----------------------------------
         
-    [RVQ.P, M_check, sw_check, sh_check, RVQ.CB_r, RVQ.CB_g, RVQ.CB_b, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
+    [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_CBr_DxMP, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
                             =   RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.dcbk'); 
     
-                                DATAMATRIX_display_DM2_as_image(RVQ.CB_r, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
+                                DATAMATRIX_display_DM2_as_image(RVQ.mdl_CBr_DxMP, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
 
     Isnr                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);
     Istg                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);
