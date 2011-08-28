@@ -16,7 +16,7 @@
 % dataset     =   2
 % RVQ.maxP   =   8
 % RVQ.M      =   2
-% Then RVQ.mdl_CBr_DxMP (the red channel of the codebooks) is 
+% Then RVQ.mdl_2_CB_DxMP (the red channel of the codebooks) is 
 %       m=1   m=2
 %       ---   ---
 % p=1  192.5  64.5
@@ -29,7 +29,7 @@
 % p=8   -0.5   0.5
 % The green and the blue channels are also the same.
 % This behavior is correct, as confirmed by Dr Barnes.
-% The first M=2 numbers in RVQ.mdl_CBr_DxMP are the scalar codevectors for stage 1,
+% The first M=2 numbers in RVQ.mdl_2_CB_DxMP are the scalar codevectors for stage 1,
 % the second M=2 numbers are the scalar codevectors for stage 2, and so on.
 % 
 % If test point is 192, descriptors_PxN(:,192) produced by RVQ.rule_stop_decoding='monotonic_PSNR' will give 
@@ -98,25 +98,28 @@
     
 %algorithm parameters
     %bpca
-    BPCA.Q                  =   16;                                         
-    BPCA.descriptors_PxN       =   [];
-    BPCA.tst_1_descriptor_Px1        =   [];
+    BPCA.name                   =   'BPCA';
+    BPCA.Q                      =   16;                                         
+    BPCA.descriptors_PxN        =   [];
+    BPCA.tst_1_descriptor_Px1   =   [];
     
     %tsvq
-    TSVQ.P                  =   3;                                          %number of stages
-    TSVQ.M                  =   2;                                          %2 is for binary TSVQ
-    TSVQ.descriptors_PxN       =   []; 
-    TSVQ.tst_1_descriptor_Px1        =   [];
+    TSVQ.name                   =   'TSVQ';
+    TSVQ.P                      =   3;                                          %number of stages
+    TSVQ.M                      =   2;                                          %2 is for binary TSVQ
+    TSVQ.descriptors_PxN        =   []; 
+    TSVQ.tst_1_descriptor_Px1   =   [];
     
     %rvq    
-    RVQ.maxP                =   8;                                          %number of stages  
-    RVQ.M                   =   2;                                          %number of codevectors/stage
-    RVQ.targetSNR           =   1000;
-    RVQ.sw                  =   sw;                                         %snippet width
-    RVQ.sh                  =   sh;                                         %snippet height
-    RVQ.dir_out             =   '';
-    RVQ.trg_1_descriptors_PxN        =   [];
-    RVQ.tst_1_descriptor_Px1         =   [];
+    RVQ.name                    =   'RVQ';
+    RVQ.maxP                    =   8;                                          %number of stages  
+    RVQ.M                       =   2;                                          %number of codevectors/stage
+    RVQ.targetSNR               =   1000;
+    RVQ.sw                      =   sw;                                         %snippet width
+    RVQ.sh                      =   sh;                                         %snippet height
+    RVQ.dir_out                 =   '';
+    RVQ.trg_1_descriptors_PxN   =   [];
+    RVQ.tst_1_descriptor_Px1    =   [];
       
 
 %-----------------------------
@@ -148,7 +151,7 @@
     numDisplayRows          =   5;
     numDisplayCols          =   10;
                                 DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols);
-                                DATAMATRIX_display_DM2_as_image(BPCA.mdl_U_DxN, sh, sw, numDisplayRows, numDisplayCols);
+                                DATAMATRIX_display_DM2_as_image(BPCA.mdl_2_U_DxN, sh, sw, numDisplayRows, numDisplayCols);
         
-    [BPCA.tst_SNRdB    RVQ.tst_SNRdB   TSVQ.tst_SNRdB        ]
-    [BPCA.tst_rmse     RVQ.tst_rmse    TSVQ.tst_rmse         ]
+    [BPCA.tst_4_SNRdB    RVQ.tst_4_SNRdB   TSVQ.tst_4_SNRdB        ]
+    [BPCA.tst_5_rmse     RVQ.tst_5_rmse    TSVQ.tst_5_rmse         ]

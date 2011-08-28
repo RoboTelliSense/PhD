@@ -101,8 +101,9 @@ function RVQ = RVQ__training(DM2, RVQ)
 %-------------------
 %read back results
     %decoder codebook to get actual stages, codebooks
-    [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_CBr_DxMP, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP]  =  RVQ_FILES_read_dcbk_file        (cfn_dcbk); 
-
+    [RVQ.P, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  =  RVQ_FILES_read_dcbk_file        (cfn_dcbk); 
+    RVQ.mdl_2_CB_DxMP             =   CBr_DxMP;     %CB: single channel codebook
+    
     %error checking
     if (M ~= M_check || sw ~= sw_check || sh ~= sh_check)
         disp('ERROR: M, sw, or sh not correct')
@@ -113,22 +114,13 @@ function RVQ = RVQ__training(DM2, RVQ)
     %same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
     %such as dataset 4 created by DATAMATRIX_create_random_DM2, probably because the max value there is >255
     RVQ.rule_stop_decoding              =   'full_stage';
-    [D, N]                              =   size(DM2);
-    RVQ.trg_3_err_DxN                  	=   zeros(D,N);
-    RVQ.trg_1_descriptors_PxN          	=   zeros(RVQ.P,N);
-    for n=1:N
-        x_Dx1                           =   DM2(:,n);       %test vector
-        RVQ                             =   RVQ__testing_grayscale(x_Dx1, RVQ);
-        RVQ.trg_1_descriptors_PxN(:,n)	=   RVQ.tst_1_descriptor_Px1;                               %trg1.
-        RVQ.trg_2_recon_Dx1(:,n)       	=   RVQ.tst_2_recon_Dx1;                                      %trg2.
-        RVQ.trg_3_err_DxN(:,n)         	=   RVQ.tst_3_err_Dx1;                                        %trg3.
-    end
-    RVQ.tst_1_descriptor_Px1            =   [];
-    RVQ.trg_4_SNRdB                    	=   UTIL_METRICS_compute_SNRdB       (DM2(:), RVQ.trg_3_err_DxN(:));  %trg4.
-    RVQ.trg_5_rmse                     	=   UTIL_METRICS_compute_rms_value   (RVQ.trg_3_err_DxN(:));          %trg5.
+    RVQ                                 =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, RVQ); 
+    
     %RVQ.trg_SNRdB_file                 =   RVQ_FILES_read_dSNR_from_genstat_file(cfn_gentxt);  %use this line if you want to see what training 
                                             %SNR RVQ reports.  i checked and it uses all 6 channels.  if i use all 6 channels, 
                                             %then my reported value and this value reported by RVQ are exactly the same.
+    
+    
     
 %     method 2: gen.exe -l (method 1 and 2 give the same answer, except in
 %                           very rare cases where my matlab code is more accurate.  refer to

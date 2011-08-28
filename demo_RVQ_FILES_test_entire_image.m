@@ -30,10 +30,10 @@
 %PRE-PROCESSING
 %-----------------------------------
         
-    [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_CBr_DxMP, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
+    [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_2_CB_DxMP, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
                             =   RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.dcbk'); 
     
-                                DATAMATRIX_display_DM2_as_image(RVQ.mdl_CBr_DxMP, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
+                                DATAMATRIX_display_DM2_as_image(RVQ.mdl_2_CB_DxMP, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
 
     Isnr                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);
     Istg                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);
@@ -53,9 +53,9 @@
                                 %imshow(snippet);
             RVQ            =   RVQ__testing_grayscale(double(snippet(:)), RVQ);
             Isnr(y_idx, x_idx)  ...
-                            =   RVQ.tst_SNRdB;
+                            =   RVQ.tst_4_SNRdB;
             Istg(y_idx, x_idx)  ...
-                            =   RVQ.tst_partialP;
+                            =   RVQ.tst_6_partialP;
                                 sprintf('%d %d:', x, y)
             x_idx           =   x_idx + 1;
         end

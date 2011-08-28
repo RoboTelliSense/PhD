@@ -6,15 +6,15 @@ function IPCA = ipca_1_train(DM2, IPCA)
     
     if (isfield(IPCA,'projScalars'))
         num_projScalars     =   size(IPCA.projScalars,2);
-        recon               =   repmat(IPCA.mdl_mu_Dx1(:),[1,num_projScalars]) + IPCA.U_DxB * IPCA.projScalars;
-        [IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_mu_Dx1, IPCA.Np] ...
-                            =   sklm2(DM2, IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_mu_Dx1, IPCA.Np, IPCA.ff);
+        recon               =   repmat(IPCA.mdl_1_mu_Dx1(:),[1,num_projScalars]) + IPCA.U_DxB * IPCA.projScalars;
+        [IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_1_mu_Dx1, IPCA.Np] ...
+                            =   sklm2(DM2, IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_1_mu_Dx1, IPCA.Np, IPCA.ff);
         
         %update projection scalars (only place where an assignment to projScalars takes place)
-        IPCA.projScalars =   IPCA.U_DxB'*(recon - repmat(IPCA.mdl_mu_Dx1(:),[1,num_projScalars]));
+        IPCA.projScalars =   IPCA.U_DxB'*(recon - repmat(IPCA.mdl_1_mu_Dx1(:),[1,num_projScalars]));
     else
-        [IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_mu_Dx1, IPCA.Np] ...
-                            =   sklm2(DM2, IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_mu_Dx1, IPCA.Np, IPCA.ff);
+        [IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_1_mu_Dx1, IPCA.Np] ...
+                            =   sklm2(DM2, IPCA.U_DxB, IPCA.S_Bx1, IPCA.mdl_1_mu_Dx1, IPCA.Np, IPCA.ff);
     end
 
 %------------------------------------------------------

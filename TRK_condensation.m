@@ -18,8 +18,8 @@
 %    tst_bestSnippet_0t1
 %    err_0to1_DxNp
 %    recon
-%    tst_SNRdB
-%    tst_rmse
+%    tst_4_SNRdB
+%    tst_5_rmse
 %
 % CONFIG.var_affineROI_1x6
 %
@@ -157,8 +157,8 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_
     TRK.recon                       =   TRK.tst_bestSnippet_0t1 - TRK.err_0to1_sw_x_sh; %get reconstructed image
 
 %metrics    
-    TRK.tst_SNRdB                   =   UTIL_METRICS_compute_SNR       (TRK.tst_bestSnippet_0t1, TRK.err_0to1_sw_x_sh);
-    TRK.tst_rmse                    =   UTIL_METRICS_compute_rms_value (TRK.err_0to1_sw_x_sh(:)*255);
+    TRK.tst_4_SNRdB                   =   UTIL_METRICS_compute_SNR       (TRK.tst_bestSnippet_0t1, TRK.err_0to1_sw_x_sh);
+    TRK.tst_5_rmse                    =   UTIL_METRICS_compute_rms_value (TRK.err_0to1_sw_x_sh(:)*255);
     
 %DM2
     %update
@@ -169,5 +169,5 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_
 		ALGO.DM2_weighted           =   DATAMATRIX_pick_last_Nw_values_in_DM2(ALGO.DM2, CONFIG.Nw, CONFIG.bWeighting); 
     end                                                                                                       
     
-        TRK.tst_RMSE_Fx1(f)         =	TRK.tst_rmse;
+        TRK.tst_RMSE_Fx1(f)         =	TRK.tst_5_rmse;
         TRK.tst_RMSEavg_Fx1(f)      =   UTIL_compute_avg(TRK.tst_RMSE_Fx1(1:f));

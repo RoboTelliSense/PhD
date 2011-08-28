@@ -46,11 +46,11 @@
         
         %5. testing error (rmse, avg rmse, snr)
         clear struct1;
-                        struct1.data(1) = trkIPCA.tst_SNRdB;      struct1.data(2) =  trkIPCA.tst_rmse;     struct1.data(3) = trkIPCA.tst_RMSEavg_Fx1(f);        UTIL_savecsv_struct(trkIPCA.cfn_5_tst_rmse,       f, struct1);
-        if (bUseBPCA )   struct1.data(1) = trkBPCA.tst_SNRdB;      struct1.data(2) =  trkBPCA.tst_rmse;     struct1.data(3) = bpca_tst_avgrmse(f);        UTIL_savecsv_struct(trkBPCA.cfn_5_tst_rmse,       f, struct1); end
-        if (bUseRVQ)    struct1.data(1) = trkRVQ.tst_SNRdB;      struct1.data(2) =  trkRVQ.tst_rmse;     struct1.data(3) = rvq__tst_avgrmse(f);        UTIL_savecsv_struct(trkRVQ.cfn_5_tst_rmse,       f, struct1); end
-        if (bUseTSVQ)   struct1.data(1) = trkTSVQ.tst_SNRdB;      struct1.data(2) =  trkTSVQ.tst_rmse;     struct1.data(3) = tsvq_tst_avgrmse(f);        UTIL_savecsv_struct(trkTSVQ.cfn_5_tst_rmse,       f, struct1); end
+                        struct1.data(1) = trkIPCA.tst_4_SNRdB;      struct1.data(2) =  trkIPCA.tst_5_rmse;     struct1.data(3) = trkIPCA.tst_RMSEavg_Fx1(f);        UTIL_savecsv_struct(trkIPCA.cfn_5_tst_rmse,       f, struct1);
+        if (bUseBPCA )   struct1.data(1) = trkBPCA.tst_4_SNRdB;      struct1.data(2) =  trkBPCA.tst_5_rmse;     struct1.data(3) = bpca_tst_avgrmse(f);        UTIL_savecsv_struct(trkBPCA.cfn_5_tst_rmse,       f, struct1); end
+        if (bUseRVQ)    struct1.data(1) = trkRVQ.tst_4_SNRdB;      struct1.data(2) =  trkRVQ.tst_5_rmse;     struct1.data(3) = rvq__tst_avgrmse(f);        UTIL_savecsv_struct(trkRVQ.cfn_5_tst_rmse,       f, struct1); end
+        if (bUseTSVQ)   struct1.data(1) = trkTSVQ.tst_4_SNRdB;      struct1.data(2) =  trkTSVQ.tst_5_rmse;     struct1.data(3) = tsvq_tst_avgrmse(f);        UTIL_savecsv_struct(trkTSVQ.cfn_5_tst_rmse,       f, struct1); end
 
         %6. RVQ number of stages
         clear struct1;
-        if (bUseRVQ)    struct1.data(1) = RVQ.tst_partialP;                                                                                                      UTIL_savecsv_struct(trkRVQ.cfn_6_numStages,    f, struct1); end
+        if (bUseRVQ)    struct1.data(1) = RVQ.tst_6_partialP;                                                                                                      UTIL_savecsv_struct(trkRVQ.cfn_6_numStages,    f, struct1); end

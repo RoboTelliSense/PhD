@@ -2,7 +2,7 @@ function RVQ = RVQ__testing_grayscale(tst_Dx1, RVQ)
 
     tst_6Dx1                            =   RVQ_FILES_create_posnegImage(tst_Dx1, '', 0, 0);
 
-    mdl_CBr_DxMP                               =   RVQ.mdl_CBr_DxMP;
+    mdl_2_CB_DxMP                               =   RVQ.mdl_2_CB_DxMP;
     mdl_CBg_DxMP                               =   RVQ.mdl_CBg_DxMP;
     mdl_CBb_DxMP                               =   RVQ.mdl_CBb_DxMP;
     CBn_r                              =   RVQ.CBn_r;
@@ -31,7 +31,7 @@ function RVQ = RVQ__testing_grayscale(tst_Dx1, RVQ)
             %for this stage: go over all codevectors
             for s=1:S 
                 idx                     =   UTIL_xy_to_idx(s, t, S);
-                CB_6Dx1                =   [mdl_CBr_DxMP(:,idx);mdl_CBg_DxMP(:,idx);mdl_CBb_DxMP(:,idx);CBn_r(:,idx);CBn_g(:,idx);CBn_b(:,idx)];
+                CB_6Dx1                =   [mdl_2_CB_DxMP(:,idx);mdl_CBg_DxMP(:,idx);mdl_CBb_DxMP(:,idx);CBn_r(:,idx);CBn_g(:,idx);CBn_b(:,idx)];
                 e                       =   err_6Dx1-CB_6Dx1;                    
                 d                       =   norm(  e, 2  ); %if e is a matrix, this is largest eigenvalue, if it's a vector, it's L2 norm              
                 if (d<dmin)
@@ -73,8 +73,8 @@ function RVQ = RVQ__testing_grayscale(tst_Dx1, RVQ)
         RVQ.tst_3_err_Dx1      =   err_6Dx1;
         RVQ.tst_1_descriptor_Px1   =   SoC;
         
-        RVQ.tst_partialP =   numStagesUsed;
+        RVQ.tst_6_partialP =   numStagesUsed;
                 
-        RVQ.tst_SNRdB      =   UTIL_METRICS_compute_SNRdB       (tst_6Dx1,   err_6Dx1);  %for PSNR, you only give error signal
-        RVQ.tst_rmse     =   UTIL_METRICS_compute_rms_value   (           err_6Dx1);
+        RVQ.tst_4_SNRdB      =   UTIL_METRICS_compute_SNRdB       (tst_6Dx1,   err_6Dx1);  %for PSNR, you only give error signal
+        RVQ.tst_5_rmse     =   UTIL_METRICS_compute_rms_value   (           err_6Dx1);
         RVQ.tst_PSNRdB     =   max(PSNR_dB);

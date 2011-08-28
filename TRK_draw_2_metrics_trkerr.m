@@ -23,7 +23,7 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
                                         if ~isfield(RVQ,'T')
                                             str='tracking error';
                                         else
-                                            str=['tracking error, (' num2str(RVQ.tst_partialP) '/' num2str(RVQ.T) ')'];
+                                            str=['tracking error, (' num2str(RVQ.tst_6_partialP) '/' num2str(RVQ.T) ')'];
                                         end
                                         title(str, 'fontsize', CONFIG.plot_title_fontsz);
                                         %axis tight

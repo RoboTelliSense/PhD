@@ -65,10 +65,9 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
 %------------------------------
 % POST-PROCESSING
 %------------------------------    
-   TSVQ.CB_DxKt            =   CB_DxKt;  %terminal and non-terminal codevectors
-   TSVQ.CB_DxK             =   CB_DxKt(:, M+1:M+K);
-   TSVQ.partitionedData    =   partitionedData;
-   
-   TSVQ                    =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, TSVQ, 4);  
-   TSVQ.K                  =   K;
-   
+    TSVQ.mdl_2_CB_DxKt      =   CB_DxKt;  %terminal and non-terminal codevectors
+    TSVQ.mdl_3_CB_DxK     	=   CB_DxKt(:, M+1:M+K);
+    TSVQ.K                  =   K;
+    
+    TSVQ                    =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, TSVQ); 
+

@@ -14,9 +14,9 @@
 % channel by replicating the grayscale channel to all 3 channels.  RVQ then
 % processes the 3 channel image as if it were RGB.  However, the
 % codevectors for the red, green and blue channels are exactly the same.
-% This is why I use mdl_CBr_DxMP, the red channel of the codebook.  I could
+% This is why I use mdl_2_CB_DxMP, the red channel of the codebook.  I could
 % just as well have used mdl_CBg_DxMP or mdl_CBb_DxMP since they are all exactly the same
-% as mdl_CBr_DxMP.  I go on to call this single channel codebook CB_DxMP, since it
+% as mdl_2_CB_DxMP.  I go on to call this single channel codebook CB_DxMP, since it
 % has D rows and MP codevectors.  The D-dimensional MP codevectors are
 % stacked column wise next to each other.
 %
@@ -34,7 +34,7 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   RVQ.mdl_CBr_DxMP;   %1 channel codebook, get it from the red, green or blue channel
+    CB_DxMP                 =   RVQ.mdl_2_CB_DxMP;   %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.P;      %actual number of stages in the codebook
     M                       =   RVQ.M;      %number of codevectors/stage
     sw                      =   RVQ.sw;     %snippet width
@@ -112,13 +112,9 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
 %-------------------------------
 %POST-PROCESSING
 %-------------------------------
-    RVQ.tst_1_descriptor_Px1  =   XDR_Px1;                                            %tst1.   
-    RVQ.tst_2_recon_Dx1       =   xhat_Dx1;                                           %tst2. 
-    RVQ.tst_3_err_Dx1         =   err_Dx1;                                            %tst3. 
-    RVQ.tst_SNRdB          =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  err_Dx1);  %tst4.
-    RVQ.tst_rmse           =   UTIL_METRICS_compute_rms_value   (        err_Dx1);  %tst5.
-    
-    
-    RVQ.tst_PSNRdB         =   UTIL_METRICS_compute_PSNRdB      (255,    err_Dx1);
-    RVQ.tst_partialP       =   partialP;                        
-    
+    RVQ.tst_1_descriptor_Px1=   XDR_Px1;                                             %tst1.   
+    RVQ.tst_2_recon_Dx1     =   xhat_Dx1;                                            %tst2. 
+    RVQ.tst_3_err_Dx1       =   err_Dx1;                                             %tst3. 
+    RVQ.tst_4_SNRdB        	=   UTIL_METRICS_compute_SNRdB       (x_Dx1,  err_Dx1);  %tst4.
+    RVQ.tst_5_rmse        	=   UTIL_METRICS_compute_rms_value   (        err_Dx1);  %tst5.
+    RVQ.tst_6_partialP      =   partialP;                                            %tst6.

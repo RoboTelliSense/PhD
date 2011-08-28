@@ -60,9 +60,9 @@
     A_pca.mode              =   'batch';
     A_pca                   =   bPCA_1_train(A_DxM1, A_pca);        %reference SVD
     
-    Ua_DxM1                 =   A_pca.mdl_U_DxN;
-    Sa_M1xM1                =   A_pca.mdl_S_NxN;
-    muA_Dx1                 =   A_pca.mdl_mu_Dx1;
+    Ua_DxM1                 =   A_pca.mdl_2_U_DxN;
+    Sa_M1xM1                =   A_pca.mdl_3_S_NxN;
+    muA_Dx1                 =   A_pca.mdl_1_mu_Dx1;
     
 %incremental SVD (including B)     
     [Usklm_DxN, Ssklm_Nx1, muCsklm_Dx1, temp_n] ...
@@ -82,7 +82,7 @@
 %reference    
     
     
-     err1_DxN               =   PCA_ref.mdl_U_DxN  - Usklm_DxN; %sklm is original code by David Ross
+     err1_DxN               =   PCA_ref.mdl_2_U_DxN  - Usklm_DxN; %sklm is original code by David Ross
      norm(err1_DxN(:))
 %     err2_DxN               =   U_DxN2 - U_DxN; %my code with cosmetic changes to make more readable
 %     rmse1                   =   UTIL_METRICS_compute_rms_value(err1_DxN(:))

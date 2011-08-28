@@ -38,17 +38,17 @@ function PCA = bPCA_1_train(DM2, PCA)
                                                 %If X is DxN with D > N, then svd computes only the 
                                                 %first N columns of U and S is NxN. 
 %4 part model    
-    PCA.mdl_mu_Dx1              =	mu_Dx1;         %4 part model: 1. mean
-    PCA.mdl_U_DxN               =	U;              %4 part model: 2. eigenvectors of AA^T
-	PCA.mdl_S_NxN               =	S;              %4 part model: 3. squared eigenvalues
-	PCA.mdl_V_NxN               =	V;              %4 part model: 4. eigenvectors of A^TA
+    PCA.mdl_1_mu_Dx1            =	mu_Dx1;         %4 part model: 1. mean
+    PCA.mdl_2_U_DxN             =	U;              %4 part model: 2. eigenvectors of AA^T
+	PCA.mdl_3_S_NxN             =	S;              %4 part model: 3. squared eigenvalues
+	PCA.mdl_4_V_NxN             =	V;              %4 part model: 4. eigenvectors of A^TA
                                                
 %------------------------------------------
 % POST-PROCESSING
 %------------------------------------------
 %5 part training output
-    PCA.trg_descriptors_NxN     =   PCA.mdl_U_DxN' * DM2z;                                          %trg1. projection scalars
-    PCA.trg_recon_DxN           =   PCA.mdl_U_DxN * PCA.trg_descriptors_NxN + repmat(mu_Dx1, 1, N); %trg2. reconstructed signal  
-    PCA.trg_err_DxN             =   PCA.trg_recon_DxN - DM2;                                        %trg3. error vector
-    PCA.trg_4_SNRdB               =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.trg_err_DxN(:));  %trg4. SNRdB
-    PCA.trg_5_rmse                =   UTIL_METRICS_compute_rms_value   (PCA.trg_err_DxN(:));          %trg5. rmse
+    PCA.trg_1_descriptors_NxN  	=   PCA.mdl_2_U_DxN' * DM2z;                                            %trg1. projection scalars
+    PCA.trg_2_recon_DxN       	=   PCA.mdl_2_U_DxN * PCA.trg_1_descriptors_NxN + repmat(mu_Dx1, 1, N); %trg2. reconstructed signal  
+    PCA.trg_3_err_DxN         	=   PCA.trg_2_recon_DxN - DM2;                                          %trg3. error vector
+    PCA.trg_4_SNRdB             =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.trg_3_err_DxN(:));    %trg4. SNRdB
+    PCA.trg_5_rmse              =   UTIL_METRICS_compute_rms_value   (        PCA.trg_3_err_DxN(:));    %trg5. rmse
