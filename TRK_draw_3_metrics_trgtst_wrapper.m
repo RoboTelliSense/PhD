@@ -1,6 +1,6 @@
 %if (Ntrg_snp             >=  CONFIG.trg_B)
                                 TRK_draw_3a_metrics_trg( trkIPCA.trg_SNRdB_Tx1, trkIPCA.trg_RMSE_Tx1, trkIPCA.trg_RMSEavg_Tx1, f, CONFIG.trg_frames,   CONFIG.plot_title_fontsz, 1);        
-    if (bUseBPCA )               TRK_draw_3a_metrics_trg( trkBPCA.trg_SNRdB, trkBPCA.trg_rmse, trkBPCA.trgout_avgrmse, f, CONFIG.trg_frames,   CONFIG.plot_title_fontsz, 2);        end
+    if (bUseBPCA )               TRK_draw_3a_metrics_trg( trkBPCA.trg_4_SNRdB, trkBPCA.trg_5_rmse, trkBPCA.trgout_avgrmse, f, CONFIG.trg_frames,   CONFIG.plot_title_fontsz, 2);        end
     if (bUseTSVQ)               TRK_draw_3a_metrics_trg( tsvq_trg_SNRdB, tsvq_trg_rmse, tsvq_trgout_avgrmse, f, CONFIG.trg_frames,   CONFIG.plot_title_fontsz, 4);        end
 	if (bUseRVQ)                TRK_draw_3a_metrics_trg( rvq__trg_SNRdB, rvq__trg_rmse, rvq__trgout_avgrmse, f, CONFIG.trg_frames,   CONFIG.plot_title_fontsz, 3);        end 
 %end

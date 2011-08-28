@@ -22,12 +22,12 @@ function BPCA = bPCA_3_test(x_Dx1, BPCA)
               
     %reconstruction
         temp                        =   min(N, Q);
-        BPCA.tst_recon_Dx1          =   U_DxN(:,1:temp) * tst_projScalars_Nx1(1:temp,:) + repmat(mu_Dx1, 1, N); %tst1. reconstructed signal
+        BPCA.tst_2_recon_Dx1          =   U_DxN(:,1:temp) * tst_projScalars_Nx1(1:temp,:) + repmat(mu_Dx1, 1, N); %tst1. reconstructed signal
 
 %--------------------------------------------
 % POST-PROCESSING
 %--------------------------------------------        
 %4 part testing results
-    BPCA.tst_err_Dx1                =   x_Dx1 - BPCA.tst_recon_Dx1;                             %tst2. reconstruction error
-    BPCA.tst_SNRdB                  =   UTIL_METRICS_compute_SNRdB(x_Dx1, BPCA.tst_err_Dx1);    %tst3. SNRdB
-    BPCA.tst_rmse                   =   UTIL_METRICS_compute_rms_value(BPCA.tst_err_Dx1);       %tst4. rmse
+    BPCA.tst_3_err_Dx1                =   x_Dx1 - BPCA.tst_2_recon_Dx1;                             %tst2. reconstruction error
+    BPCA.tst_SNRdB                  =   UTIL_METRICS_compute_SNRdB(x_Dx1, BPCA.tst_3_err_Dx1);    %tst3. SNRdB
+    BPCA.tst_rmse                   =   UTIL_METRICS_compute_rms_value(BPCA.tst_3_err_Dx1);       %tst4. rmse

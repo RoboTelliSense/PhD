@@ -112,22 +112,23 @@ function RVQ = RVQ__training(DM2, RVQ)
     %method 1: my matlab code
     %same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
     %such as dataset 4 created by DATAMATRIX_create_random_DM2, probably because the max value there is >255
-    RVQ.rule_stop_decoding      =   'full_stage';
-    [D, N]                      =   size(DM2);
-    RVQ.trg_err_DxN                       =   zeros(D,N);
-    RVQ.mdl_XDRs_PxN            =   zeros(RVQ.P,N);
+    RVQ.rule_stop_decoding              =   'full_stage';
+    [D, N]                              =   size(DM2);
+    RVQ.trg_3_err_DxN                  	=   zeros(D,N);
+    RVQ.trg_1_descriptors_PxN          	=   zeros(RVQ.P,N);
     for n=1:N
-        x_Dx1                   =   DM2(:,n);       %test vector
-        RVQ                     =   RVQ__testing_grayscale(x_Dx1, RVQ);
-        RVQ.mdl_XDRs_PxN(:,n)   =   RVQ.tst_XDR_Px1;
-        RVQ.trg_err_DxN(:,n)    =   RVQ.tst_err_Dx1;                                                %m1. metric 1
+        x_Dx1                           =   DM2(:,n);       %test vector
+        RVQ                             =   RVQ__testing_grayscale(x_Dx1, RVQ);
+        RVQ.trg_1_descriptors_PxN(:,n)	=   RVQ.tst_1_descriptor_Px1;                               %trg1.
+        RVQ.trg_2_recon_Dx1(:,n)       	=   RVQ.tst_2_recon_Dx1;                                      %trg2.
+        RVQ.trg_3_err_DxN(:,n)         	=   RVQ.tst_3_err_Dx1;                                        %trg3.
     end
-    RVQ.tst_XDR_Px1             =   [];
-    RVQ.trg_SNRdB               =   UTIL_METRICS_compute_SNRdB       (DM2(:), RVQ.trg_err_DxN(:));  %m2. metric 2
-    RVQ.trg_rmse                =   UTIL_METRICS_compute_rms_value   (RVQ.trg_err_DxN(:));          %m3. metric 3
-    %RVQ.trg_SNRdB_file         =   RVQ_FILES_read_dSNR_from_genstat_file(cfn_gentxt);  %use this line if you want to see what training 
-                                    %SNR RVQ reports.  i checked and it uses all 6 channels.  if i use all 6 channels, 
-                                    %then my reported value and this value reported by RVQ are exactly the same.
+    RVQ.tst_1_descriptor_Px1            =   [];
+    RVQ.trg_4_SNRdB                    	=   UTIL_METRICS_compute_SNRdB       (DM2(:), RVQ.trg_3_err_DxN(:));  %trg4.
+    RVQ.trg_5_rmse                     	=   UTIL_METRICS_compute_rms_value   (RVQ.trg_3_err_DxN(:));          %trg5.
+    %RVQ.trg_SNRdB_file                 =   RVQ_FILES_read_dSNR_from_genstat_file(cfn_gentxt);  %use this line if you want to see what training 
+                                            %SNR RVQ reports.  i checked and it uses all 6 channels.  if i use all 6 channels, 
+                                            %then my reported value and this value reported by RVQ are exactly the same.
     
 %     method 2: gen.exe -l (method 1 and 2 give the same answer, except in
 %                           very rare cases where my matlab code is more accurate.  refer to
@@ -148,7 +149,7 @@ function RVQ = RVQ__training(DM2, RVQ)
 %             system(['./RVQ__training_gen16.linux' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);        
 %         end
 %     end
-%     RVQ.mdl_XDRs_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxP, M, true);    %notice that I do not use actualP but maxP
+%     RVQ.trg_1_descriptors_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxP, M, true);    %notice that I do not use actualP but maxP
 
 
 

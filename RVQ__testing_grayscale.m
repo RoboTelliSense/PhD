@@ -83,7 +83,7 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
         
         %part3: should we continue or exit?
         if      (strcmp(RVQ.rule_stop_decoding, 'realm_of_experience'))
-            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.mdl_XDRs_PxN, temp2_XDR_parPx1);
+            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_1_descriptors_PxN, temp2_XDR_parPx1);
         elseif  (strcmp(RVQ.rule_stop_decoding, 'monotonic_PSNR'))
             continue_decoding   =   RVQ_RULES_DECODE_STOPPING_monotonic_PSNR       (temp2_PSNRdB, PSNRdB_prev);
         elseif  (strcmp(RVQ.rule_stop_decoding, 'full_stage'))
@@ -112,13 +112,13 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
 %-------------------------------
 %POST-PROCESSING
 %-------------------------------
-    RVQ.tst_recon_Dx1       =   xhat_Dx1;                           %tst1. 
-    RVQ.tst_err_Dx1        =   err_Dx1;                             %tst2. error vector
+    RVQ.tst_1_descriptor_Px1  =   XDR_Px1;                                            %tst1.   
+    RVQ.tst_2_recon_Dx1       =   xhat_Dx1;                                           %tst2. 
+    RVQ.tst_3_err_Dx1         =   err_Dx1;                                            %tst3. 
+    RVQ.tst_SNRdB          =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  err_Dx1);  %tst4.
+    RVQ.tst_rmse           =   UTIL_METRICS_compute_rms_value   (        err_Dx1);  %tst5.
     
-
-    RVQ.tst_partialP       =   partialP;                           %(d) metrics            
-    RVQ.tst_SNRdB          =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  err_Dx1);  
-    RVQ.tst_rmse           =   UTIL_METRICS_compute_rms_value   (        err_Dx1);
+    
     RVQ.tst_PSNRdB         =   UTIL_METRICS_compute_PSNRdB      (255,    err_Dx1);
+    RVQ.tst_partialP       =   partialP;                        
     
-    RVQ.tst_XDR_Px1        =   XDR_Px1;                            %(c) save RVQ path

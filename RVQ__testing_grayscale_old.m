@@ -93,9 +93,9 @@ function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
 %POST-PROCESSING
 %-------------------------------
 %pass out
-    RVQ.tst_recon_Dx1    =   xhat_Dx1;
-    RVQ.tst_err_Dx1     =   R_Dx1;
-    RVQ.tst_XDR_Px1  =   XDR;
+    RVQ.tst_2_recon_Dx1    =   xhat_Dx1;
+    RVQ.tst_3_err_Dx1     =   R_Dx1;
+    RVQ.tst_1_descriptor_Px1  =   XDR;
         
     RVQ.tst_partialP=   partialP;
 

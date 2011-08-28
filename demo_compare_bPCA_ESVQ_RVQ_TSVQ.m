@@ -4,7 +4,7 @@
 %
 % sw=1, sh=1 means scalar example
 % 
-% RVQ.mdl_XDRs_PxN: training XDRs from using gen.exe -l or my Matlab software
+% RVQ.trg_1_descriptors_PxN: training XDRs from using gen.exe -l or my Matlab software
 %
 % gen.exe -l crashes on dataset 4, and so i'm not using it any more instead, i have my own matlab code for it
 % I think gen.exe -l may be crashing because I have values higher than 255
@@ -32,10 +32,10 @@
 % The first M=2 numbers in RVQ.mdl_CBr_DxMP are the scalar codevectors for stage 1,
 % the second M=2 numbers are the scalar codevectors for stage 2, and so on.
 % 
-% If test point is 192, mdl_XDRs_PxN(:,192) produced by RVQ.rule_stop_decoding='monotonic_PSNR' will give 
+% If test point is 192, descriptors_PxN(:,192) produced by RVQ.rule_stop_decoding='monotonic_PSNR' will give 
 % [1;9;9;9;  9;9;9;9], the 9's, i.e., P+1s, showing early termination.
 % So, the reproduction value is 192 and the error is 0.5.  
-% mdl_XDRs_PxN produced by gen.exe -l or RVQ.rule_stop_decoding='full_path' always gives full path,
+% descriptors_PxN produced by gen.exe -l or RVQ.rule_stop_decoding='full_path' always gives full path,
 % and the answer is [1;1;2;2   2;2;2;2].  So the reproduction value is also 192, and the error is again 0.5 
 % 
 % If test point is 253, my software gives reproduction of 252.5, an error of 0.5: 192.5 + 32 + 16 + 8 + 4              = 252.5 
@@ -77,7 +77,7 @@
     format compact;
 
 %data input (5 different datasets, pick one of them)
-    dataset                 =   5;                                          %change this to 1, 2, 3, 4 or 5
+    dataset                 =   2;                                          %change this to 1, 2, 3, 4 or 5
     
     %deterministic, simple scalar examples
     if     (dataset==1) DM2 =   [4 6 8 10 20 22 24 26];       sw=1; sh=1;   %simplest possible, i've worked this out by hand in a pdf
@@ -99,14 +99,14 @@
 %algorithm parameters
     %bpca
     BPCA.Q                  =   16;                                         
-    BPCA.mdl_XDRs_PxN       =   [];
-    BPCA.tst_XDR_Px1        =   [];
+    BPCA.descriptors_PxN       =   [];
+    BPCA.tst_1_descriptor_Px1        =   [];
     
     %tsvq
     TSVQ.P                  =   3;                                          %number of stages
     TSVQ.M                  =   2;                                          %2 is for binary TSVQ
-    TSVQ.mdl_XDRs_PxN       =   []; 
-    TSVQ.tst_XDR_Px1        =   [];
+    TSVQ.descriptors_PxN       =   []; 
+    TSVQ.tst_1_descriptor_Px1        =   [];
     
     %rvq    
     RVQ.maxP                =   8;                                          %number of stages  
@@ -115,8 +115,8 @@
     RVQ.sw                  =   sw;                                         %snippet width
     RVQ.sh                  =   sh;                                         %snippet height
     RVQ.dir_out             =   '';
-    RVQ.mdl_XDRs_PxN        =   [];
-    RVQ.tst_XDR_Px1         =   [];
+    RVQ.trg_1_descriptors_PxN        =   [];
+    RVQ.tst_1_descriptor_Px1         =   [];
       
 
 %-----------------------------

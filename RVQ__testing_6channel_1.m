@@ -70,9 +70,9 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
 
         
     %pass out
-        RVQ.tst_recon_Dx1    =   recon_6Dx1;
-        RVQ.tst_err_Dx1      =   err_6Dx1;
-        RVQ.tst_XDR_Px1   =   SoC;
+        RVQ.tst_2_recon_Dx1    =   recon_6Dx1;
+        RVQ.tst_3_err_Dx1      =   err_6Dx1;
+        RVQ.tst_1_descriptor_Px1   =   SoC;
         
         RVQ.tst_partialP =   numStagesUsed;
                 

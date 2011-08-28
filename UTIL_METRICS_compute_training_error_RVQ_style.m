@@ -3,7 +3,7 @@
 % The training error computed is for DM2, i.e., all the training data.
 %
 % For computing SNRdB, the following approach is taken:
-% (a) for each training vector, compute the error vector algo_struct.tst_err_Dx1
+% (a) for each training vector, compute the error vector algo_struct.tst_3_err_Dx1
 % (b) concatenate all training vectors into S_NDx1 to make one giant signal
 % (c) concatenate all error vectors into E_NDx1 to make one giant error signal
 % (d) compute SNRdB using these giant signals
@@ -24,7 +24,7 @@ function algo_struct = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo_s
     [D, N]                  =   size(DM2);
     S_NDx1                  =   [];             %all N D-dimensional training vectors are concatentated to form a large signal
     E_NDx1                  =   [];             %all N D-dimensional error vectors are concatentated to form a large signal
-    algo_struct.mdl_XDRs_PxN = [];        %the above step is carried out to be compatible with the way Explorer computes training error
+    algo_struct.descriptors_PxN = [];        %the above step is carried out to be compatible with the way Explorer computes training error
 
 %-------------------
 %PRE-PROCESSING
@@ -50,7 +50,7 @@ function algo_struct = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo_s
                                 
         %concatenate signals (training vectors) and errors
         S_NDx1              =   [S_NDx1; tst_vec_Dx1];                %save the SNR
-        E_NDx1              =   [E_NDx1; algo_struct.tst_err_Dx1]; %save the error
+        E_NDx1              =   [E_NDx1; algo_struct.tst_3_err_Dx1]; %save the error
     end
     
     %compute SNR for the large signal
@@ -61,5 +61,5 @@ function algo_struct = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo_s
 %POST-PROCESSING
 %-------------------
 %save results
-    algo_struct.trg_SNRdB   =   SNRdB;
-    algo_struct.trg_rmse    =   rmse;
+    algo_struct.trg_4_SNRdB   =   SNRdB;
+    algo_struct.trg_5_rmse    =   rmse;

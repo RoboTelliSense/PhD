@@ -38,10 +38,10 @@
         %4. training error (rmse, avg rmse, snr)
 	if (Ntrg_snp             >=  CONFIG.trg_B) %i.e.train every batchsize images
         clear struct1;
-                        struct1.data(1) = IPCA.trg_SNRdB;          struct1.data(2) =  IPCA.trg_rmse;         struct1.data(3) = temp1;                         UTIL_savecsv_struct(trkIPCA.cfn_4_trg_rmse,      f, struct1);
-        if (bUseBPCA )   struct1.data(1) = BPCA.trg_SNRdB;          struct1.data(2) =  BPCA.trg_rmse;         struct1.data(3) = temp2;                         UTIL_savecsv_struct(trkBPCA.cfn_4_trg_rmse,      f, struct1); end
-        if (bUseRVQ)    struct1.data(1) = RVQ.trg_SNRdB;          struct1.data(2) =  RVQ.trg_rmse;         struct1.data(3) = temp3;                         UTIL_savecsv_struct(trkRVQ.cfn_4_trg_rmse,      f, struct1); end
-        if (bUseTSVQ)   struct1.data(1) = TSVQ.trg_SNRdB;          struct1.data(2) =  TSVQ.trg_rmse;         struct1.data(3) = temp4;                         UTIL_savecsv_struct(trkTSVQ.cfn_4_trg_rmse,      f, struct1); end
+                        struct1.data(1) = IPCA.trg_4_SNRdB;          struct1.data(2) =  IPCA.trg_5_rmse;         struct1.data(3) = temp1;                         UTIL_savecsv_struct(trkIPCA.cfn_4_trg_rmse,      f, struct1);
+        if (bUseBPCA )   struct1.data(1) = BPCA.trg_4_SNRdB;          struct1.data(2) =  BPCA.trg_5_rmse;         struct1.data(3) = temp2;                         UTIL_savecsv_struct(trkBPCA.cfn_4_trg_rmse,      f, struct1); end
+        if (bUseRVQ)    struct1.data(1) = RVQ.trg_4_SNRdB;          struct1.data(2) =  RVQ.trg_5_rmse;         struct1.data(3) = temp3;                         UTIL_savecsv_struct(trkRVQ.cfn_4_trg_rmse,      f, struct1); end
+        if (bUseTSVQ)   struct1.data(1) = TSVQ.trg_4_SNRdB;          struct1.data(2) =  TSVQ.trg_5_rmse;         struct1.data(3) = temp4;                         UTIL_savecsv_struct(trkTSVQ.cfn_4_trg_rmse,      f, struct1); end
     end
         
         %5. testing error (rmse, avg rmse, snr)

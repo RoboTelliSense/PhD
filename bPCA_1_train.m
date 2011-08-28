@@ -46,11 +46,9 @@ function PCA = bPCA_1_train(DM2, PCA)
 %------------------------------------------
 % POST-PROCESSING
 %------------------------------------------
-%reconstruction
-    PCA.trg_DM2projScalars_NxN  =   PCA.mdl_U_DxN' * DM2z;                                              %trg1. descriptor
-    PCA.trg_DM2recon_DxN        =   PCA.mdl_U_DxN * PCA.trg_DM2projScalars_NxN + repmat(mu_Dx1, 1, N);  %trg2. reconstructed signal
-
-%3 part training metrics    
-    PCA.trg_err_DxN             =   PCA.trg_DM2recon_DxN - DM2;                                     %trg3. error vector
-    PCA.trg_SNRdB               =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.trg_err_DxN(:));  %trg4. SNRdB
-    PCA.trg_rmse                =   UTIL_METRICS_compute_rms_value   (PCA.trg_err_DxN(:));          %trg5. rmse
+%5 part training output
+    PCA.trg_descriptors_NxN     =   PCA.mdl_U_DxN' * DM2z;                                          %trg1. projection scalars
+    PCA.trg_recon_DxN           =   PCA.mdl_U_DxN * PCA.trg_descriptors_NxN + repmat(mu_Dx1, 1, N); %trg2. reconstructed signal  
+    PCA.trg_err_DxN             =   PCA.trg_recon_DxN - DM2;                                        %trg3. error vector
+    PCA.trg_4_SNRdB               =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.trg_err_DxN(:));  %trg4. SNRdB
+    PCA.trg_5_rmse                =   UTIL_METRICS_compute_rms_value   (PCA.trg_err_DxN(:));          %trg5. rmse

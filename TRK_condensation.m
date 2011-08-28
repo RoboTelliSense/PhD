@@ -101,7 +101,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_
         for i = 1:Np
             Itst                    =   255*PFcandidateSnippets_0t1_shxswxNp(:,:,i);
             ALGO                    =   bPCA_3_test(Itst(:), ALGO);
-            err_0to1_DxNp(:,i)   	=   ALGO.tst_err_Dx1/255;                                
+            err_0to1_DxNp(:,i)   	=   ALGO.tst_3_err_Dx1/255;                                
         end
 
         
@@ -115,8 +115,8 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_
         for i = 1:Np
             Itst                    =   255*PFcandidateSnippets_0t1_shxswxNp(:,:,i);
             ALGO                    =   RVQ__testing_grayscale(Itst(:), ALGO);
-            %err_0to1_DxNp(:,i)     =   ALGO.tst_err_Dx1/255;                                
-            err_0to1_DxNp(:,i)      =   (abs(ALGO.tst_err_Dx1) + 0.5*(ALGO.maxP-ALGO.P))/255;
+            %err_0to1_DxNp(:,i)     =   ALGO.tst_3_err_Dx1/255;                                
+            err_0to1_DxNp(:,i)      =   (abs(ALGO.tst_3_err_Dx1) + 0.5*(ALGO.maxP-ALGO.P))/255;
         end
         
         
@@ -126,7 +126,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_
         for i = 1:Np
             Itst                    =   255*PFcandidateSnippets_0t1_shxswxNp(:,:,i);
             ALGO                    =   TSVQ_3_test(Itst(:), ALGO);
-            err_0to1_DxNp(:,i)   	=   ALGO.tst_err_Dx1/255;                                
+            err_0to1_DxNp(:,i)   	=   ALGO.tst_3_err_Dx1/255;                                
         end
     end
 
