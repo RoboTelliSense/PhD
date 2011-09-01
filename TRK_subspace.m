@@ -112,10 +112,10 @@ datasetCode=1;
         I_0t1               =   double(I_HxWxF(:,:,f))/256;
         
 		%testing: condensation
-		if (CONFIG.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, trkIPCA, CONFIG, RandomData_sample, RandomData_cdf, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, CONFIG);
-		if (CONFIG.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, trkBPCA, CONFIG, RandomData_sample, RandomData_cdf, 2); end
-		if (CONFIG.in_bUseRVQ)  trkRVQ 	= TRK_condensation(I_0t1, f, RVQ,  trkRVQ,  CONFIG, RandomData_sample, RandomData_cdf, 3); end
-		if (CONFIG.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, trkTSVQ, CONFIG, RandomData_sample, RandomData_cdf, 4); end
+		if (CONFIG.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, CONFIG, RandomData_sample, RandomData_cdf, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, CONFIG);
+		if (CONFIG.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, CONFIG, RandomData_sample, RandomData_cdf, 2); end
+		if (CONFIG.in_bUseRVQ)  trkRVQ 	= TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  CONFIG, RandomData_sample, RandomData_cdf, 3); end
+		if (CONFIG.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, CONFIG, RandomData_sample, RandomData_cdf, 4); end
 	
 		%training (update model) every few frames
         if (mod(f,CONFIG.trg_B)==0) %i.e.train every batchsize images

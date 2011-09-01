@@ -21,14 +21,14 @@
 %    tst_4_SNRdB
 %    tst_5_rmse
 %
-% CONFIG.var_affineROI_1x6
+% CONFIG.ds_2_initial_var_affineROI_1x6
 %
 % Copyright (C) Jongwoo Lim and David Ross (modified by Salman Aslam with permission)
 % Date created      : April 25, 2011
 % Date last modified: July 18, 2011
 %%
 
-function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_sample, RandomData_cdf, algo_code)
+function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomData_sample, RandomData_cdf, algo_code)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
@@ -58,8 +58,8 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_
         TRK.affineCandidates_6xNp   =   TRK.affineCandidates_6xNp(:,idx);  %keep only good candidates (resample)
     end
 
-%2. apply motion model (brownian, so just add randomness)
-    delta_affineCandidates_6xNp     =   rn2.*repmat(CONFIG.var_affineROI_1x6(:),[1,Np]); %rn2 is 
+%2. apply motion model (brownian, so just add randomness) and extract candidate snippets
+    delta_affineCandidates_6xNp     =   rn2.*repmat(CONFIG.ds_2_initial_var_affineROI_1x6(:),[1,Np]); %rn2 is 
     TRK.affineCandidates_6xNp       =   TRK.affineCandidates_6xNp + delta_affineCandidates_6xNp;
 
     %extract the candidate snippets from the image based on motion model above
@@ -131,7 +131,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_
     end
 
 %3b. raise distances to exponentials
-    stddev                          =   CONFIG.con_stddev;
+    stddev                          =   CONFIG.ds_4_con_stddev;
     DFFS                            =   err_0to1_DxNp;
     switch (CONFIG.con_errfunc)
         case 'robust'; TRK.weights  =   exp(- sum(DFFS.^2./(DFFS.^2 + CONFIG.rsig.^2))./stddev)';%CONFIG.rsig never defined
@@ -171,3 +171,14 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, TRK, CONFIG, RandomData_
     
         TRK.tst_RMSE_Fx1(f)         =	TRK.tst_5_rmse;
         TRK.tst_RMSEavg_Fx1(f)      =   UTIL_compute_avg(TRK.tst_RMSE_Fx1(1:f));
+    
+%tracking error        
+    TRK.FP_est                      =   TRK.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.initial_FP_gt; ones(1,CONFIG.numFP)];
+    TRK.FP_gt                       =   cat(3, CONFIG.initial_FP_gt+repmat(ALGO.sz'/2,[1,CONFIG.numFP]), GT(:,:,f), TRK.FP_est);
+    idx                             =   find(TRK.FP_gt(1,:,2) > 0);
+    if (length(idx) > 0)
+        TRK.FPerr(f)      =   sqrt(mean(sum((TRK.FP_gt(:,idx,2)-TRK.FP_gt(:,idx,3)).^2,1)));
+    else
+        TRK.FPerr(f)      =   nan;
+    end
+        
