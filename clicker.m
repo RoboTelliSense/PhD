@@ -42,11 +42,11 @@ disp('');
 
 
 
-CONFIG.datasetName = input('what is the name?  ', 's');
-load(CONFIG.datasetName)
+CONST.ds_2_name = input('what is the name?  ', 's');
+load(CONST.ds_2_name)
 
 numPt = input('which point are you clicking?  ', 's');
-cfn_out = [CONFIG.datasetName '_' numPt];
+cfn_out = [CONST.ds_2_name '_' numPt];
 
 
 [tempp1, tempp2, T] = size(data);

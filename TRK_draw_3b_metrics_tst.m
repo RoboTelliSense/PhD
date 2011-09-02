@@ -1,4 +1,4 @@
-function TRK_draw_3b_metrics_tst(tstSNR, tst_RMSE, tst_RMSEavg, f, CONFIG.plot_title_fontsz, algo_code)
+function TRK_draw_3b_metrics_tst(tstSNR, tst_RMSE, tst_RMSEavg, f, CONST.plot_title_fontsz, algo_code)
 
     if      (algo_code==1)  str='iPCA';     color = 'r';    
     elseif  (algo_code==2)  str='bPCA';     color = 'm';
@@ -11,7 +11,7 @@ function TRK_draw_3b_metrics_tst(tstSNR, tst_RMSE, tst_RMSEavg, f, CONFIG.plot_t
         hold on; 
         plot(2:f, tstSNR(2:f),  [color '-']); 
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle('test SNR (dB)', 'k', CONFIG.plot_title_fontsz); 
+        UTIL_makeTitle('test SNR (dB)', 'k', CONST.plot_title_fontsz); 
         %axis tight
         grid on;   
         hold off;
@@ -22,7 +22,7 @@ function TRK_draw_3b_metrics_tst(tstSNR, tst_RMSE, tst_RMSEavg, f, CONFIG.plot_t
         hold on;
         plot(1:f, tst_RMSE(1:f),  [color '-']);  
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle('test rmse', 'k', CONFIG.plot_title_fontsz); 
+        UTIL_makeTitle('test rmse', 'k', CONST.plot_title_fontsz); 
         %axis tight
         grid on;   
         hold off; 
@@ -33,7 +33,7 @@ function TRK_draw_3b_metrics_tst(tstSNR, tst_RMSE, tst_RMSEavg, f, CONFIG.plot_t
         hold on;
         plot(1:f, tst_RMSEavg(1:f),  [color '-']); 
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle('mean test rmse', 'k', CONFIG.plot_title_fontsz);       
+        UTIL_makeTitle('mean test rmse', 'k', CONST.plot_title_fontsz);       
         %axis tight
         grid on;   
         hold off;  

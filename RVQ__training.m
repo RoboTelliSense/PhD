@@ -40,12 +40,12 @@ function RVQ = RVQ__training(DM2, RVQ)
 %INITIALIZATIONS
 %---------------
     DM2_u8                  =   uint8(DM2);     %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
-    M                       =   RVQ.M;          %number of templates per stage
-    maxP                    =   RVQ.maxP;       %max number of stages
-    sw                      =   RVQ.sw;         %snippet width
-    sh                      =   RVQ.sh;         %snippet height
-    targetSNR               =   RVQ.targetSNR;  %desired SNR
-    dir_out                 =   RVQ.dir_out;    %directory to store results in
+    M                       =   RVQ.in_2_M;          %number of templates per stage
+    maxP                    =   RVQ.in_1_maxP;       %max number of stages
+    sw                      =   RVQ.in_4_sw;         %snippet width
+    sh                      =   RVQ.in_5_sh;         %snippet height
+    targetSNR               =   RVQ.in_3_targetSNR;  %desired SNR
+    dir_out                 =   RVQ.in_6_dir_out;    %directory to store results in
 
 %!! attention: these should be parameters but I'm fixing them !!  
     iFlag                   =   0.0005;
@@ -101,8 +101,9 @@ function RVQ = RVQ__training(DM2, RVQ)
 %-------------------
 %read back results
     %decoder codebook to get actual stages, codebooks
-    [RVQ.P, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  =  RVQ_FILES_read_dcbk_file        (cfn_dcbk); 
-    RVQ.mdl_2_CB_DxMP             =   CBr_DxMP;     %CB: single channel codebook
+    [RVQ.mdl_3_P, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  ...
+                            =  RVQ_FILES_read_dcbk_file        (cfn_dcbk); 
+    RVQ.mdl_2_CB_DxMP       =   CBr_DxMP;     %CB: single channel codebook
     
     %error checking
     if (M ~= M_check || sw ~= sw_check || sh ~= sh_check)

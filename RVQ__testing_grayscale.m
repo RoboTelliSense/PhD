@@ -34,12 +34,13 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   RVQ.mdl_2_CB_DxMP;   %1 channel codebook, get it from the red, green or blue channel
-    P                       =   RVQ.P;      %actual number of stages in the codebook
-    M                       =   RVQ.M;      %number of codevectors/stage
-    sw                      =   RVQ.sw;     %snippet width
-    sh                      =   RVQ.sh;     %snippet height
-    D                       =   sw*sh;       %dimension of data
+    M                       =   RVQ.in_2_M;             %number of codevectors/stage
+    sw                      =   RVQ.in_4_sw;            %snippet width
+    sh                      =   RVQ.in_5_sh;            %snippet height
+    D                       =   sw*sh;                  %dimension of data
+
+    CB_DxMP                 =   RVQ.mdl_2_CB_DxMP;      %1 channel codebook, get it from the red, green or blue channel
+    P                       =   RVQ.mdl_3_P;            %actual number of stages in the codebook
     partialP                =   0;
 %-------------------------------
 %PRE-PROCESSING
@@ -52,7 +53,7 @@ function RVQ = RVQ__testing_grayscale(x_Dx1, RVQ)
 %-------------------------------
 %PROCESSING
 %-------------------------------    
-%go over all stages
+%go over all stages (remember that P is actual stages in codebook, maxP is number of stages you wanted)
     for p=1:P
         
        

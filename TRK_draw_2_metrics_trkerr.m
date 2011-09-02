@@ -1,4 +1,4 @@
-function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_metricstrk_rmse(CONFIG, trkIPCA, trkBPCA, trkRVQ, trkTSVQ)
+function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_draw_2_metricstrk_rmse(CONFIG, trkIPCA, trkBPCA, trkRVQ, trkTSVQ)
 
     
                                         figure(2);
@@ -6,11 +6,11 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
                                         
                                         
                                         
-            trkIPCA.FP_est(:,:,f)     =   trkIPCA.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.initial_FP_gt; ones(1,CONFIG.numFP)];
-            trkIPCA.FP_gt                 =   cat(3, CONFIG.initial_FP_gt+repmat(sz'/2,[1,CONFIG.numFP]), GT(:,:,f), trkIPCA.FP_est(:,:,f));
-            PCAidx                  =   find(trkIPCA.FP_gt(1,:,2) > 0);
+            trkIPCA.FP_2_est(:,:,f)     =   trkIPCA.best_affineROI_1x6([3,4,1;5,6,2])*[CONST.FP_gt_initial; ones(1,CONST.FP_num)];
+            trkIPCA.FP_1_gt                 =   cat(3, CONST.FP_gt_initial+repmat(sz'/2,[1,CONST.FP_num]), GT(:,:,f), trkIPCA.FP_2_est(:,:,f));
+            PCAidx                  =   find(trkIPCA.FP_1_gt(1,:,2) > 0);
             if (length(PCAidx) > 0)
-                trkIPCA.FPerr(f)      =   sqrt(mean(sum((trkIPCA.FP_gt(:,PCAidx,2)-trkIPCA.FP_gt(:,PCAidx,3)).^2,1)));
+                trkIPCA.FPerr(f)      =   sqrt(mean(sum((trkIPCA.FP_1_gt(:,PCAidx,2)-trkIPCA.FP_1_gt(:,PCAidx,3)).^2,1)));
             else
                 trkIPCA.FPerr(f)      =   nan;
             end
@@ -25,7 +25,7 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
                                         else
                                             str=['tracking error, (' num2str(RVQ.tst_6_partialP) '/' num2str(RVQ.T) ')'];
                                         end
-                                        title(str, 'fontsize', CONFIG.plot_title_fontsz);
+                                        title(str, 'fontsize', CONST.plot_title_fontsz);
                                         %axis tight
                                         hold on
                                         grid on
@@ -33,7 +33,7 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
                                         subplot(out_num_rows,out_num_cols,6)
                                         plot(1:f, trkIPCA.FPerr_avg(1:f),'r');
                                         set(gca, 'FontSize', 8);
-                                        title('mean tracking error', 'fontsize', CONFIG.plot_title_fontsz);
+                                        title('mean tracking error', 'fontsize', CONST.plot_title_fontsz);
                                         %axis tight
                                         hold on
                                         grid on
@@ -44,12 +44,12 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
             %                            set(h1, 'Position', [10, 90, h1_pos(3), h1_pos(4)]);
 
         if (bUseBPCA )
-            BPCA.FP_est(:,:,f)      =   trkBPCA.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.initial_FP_gt; ones(1,CONFIG.numFP)];
-            trkBPCA.FP_gt                  =   cat(3, CONFIG.initial_FP_gt+repmat(sz'/2,[1,CONFIG.numFP]), GT(:,:,f), BPCA.FP_est(:,:,f));
-            bPCAidx                  =   find(trkBPCA.FP_gt(1,:,2) > 0);
+            BPCA.FP_2_est(:,:,f)      =   trkBPCA.best_affineROI_1x6([3,4,1;5,6,2])*[CONST.FP_gt_initial; ones(1,CONST.FP_num)];
+            trkBPCA.FP_1_gt                  =   cat(3, CONST.FP_gt_initial+repmat(sz'/2,[1,CONST.FP_num]), GT(:,:,f), BPCA.FP_2_est(:,:,f));
+            bPCAidx                  =   find(trkBPCA.FP_1_gt(1,:,2) > 0);
             if (length(bPCAidx) > 0)
-              % trkIPCA.FPerr(f) = mean(sqrt(sum((trkIPCA.FP_gt(:,idx,2)-trkIPCA.FP_gt(:,idx,3)).^2,1)));
-                BPCA.FPerr(f)      =   sqrt(mean(sum((trkBPCA.FP_gt(:,bPCAidx,2)-trkBPCA.FP_gt(:,bPCAidx,3)).^2,1)));
+              % trkIPCA.FPerr(f) = mean(sqrt(sum((trkIPCA.FP_1_gt(:,idx,2)-trkIPCA.FP_1_gt(:,idx,3)).^2,1)));
+                BPCA.FPerr(f)      =   sqrt(mean(sum((trkBPCA.FP_1_gt(:,bPCAidx,2)-trkBPCA.FP_1_gt(:,bPCAidx,3)).^2,1)));
             else
                 BPCA.FPerr(f)      =   nan;
             end
@@ -72,14 +72,14 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
         
                
         if (bUseTSVQ)
-            TSVQ.FP_est(:,:,f)      =   trkTSVQ.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.initial_FP_gt; ones(1,CONFIG.numFP)];
-            trkTSVQ.FP_gt                  =   cat(3, CONFIG.initial_FP_gt+repmat(sz'/2,[1,CONFIG.numFP]), GT(:,:,f), TSVQ.FP_est(:,:,f));
-            TSVQidx                  =   find(trkTSVQ.FP_gt(1,:,2) > 0);
+            TSVQ.FP_2_est(:,:,f)      =   trkTSVQ.best_affineROI_1x6([3,4,1;5,6,2])*[CONST.FP_gt_initial; ones(1,CONST.FP_num)];
+            trkTSVQ.FP_1_gt                  =   cat(3, CONST.FP_gt_initial+repmat(sz'/2,[1,CONST.FP_num]), GT(:,:,f), TSVQ.FP_2_est(:,:,f));
+            TSVQidx                  =   find(trkTSVQ.FP_1_gt(1,:,2) > 0);
             if (length(TSVQidx) > 0)
               % trkIPCA.FPerr(f) =
-              % mean(sqrt(sum((trkIPCA.FP_gt(:,idx,2)-trkIPCA.FP_gt(:,idx,3)).^2,1)))
+              % mean(sqrt(sum((trkIPCA.FP_1_gt(:,idx,2)-trkIPCA.FP_1_gt(:,idx,3)).^2,1)))
               % ;
-                TSVQ.FPerr(f)      =   sqrt(mean(sum((trkTSVQ.FP_gt(:,TSVQidx,2)-trkTSVQ.FP_gt(:,TSVQidx,3)).^2,1)));
+                TSVQ.FPerr(f)      =   sqrt(mean(sum((trkTSVQ.FP_1_gt(:,TSVQidx,2)-trkTSVQ.FP_1_gt(:,TSVQidx,3)).^2,1)));
             else
                 TSVQ.FPerr(f)      =   nan;
             end
@@ -101,11 +101,11 @@ function [trkIPCA.FP_est, BPCA.FP_est, RVQ.FP_est, TSVQ.FP_est] = TRK_draw_2_met
         
         
         if (bUseRVQ)
-            RVQ.FP_est(:,:,f)      =   trkRVQ.best_affineROI_1x6([3,4,1;5,6,2])*[CONFIG.initial_FP_gt; ones(1,CONFIG.numFP)];
-            trkRVQ.FP_gt                  =   cat(3, CONFIG.initial_FP_gt+repmat(sz'/2,[1,CONFIG.numFP]), GT(:,:,f), RVQ.FP_est(:,:,f));
-            RVQidx                  =   find(trkRVQ.FP_gt(1,:,2) > 0);
+            RVQ.FP_2_est(:,:,f)      =   trkRVQ.best_affineROI_1x6([3,4,1;5,6,2])*[CONST.FP_gt_initial; ones(1,CONST.FP_num)];
+            trkRVQ.FP_1_gt                  =   cat(3, CONST.FP_gt_initial+repmat(sz'/2,[1,CONST.FP_num]), GT(:,:,f), RVQ.FP_2_est(:,:,f));
+            RVQidx                  =   find(trkRVQ.FP_1_gt(1,:,2) > 0);
             if (length(RVQidx) > 0)
-                RVQ.FPerr(f)      =   sqrt(mean(sum((trkRVQ.FP_gt(:,RVQidx,2)-trkRVQ.FP_gt(:,RVQidx,3)).^2,1)));
+                RVQ.FPerr(f)      =   sqrt(mean(sum((trkRVQ.FP_1_gt(:,RVQidx,2)-trkRVQ.FP_1_gt(:,RVQidx,3)).^2,1)));
             else
                 RVQ.FPerr(f)      =   nan;
             end

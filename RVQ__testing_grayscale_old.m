@@ -28,9 +28,9 @@ function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
 %-------------------------------
     CB_DxMP                 =   RVQ.mdl_2_CB_DxMP;   %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.P;      %actual number of stages in the codebook
-    M                       =   RVQ.M;      %number of codevectors/stage
-    sw                      =   RVQ.sw;     %snippet width
-    sh                      =   RVQ.sh;     %snippet height
+    M                       =   RVQ.in_2_M;      %number of codevectors/stage
+    sw                      =   RVQ.in_4_sw;     %snippet width
+    sh                      =   RVQ.in_5_sh;     %snippet height
     D                       =   sw*sh;       %dimension of data
     
     XDR                     =   P + ones(P,1);      %i initialize with P+1, the code for early termination

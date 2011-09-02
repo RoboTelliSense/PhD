@@ -33,7 +33,7 @@
 %>
 %> abbreviations
 %> -------------
-%> FP_est 						: 	Feature points
+%> FP_2_est 						: 	Feature points
 %> gt 						: 	Ground truth
 %> DM2 						:	Data matrix, one observation per column.  If DM, then one observation per row.
 %> structures
@@ -67,7 +67,7 @@ bUseIPCA=1;
 bUseBPCA=1;   
 bUseRVQ=1;
 bUseTSVQ=1;
-datasetCode=1;
+datasetCode=0;
 
 %#######################################################################
 % function TRK_subspace(  Np, Nw, bWeighting,                     ...
@@ -80,53 +80,159 @@ datasetCode=1;
 %>-----------------------------------------
 %PRE-PROCESSING
 %>-----------------------------------------
-%save passed parameters and clear them to reduce clutter
-    CONFIG.in_Np            =   Np;  %number of particles
-    CONFIG.in_Nw            =   Nw;  %number of images for training, (training window)
-    CONFIG.in_bWeighting    =   bWeighting;
-    CONFIG.in_pca_Q         =   pca_Q;
-    CONFIG.in_rvq_maxP      =   rvq_maxP;
-    CONFIG.in_rvq_M         =   rvq_M;
-    CONFIG.in_rvq_targetSNR =   rvq_targetSNR;
-    CONFIG.in_tsvq_P        =   tsvq_P;
-    CONFIG.in_tsvq_M        =   tsvq_M;
-    CONFIG.in_bUseIPCA      =   bUseIPCA;
-    CONFIG.in_bUseBPCA      =   bUseBPCA;
-    CONFIG.in_bUseRVQ       =   bUseRVQ;
-    CONFIG.in_bUseTSVQ      =   bUseTSVQ;
-    CONFIG.in_datasetCode   =   datasetCode;
+%CONST 
+    %save passed parameters and clear them to reduce clutter
+    CONST.in_Np            =   Np;  %number of particles
+    CONST.in_Nw            =   Nw;  %number of images for training, (training window)
+    CONST.in_bWeighting    =   bWeighting;
+    CONST.in_pca_Q         =   pca_Q;
+    CONST.in_rvq_maxP      =   rvq_maxP;
+    CONST.in_rvq_M         =   rvq_M;
+    CONST.in_rvq_targetSNR =   rvq_targetSNR;
+    CONST.in_tsvq_P        =   tsvq_P;
+    CONST.in_tsvq_M        =   tsvq_M;
+    CONST.in_bUseIPCA      =   bUseIPCA;
+    CONST.in_bUseBPCA      =   bUseBPCA;
+    CONST.in_bUseRVQ       =   bUseRVQ;
+    CONST.in_bUseTSVQ      =   bUseTSVQ;
+    CONST.ds_1_code   =   datasetCode;
     clear Np Nw bWeighting pca_Q rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode
     
-    [I_HxWxF, RandomData_sample, RandomData_cdf, CONFIG, IPCA, BPCA, RVQ, TSVQ, trkIPCA, trkBPCA, trkRVQ, trkTSVQ] ...
-                            =   TRK_initialization(CONFIG);
+    [I_HxWxF, RandomData_sample, RandomData_cdf, CONST] =   TRK_set_constants_and_load_data(CONST);
 
+%2. structure #2: ALGO (algorithm parameters), template for IPCA, BPCA, RVQ, TSVQ
+
+    %data 
+    ALGO.DM2               	=   [];     			%1. data 		:	design matrix, one observation per column  
+	ALGO.sw                	=   33;     			%2. dimensions	: 	snippet (target) width 
+    ALGO.sh                	=   33;     			%  					snippet (target) height
+    ALGO.sz                 =   [ALGO.sh ALGO.sw];  % 					combine two above
+    ALGO.max_signal_val     =   255;  				%3. amplitude	:	max
+    temp_I_0t1              =   double(I_HxWxF(:,:,1))/256; %0t1 means the image intensities are between 0 and 1       
+    ALGO.mdl_1_mu_Dx1     	=   warpimg(temp_I_0t1, CONST.temp_affineROI_1x6, ALGO.sz); clear temp_I_0t1; %data mean
+    
+	%particle filter
+	ALGO.Np                	=   0;
+    ALGO.reseig            	=   0;
+	
+	
+	
+%3. structure #3: tracking, template for trkIPCA, trkBPCA, trkRVQ, trkTSVQ
+	%feature points
+    TRK.FP_1_gt   			=   cat(3, CONST.FP_gt_initial + repmat(ALGO.sz'/2,[1,CONST.FP_num]), FP_gt(:,:,1)); %1. ground truth
+    TRK.FP_2_est      		=   zeros(size(FP_gt));  			%1b. estimated
+	TRK.FP_3_err  			=   zeros(1,CONST.FP_num);    	%1c. feature points: error
+    TRK.FP_err_avg 			=   zeros(1,CONST.FP_num);          	%1d. feature points: average error
+    
+    TRK.best_affineROI_1x6 	=   CONST.temp_affineROI_1x6; rmfield(CONST,'affineROI_1x6');              %2.  bounding region: affine parameters
+    
+	TRK.trg_RMSE_Tx1 		=   zeros(CONST.const_T,1);                  %3.  training
+	TRK.trg_RMSEavg_Tx1 	=   zeros(CONST.const_T,1);
+	TRK.trg_SNRdB_Tx1 		=   zeros(CONST.const_T,1);
+
+    TRK.tst_bestSnippet_0t1 =   ALGO.mdl_1_mu_Dx1;							%4.  testing
+	TRK.tst_RMSE_Fx1 		=   zeros(CONST.const_F,1);
+	TRK.tst_RMSEavg_Fx1 	=   zeros(CONST.const_F,1);
+	TRK.tst_SNRdB_Fx1   	=   zeros(CONST.const_F,1);
+
+%4. %timing   
+    duration                =   0; 
+    tic;
+
+
+
+%>-----------------------------------------
+%PRE-PROCESSING
+%>-----------------------------------------
+%training phase
+    for f = 1:CONST.trg_B
+        %strings
+        f
+        CONST.str_f        =   UTIL_GetZeroPrefixedFileNumber(f);
+        cfn_Ioverlaid       =   [CONST.dir_out 'out_' CONST.str_f '.png'];
+        
+        %input
+        I_0t1               =   double(I_HxWxF(:,:,f))/256;
+        
+        %operation
+        algo_code           =   0; %i.e. just distance from mean of data
+        [ALGO TRK]          =   TRK_condensation(I_0t1, f, ALGO, FP_gt, TRK, CONST, RandomData_sample, RandomData_cdf, algo_code); %estwarp_grad    (I_0t1, ALGO, TRK, CONST);		
+	end	   
+	
+    
+%save algorithm structures	
+	IPCA 					=	ALGO;
+    BPCA                   	=   ALGO;rmfield(BPCA,'mdl_1_mu_Dx1');rmfield(BPCA,'mdl_2_U_DxB');rmfield(BPCA,'mdl_3_S_Bx1');
+    RVQ                   	=   ALGO;rmfield(RVQ, 'mdl_1_mu_Dx1');rmfield(RVQ, 'mdl_2_U_DxB');rmfield(RVQ, 'mdl_3_S_Bx1');
+    TSVQ                   	=   ALGO;rmfield(TSVQ,'mdl_1_mu_Dx1');rmfield(TSVQ,'mdl_2_U_DxB');rmfield(TSVQ,'mdl_3_S_Bx1');
+    
+    %IPCA
+    IPCA.Q                  =   CONST.in_pca_Q;     
+    IPCA.ff                 =   CONST.const_ff;              rmfield(CONST,'ds_3_ff');       %forgetting factor
+    IPCA.code               =   1;
+    
+    %BPCA
+    BPCA.in_1_Q                  =   CONST.in_pca_Q;        rmfield(CONST,'in_pca_Q'); %number of eigenvectors to retain  
+    BPCA.code               =   2;
+    
+    %RVQ
+    RVQ.in_6_dir_out           	=   CONST.dir_out;
+    RVQ.in_2_M                 	=   CONST.in_rvq_M;         rmfield(CONST,'in_rvq_M');
+    RVQ.in_1_maxP              	=   CONST.in_rvq_maxP;      rmfield(CONST,'in_rvq_maxP');
+    RVQ.in_3_targetSNR         	=   CONST.in_rvq_targetSNR; rmfield(CONST,'in_rvq_targetSNR');
+    RVQ.tst_6_partialP      	=   -1;
+    RVQ.code                =   3;
+    
+    %TSVQ
+    TSVQ.in_1_maxP                 	=   CONST.in_tsvq_P;       rmfield(CONST,'in_tsvq_P');
+    TSVQ.in_2_M                 	=   CONST.in_tsvq_M;       rmfield(CONST,'in_tsvq_M');
+    TSVQ.code               =   4;
+    
+%save tracking structures	
+	trkIPCA					=	TRK;
+	trkBPCA					=	TRK;
+	trkRVQ					=	TRK;
+	trkTSVQ					=	TRK;
+ 
+%train once
+    CONST.trg_frame_idxs           =   [CONST.trg_frame_idxs, f];
+    if (CONST.in_bUseIPCA) IPCA  =   ipca_1_train  (IPCA.DM2,                            IPCA);	 IPCA.DM2 =   [];	end		
+    if (CONST.in_bUseBPCA) BPCA  =   bpca_1_train  (BPCA.DM2_weighted * max_signal_val,  BPCA);  end
+    if (CONST.in_bUseRVQ)  RVQ   =   RVQ__training (RVQ.DM2_weighted  * max_signal_val,  RVQ);   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' CONST.str_f '.txt']); end
+    if (CONST.in_bUseTSVQ) TSVQ  =   tsvq_1_train  (TSVQ.DM2_weighted * max_signal_val,  TSVQ);  end  
+
+    disp('initialization complete');
+    
+    %CONST.minopt         =   optimset;  %pre-defined in Matlab for optimization functions
+    %CONST.minopt.MaxIter =   25; 
+    %CONST.minopt.Display =   'off';                            
 %-----------------------------------------
 %PROCESSING
 %-----------------------------------------5
     duration=0;    
-    for f = CONFIG.trg_B+1 : CONFIG.F
+    for f = CONST.trg_B+1 : CONST.const_F
         tic
         f
-        CONFIG.str_f        =   UTIL_GetZeroPrefixedFileNumber(f);
-        cfn_Ioverlaid       =   [CONFIG.dir_out 'out_' CONFIG.str_f '.png'];
+        CONST.str_f        =   UTIL_GetZeroPrefixedFileNumber(f);
+        cfn_Ioverlaid       =   [CONST.dir_out 'out_' CONST.str_f '.png'];
         I_0t1               =   double(I_HxWxF(:,:,f))/256;
         
 		%testing: condensation
-		if (CONFIG.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, CONFIG, RandomData_sample, RandomData_cdf, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, CONFIG);
-		if (CONFIG.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, CONFIG, RandomData_sample, RandomData_cdf, 2); end
-		if (CONFIG.in_bUseRVQ)  trkRVQ 	= TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  CONFIG, RandomData_sample, RandomData_cdf, 3); end
-		if (CONFIG.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, CONFIG, RandomData_sample, RandomData_cdf, 4); end
+		if (CONST.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, CONST, RandomData_sample, RandomData_cdf, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, CONST);
+		if (CONST.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, CONST, RandomData_sample, RandomData_cdf, 2); end
+		if (CONST.in_bUseRVQ)  trkRVQ 	= TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  CONST, RandomData_sample, RandomData_cdf, 3); end
+		if (CONST.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, CONST, RandomData_sample, RandomData_cdf, 4); end
 	
 		%training (update model) every few frames
-        if (mod(f,CONFIG.trg_B)==0) %i.e.train every batchsize images
-			CONFIG.trg_frames = [CONFIG.trg_frames, f];
-			if (CONFIG.in_bUseIPCA)	 [IPCA, trkIPCA] =   ipca_1_train  (IPCA.DM2, IPCA, trkIPCA, CONFIG);	 IPCA.DM2 =   [];	end		
-            if (CONFIG.in_bUseBPCA)   BPCA           =   bpca_1_train  (BPCA.DM2_weighted * max_signal_val,   BPCA);   end
-            if (CONFIG.in_bUseRVQ)    RVQ            =   RVQ__training (RVQ.DM2_weighted * max_signal_val,   RVQ);   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' CONFIG.str_f '.txt']); end
-            if (CONFIG.in_bUseTSVQ)   TSVQ           =   tsvq_1_train  (TSVQ.DM2_weighted * max_signal_val,   TSVQ);   end  
+        if (mod(f,CONST.trg_B)==0) %i.e.train every batchsize images
+			CONST.trg_frame_idxs = [CONST.trg_frame_idxs, f];
+			if (CONST.in_bUseIPCA)	 [IPCA, trkIPCA] =   ipca_1_train  (IPCA.DM2, IPCA, trkIPCA, CONST);	 IPCA.DM2 =   [];	end		
+            if (CONST.in_bUseBPCA)   BPCA           =   bpca_1_train  (BPCA.DM2_weighted * max_signal_val,   BPCA);   end
+            if (CONST.in_bUseRVQ)    RVQ            =   RVQ__training (RVQ.DM2_weighted * max_signal_val,   RVQ);   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' CONST.str_f '.txt']); end
+            if (CONST.in_bUseTSVQ)   TSVQ           =   tsvq_1_train  (TSVQ.DM2_weighted * max_signal_val,   TSVQ);   end  
         end
         
-        TRK_draw_results(f, I_HxWxF, CONFIG, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_gt, trkBPCA.FP_gt, trkRVQ.FP_gt, trkTSVQ.FP_gt);
+        TRK_draw_results(f, I_HxWxF, CONST, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQ.FP_1_gt, trkTSVQ.FP_1_gt);
         TRK_save_allResults;
         %[f trkIPCA.FPerr_avg(f) RVQ.FPerr_avg(f) TSVQ.FPerr_avg(f)]
         toc

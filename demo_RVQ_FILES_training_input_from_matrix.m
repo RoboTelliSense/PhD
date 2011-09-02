@@ -23,12 +23,12 @@
     DM2                     =   1:256;          %input data matrix, DxN                       
     [D,N]                   =   size(DM2);      %
     
-    RVQ.maxP               =   8;              %max number of stages, RVQ.P contains actual number of stages 
-    RVQ.M                  =   2;              %number of codevectors/stage
-    RVQ.targetSNR          =   1000;
-    RVQ.sw                 =   1;              %snippet width
-    RVQ.sh                 =   1;              %snippet height
-    RVQ.dir_out            =   '';             %directory where output files are saved
+    RVQ.in_1_maxP               =   8;              %max number of stages, RVQ.P contains actual number of stages 
+    RVQ.in_2_M                  =   2;              %number of codevectors/stage
+    RVQ.in_3_targetSNR          =   1000;
+    RVQ.in_4_sw                 =   1;              %snippet width
+    RVQ.in_5_sh                 =   1;              %snippet height
+    RVQ.in_6_dir_out            =   '';             %directory where output files are saved
 
 %-------------------------------
 % PROCESSING

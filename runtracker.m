@@ -40,12 +40,12 @@ param = [];
 param.tst_bestaffine_1x6 = param0;
 param.wimg = tmpl.mean;
 if (exist('GT','var'))
-  numFP = size(GT,2);
-  CONFIG.initial_affineROI_1x6 = affparaminv(param.tst_bestaffine_1x6);
-  initial_FP_gt = CONFIG.initial_affineROI_1x6([3,4,1;5,6,2]) * [GT(:,:,1); ones(1,numFP)];
-  pts = cat(3, initial_FP_gt + repmat(sz'/2,[1,numFP]), GT(:,:,1));
+  FP_num = size(GT,2);
+  CONST.initial_affineROI_1x6 = affparaminv(param.tst_bestaffine_1x6);
+  FP_initial_gt = CONST.initial_affineROI_1x6([3,4,1;5,6,2]) * [GT(:,:,1); ones(1,FP_num)];
+  pts = cat(3, FP_initial_gt + repmat(sz'/2,[1,FP_num]), GT(:,:,1));
   trackpts = zeros(size(GT));
-  trackerr = zeros(1,numFP); meanerr = zeros(1,numFP);
+  trackerr = zeros(1,FP_num); meanerr = zeros(1,FP_num);
 else
   pts = [];
 end
@@ -102,8 +102,8 @@ for f = 1:size(data,3)
   duration = duration + toc;
   % draw result
   if (exist('GT','var'))
-    trackpts(:,:,f) = param.tst_bestaffine_1x6([3,4,1;5,6,2])*[initial_FP_gt; ones(1,numFP)];
-    pts = cat(3, initial_FP_gt+repmat(sz'/2,[1,numFP]), GT(:,:,f), trackpts(:,:,f));
+    trackpts(:,:,f) = param.tst_bestaffine_1x6([3,4,1;5,6,2])*[FP_initial_gt; ones(1,FP_num)];
+    pts = cat(3, FP_initial_gt+repmat(sz'/2,[1,FP_num]), GT(:,:,f), trackpts(:,:,f));
     idx = find(pts(1,:,2) > 0);
     if (length(idx) > 0)
       % trackerr(f) = mean(sqrt(sum((pts(:,idx,2)-pts(:,idx,3)).^2,1)));

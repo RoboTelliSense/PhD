@@ -22,7 +22,7 @@ j=0;
 k=0;
 avg_trk_err = -1*zeros(4,4);
 for datasetCode=1:1
-    [CONFIG.datasetName, CONFIG.fullDatasetName] = dataset_getName(datasetCode);
+    [CONST.ds_2_name, CONST.ds_3_longName] = dataset_getName(datasetCode);
     
     for Nw = 2;%[2 4 8 16 32 64 128 10000]
         
@@ -36,7 +36,7 @@ for datasetCode=1:1
                 rvq_targetSNR   =   config(c,4);
                 tsvq_T          =   config(c,5);
                 j               =   j+1
-                [dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(CONFIG.fullDatasetName, bUseBPCA , bUseRVQ, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+                [dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(CONST.ds_3_longName, bUseBPCA , bUseRVQ, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
                 cfn             =   [dir_out 'FPerr_3_ipca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);

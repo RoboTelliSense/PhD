@@ -1,5 +1,5 @@
-                                TRK_draw_5a_PFcandidates(I_0t1, sz, trkIPCA.affineCandidates_6xNp,    CONFIG.plot_num_rows,   CONFIG.plot_num_cols,   CONFIG.plot_row4,              CONFIG.plot_title_fontsz, 1);
-    if (bUseBPCA )               TRK_draw_5a_PFcandidates(I_0t1, sz, trkBPCA.affineCandidates_6xNp,    CONFIG.plot_num_rows,   CONFIG.plot_num_cols,   CONFIG.plot_row4,              CONFIG.plot_title_fontsz, 2); end
-    if (bUseRVQ)                TRK_draw_5a_PFcandidates(I_0t1, sz, trkRVQ.affineCandidates_6xNp,    CONFIG.plot_num_rows,   CONFIG.plot_num_cols,   CONFIG.plot_row4,              CONFIG.plot_title_fontsz, 3); end
-    if (bUseTSVQ)               TRK_draw_5a_PFcandidates(I_0t1, sz, trkTSVQ.affineCandidates_6xNp,    CONFIG.plot_num_rows,   CONFIG.plot_num_cols,   CONFIG.plot_row4,              CONFIG.plot_title_fontsz, 4); end
+                                TRK_draw_5a_PFcandidates(I_0t1, sz, trkIPCA.affineCandidates_6xNp,    CONST.plot_num_rows,   CONST.plot_num_cols,   CONST.plot_row4,              CONST.plot_title_fontsz, 1);
+    if (bUseBPCA )               TRK_draw_5a_PFcandidates(I_0t1, sz, trkBPCA.affineCandidates_6xNp,    CONST.plot_num_rows,   CONST.plot_num_cols,   CONST.plot_row4,              CONST.plot_title_fontsz, 2); end
+    if (bUseRVQ)                TRK_draw_5a_PFcandidates(I_0t1, sz, trkRVQ.affineCandidates_6xNp,    CONST.plot_num_rows,   CONST.plot_num_cols,   CONST.plot_row4,              CONST.plot_title_fontsz, 3); end
+    if (bUseTSVQ)               TRK_draw_5a_PFcandidates(I_0t1, sz, trkTSVQ.affineCandidates_6xNp,    CONST.plot_num_rows,   CONST.plot_num_cols,   CONST.plot_row4,              CONST.plot_title_fontsz, 4); end
      

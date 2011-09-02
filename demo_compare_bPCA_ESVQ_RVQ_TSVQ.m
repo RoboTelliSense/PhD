@@ -13,9 +13,9 @@
 % usage example
 % -------------
 % A good way to check RVQ is to use the 1:256 scalar example in the IDDM paper.  For that use the following settings:
-% dataset     =   2
-% RVQ.maxP   =   8
-% RVQ.M      =   2
+% dataset     =   25
+% RVQ.in_1_maxP   =   8
+% RVQ.in_2_M      =   2
 % Then RVQ.mdl_2_CB_DxMP (the red channel of the codebooks) is 
 %       m=1   m=2
 %       ---   ---
@@ -98,28 +98,22 @@
     
 %algorithm parameters
     %bpca
-    BPCA.name                   =   'BPCA';
-    BPCA.Q                      =   16;                                         
-    BPCA.descriptors_PxN        =   [];
-    BPCA.tst_1_descriptor_Px1   =   [];
+    BPCA.in_0_name            	=   'BPCA';
+    BPCA.in_1_Q               	=   16;                                         
     
     %tsvq
-    TSVQ.name                   =   'TSVQ';
-    TSVQ.P                      =   3;                                          %number of stages
-    TSVQ.M                      =   2;                                          %2 is for binary TSVQ
-    TSVQ.descriptors_PxN        =   []; 
-    TSVQ.tst_1_descriptor_Px1   =   [];
+    TSVQ.in_0_name             	=   'TSVQ';
+    TSVQ.in_1_maxP                	=   3;                                          %number of stages
+    TSVQ.in_2_M                	=   2;                                          %2 is for binary TSVQ
     
     %rvq    
-    RVQ.name                    =   'RVQ';
-    RVQ.maxP                    =   8;                                          %number of stages  
-    RVQ.M                       =   2;                                          %number of codevectors/stage
-    RVQ.targetSNR               =   1000;
-    RVQ.sw                      =   sw;                                         %snippet width
-    RVQ.sh                      =   sh;                                         %snippet height
-    RVQ.dir_out                 =   '';
-    RVQ.trg_1_descriptors_PxN   =   [];
-    RVQ.tst_1_descriptor_Px1    =   [];
+    RVQ.in_0_name              	=   'RVQ';
+    RVQ.in_1_maxP              	=   8;                                          %number of stages  
+    RVQ.in_2_M                  =   2;                                          %number of codevectors/stage
+    RVQ.in_3_targetSNR          =   1000;
+    RVQ.in_4_sw                 =   sw;                                         %snippet width
+    RVQ.in_5_sh                 =   sh;                                         %snippet height
+    RVQ.in_6_dir_out            =   '';
       
 
 %-----------------------------
@@ -152,6 +146,6 @@
     numDisplayCols          =   10;
                                 DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols);
                                 DATAMATRIX_display_DM2_as_image(BPCA.mdl_2_U_DxN, sh, sw, numDisplayRows, numDisplayCols);
-        
-    [BPCA.tst_4_SNRdB    RVQ.tst_4_SNRdB   TSVQ.tst_4_SNRdB        ]
+    
+    [BPCA.trg_5_rmse     RVQ.trg_5_rmse    TSVQ.trg_5_rmse         ]
     [BPCA.tst_5_rmse     RVQ.tst_5_rmse    TSVQ.tst_5_rmse         ]

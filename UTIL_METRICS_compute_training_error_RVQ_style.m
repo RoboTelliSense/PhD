@@ -20,12 +20,12 @@ function algo = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo)
 
 	[D, N]                              =   size(DM2);
 	algo.trg_3_err_DxN                 	=   zeros(D,N);
-	algo.trg_1_descriptors_PxN         	=   zeros(algo.P,N);
+	algo.trg_1_descriptors_PxN         	=   zeros(algo.mdl_3_P,N);
 	for n=1:N
 		x_Dx1                           =   DM2(:,n);                                %test vector
-        if      (strcmp(algo.name, 'RVQ'))
+        if      (strcmp(algo.in_0_name, 'RVQ'))
             algo                        =   RVQ__testing_grayscale(x_Dx1, algo);     %test
-        elseif (strcmp(algo.name, 'TSVQ'))
+        elseif (strcmp(algo.in_0_name, 'TSVQ'))
             algo                        =   TSVQ_3_test(x_Dx1, algo);     
         end
 		algo.trg_1_descriptors_PxN(:,n)	=   algo.tst_1_descriptor_Px1;               %trg1.

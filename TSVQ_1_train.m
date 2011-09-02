@@ -5,15 +5,17 @@
 % CB_DxKt has non terminal as well as terminal codevectors, i.e. the whole tree
 % 
 % M     :   number of non-terminal codevectors
-% P     :   number of stages (levels)
+% maxP  :   max number of stages (levels).  In this code, I make sure that
+%           the actual codebook stages P = maxP, even if it means repeating parent
+%           codevectors into child codevectors
 % Ks    :   number of stage (non-terminal) codevectors
-%           In general, Ks = (M^P-1)/(M-1).
-%           For binary TSVQ, M=2, so Ks = M^P-1 = K-1
-% K     :   number of        terminal codevectors, K=M^P       
+%           In general, Ks = (M^maxP-1)/(M-1).
+%           For binary TSVQ, M=2, so Ks = M^maxP-1 = K-1
+% K     :   number of        terminal codevectors, K=M^maxP       
 % Kt    :   total number of codevectors, terminal and non-terminal,
 %           For binary TSVQ, this is K+(K-1)=2K-1
 % 
-% for example, if M=2 (binary TSVQ) and P=3, we have K=2^3=8 terminal
+% for example, if M=2 (binary TSVQ) and maxP=3, we have K=2^3=8 terminal
 % codevectors, and K-1=2^3-1=7 non-terminal codevectors
 %
 % the idea behind TSVQ is relatively simple, however, in implementation, making a tree is difficult in matlab.  
@@ -30,7 +32,7 @@
 %                                    /   \          /   \
 % level t=2 (non-terminal level)   4      5       6      7   %so there are (2^3)-1=7 ntc's
 %                                 / \    / \     / \    / \
-% level t=P=3 (terminal level)   8  9  10  11  12  13  14  15   %2^3=8 tc's 
+% level t=maxP=3 (terminal level)   8  9  10  11  12  13  14  15   %2^3=8 tc's 
 %
 % Copyright (C) Salman Aslam.  All rights reserved.
 % Data created       : February 24, 2011
@@ -39,17 +41,14 @@
 
 function TSVQ = TSVQ_1_train(DM2, TSVQ)
 
-%------------------------------
-% INITIALIZATION
-%------------------------------
-    M                       =   TSVQ.M;
-    P                       =   TSVQ.P;
 
 %------------------------------
 % PRE-PROCESSING
 %------------------------------
+    M                       =   TSVQ.in_2_M;
+    maxP                    =   TSVQ.in_1_maxP;
     
-    [M, K]                  =   TSVQ_find_Ks_and_K(M, P);
+    [M, K]                  =   TSVQ_find_Ks_and_K(M, maxP);
 	partitionedData{1}      =   DM2;
     CB_DxKt(:,1)            =   mean(DM2,2);  %mean along rows, output is a col vector
 
@@ -66,8 +65,8 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
 % POST-PROCESSING
 %------------------------------    
     TSVQ.mdl_2_CB_DxKt      =   CB_DxKt;  %terminal and non-terminal codevectors
-    TSVQ.mdl_3_CB_DxK     	=   CB_DxKt(:, M+1:M+K);
-    TSVQ.K                  =   K;
+    TSVQ.mdl_3_P 			=	maxP;   	%in this code, i force P to be equal to maxP
+	TSVQ.mdl_4_CB_DxK     	=   CB_DxKt(:, M+1:M+K);
     
     TSVQ                    =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, TSVQ); 
 

@@ -21,10 +21,10 @@
         %2. feature points
         clear struct1;
                         j=1;for i = 1:size(GT, 2) struct1.data(j) = GT(1,i,f);j=j+1;struct1.data(j) =       GT(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(cfn_2_GTFP,  f, struct1);
-                        j=1;for i = 1:size(GT, 2) struct1.data(j) = trkIPCA.FP_est(1,i,f);j=j+1;struct1.data(j) = trkIPCA.FP_est(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(trkIPCA.cfn_2_FP,  f, struct1);
-        if (bUseBPCA )   j=1;for i = 1:size(GT, 2) struct1.data(j) = BPCA.FP_est(1,i,f);j=j+1;struct1.data(j) = BPCA.FP_est(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(trkBPCA.cfn_2_FP,  f, struct1); end
-        if (bUseRVQ)    j=1;for i = 1:size(GT, 2) struct1.data(j) = RVQ.FP_est(1,i,f);j=j+1;struct1.data(j) = RVQ.FP_est(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(trkRVQ.cfn_2_FP,  f, struct1); end
-        if (bUseTSVQ)   j=1;for i = 1:size(GT, 2) struct1.data(j) = TSVQ.FP_est(1,i,f);j=j+1;struct1.data(j) = TSVQ.FP_est(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(trkTSVQ.cfn_2_FP,  f, struct1); end
+                        j=1;for i = 1:size(GT, 2) struct1.data(j) = trkIPCA.FP_2_est(1,i,f);j=j+1;struct1.data(j) = trkIPCA.FP_2_est(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(trkIPCA.cfn_2_FP,  f, struct1);
+        if (bUseBPCA )   j=1;for i = 1:size(GT, 2) struct1.data(j) = BPCA.FP_2_est(1,i,f);j=j+1;struct1.data(j) = BPCA.FP_2_est(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(trkBPCA.cfn_2_FP,  f, struct1); end
+        if (bUseRVQ)    j=1;for i = 1:size(GT, 2) struct1.data(j) = RVQ.FP_2_est(1,i,f);j=j+1;struct1.data(j) = RVQ.FP_2_est(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(trkRVQ.cfn_2_FP,  f, struct1); end
+        if (bUseTSVQ)   j=1;for i = 1:size(GT, 2) struct1.data(j) = TSVQ.FP_2_est(1,i,f);j=j+1;struct1.data(j) = TSVQ.FP_2_est(2,i,f);j=j+1;end;                           UTIL_savecsv_struct(trkTSVQ.cfn_2_FP,  f, struct1); end
                         
 
         %3. tracking error
@@ -36,7 +36,7 @@
         
         
         %4. training error (rmse, avg rmse, snr)
-	if (Ntrg_snp             >=  CONFIG.trg_B) %i.e.train every batchsize images
+	if (Ntrg_snp             >=  CONST.trg_B) %i.e.train every batchsize images
         clear struct1;
                         struct1.data(1) = IPCA.trg_4_SNRdB;          struct1.data(2) =  IPCA.trg_5_rmse;         struct1.data(3) = temp1;                         UTIL_savecsv_struct(trkIPCA.cfn_4_trg_rmse,      f, struct1);
         if (bUseBPCA )   struct1.data(1) = BPCA.trg_4_SNRdB;          struct1.data(2) =  BPCA.trg_5_rmse;         struct1.data(3) = temp2;                         UTIL_savecsv_struct(trkBPCA.cfn_4_trg_rmse,      f, struct1); end

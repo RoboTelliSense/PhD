@@ -5,7 +5,7 @@
 function TSVQ = TSVQ_3_test(x_Dx1, TSVQ)
 
     CB_DxKt                     =   TSVQ.mdl_2_CB_DxKt;
-    P                           =   TSVQ.P;
+    P                           =   TSVQ.mdl_3_P;
 
 %initialize
     descriptor_Px1              =   [];     %TSVQ descriptor, similar to XDR in RVQ

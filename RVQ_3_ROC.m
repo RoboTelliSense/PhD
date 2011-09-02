@@ -11,7 +11,7 @@
         gamma                   =   9;
         clear HR;
         clear FAR;
-        clear FP_est;
+        clear FP_2_est;
         clear TN;
         clear TP;
         clear FN;
@@ -65,14 +65,14 @@
                 end
                 
                                 
-                %3. FP_est, TN 
-                FP_est = cnt_all_positives - cnt_positives_in_positive_region; %get ones outside BB)                
-                TN = area_negative_region - FP_est;
+                %3. FP_2_est, TN 
+                FP_2_est = cnt_all_positives - cnt_positives_in_positive_region; %get ones outside BB)                
+                TN = area_negative_region - FP_2_est;
                 
 
 
                 HR(jjj) = TP/(TP+FN);
-                FAR(jjj) = FP_est/(FP_est+TN);
+                FAR(jjj) = FP_2_est/(FP_2_est+TN);
                 jjj = jjj+1;
                 thresh
             end

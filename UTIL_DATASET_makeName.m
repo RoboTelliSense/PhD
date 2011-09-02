@@ -3,10 +3,10 @@
 
 function [  txt_overall_config ...
             dir_out_wo_slash ...
-            dir_out] = UTIL_DATASET_makeName(CONFIG.fullDatasetName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T)
+            dir_out] = UTIL_DATASET_makeName(CONST.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T)
 
     %overall configuration
-        txt_overall_config              =   ['results_'   CONFIG.fullDatasetName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np)];   
+        txt_overall_config              =   ['results_'   CONST.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np)];   
     
     %algorithm specific configuration
         txt_algo_config                 =   [];

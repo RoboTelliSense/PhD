@@ -13,12 +13,12 @@
     sh                      =   41;
     inner_image_dims        =   RVQ_UTIL_computeInnerPixels2(iw, ih, sw, sh);
     
-    RVQ.maxP               =   8;                                          %number of stages  
-    RVQ.M                  =   2;                                          %number of codevectors/stage
-    RVQ.targetSNR          =   1000;
-    RVQ.sw                 =   sw;                                         %snippet width
-    RVQ.sh                 =   sh;                                         %snippet height
-    RVQ.dir_out            =   '';
+    RVQ.in_1_maxP               =   8;                                          %number of stages  
+    RVQ.in_2_M                  =   2;                                          %number of codevectors/stage
+    RVQ.in_3_targetSNR          =   1000;
+    RVQ.in_4_sw                 =   sw;                                         %snippet width
+    RVQ.in_5_sh                 =   sh;                                         %snippet height
+    RVQ.in_6_dir_out            =   '';
     RVQ.trg_1_descriptors_PxN =   [];
     RVQ.tst_1_descriptor_Px1  =   [];
 
