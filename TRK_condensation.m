@@ -21,7 +21,7 @@
 %    tst_4_SNRdB
 %    tst_5_rmse
 %
-% CONST.const_var_affineROI_1x6
+% INP.ds_5_affineROIvar_1x6
 %
 % Copyright (C) Jongwoo Lim and David Ross (modified by Salman Aslam with permission)
 % Date created      : April 25, 2011
@@ -59,7 +59,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
     end
 
 %2. apply motion model (brownian, so just add randomness) and extract candidate snippets
-    delta_affineCandidates_6xNp     =   rn2.*repmat(CONST.const_var_affineROI_1x6(:),[1,Np]); %rn2 is 
+    delta_affineCandidates_6xNp     =   rn2.*repmat(INP.ds_5_affineROIvar_1x6(:),[1,Np]); %rn2 is 
     TRK.affineCandidates_6xNp       =   TRK.affineCandidates_6xNp + delta_affineCandidates_6xNp;
 
     %extract the candidate snippets from the image based on motion model above
@@ -136,7 +136,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
     end
 
 %3b. raise distances to exponentials
-    stddev                          =   CONST.con_stddev;
+    stddev                          =   INP.ds_7_con_stddev;
     DFFS                            =   err_0to1_DxNp;
     switch (CONST.con_errfunc)
         case 'robust'; TRK.weights  =   exp(- sum(DFFS.^2./(DFFS.^2 + CONST.rsig.^2))./stddev)';%CONST.rsig never defined

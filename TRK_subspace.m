@@ -11,7 +11,7 @@
 %>                              Increasing this will likely improve the results, but make the tracker slower.
 %> condenssig               :   The standard deviation of the observation likelihood, e.g. 0.01
 %> ff                       :   Forgetting factor, as described in the paper.  When doing the incremental update, 
-%>                              1 means remember all past I_HxWxF, and 0 means remeber none of it.
+%>                              1 means remember all past INP.ds_8_I_HxWxF, and 0 means remeber none of it.
 %> batchsize                :   How often to update the eigenbasis.  We've used this value (update every 5th frame) 
 %>                              fairly consistently, so it most likely won't need to be changed.  A smaller batchsize 
 %>                              means more frequent updates, making it quicker to model changes in appearance, but also 
@@ -95,10 +95,10 @@ datasetCode=0;
     CONST.in_bUseBPCA      =   bUseBPCA;
     CONST.in_bUseRVQ       =   bUseRVQ;
     CONST.in_bUseTSVQ      =   bUseTSVQ;
-    CONST.ds_1_code   =   datasetCode;
+    INP.ds_1_code   =   datasetCode;
     clear Np Nw bWeighting pca_Q rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode
     
-    [I_HxWxF, RandomData_sample, RandomData_cdf, CONST] =   TRK_set_constants_and_load_data(CONST);
+    [INP.ds_8_I_HxWxF, RandomData_sample, RandomData_cdf, CONST] =   TRK_set_constants_and_load_data(CONST);
 
 %2. structure #2: ALGO (algorithm parameters), template for IPCA, BPCA, RVQ, TSVQ
 
@@ -108,8 +108,8 @@ datasetCode=0;
     ALGO.sh                	=   33;     			%  					snippet (target) height
     ALGO.sz                 =   [ALGO.sh ALGO.sw];  % 					combine two above
     ALGO.max_signal_val     =   255;  				%3. amplitude	:	max
-    temp_I_0t1              =   double(I_HxWxF(:,:,1))/256; %0t1 means the image intensities are between 0 and 1       
-    ALGO.mdl_1_mu_Dx1     	=   warpimg(temp_I_0t1, CONST.temp_affineROI_1x6, ALGO.sz); clear temp_I_0t1; %data mean
+    temp_I_0t1              =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %0t1 means the image intensities are between 0 and 1       
+    ALGO.mdl_1_mu_Dx1     	=   warpimg(temp_I_0t1, INP.ds_4_affineROI_1x6, ALGO.sz); clear temp_I_0t1; %data mean
     
 	%particle filter
 	ALGO.Np                	=   0;
@@ -124,7 +124,7 @@ datasetCode=0;
 	TRK.FP_3_err  			=   zeros(1,CONST.FP_num);    	%1c. feature points: error
     TRK.FP_err_avg 			=   zeros(1,CONST.FP_num);          	%1d. feature points: average error
     
-    TRK.best_affineROI_1x6 	=   CONST.temp_affineROI_1x6; rmfield(CONST,'affineROI_1x6');              %2.  bounding region: affine parameters
+    TRK.best_affineROI_1x6 	=   INP.ds_4_affineROI_1x6; rmfield(CONST,'affineROI_1x6');              %2.  bounding region: affine parameters
     
 	TRK.trg_RMSE_Tx1 		=   zeros(CONST.const_T,1);                  %3.  training
 	TRK.trg_RMSEavg_Tx1 	=   zeros(CONST.const_T,1);
@@ -152,7 +152,7 @@ datasetCode=0;
         cfn_Ioverlaid       =   [CONST.dir_out 'out_' CONST.str_f '.png'];
         
         %input
-        I_0t1               =   double(I_HxWxF(:,:,f))/256;
+        I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256;
         
         %operation
         algo_code           =   0; %i.e. just distance from mean of data
@@ -168,7 +168,7 @@ datasetCode=0;
     
     %IPCA
     IPCA.Q                  =   CONST.in_pca_Q;     
-    IPCA.ff                 =   CONST.const_ff;              rmfield(CONST,'ds_3_ff');       %forgetting factor
+    IPCA.ff                 =   INP.ds_6_ff;              rmfield(CONST,'ds_3_ff');       %forgetting factor
     IPCA.code               =   1;
     
     %BPCA
@@ -215,7 +215,7 @@ datasetCode=0;
         f
         CONST.str_f        =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [CONST.dir_out 'out_' CONST.str_f '.png'];
-        I_0t1               =   double(I_HxWxF(:,:,f))/256;
+        I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256;
         
 		%testing: condensation
 		if (CONST.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, CONST, RandomData_sample, RandomData_cdf, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, CONST);
@@ -232,7 +232,7 @@ datasetCode=0;
             if (CONST.in_bUseTSVQ)   TSVQ           =   tsvq_1_train  (TSVQ.DM2_weighted * max_signal_val,   TSVQ);   end  
         end
         
-        TRK_draw_results(f, I_HxWxF, CONST, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQ.FP_1_gt, trkTSVQ.FP_1_gt);
+        TRK_draw_results(f, INP.ds_8_I_HxWxF, CONST, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQ.FP_1_gt, trkTSVQ.FP_1_gt);
         TRK_save_allResults;
         %[f trkIPCA.FPerr_avg(f) RVQ.FPerr_avg(f) TSVQ.FPerr_avg(f)]
         toc

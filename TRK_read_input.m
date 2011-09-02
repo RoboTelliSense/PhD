@@ -15,27 +15,27 @@
 %> Date modified: Aug 17, 2011
 
 
-function [CONST, I_HxWxF] = UTIL_DATASET_load(CONST)
+function [CONST, INP.ds_8_I_HxWxF] = TRK_read_input(CONST)
 
 %fn: filename (convert datasetCode to datasetName)
-    if      (CONST.ds_1_code==0)  CONST.ds_2_name = 'test';          CONST.ds_3_longName='0___test___________';
-    elseif  (CONST.ds_1_code==1)  CONST.ds_2_name = 'Dudek';         CONST.ds_3_longName='1___Dudek__________';
-    elseif  (CONST.ds_1_code==2)  CONST.ds_2_name = 'davidin300';    CONST.ds_3_longName='2___davidin300_____';
-    elseif  (CONST.ds_1_code==3)  CONST.ds_2_name = 'sylv';          CONST.ds_3_longName='3___sylv___________';
-    elseif  (CONST.ds_1_code==4)  CONST.ds_2_name = 'trellis70';     CONST.ds_3_longName='4___trellis70______';
-    elseif  (CONST.ds_1_code==5)  CONST.ds_2_name = 'fish';          CONST.ds_3_longName='5___fish___________';
-    elseif  (CONST.ds_1_code==6)  CONST.ds_2_name = 'car4';          CONST.ds_3_longName='6___car4___________';
-    elseif  (CONST.ds_1_code==7)  CONST.ds_2_name = 'car11';         CONST.ds_3_longName='7___car11__________';
-    elseif  (CONST.ds_1_code==8)  CONST.ds_2_name = 'PETS2001rcf';   CONST.ds_3_longName='8___PETS2001rcf____';
-    elseif  (CONST.ds_1_code==9)  CONST.ds_2_name = 'PETS2009';      CONST.ds_3_longName='9___PETS2009_______';
-    elseif  (CONST.ds_1_code==10) CONST.ds_2_name = 'AVSS2007_1';    CONST.ds_3_longName='10__AVSS2007_1_____';
-    elseif  (CONST.ds_1_code==11) CONST.ds_2_name = 'AVSS2007_2';    CONST.ds_3_longName='11__AVSS2007_2_____'; 
-    elseif  (CONST.ds_1_code==12) CONST.ds_2_name = 'AVSS2007_3';    CONST.ds_3_longName='12__AVSS2007_3_____'; 
-    elseif  (CONST.ds_1_code==13) CONST.ds_2_name = 'motinasFast';   CONST.ds_3_longName='13__motinasFast____';  
+    if      (INP.ds_1_code==0)  INP.ds_2_name = 'test';          INP.ds_3_longName='0___test___________';
+    elseif  (INP.ds_1_code==1)  INP.ds_2_name = 'Dudek';         INP.ds_3_longName='1___Dudek__________';
+    elseif  (INP.ds_1_code==2)  INP.ds_2_name = 'davidin300';    INP.ds_3_longName='2___davidin300_____';
+    elseif  (INP.ds_1_code==3)  INP.ds_2_name = 'sylv';          INP.ds_3_longName='3___sylv___________';
+    elseif  (INP.ds_1_code==4)  INP.ds_2_name = 'trellis70';     INP.ds_3_longName='4___trellis70______';
+    elseif  (INP.ds_1_code==5)  INP.ds_2_name = 'fish';          INP.ds_3_longName='5___fish___________';
+    elseif  (INP.ds_1_code==6)  INP.ds_2_name = 'car4';          INP.ds_3_longName='6___car4___________';
+    elseif  (INP.ds_1_code==7)  INP.ds_2_name = 'car11';         INP.ds_3_longName='7___car11__________';
+    elseif  (INP.ds_1_code==8)  INP.ds_2_name = 'PETS2001rcf';   INP.ds_3_longName='8___PETS2001rcf____';
+    elseif  (INP.ds_1_code==9)  INP.ds_2_name = 'PETS2009';      INP.ds_3_longName='9___PETS2009_______';
+    elseif  (INP.ds_1_code==10) INP.ds_2_name = 'AVSS2007_1';    INP.ds_3_longName='10__AVSS2007_1_____';
+    elseif  (INP.ds_1_code==11) INP.ds_2_name = 'AVSS2007_2';    INP.ds_3_longName='11__AVSS2007_2_____'; 
+    elseif  (INP.ds_1_code==12) INP.ds_2_name = 'AVSS2007_3';    INP.ds_3_longName='12__AVSS2007_3_____'; 
+    elseif  (INP.ds_1_code==13) INP.ds_2_name = 'motinasFast';   INP.ds_3_longName='13__motinasFast____';  
     end
     
     %get dataset affine ROI parameters  
-    switch (CONST.ds_2_name)
+    switch (INP.ds_2_name)
         case 'test';        p=[133 127 110 130 -0.08]; condenssig=0.25;   ff=1.00;   affineROIvar_1x6=[9  9  .05  .05  .005  .001]; 
         case 'Dudek';       p=[133 127 110 130 -0.08]; condenssig=0.25;   ff=1.00;   affineROIvar_1x6=[9  9  .05  .05  .005  .001]; 
         case 'davidin300';  p=[129 67  62  78  -0.02]; condenssig=0.75;   ff=0.99;   affineROIvar_1x6=[5  5  .01  .02  .002  .001]; 
@@ -50,7 +50,7 @@ function [CONST, I_HxWxF] = UTIL_DATASET_load(CONST)
         case 'AVSS2007_2';  p=[60  234 37  37   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[3  3  .05  .05  .002  .002]; 
         case 'AVSS2007_3';  p=[213 67  14  14   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[2  2  .05  .05  .002  .002]; 
         case 'motinas_fast';p=[474 60  43  67   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[15 15 .05  .05  .005  .002]; 
-        otherwise;  error(['unknown CONST.ds_2_name ' CONST.ds_2_name]);
+        otherwise;  error(['unknown INP.ds_2_name ' INP.ds_2_name]);
     end    
     %convert top left coordinate to center
     p(1)                    =   p(1) + round(p(3)/2);  
@@ -61,21 +61,21 @@ function [CONST, I_HxWxF] = UTIL_DATASET_load(CONST)
     affineROI_1x6           =   affparam2mat(affineROI_1x6);
     
 %save 4 things per dataset
-    CONST.temp_affineROI_1x6       =   affineROI_1x6;      %will be shifted to tracking structure
-    CONST.const_var_affineROI_1x6  =   affineROIvar_1x6;   %variance of affine ROI parameters
-    CONST.const_ff                 =   ff;                 %forgetting factor
-    CONST.con_stddev             =   condenssig;         %unknown
+    INP.ds_4_affineROI_1x6 	=   affineROI_1x6;      %will be shifted to tracking structure
+    INP.ds_5_affineROIvar_1x6=   affineROIvar_1x6;   %variance of affine ROI parameters
+    INP.ds_6_ff            	=   ff;                 %forgetting factor
+    INP.ds_7_con_stddev   	=   condenssig;         %unknown
     
 %get data
     %load dataset and ground truth from .mat file 
-                                disp(['loading ' CONST.ds_2_name '...']);
-                                load([CONST.ds_2_name '.mat'],'data','datatitle','truepts');
+                                disp(['loading ' INP.ds_2_name '...']);
+                                load([INP.ds_2_name '.mat'],'data','datatitle','truepts');
                                 
-    I_HxWxF                 =   data;       clear data;     %read all images, height x width x number of frames 
-    CONST.const_FP_gt      =   truepts;    clear truepts;  %ground truth for the feature points
+    INP.ds_8_I_HxWxF      	=   data;       clear data;     %read all images, height x width x number of frames 
+    INP.gt_1_FP      		=   truepts;    clear truepts;  %ground truth for the feature points
     
     %get total number of frames
-    CONST.const_F          =   size(I_HxWxF,3); 
+    CONST.const_F          =   size(INP.ds_8_I_HxWxF,3); 
     CONST.const_T          =	round(CONST.const_F/CONST.trg_B); %number of times training occurs
 
     
@@ -106,7 +106,7 @@ function [CONST, I_HxWxF] = UTIL_DATASET_load(CONST)
 %>                 'batchsize',5, 'affineROIvar_1x6',[6,5,.05,.05,0,0], ...
 %>                'errfunc','');
 
-%case 'toycan';    affineROI_1x6=[137 113 30 62 0];      CONST.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[7,7,.01,.01,.002,.001]);  CONST.ds_3_longName='1';txt2='Dudek';
-%case 'mushiake';  affineROI_1x6=[172 145 60 60 0];      CONST.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[10,10,.01,.01,.002,.001]);CONST.ds_3_longName='1';txt2='Dudek';
+%case 'toycan';    affineROI_1x6=[137 113 30 62 0];      CONST.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[7,7,.01,.01,.002,.001]);  INP.ds_3_longName='1';txt2='Dudek';
+%case 'mushiake';  affineROI_1x6=[172 145 60 60 0];      CONST.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[10,10,.01,.01,.002,.001]);INP.ds_3_longName='1';txt2='Dudek';
     
     
