@@ -15,8 +15,13 @@
 %> Date modified: Aug 17, 2011
 
 
-function [CONST, INP.ds_8_I_HxWxF] = TRK_read_input(CONST)
+function INP = TRK_read_input(code, tgt_warped_sw_sh)
 
+	INP.ds_1_code = code;
+%-----------------------------------------------
+%PRE-PROCESSING
+%-----------------------------------------------
+	
 %fn: filename (convert datasetCode to datasetName)
     if      (INP.ds_1_code==0)  INP.ds_2_name = 'test';          INP.ds_3_longName='0___test___________';
     elseif  (INP.ds_1_code==1)  INP.ds_2_name = 'Dudek';         INP.ds_3_longName='1___Dudek__________';
@@ -56,28 +61,47 @@ function [CONST, INP.ds_8_I_HxWxF] = TRK_read_input(CONST)
     p(1)                    =   p(1) + round(p(3)/2);  
     p(2)                    =   p(2) + round(p(4)/2);
     %normalize    
-    affineROI_1x6           =   [p(1), p(2), p(3)/CONST.tgt_warped_sw_sh, p(5), p(4)/p(3), 0]; %x, y, width/CONST.tgt_warped_sw_sh, angle, height/width, 0
+    affineROI_1x6           =   [p(1), p(2), p(3)/tgt_warped_sw_sh, p(5), p(4)/p(3), 0]; %x, y, width/tgt_warped_sw_sh, angle, height/width, 0
     %convert 
     affineROI_1x6           =   affparam2mat(affineROI_1x6);
-    
-%save 4 things per dataset
-    INP.ds_4_affineROI_1x6 	=   affineROI_1x6;      %will be shifted to tracking structure
-    INP.ds_5_affineROIvar_1x6=   affineROIvar_1x6;   %variance of affine ROI parameters
-    INP.ds_6_ff            	=   ff;                 %forgetting factor
-    INP.ds_7_con_stddev   	=   condenssig;         %unknown
-    
-%get data
-    %load dataset and ground truth from .mat file 
-                                disp(['loading ' INP.ds_2_name '...']);
-                                load([INP.ds_2_name '.mat'],'data','datatitle','truepts');
-                                
-    INP.ds_8_I_HxWxF      	=   data;       clear data;     %read all images, height x width x number of frames 
-    INP.gt_1_FP      		=   truepts;    clear truepts;  %ground truth for the feature points
-    
-    %get total number of frames
-    CONST.const_F          =   size(INP.ds_8_I_HxWxF,3); 
-    CONST.const_T          =	round(CONST.const_F/CONST.trg_B); %number of times training occurs
 
+%-----------------------------------------------
+%PROCESSING
+%-----------------------------------------------	
+%load data
+	disp(['loading dataset ' INP.ds_2_name ' and its ground truth ...']);
+	load([INP.ds_2_name '.mat'],'data','datatitle','truepts');
+
+    disp(['loading pre-stored random data for repeatability ...']);
+    load RandomData 
+%-----------------------------------------------
+%POST-PROCESSING
+%-----------------------------------------------
+%save 
+	%dataset
+    
+    INP.ds_4_affineROI_1x6 	=   affparaminv(affineROI_1x6); %affine ROI parameters
+    INP.ds_5_affineROIvar_1x6=   affineROIvar_1x6;   		%" 					  , variance of
+    INP.ds_6_ff            	=   ff;                 		%forgetting factor
+    INP.ds_7_con_stddev   	=   condenssig;         		%unknown
+    INP.ds_7_con_stddev     =   0.01;                       %check!!
+    INP.ds_8_I_HxWxF      	=   data;                       %read all images, height x width x number of frames 
+	INP.ds_9_F          	=   size(INP.ds_8_I_HxWxF,3);   %total number of frames
+
+	%ground truth
+    INP.gt_1_fp      		=   truepts;                    %ground truth for the feature points
+    INP.gt_2_num_fp        	=   size(INP.gt_1_fp,2);        %number of feature points
+    INP.gt_3_initial_fp    	=   INP.ds_4_affineROI_1x6([3,4,1;5,6,2]) * [INP.gt_1_fp(:,:,1); ones(1,INP.gt_2_num_fp)];
+    
+    %random input
+    INP.rn_1_samples        =   RandomData_sample;          %pre-stored random numbers to ensure repeatability  
+    INP.rn_2_cdf            =   RandomData_cdf;
+    
+    clear data truepts RandomData_sample RandomData_cdf;
+    
+    
+    
+    
     
     
     
@@ -96,17 +120,17 @@ function [CONST, INP.ds_8_I_HxWxF] = TRK_read_input(CONST)
 %> Use the following set of parameters for the ground truth experiment.
 %> It's much slower, but more accuracte.
 %case 'dudek';  affineROI_1x6 = [188,192,110,130,-0.08];
-%>     CONST = struct('Np',4000, 'condenssig=0.25, 'ff',0.99, ...
+%>     PARAM = struct('Np',4000, 'condenssig=0.25, 'ff',0.99, ...
 %>                 'batchsize',5, 'affineROIvar_1x6',[11,9,.05,.05,0,0], ...
 %>                 'errfunc','');
 
 
 %case 'dudekgt';  affineROI_1x6 = [188,192,110,130,-0.08]; 
-%>   CONST = struct('Np',4000, 'condenssig=1, 'ff',1, ...
+%>   PARAM = struct('Np',4000, 'condenssig=1, 'ff',1, ...
 %>                 'batchsize',5, 'affineROIvar_1x6',[6,5,.05,.05,0,0], ...
 %>                'errfunc','');
 
-%case 'toycan';    affineROI_1x6=[137 113 30 62 0];      CONST.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[7,7,.01,.01,.002,.001]);  INP.ds_3_longName='1';txt2='Dudek';
-%case 'mushiake';  affineROI_1x6=[172 145 60 60 0];      CONST.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[10,10,.01,.01,.002,.001]);INP.ds_3_longName='1';txt2='Dudek';
+%case 'toycan';    affineROI_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[7,7,.01,.01,.002,.001]);  INP.ds_3_longName='1';txt2='Dudek';
+%case 'mushiake';  affineROI_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[10,10,.01,.01,.002,.001]);INP.ds_3_longName='1';txt2='Dudek';
     
     

@@ -1,4 +1,4 @@
-function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CONST.plot_row2, CONST.plot_row3, CONST.plot_title_fontsz, algo_code)
+function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,PARAM.plot_row2, PARAM.plot_row3, PARAM.plot_title_fontsz, algo_code)
 
         if      (algo_code==1)  str='iPCA';     color = 'r';    
         elseif  (algo_code==2)  str='bPCA';     color = 'm';
@@ -7,7 +7,7 @@ function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CO
         end
     
     %reconstruction
-        row_idx = CONST.plot_row2;
+        row_idx = PARAM.plot_row2;
         if      (algo_code==1)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+1);     
         elseif  (algo_code==2)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+2);    
         elseif  (algo_code==3)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+3);    
@@ -17,12 +17,12 @@ function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CO
         colormap('gray')
         imagesc(recon);
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle([str ', reconstruction'], color, CONST.plot_title_fontsz);
+        UTIL_makeTitle([str ', reconstruction'], color, PARAM.plot_title_fontsz);
         axis equal
         axis tight
 
     %reconstruction err_0t1or
-        row_idx = CONST.plot_row3;
+        row_idx = PARAM.plot_row3;
         if      (algo_code==1)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+1);    
         elseif  (algo_code==2)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+2);    
         elseif  (algo_code==3)  subplot(out_num_rows,out_num_cols,out_num_cols*row_idx+3);    
@@ -32,6 +32,6 @@ function TRK_draw_4a_recon_reconerr(recon, err_0t1, out_num_rows,out_num_cols,CO
         colormap('gray')
         imagesc(err_0t1);
         set(gca, 'FontSize', 8);
-        UTIL_makeTitle([str ', recon. error'], color, CONST.plot_title_fontsz);
+        UTIL_makeTitle([str ', recon. error'], color, PARAM.plot_title_fontsz);
         axis equal
         axis tight

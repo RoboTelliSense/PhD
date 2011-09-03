@@ -53,8 +53,8 @@ param.tst_bestaffine_1x6 = param0;
 param.wimg = tmpl.mean;
 if (exist('GT','var'))
   FP_num = size(GT,2);
-  CONST.initial_affineROI_1x6 = affparaminv(param.tst_bestaffine_1x6);
-  FP_initial_gt = CONST.initial_affineROI_1x6([3,4,1;5,6,2]) * [GT(:,:,1); ones(1,FP_num)];
+  PARAM.initial_affineROI_1x6 = affparaminv(param.tst_bestaffine_1x6);
+  FP_initial_gt = PARAM.initial_affineROI_1x6([3,4,1;5,6,2]) * [GT(:,:,1); ones(1,FP_num)];
   pts = cat(3, FP_initial_gt + repmat(sz'/2,[1,FP_num]), GT(:,:,1));
   trackpts = zeros(size(GT));
   trackerr = zeros(1,FP_num); meanerr = zeros(1,FP_num);

@@ -13,10 +13,10 @@
         
         %1. affine parameters
         clear struct1;
-                        struct1.data     =   trkIPCA.best_affineROI_1x6;                                                                                           UTIL_savecsv_struct(trkIPCA.cfn_1_affine_1x6, f, struct1);
-        if (bUseBPCA )   struct1.data     =   trkBPCA.best_affineROI_1x6;                                                                                           UTIL_savecsv_struct(trkBPCA.cfn_1_affine_1x6, f, struct1); end
-        if (bUseRVQ)    struct1.data     =   trkRVQ.best_affineROI_1x6;                                                                                           UTIL_savecsv_struct(trkRVQ.cfn_1_affine_1x6, f, struct1); end
-        if (bUseTSVQ)   struct1.data     =   trkTSVQ.best_affineROI_1x6;                                                                                           UTIL_savecsv_struct(trkTSVQ.cfn_1_affine_1x6, f, struct1); end
+                        struct1.data     =   trkIPCA.tgt_best_affineROI_1x6;                                                                                           UTIL_savecsv_struct(trkIPCA.cfn_1_affine_1x6, f, struct1);
+        if (bUseBPCA )   struct1.data     =   trkBPCA.tgt_best_affineROI_1x6;                                                                                           UTIL_savecsv_struct(trkBPCA.cfn_1_affine_1x6, f, struct1); end
+        if (bUseRVQ)    struct1.data     =   trkRVQ.tgt_best_affineROI_1x6;                                                                                           UTIL_savecsv_struct(trkRVQ.cfn_1_affine_1x6, f, struct1); end
+        if (bUseTSVQ)   struct1.data     =   trkTSVQ.tgt_best_affineROI_1x6;                                                                                           UTIL_savecsv_struct(trkTSVQ.cfn_1_affine_1x6, f, struct1); end
 
         %2. feature points
         clear struct1;
@@ -36,7 +36,7 @@
         
         
         %4. training error (rmse, avg rmse, snr)
-	if (Ntrg_snp             >=  CONST.trg_B) %i.e.train every batchsize images
+	if (Ntrg_snp             >=  PARAM.trg_B) %i.e.train every batchsize images
         clear struct1;
                         struct1.data(1) = IPCA.trg_4_SNRdB;          struct1.data(2) =  IPCA.trg_5_rmse;         struct1.data(3) = temp1;                         UTIL_savecsv_struct(trkIPCA.cfn_4_trg_rmse,      f, struct1);
         if (bUseBPCA )   struct1.data(1) = BPCA.trg_4_SNRdB;          struct1.data(2) =  BPCA.trg_5_rmse;         struct1.data(3) = temp2;                         UTIL_savecsv_struct(trkBPCA.cfn_4_trg_rmse,      f, struct1); end

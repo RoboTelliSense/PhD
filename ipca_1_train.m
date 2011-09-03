@@ -21,13 +21,13 @@ function IPCA = ipca_1_train(DM2, IPCA)
 % POST-PROCESSING
 %------------------------------------------------------
 %limit to Q
-    if (size(IPCA.mdl_2_U_DxB,2) > IPCA.Q)
+    if (size(IPCA.mdl_2_U_DxB,2) > IPCA.in_1_Q)
         %IPCA.reseig         = IPCA.ff^2 *IPCA.reseig + sum(IPCA.mdl_3_S_Bx1(IPCA.maxbasis+1:end).^2);
-        IPCA.reseig         =   IPCA.ff * IPCA.reseig + sum(IPCA.mdl_3_S_Bx1(IPCA.Q+1:end));
-        IPCA.mdl_2_U_DxB          =   IPCA.mdl_2_U_DxB(:,1:IPCA.Q);
-        IPCA.mdl_3_S_Bx1              =   IPCA.mdl_3_S_Bx1(1:IPCA.Q);
+        IPCA.reseig         =   IPCA.ff * IPCA.reseig + sum(IPCA.mdl_3_S_Bx1(IPCA.in_1_Q+1:end));
+        IPCA.mdl_2_U_DxB          =   IPCA.mdl_2_U_DxB(:,1:IPCA.in_1_Q);
+        IPCA.mdl_3_S_Bx1              =   IPCA.mdl_3_S_Bx1(1:IPCA.in_1_Q);
         if (isfield(IPCA,'projScalars'))
-            IPCA.projScalars    =   IPCA.projScalars(1:IPCA.Q,:);
+            IPCA.projScalars    =   IPCA.projScalars(1:IPCA.in_1_Q,:);
         end
     end
 

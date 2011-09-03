@@ -97,6 +97,8 @@
 
     
 %algorithm parameters
+    %ipca
+    
     %bpca
     BPCA.in_0_name            	=   'BPCA';
     BPCA.in_1_Q               	=   16;                                         

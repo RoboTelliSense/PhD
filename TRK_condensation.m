@@ -11,7 +11,7 @@
 %>                              training examples in one batch
 % TRK is the structure that holds information about the
 % condensation algorithm.  It has the following members:
-%    (a) best_affineROI_1x6: MAP estimate of best affine parameters that describe target bounding region
+%    (a) tgt_best_affineROI_1x6: MAP estimate of best affine parameters that describe target bounding region
 %    (b) affineCandidates_6xNp: possible affine candidates that describe target bounding region
 %    weights
 %    err_projScalars_BxNp
@@ -28,17 +28,17 @@
 % Date last modified: July 18, 2011
 %%
 
-function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomData_sample, RandomData_cdf, algo_code)
+function [ALGO, TRK] = TRK_condensation(INP, PARAM, I_0t1, ALGO, TRK)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
-    sw                              =   ALGO.sw;                    %snippet width
-    sh                              =   ALGO.sh;                    %snippet height
+    sw                              =   PARAM.tgt_sw;                    %snippet width
+    sh                              =   PARAM.tgt_sh;                    %snippet height
     D                               =   sw*sh;                      %dimensionality of input data
     
-    Np                              =   CONST.in_Np;               %particle filter: # of particles (samples) from density)
-    rn1                             =   RandomData_cdf(f,:);        %pre-stored random numbers to ensure repeatability    
-    rn2(:,:)                        =   RandomData_sample(f,:,:);   %same as above
+    Np                              =   PARAM.in_Np;               %particle filter: # of particles (samples) from density)
+    rn1                             =   INP.rn_2_cdf(f,:);        %pre-stored random numbers to ensure repeatability    
+    rn2(:,:)                        =   INP.rn_1_samples(f,:,:);   %same as above
     
 %----------------------------
 %PRE-PROCESSING
@@ -49,7 +49,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
 
     if ~isfield(TRK,'affineCandidates_6xNp')
         %one time: initialize 6 affine parameters, one for each of the Np candidate snippets
-        TRK.affineCandidates_6xNp   =   repmat(  affparam2geom(TRK.best_affineROI_1x6(:)), [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
+        TRK.affineCandidates_6xNp   =   repmat(  affparam2geom(TRK.tgt_best_affineROI_1x6(:)), [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
                                     
     else
         %recurring: resample distribution in 3 lines (read details of this in my article on resampling)
@@ -71,13 +71,13 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
 %3a. weighting (find how well the algorithm model explains each snippet, find distances)
 
     %generic algo
-    if (algo_code==0) 
+    if (strcmp(ALGO.in_0_name), 'genericPF') 
         err_0to1_DxNp               =   repmat(ALGO.mdl_1_mu_Dx1(:),[1,Np]) - reshape(PFcandidateSnippets_0t1_shxswxNp,[D,Np]); %err_0to1_DxNp: (sw)(sh) x Np
         DIFS                        =   0;
     
         
     %iPCA    
-    elseif (algo_code==1) 
+    elseif (strcmp(ALGO.in_0_name), 'IPCA') 
         
         %part 1: error, distance from mean (err vector points to mean)
         err_0to1_DxNp               =   repmat(ALGO.mdl_1_mu_Dx1(:),[1,Np]) - reshape(PFcandidateSnippets_0t1_shxswxNp,[D,Np]); %err_0to1_DxNp: (sw)(sh) x Np
@@ -91,9 +91,9 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
             
             %compute DIFS for use with PPCA, if not using PPCA, not required
             if (isfield(TRK,'err_projScalars_BxNp'))
-                DIFS            =   (abs(err_projScalars_BxNp)-abs(TRK.err_projScalars_BxNp))*ALGO.reseig./repmat(ALGO.mdl_3_S_Bx1,[1,Np]);
+                DIFS            =   (abs(err_projScalars_BxNp)-abs(TRK.err_projScalars_BxNp))*PARAM.con_reseig./repmat(ALGO.mdl_3_S_Bx1,[1,Np]);
             else
-                DIFS            =   err_projScalars_BxNp                               .*ALGO.reseig./repmat(ALGO.mdl_3_S_Bx1,[1,Np]);
+                DIFS            =   err_projScalars_BxNp                               .*PARAM.con_reseig./repmat(ALGO.mdl_3_S_Bx1,[1,Np]);
             end
             TRK.err_projScalars_BxNp=   err_projScalars_BxNp;
         
@@ -101,7 +101,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
 	
         
     %bPCA    
-    elseif(algo_code==2)
+    elseif (strcmp(ALGO.in_0_name), 'BPCA') 
         err_0to1_DxNp               = 	[];
         for i = 1:Np
             Itst                    =   255*PFcandidateSnippets_0t1_shxswxNp(:,:,i);
@@ -114,7 +114,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
         
         
     %RVQ    
-    elseif(algo_code==3) %i.e. 
+    elseif (strcmp(ALGO.in_0_name), 'RVQ') 
         err_0to1_DxNp               = 	[];
         ALGO.rule_stop_decoding     = 'realm_of_experience'; %'monotonic_PSNR'
         for i = 1:Np
@@ -126,7 +126,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
         
         
     %TSVQ
-    elseif(algo_code==4)
+    elseif (strcmp(ALGO.in_0_name), 'TSVQ') 
         err_0to1_DxNp               = 	[];
         for i = 1:Np
             Itst                    =   255*PFcandidateSnippets_0t1_shxswxNp(:,:,i);
@@ -138,8 +138,8 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
 %3b. raise distances to exponentials
     stddev                          =   INP.ds_7_con_stddev;
     DFFS                            =   err_0to1_DxNp;
-    switch (CONST.con_errfunc)
-        case 'robust'; TRK.weights  =   exp(- sum(DFFS.^2./(DFFS.^2 + CONST.rsig.^2))./stddev)';%CONST.rsig never defined
+    switch (PARAM.con_errfunc)
+        case 'robust'; TRK.weights  =   exp(- sum(DFFS.^2./(DFFS.^2 + PARAM.rsig.^2))./stddev)';%PARAM.rsig never defined
         case 'ppca';   TRK.weights  =   exp(-(     sum(DFFS.^2)+ sum(DIFS.^2)        )./stddev)';
         otherwise;     TRK.weights  =   exp(-      sum(DFFS.^2                       )./stddev)';
     end
@@ -147,7 +147,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
 %4. pick MAP estimate
     TRK.weights                     =   TRK.weights ./ sum(TRK.weights);                    %normalize weights
     [maxprob,maxidx]                =   max(TRK.weights);                                   %MAP estimate: pick best index
-    TRK.best_affineROI_1x6          =   affparam2mat(TRK.affineCandidates_6xNp(:,maxidx));  %MAP estimate: pick best affine parameters based on best index          
+    TRK.tgt_best_affineROI_1x6          =   affparam2mat(TRK.affineCandidates_6xNp(:,maxidx));  %MAP estimate: pick best affine parameters based on best index          
     TRK.tst_bestSnippet_0t1         =   PFcandidateSnippets_0t1_shxswxNp(:,:,maxidx);                %MAP estimate: pick best candidate snippet based on best index                
         
 
@@ -156,7 +156,7 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
 %----------------------------
 %error and reconstruction
     TRK.err_0to1_sw_x_sh            =   reshape(err_0to1_DxNp(:,maxidx), [sh sw]);                            %get reconstruction error
-    if 	   (algo_code==0 || 1) 
+    if 	   (INP.ds_1_code==0 || 1) 
         TRK.err_0to1_sw_x_sh        =   -TRK.err_0to1_sw_x_sh; 
     end
     TRK.recon                       =   TRK.tst_bestSnippet_0t1 - TRK.err_0to1_sw_x_sh; %get reconstructed image
@@ -170,25 +170,25 @@ function [ALGO, TRK] = TRK_condensation(I_0t1, f, ALGO, GT, TRK, CONFIG, RandomD
     ALGO.DM2                        =   [ALGO.DM2 TRK.tst_bestSnippet_0t1(:)];%update snippet library
     
     %incorporate weighting and forgetting factor
-    if 	   (algo_code==2 || algo_code==3 || algo_code==4) %not needed for IPCA since it has its own forgetting factor
-		ALGO.DM2_weighted           =   DATAMATRIX_pick_last_Nw_values_in_DM2(ALGO.DM2, CONST.Nw, CONST.bWeighting); 
+    if 	   (INP.ds_1_code==2 || INP.ds_1_code==3 || INP.ds_1_code==4) %not needed for IPCA since it has its own forgetting factor
+		ALGO.DM2_weighted           =   DATAMATRIX_pick_last_Nw_values_in_DM2(ALGO.DM2, PARAM.Nw, PARAM.bWeighting); 
     end                                                                                                       
     
         TRK.tst_RMSE_Fx1(f)         =	TRK.tst_5_rmse;
         TRK.tst_RMSEavg_Fx1(f)      =   UTIL_compute_avg(TRK.tst_RMSE_Fx1(1:f));
     
 %tracking error        
-    TRK.FP_2_est                    =   TRK.best_affineROI_1x6([3,4,1;5,6,2]) ...
+    TRK.fp_2_est                    =   TRK.tgt_best_affineROI_1x6([3,4,1;5,6,2]) ...
                                         * ...
-                                       [CONST.FP_gt_initial; ones(1,CONST.FP_num)];
-    TRK.FP_1_gt                     =   cat(3, ...
-                                        CONST.FP_gt_initial+repmat(ALGO.sz'/2,[1,CONST.FP_num]), ...
-                                        GT(:,:,f), ...
-                                        TRK.FP_2_est);
-    idx                             =   find(TRK.FP_1_gt(1,:,2) > 0);
+                                       [INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
+    TRK.fp_1_gt                     =   cat(3, ...
+                                        INP.gt_3_initial_fp+repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), ...
+                                        INP.gt_1_fp(:,:,f), ...
+                                        TRK.fp_2_est);
+    idx                             =   find(TRK.fp_1_gt(1,:,2) > 0);
     if (length(idx) > 0)
-        TRK.FP_3_err(f)             =   sqrt(mean(sum((TRK.FP_1_gt(:,idx,2)-TRK.FP_1_gt(:,idx,3)).^2,1)));
+        TRK.fp_3_err(f)             =   sqrt(mean(sum((TRK.fp_1_gt(:,idx,2)-TRK.fp_1_gt(:,idx,3)).^2,1)));
     else
-        TRK.FP_3_err(f)             =   nan;
+        TRK.fp_3_err(f)             =   nan;
     end
         
