@@ -18,8 +18,8 @@
 %    tst_bestSnippet_0t1
 %    err_0to1_DxNp
 %    recon
-%    tst_4_SNRdB
-%    tst_5_rmse
+%    tst_4_SNRdB_1x1
+%    tst_5_rmse__1x1
 %
 % INP.ds_5_affineROIvar_1x6
 %
@@ -71,16 +71,16 @@ function [ALGO, TRK] = TRK_condensation(INP, PARAM, I_0t1, ALGO, TRK)
 %3a. weighting (find how well the algorithm model explains each snippet, find distances)
 
     %generic algo
-    if (strcmp(ALGO.in_0_name), 'genericPF') 
-        err_0to1_DxNp               =   repmat(ALGO.mdl_1_mu_Dx1(:),[1,Np]) - reshape(PFcandidateSnippets_0t1_shxswxNp,[D,Np]); %err_0to1_DxNp: (sw)(sh) x Np
+    if (strcmp(ALGO.in_1_name), 'genericPF') 
+        err_0to1_DxNp               =   repmat(ALGO.mdl_2_mu_Dx1(:),[1,Np]) - reshape(PFcandidateSnippets_0t1_shxswxNp,[D,Np]); %err_0to1_DxNp: (sw)(sh) x Np
         DIFS                        =   0;
     
         
     %iPCA    
-    elseif (strcmp(ALGO.in_0_name), 'IPCA') 
+    elseif (strcmp(ALGO.in_1_name), 'IPCA') 
         
         %part 1: error, distance from mean (err vector points to mean)
-        err_0to1_DxNp               =   repmat(ALGO.mdl_1_mu_Dx1(:),[1,Np]) - reshape(PFcandidateSnippets_0t1_shxswxNp,[D,Np]); %err_0to1_DxNp: (sw)(sh) x Np
+        err_0to1_DxNp               =   repmat(ALGO.mdl_2_mu_Dx1(:),[1,Np]) - reshape(PFcandidateSnippets_0t1_shxswxNp,[D,Np]); %err_0to1_DxNp: (sw)(sh) x Np
         DIFS                    =   0;
         
         %part 2: error, reduce the part that can be explained by the basis
@@ -91,9 +91,9 @@ function [ALGO, TRK] = TRK_condensation(INP, PARAM, I_0t1, ALGO, TRK)
             
             %compute DIFS for use with PPCA, if not using PPCA, not required
             if (isfield(TRK,'err_projScalars_BxNp'))
-                DIFS            =   (abs(err_projScalars_BxNp)-abs(TRK.err_projScalars_BxNp))*PARAM.con_reseig./repmat(ALGO.mdl_3_S_Bx1,[1,Np]);
+                DIFS            =   (abs(err_projScalars_BxNp)-abs(TRK.err_projScalars_BxNp))*PARAM.con_reseig./repmat(ALGO.mdl_4_S_Bx1,[1,Np]);
             else
-                DIFS            =   err_projScalars_BxNp                               .*PARAM.con_reseig./repmat(ALGO.mdl_3_S_Bx1,[1,Np]);
+                DIFS            =   err_projScalars_BxNp                               .*PARAM.con_reseig./repmat(ALGO.mdl_4_S_Bx1,[1,Np]);
             end
             TRK.err_projScalars_BxNp=   err_projScalars_BxNp;
         
@@ -101,12 +101,12 @@ function [ALGO, TRK] = TRK_condensation(INP, PARAM, I_0t1, ALGO, TRK)
 	
         
     %bPCA    
-    elseif (strcmp(ALGO.in_0_name), 'BPCA') 
+    elseif (strcmp(ALGO.in_1_name), 'BPCA') 
         err_0to1_DxNp               = 	[];
         for i = 1:Np
             Itst                    =   255*PFcandidateSnippets_0t1_shxswxNp(:,:,i);
             ALGO                    =   bPCA_3_test(Itst(:), ALGO);
-            err_0to1_DxNp(:,i)   	=   ALGO.tst_3_err_Dx1/255;                                
+            err_0to1_DxNp(:,i)   	=   ALGO.tst_3_error_DxN/255;                                
         end
 
         
@@ -114,24 +114,24 @@ function [ALGO, TRK] = TRK_condensation(INP, PARAM, I_0t1, ALGO, TRK)
         
         
     %RVQ    
-    elseif (strcmp(ALGO.in_0_name), 'RVQ') 
+    elseif (strcmp(ALGO.in_1_name), 'RVQ') 
         err_0to1_DxNp               = 	[];
-        ALGO.rule_stop_decoding     = 'realm_of_experience'; %'monotonic_PSNR'
+        ALGO.rule_stop_decoding     = 'RoE'; %'monPSNR'
         for i = 1:Np
             Itst                    =   255*PFcandidateSnippets_0t1_shxswxNp(:,:,i);
             ALGO                    =   RVQ__testing_grayscale(Itst(:), ALGO);
-            %err_0to1_DxNp(:,i)     =   ALGO.tst_3_err_Dx1/255;                                
-            err_0to1_DxNp(:,i)      =   (abs(ALGO.tst_3_err_Dx1) + 0.5*(ALGO.maxP-ALGO.P))/255;
+            %err_0to1_DxNp(:,i)     =   ALGO.tst_3_error_DxN/255;                                
+            err_0to1_DxNp(:,i)      =   (abs(ALGO.tst_3_error_DxN) + 0.5*(ALGO.maxP-ALGO.P))/255;
         end
         
         
     %TSVQ
-    elseif (strcmp(ALGO.in_0_name), 'TSVQ') 
+    elseif (strcmp(ALGO.in_1_name), 'TSVQ') 
         err_0to1_DxNp               = 	[];
         for i = 1:Np
             Itst                    =   255*PFcandidateSnippets_0t1_shxswxNp(:,:,i);
             ALGO                    =   TSVQ_3_test(Itst(:), ALGO);
-            err_0to1_DxNp(:,i)   	=   ALGO.tst_3_err_Dx1/255;                                
+            err_0to1_DxNp(:,i)   	=   ALGO.tst_3_error_DxN/255;                                
         end
     end
 
@@ -162,8 +162,8 @@ function [ALGO, TRK] = TRK_condensation(INP, PARAM, I_0t1, ALGO, TRK)
     TRK.recon                       =   TRK.tst_bestSnippet_0t1 - TRK.err_0to1_sw_x_sh; %get reconstructed image
 
 %metrics    
-    TRK.tst_4_SNRdB                   =   UTIL_METRICS_compute_SNR       (TRK.tst_bestSnippet_0t1, TRK.err_0to1_sw_x_sh);
-    TRK.tst_5_rmse                    =   UTIL_METRICS_compute_rms_value (TRK.err_0to1_sw_x_sh(:)*255);
+    TRK.tst_4_SNRdB_1x1                   =   UTIL_METRICS_compute_SNR       (TRK.tst_bestSnippet_0t1, TRK.err_0to1_sw_x_sh);
+    TRK.tst_5_rmse__1x1                    =   UTIL_METRICS_compute_rms_value (TRK.err_0to1_sw_x_sh(:)*255);
     
 %DM2
     %update
@@ -174,7 +174,7 @@ function [ALGO, TRK] = TRK_condensation(INP, PARAM, I_0t1, ALGO, TRK)
 		ALGO.DM2_weighted           =   DATAMATRIX_pick_last_Nw_values_in_DM2(ALGO.DM2, PARAM.Nw, PARAM.bWeighting); 
     end                                                                                                       
     
-        TRK.tst_RMSE_Fx1(f)         =	TRK.tst_5_rmse;
+        TRK.tst_RMSE_Fx1(f)         =	TRK.tst_5_rmse__1x1;
         TRK.tst_RMSEavg_Fx1(f)      =   UTIL_compute_avg(TRK.tst_RMSE_Fx1(1:f));
     
 %tracking error        

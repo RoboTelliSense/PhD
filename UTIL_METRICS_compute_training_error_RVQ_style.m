@@ -3,7 +3,7 @@
 % The training error computed is for DM2, i.e., all the training data.
 %
 % For computing SNRdB, the following approach is taken:
-% (a) for each training vector, compute the error vector algo_struct.tst_3_err_Dx1
+% (a) for each training vector, compute the error vector algo_struct.tst_3_error_DxN
 % (b) concatenate all training vectors into S_NDx1 to make one giant signal
 % (c) concatenate all error vectors into E_NDx1 to make one giant error signal
 % (d) compute SNRdB using these giant signals
@@ -19,20 +19,20 @@
 function algo = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo)
 
 	[D, N]                              =   size(DM2);
-	algo.trg_3_err_DxN                 	=   zeros(D,N);
-	algo.trg_1_descriptors_PxN         	=   zeros(algo.mdl_3_P,N);
+	algo.trg_3_error_DxN                 	=   zeros(D,N);
+	algo.trg_1_descr_PxN         	=   zeros(algo.mdl_1_P__1x1,N);
 	for n=1:N
 		x_Dx1                           =   DM2(:,n);                                %test vector
-        if      (strcmp(algo.in_0_name, 'RVQ'))
+        if      (strcmp(algo.in_1_name, 'RVQ'))
             algo                        =   RVQ__testing_grayscale(x_Dx1, algo);     %test
-        elseif (strcmp(algo.in_0_name, 'TSVQ'))
+        elseif (strcmp(algo.in_1_name, 'TSVQ'))
             algo                        =   TSVQ_3_test(x_Dx1, algo);     
         end
-		algo.trg_1_descriptors_PxN(:,n)	=   algo.tst_1_descriptor_Px1;               %trg1.
-		algo.trg_2_recon_DxN(:,n)     	=   algo.tst_2_recon_Dx1;                    %trg2.
-		algo.trg_3_err_DxN(:,n)        	=   algo.tst_3_err_Dx1;                      %trg3.
+		algo.trg_1_descr_PxN(:,n)	=   algo.tst_1_descr_PxN;                                         %trg1.
+		algo.trg_2_recon_DxN(:,n)     	=   algo.tst_2_recon_DxN;                                              %trg2.
+		algo.trg_3_error_DxN(:,n)       =   algo.tst_3_error_DxN;                                                %trg3.
+        algo.trg_4_SNRdB_1x1(n,1)       =   UTIL_METRICS_compute_SNRdB       (DM2(:), algo.trg_3_error_DxN(:));  %trg4.
+        algo.trg_5_rmse__1x1(n,1)        =   UTIL_METRICS_compute_rms_value   (algo.trg_3_error_DxN(:));          %trg5.
 	end
-	algo.trg_4_SNRdB                   	=   UTIL_METRICS_compute_SNRdB       (DM2(:), algo.trg_3_err_DxN(:));  %trg4.
-	algo.trg_5_rmse                    	=   UTIL_METRICS_compute_rms_value   (algo.trg_3_err_DxN(:));          %trg5.
     
-    algo.tst_1_descriptor_Px1           =   [];
+    algo.tst_1_descr_PxN           =   [];

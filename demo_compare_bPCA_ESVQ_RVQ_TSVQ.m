@@ -4,7 +4,7 @@
 %
 % sw=1, sh=1 means scalar example
 % 
-% RVQ.trg_1_descriptors_PxN: training XDRs from using gen.exe -l or my Matlab software
+% RVQ.trg_1_descr_PxN: training XDRs from using gen.exe -l or my Matlab software
 %
 % gen.exe -l crashes on dataset 4, and so i'm not using it any more instead, i have my own matlab code for it
 % I think gen.exe -l may be crashing because I have values higher than 255
@@ -14,9 +14,9 @@
 % -------------
 % A good way to check RVQ is to use the 1:256 scalar example in the IDDM paper.  For that use the following settings:
 % dataset     =   25
-% RVQ.in_1_maxP   =   8
-% RVQ.in_2_M      =   2
-% Then RVQ.mdl_2_CB_DxMP (the red channel of the codebooks) is 
+% RVQ.in_3_maxP   =   8
+% RVQ.in_4_M      =   2
+% Then RVQ.mdl_3_CB_DxMP (the red channel of the codebooks) is 
 %       m=1   m=2
 %       ---   ---
 % p=1  192.5  64.5
@@ -29,13 +29,13 @@
 % p=8   -0.5   0.5
 % The green and the blue channels are also the same.
 % This behavior is correct, as confirmed by Dr Barnes.
-% The first M=2 numbers in RVQ.mdl_2_CB_DxMP are the scalar codevectors for stage 1,
+% The first M=2 numbers in RVQ.mdl_3_CB_DxMP are the scalar codevectors for stage 1,
 % the second M=2 numbers are the scalar codevectors for stage 2, and so on.
 % 
-% If test point is 192, descriptors_PxN(:,192) produced by RVQ.rule_stop_decoding='monotonic_PSNR' will give 
+% If test point is 192, descriptors_PxN(:,192) produced by RVQ.rule_stop_decoding='monPSNR' will give 
 % [1;9;9;9;  9;9;9;9], the 9's, i.e., P+1s, showing early termination.
 % So, the reproduction value is 192 and the error is 0.5.  
-% descriptors_PxN produced by gen.exe -l or RVQ.rule_stop_decoding='full_path' always gives full path,
+% descriptors_PxN produced by gen.exe -l or RVQ.rule_stop_decoding='maxP' always gives full path,
 % and the answer is [1;1;2;2   2;2;2;2].  So the reproduction value is also 192, and the error is again 0.5 
 % 
 % If test point is 253, my software gives reproduction of 252.5, an error of 0.5: 192.5 + 32 + 16 + 8 + 4              = 252.5 
@@ -51,7 +51,7 @@
 %
 % for reference, SNRs for dataset==3 are [46.0277   17.7511  25.2638   30.7671],
 % and rmse's are                         [1.0737    27.8433  11.7242    6.2219]
-% in order these are PCA, RVQ (monotonic_PSNR), RVQ (realm_of_experience), TSVQ
+% in order these are PCA, RVQ (monPSNR), RVQ (RoE), TSVQ
 % TSVQ values can change though since the K-means can produce different
 % results each time
 %
@@ -77,7 +77,7 @@
     format compact;
 
 %data input (5 different datasets, pick one of them)
-    dataset                 =   2;                                          %change this to 1, 2, 3, 4 or 5
+    dataset                 =   3;                                          %change this to 1, 2, 3, 4 or 5
     
     %deterministic, simple scalar examples
     if     (dataset==1) DM2 =   [4 6 8 10 20 22 24 26];       sw=1; sh=1;   %simplest possible, i've worked this out by hand in a pdf
@@ -100,45 +100,45 @@
     %ipca
     
     %bpca
-    BPCA.in_0_name            	=   'BPCA';
-    BPCA.in_1_Q               	=   16;                                         
-    
-    %tsvq
-    TSVQ.in_0_name             	=   'TSVQ';
-    TSVQ.in_1_maxP                	=   3;                                          %number of stages
-    TSVQ.in_2_M                	=   2;                                          %2 is for binary TSVQ
+    BPCA.in_1_name            	=   'BPCA';
+	BPCA.in_2_mode 				=	'tst';
+    BPCA.mdl_1_P__1x1           =   16;                                         
     
     %rvq    
-    RVQ.in_0_name              	=   'RVQ';
-    RVQ.in_1_maxP              	=   8;                                          %number of stages  
-    RVQ.in_2_M                  =   2;                                          %number of codevectors/stage
-    RVQ.in_3_targetSNR          =   1000;
-    RVQ.in_4_sw                 =   sw;                                         %snippet width
-    RVQ.in_5_sh                 =   sh;                                         %snippet height
-    RVQ.in_6_dir_out            =   '';
+    RVQ.in_1_name              	=   'RVQ';
+	RVQ.in_2_mode 				=   'tst';
+    RVQ.in_3_maxP              	=   8;                                          %number of stages  
+    RVQ.in_4_M                  =   2;                                          %number of codevectors/stage
+    RVQ.in_5_targetSNR          =   1000;
+    RVQ.in_6_sw                 =   sw;                                         %snippet width
+    RVQ.in_7_sh                 =   sh;                                         %snippet height
+    RVQ.in_8_dir_out            =   '';
+    RVQ.in_9_rule_stop_decoding =   'monPSNR';
+
+    %tsvq
+    TSVQ.in_1_name             	=   'TSVQ';
+	TSVQ.in_2_mode 				=	'tst';
+    TSVQ.in_3_maxP              =   4;                                          %number of stages
+    TSVQ.in_4_M                	=   2;                                          %2 is for binary TSVQ
+    
+    
+    
       
 
 %-----------------------------
 % PROCESSING
 %-----------------------------
 %training    
-    BPCA                   =   bPCA_1_train     (DM2, BPCA); 
-    RVQ                    =   RVQ__training    (DM2, RVQ);           %!caution!: in this new version, decoding rule here is changed to 'full_stage' to mimic gen.exe -l functionality   
-    TSVQ                   =   TSVQ_1_train     (DM2, TSVQ); 
+    BPCA                    =    bPCA_1_train     (DM2, BPCA); 
+    RVQ                     =    RVQ__training    (DM2, RVQ);           %!caution!: in this new version, decoding rule here is changed to 'full_stage' to mimic gen.exe -l functionality   
+    TSVQ                    =    TSVQ_1_train     (DM2, TSVQ); 
     
-%test vector    
-    tst_idx                 =   8;                                          %any number between 1 and N, index                                                                        %of training data that you want to test
-    tst_Dx1                 =   DM2(:,tst_idx);                             %test vector
+%testing
+    tst_Dx1                 =   DM2(:,8);    
     
-%PCA    
-    BPCA                   =   bPCA_3_test                 (tst_Dx1, BPCA);
-
-%RVQ    
-    RVQ.rule_stop_decoding =   'full_stage'; %'monotonic_PSNR', 'realm_of_experience';
-    RVQ                    =   RVQ__testing_grayscale      (tst_Dx1, RVQ);%here, the rule is always monotonic PSNR
-
-%TSVQ    
-    TSVQ                   =   TSVQ_3_test                 (tst_Dx1, TSVQ);
+    BPCA                    =   bPCA_3_test(DM2, BPCA);                  
+    RVQ                     =   RVQ__testing_grayscale      (tst_Dx1, RVQ);%here, the rule is always monotonic PSNR
+    TSVQ                    =   TSVQ_3_test                 (tst_Dx1, TSVQ);
     
 %-----------------------------
 %RESULTS
@@ -146,8 +146,9 @@
 %view
     numDisplayRows          =   5;
     numDisplayCols          =   10;
-                                DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols);
-                                DATAMATRIX_display_DM2_as_image(BPCA.mdl_2_U_DxN, sh, sw, numDisplayRows, numDisplayCols);
+                                figure;DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols);title('input');
+                                figure;DATAMATRIX_display_DM2_as_image(BPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols);title('BPCA eigenvectors');
+                                figure;DATAMATRIX_display_DM2_as_image(RVQ.mdl_3_CB_DxMP, sh, sw, RVQ.mdl_1_P__1x1, RVQ.in_4_M);title('RVQ codebooks');
     
-    [BPCA.trg_5_rmse     RVQ.trg_5_rmse    TSVQ.trg_5_rmse         ]
-    [BPCA.tst_5_rmse     RVQ.tst_5_rmse    TSVQ.tst_5_rmse         ]
+    [BPCA.trg_5_rmse__1x1     RVQ.trg_5_rmse__1x1    TSVQ.trg_5_rmse__1x1         ]
+    [BPCA.tst_5_rmse__1x1     RVQ.tst_5_rmse__1x1    TSVQ.tst_5_rmse__1x1         ]

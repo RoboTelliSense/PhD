@@ -23,7 +23,7 @@ function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_dr
                                         if ~isfield(RVQ,'T')
                                             str='tracking error';
                                         else
-                                            str=['tracking error, (' num2str(RVQ.tst_6_partialP) '/' num2str(RVQ.T) ')'];
+                                            str=['tracking error, (' num2str(RVQ.tst_6_partP_Nx1) '/' num2str(RVQ.T) ')'];
                                         end
                                         title(str, 'fontsize', PARAM.plot_title_fontsz);
                                         %axis tight

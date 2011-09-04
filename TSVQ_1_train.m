@@ -45,8 +45,8 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
 %------------------------------
 % PRE-PROCESSING
 %------------------------------
-    M                       =   TSVQ.in_2_M;
-    maxP                    =   TSVQ.in_1_maxP;
+    M                       =   TSVQ.in_4_M;
+    maxP                    =   TSVQ.in_3_maxP;
     
     [M, K]                  =   TSVQ_find_Ks_and_K(M, maxP);
 	partitionedData{1}      =   DM2;
@@ -64,9 +64,14 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
 %------------------------------
 % POST-PROCESSING
 %------------------------------    
-    TSVQ.mdl_2_CB_DxKt      =   CB_DxKt;  %terminal and non-terminal codevectors
-    TSVQ.mdl_3_P 			=	maxP;   	%in this code, i force P to be equal to maxP
+%save model
+    TSVQ.mdl_1_P__1x1       =	maxP;   	%in this code, i force P to be equal to maxP    
+    TSVQ.mdl_3_CB_DxKt      =   CB_DxKt;  %terminal and non-terminal codevectors
 	TSVQ.mdl_4_CB_DxK     	=   CB_DxKt(:, M+1:M+K);
     
-    TSVQ                    =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, TSVQ); 
+%test training examples   
+    TSVQ.in_2_mode          =   'trg';
+    TSVQ                    =   TSVQ_3_test(DM2, TSVQ);    
+    TSVQ.in_2_mode          =   'tst';
+    
 

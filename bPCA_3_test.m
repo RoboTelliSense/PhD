@@ -1,33 +1,41 @@
-%Q is how many dimensions you want to retain
+%P is how many dimensions you want to retain
 %D is number of pixels, i.e. dimensions
 %N is number of images
 
-function BPCA = bPCA_3_test(x_Dx1, BPCA)
+function PCA = bPCA_3_test(DM2, PCA)
 
 %--------------------------------------------
 % PRE-PROCESSING
 %--------------------------------------------
-        U_DxN                       =   BPCA.mdl_2_U_DxN;
-        mdl_1_mu_Dx1                      =   BPCA.mdl_1_mu_Dx1;
-        Q                           =   BPCA.in_1_Q;
-        
-        [D, N]                      =   size(x_Dx1);        %U_DxN is DxD if N>D, otherwise it's DxN
-        xz_Dx1                      =   x_Dx1 - mdl_1_mu_Dx1;     %zero centered, i.e., mean removed
-
+    [D, N]                  =   size(DM2);                  %U_DxP is DxD if N>D, otherwise it's DxN
+   
+    mu_Dx1                  =   PCA.mdl_2_mu_Dx1; 
+    P                       =   PCA.mdl_1_P__1x1;
+    U_DxP                   =   PCA.mdl_3_U__DxP;
+    
+    DM2z                    =   DM2 - repmat(mu_Dx1, 1, N);  %zero centered, i.e., mean removed
 %--------------------------------------------
 % PROCESSING
 %--------------------------------------------      
-    %scalar projection on each of the N dimensions (I'm assuming D > N, so only N eigenvectors)
-        BPCA.tst_1_descriptor_Dx1   =   U_DxN' * xz_Dx1; %projection scalars
-              
-    %reconstruction
-        temp                        =   min(N, Q);
-        BPCA.tst_2_recon_Dx1        =   U_DxN(:,1:temp) * BPCA.tst_1_descriptor_Dx1(1:temp,:) + repmat(mdl_1_mu_Dx1, 1, N); %tst1. reconstructed signal
-
+    descr_PxN               =   U_DxP' * DM2z;                                           %1. descriptors (projection scalars)
+    recon_DxN               =   U_DxP  * descr_PxN + repmat(mu_Dx1, 1, N);               %2. reconstructed signal  
+    error_DxN               =   DM2 - recon_DxN;                                         %3. error vector
+    SNRdB_Nx1               =   UTIL_METRICS_compute_SNRdB       (DM2(:), error_DxN(:)); %4. SNRdB
+    rmse__Nx1               =   UTIL_METRICS_compute_rms_value   (        error_DxN(:)); %5. rmse
 %--------------------------------------------
 % POST-PROCESSING
-%--------------------------------------------        
-%4 part testing results
-    BPCA.tst_3_err_Dx1                =   x_Dx1 - BPCA.tst_2_recon_Dx1;                             %tst2. reconstruction error
-    BPCA.tst_4_SNRdB                  =   UTIL_METRICS_compute_SNRdB(x_Dx1, BPCA.tst_3_err_Dx1);    %tst3. SNRdB
-    BPCA.tst_5_rmse                   =   UTIL_METRICS_compute_rms_value(BPCA.tst_3_err_Dx1);       %tst4. rmse
+%--------------------------------------------      
+    if (strcmp(PCA.in_2_mode, 'trg'))
+        PCA.trg_1_descr_PxN =   descr_PxN;                                                          %1. descriptors (projection scalars)
+        PCA.trg_2_recon_DxN =   recon_DxN;                                                          %2. reconstructed signal  
+        PCA.trg_3_error_DxN =   error_DxN;                                                          %3. error vector
+        PCA.trg_4_SNRdB_1x1 =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.trg_3_error_DxN(:));  %4. SNRdB
+        PCA.trg_5_rmse__1x1 =   UTIL_METRICS_compute_rms_value   (        PCA.trg_3_error_DxN(:));  %5. rmse    
+    elseif (strcmp(PCA.in_2_mode, 'tst'))  
+        PCA.tst_1_descr_PxN =   descr_PxN;                                                          %1. descriptors (projection scalars)
+        PCA.tst_2_recon_DxN =   recon_DxN;                                                          %2. reconstructed signal  
+        PCA.tst_3_error_DxN =   error_DxN;                                                          %3. error vector
+        PCA.tst_4_SNRdB_1x1 =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.tst_3_error_DxN(:));  %4. SNRdB
+        PCA.tst_5_rmse__1x1 =   UTIL_METRICS_compute_rms_value   (        PCA.tst_3_error_DxN(:));  %5. rmse    
+    end
+    

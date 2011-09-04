@@ -26,11 +26,11 @@ function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   RVQ.mdl_2_CB_DxMP;   %1 channel codebook, get it from the red, green or blue channel
+    CB_DxMP                 =   RVQ.mdl_3_CB_DxMP;   %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.P;      %actual number of stages in the codebook
-    M                       =   RVQ.in_2_M;      %number of codevectors/stage
-    sw                      =   RVQ.in_4_sw;     %snippet width
-    sh                      =   RVQ.in_5_sh;     %snippet height
+    M                       =   RVQ.in_4_M;      %number of codevectors/stage
+    sw                      =   RVQ.in_6_sw;     %snippet width
+    sh                      =   RVQ.in_7_sh;     %snippet height
     D                       =   sw*sh;       %dimension of data
     
     XDR                     =   P + ones(P,1);      %i initialize with P+1, the code for early termination
@@ -93,12 +93,12 @@ function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
 %POST-PROCESSING
 %-------------------------------
 %pass out
-    RVQ.tst_2_recon_Dx1    =   xhat_Dx1;
-    RVQ.tst_3_err_Dx1     =   R_Dx1;
-    RVQ.tst_1_descriptor_Px1  =   XDR;
+    RVQ.tst_2_recon_DxN    =   xhat_Dx1;
+    RVQ.tst_3_error_DxN     =   R_Dx1;
+    RVQ.tst_1_descr_PxN  =   XDR;
         
-    RVQ.tst_6_partialP=   partialP;
+    RVQ.tst_6_partP_Nx1=   partialP;
 
-    RVQ.tst_4_SNRdB     =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  R_Dx1);  %for PSNR, you only give error signal
-    RVQ.tst_5_rmse    =   UTIL_METRICS_compute_rms_value   (        R_Dx1);
+    RVQ.tst_4_SNRdB_1x1     =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  R_Dx1);  %for PSNR, you only give error signal
+    RVQ.tst_5_rmse__1x1    =   UTIL_METRICS_compute_rms_value   (        R_Dx1);
     RVQ.tst_PSNRdB    =   max(successive_PSNRdB);

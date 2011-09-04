@@ -23,12 +23,12 @@
     DM2                     =   1:256;          %input data matrix, DxN                       
     [D,N]                   =   size(DM2);      %
     
-    RVQ.in_1_maxP               =   8;              %max number of stages, RVQ.P contains actual number of stages 
-    RVQ.in_2_M                  =   2;              %number of codevectors/stage
-    RVQ.in_3_targetSNR          =   1000;
-    RVQ.in_4_sw                 =   1;              %snippet width
-    RVQ.in_5_sh                 =   1;              %snippet height
-    RVQ.in_6_dir_out            =   '';             %directory where output files are saved
+    RVQ.in_3_maxP               =   8;              %max number of stages, RVQ.P contains actual number of stages 
+    RVQ.in_4_M                  =   2;              %number of codevectors/stage
+    RVQ.in_5_targetSNR          =   1000;
+    RVQ.in_6_sw                 =   1;              %snippet width
+    RVQ.in_7_sh                 =   1;              %snippet height
+    RVQ.in_8_dir_out            =   '';             %directory where output files are saved
 
 %-------------------------------
 % PROCESSING
@@ -38,4 +38,4 @@
                                                                     %codebooks, then runs gen.exe -l to test training vectors and 
                                                                     %saves results in positiveExamples.idx
 
-                                RVQ.mdl_2_CB_DxMP                           %display the codebook
+                                RVQ.mdl_3_CB_DxMP                           %display the codebook

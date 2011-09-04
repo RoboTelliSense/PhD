@@ -57,7 +57,7 @@ close all;
 Np=600;
 Nw=4;
 bWeighting=0;
-pca_Q=16;
+pca_P=16;
 rvq_maxP=8;
 rvq_M=2;
 rvq_targetSNR=1000;
@@ -71,7 +71,7 @@ datasetCode=0;
 
 %#######################################################################
 % function TRK_subspace(  Np, Nw, bWeighting,                     ...
-%                         pca_Q,                               ...
+%                         pca_P,                               ...
 %                         rvq_maxP, rvq_M, rvq_targetSNR,         ...
 %                         tsvq_P, tsvq_M,                         ...
 %                         bUseIPCA , bUseBPCA , bUseRVQ, bUseTSVQ,  ...
@@ -85,7 +85,7 @@ datasetCode=0;
     PARAM.in_Np            =   Np;  %number of particles
     PARAM.in_Nw            =   Nw;  %number of images for training, (training window)
     PARAM.in_bWeighting    =   bWeighting;
-    PARAM.in_pca_Q         =   pca_Q;
+    PARAM.in_pca_P         =   pca_P;
     PARAM.in_rvq_maxP      =   rvq_maxP;
     PARAM.in_rvq_M         =   rvq_M;
     PARAM.in_rvq_targetSNR =   rvq_targetSNR;
@@ -96,7 +96,7 @@ datasetCode=0;
     PARAM.in_bUseRVQ       =   bUseRVQ;
     PARAM.in_bUseTSVQ      =   bUseTSVQ;
     PARAM.in_datasetCode   =   datasetCode;
-    clear Np Nw bWeighting pca_Q rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode  
+    clear Np Nw bWeighting pca_P rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode  
     
     %fixed parameters    
     PARAM.con_errfunc       =   'L2';               %condensation related              
@@ -126,10 +126,10 @@ datasetCode=0;
     
 %2. ALGO
     %data 
-    ALGO.in_0_name          =   'genericPF';
+    ALGO.in_1_name          =   'genericPF';
     ALGO.DM2               	=   [];                                 %1. data 		:	design matrix, one observation per column  
     temp_I_0t1              =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %0t1 means the image intensities are between 0 and 1       
-    ALGO.mdl_1_mu_Dx1     	=   warpimg(temp_I_0t1, INP.ds_4_affineROI_1x6, PARAM.tgt_sz); %data mean
+    ALGO.mdl_2_mu_Dx1     	=   warpimg(temp_I_0t1, INP.ds_4_affineROI_1x6, PARAM.tgt_sz); %data mean
     clear temp_I_0t1; 
     
 	
@@ -146,7 +146,7 @@ datasetCode=0;
 	TRK.trg_RMSEavg_Tx1 	=   zeros(PARAM.trg_T,1);
 	TRK.trg_SNRdB_Tx1 		=   zeros(PARAM.trg_T,1);
 
-    TRK.tst_bestSnippet_0t1 =   ALGO.mdl_1_mu_Dx1;							%4.  testing
+    TRK.tst_bestSnippet_0t1 =   ALGO.mdl_2_mu_Dx1;							%4.  testing
 	TRK.tst_RMSE_Fx1 		=   zeros(INP.ds_9_F,1);
 	TRK.tst_RMSEavg_Fx1 	=   zeros(INP.ds_9_F,1);
 	TRK.tst_SNRdB_Fx1   	=   zeros(INP.ds_9_F,1);
@@ -184,30 +184,33 @@ datasetCode=0;
 %step 2. save algorithm structures	
 	IPCA 					=	ALGO;
     BPCA                   	=   ALGO;
-    RVQ                   	=   ALGO;rmfield(RVQ, 'mdl_1_mu_Dx1');rmfield(RVQ, 'mdl_2_U_DxB');rmfield(RVQ, 'mdl_3_S_Bx1');
-    TSVQ                   	=   ALGO;rmfield(TSVQ,'mdl_1_mu_Dx1');rmfield(TSVQ,'mdl_2_U_DxB');rmfield(TSVQ,'mdl_3_S_Bx1');
+    RVQ                   	=   ALGO;rmfield(RVQ, 'mdl_2_mu_Dx1');rmfield(RVQ, 'mdl_2_U_DxB');rmfield(RVQ, 'mdl_4_S_Bx1');
+    TSVQ                   	=   ALGO;rmfield(TSVQ,'mdl_2_mu_Dx1');rmfield(TSVQ,'mdl_2_U_DxB');rmfield(TSVQ,'mdl_4_S_Bx1');
 
 %step 3. extra stuff for algorithms
     %IPCA
-    IPCA.in_0_name          =   'IPCA';
-    IPCA.in_1_Q             =   PARAM.in_pca_Q;     
+    IPCA.in_1_name          =   'IPCA';
+    IPCA.mdl_1_P__1x1            =   PARAM.in_pca_P;     
    
     %BPCA
-    BPCA.in_0_name          =   'BPCA';
-    BPCA.in_1_Q             =   PARAM.in_pca_Q;         rmfield(PARAM,'in_pca_Q'); %number of eigenvectors to retain  
+    BPCA.in_1_name          =   'BPCA';
+    BPCA.mdl_1_P__1x1            =   PARAM.in_pca_P;         rmfield(PARAM,'in_pca_P'); %number of eigenvectors to retain  
      
     %RVQ
-    RVQ.in_0_name           =   'RVQ';
-    RVQ.in_1_maxP           =   PARAM.in_rvq_maxP;      rmfield(PARAM,'in_rvq_maxP');
-    RVQ.in_2_M              =   PARAM.in_rvq_M;         rmfield(PARAM,'in_rvq_M');
-    RVQ.in_3_targetSNR      =   PARAM.in_rvq_targetSNR; rmfield(PARAM,'in_rvq_targetSNR');
-    RVQ.in_6_dir_out        =   PARAM.dir_out;
-    RVQ.tst_6_partialP      =   -1;
+    RVQ.in_1_name           =   'RVQ';
+    RVQ.in_3_maxP           =   PARAM.in_rvq_maxP;      rmfield(PARAM,'in_rvq_maxP');
+    RVQ.in_4_M              =   PARAM.in_rvq_M;         rmfield(PARAM,'in_rvq_M');
+    RVQ.in_5_targetSNR      =   PARAM.in_rvq_targetSNR; rmfield(PARAM,'in_rvq_targetSNR');
+    RVQ.in_6_sw             =   PARAM.tgt_sw;
+    RVQ.in_7_sh             =   PARAM.tgt_sh;
+    RVQ.in_8_dir_out        =   PARAM.dir_out;
+    RVQ.in_9_rule_stop_decoding =   'monSNR';
+    RVQ.in_2_mode=   false;
     
     %TSVQ
-    TSVQ.in_0_name          =   'TSVQ';
-    TSVQ.in_1_maxP          =   PARAM.in_tsvq_P;       rmfield(PARAM,'in_tsvq_P');
-    TSVQ.in_2_M             =   PARAM.in_tsvq_M;       rmfield(PARAM,'in_tsvq_M');
+    TSVQ.in_1_name          =   'TSVQ';
+    TSVQ.in_3_maxP          =   PARAM.in_tsvq_P;       rmfield(PARAM,'in_tsvq_P');
+    TSVQ.in_4_M             =   PARAM.in_tsvq_M;       rmfield(PARAM,'in_tsvq_M');
     
     
  

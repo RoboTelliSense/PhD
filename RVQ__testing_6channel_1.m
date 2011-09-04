@@ -2,7 +2,7 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
 
     tst_6Dx1                            =   RVQ_FILES_create_posnegImage(tst_Dx1, '', 0, 0);
 
-    mdl_2_CB_DxMP                               =   RVQ.mdl_2_CB_DxMP;
+    mdl_3_CB_DxMP                               =   RVQ.mdl_3_CB_DxMP;
     mdl_CBg_DxMP                               =   RVQ.mdl_CBg_DxMP;
     mdl_CBb_DxMP                               =   RVQ.mdl_CBb_DxMP;
     CBn_r                              =   RVQ.CBn_r;
@@ -10,8 +10,8 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
     CBn_b                              =   RVQ.CBn_b;
     T                                   =   RVQ.T;
     S                                   =   RVQ.S;
-    sw                                  =   RVQ.in_4_sw;
-    sh                                  =   RVQ.in_5_sh;
+    sw                                  =   RVQ.in_6_sw;
+    sh                                  =   RVQ.in_7_sh;
     D                                   =   sw*sh;
     
     SoC                                 =   T + ones(T,1);  %i initialize with T+1 because T+1 is the code for early termination
@@ -31,7 +31,7 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
             %for this stage: go over all codevectors
             for s=1:S 
                 idx                     =   UTIL_xy_to_idx(s, t, S);
-				CB_6Dx1				=	[mdl_2_CB_DxMP(:,idx);mdl_CBg_DxMP(:,idx);mdl_CBb_DxMP(:,idx);CBn_r(:,idx);CBn_g(:,idx);CBn_b(:,idx)];
+				CB_6Dx1				=	[mdl_3_CB_DxMP(:,idx);mdl_CBg_DxMP(:,idx);mdl_CBb_DxMP(:,idx);CBn_r(:,idx);CBn_g(:,idx);CBn_b(:,idx)];
                 e                       =   err_6Dx1-CB_6Dx1;                    
                 d                       =   norm(  e, 2  ); %if e is a matrix, this is largest eigenvalue, if it's a vector, it's L2 norm              
                 if (d<dmin)
@@ -42,7 +42,7 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
             
             %for this stage: temporarily store metrics
             best_idx                   	=   UTIL_xy_to_idx(s_best, t, S);
-			best_CB 					=	[mdl_2_CB_DxMP(:,best_idx);mdl_CBg_DxMP(:,best_idx);mdl_CBb_DxMP(:,best_idx);CBn_r(:,best_idx);CBn_g(:,best_idx);CBn_b(:,best_idx)];
+			best_CB 					=	[mdl_3_CB_DxMP(:,best_idx);mdl_CBg_DxMP(:,best_idx);mdl_CBb_DxMP(:,best_idx);CBn_r(:,best_idx);CBn_g(:,best_idx);CBn_b(:,best_idx)];
             temp_recon_6Dx1				=   recon_6Dx1 + best_CB;    
             temp_err_6Dx1				=   tst_6Dx1 - temp_recon_6Dx1;
             temp_psnr_dB				=   UTIL_METRICS_compute_PSNRdB (255,      temp_err_6Dx1);
@@ -70,12 +70,12 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
 
         
     %pass out
-        RVQ.tst_2_recon_Dx1    =   recon_6Dx1;
-        RVQ.tst_3_err_Dx1      =   err_6Dx1;
-        RVQ.tst_1_descriptor_Px1   =   SoC;
+        RVQ.tst_2_recon_DxN    =   recon_6Dx1;
+        RVQ.tst_3_error_DxN      =   err_6Dx1;
+        RVQ.tst_1_descr_PxN   =   SoC;
         
-        RVQ.tst_6_partialP =   numStagesUsed;
+        RVQ.tst_6_partP_Nx1 =   numStagesUsed;
                 
-        RVQ.tst_4_SNRdB      =   UTIL_METRICS_compute_SNRdB       (tst_6Dx1,  err_6Dx1);  %for PSNR, you only give error signal
-        RVQ.tst_5_rmse     =   UTIL_METRICS_compute_rms_value   (           err_6Dx1);
+        RVQ.tst_4_SNRdB_1x1      =   UTIL_METRICS_compute_SNRdB       (tst_6Dx1,  err_6Dx1);  %for PSNR, you only give error signal
+        RVQ.tst_5_rmse__1x1     =   UTIL_METRICS_compute_rms_value   (           err_6Dx1);
         RVQ.tst_PSNRdB     =   max(PSNR_dB);

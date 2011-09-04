@@ -13,14 +13,14 @@
     sh                      =   41;
     inner_image_dims        =   RVQ_UTIL_computeInnerPixels2(iw, ih, sw, sh);
     
-    RVQ.in_1_maxP               =   8;                                          %number of stages  
-    RVQ.in_2_M                  =   2;                                          %number of codevectors/stage
-    RVQ.in_3_targetSNR          =   1000;
-    RVQ.in_4_sw                 =   sw;                                         %snippet width
-    RVQ.in_5_sh                 =   sh;                                         %snippet height
-    RVQ.in_6_dir_out            =   '';
-    RVQ.trg_1_descriptors_PxN =   [];
-    RVQ.tst_1_descriptor_Px1  =   [];
+    RVQ.in_3_maxP               =   8;                                          %number of stages  
+    RVQ.in_4_M                  =   2;                                          %number of codevectors/stage
+    RVQ.in_5_targetSNR          =   1000;
+    RVQ.in_6_sw                 =   sw;                                         %snippet width
+    RVQ.in_7_sh                 =   sh;                                         %snippet height
+    RVQ.in_8_dir_out            =   '';
+    RVQ.trg_1_descr_PxN =   [];
+    RVQ.tst_1_descr_PxN  =   [];
 
     %test image
     I                       =   imread('referenceRVQ/00472.jpg');
@@ -30,10 +30,10 @@
 %PRE-PROCESSING
 %-----------------------------------
         
-    [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_2_CB_DxMP, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
+    [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_3_CB_DxMP, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
                             =   RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.dcbk'); 
     
-                                DATAMATRIX_display_DM2_as_image(RVQ.mdl_2_CB_DxMP, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
+                                DATAMATRIX_display_DM2_as_image(RVQ.mdl_3_CB_DxMP, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
 
     Isnr                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);
     Istg                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);
@@ -53,9 +53,9 @@
                                 %imshow(snippet);
             RVQ            =   RVQ__testing_grayscale(double(snippet(:)), RVQ);
             Isnr(y_idx, x_idx)  ...
-                            =   RVQ.tst_4_SNRdB;
+                            =   RVQ.tst_4_SNRdB_1x1;
             Istg(y_idx, x_idx)  ...
-                            =   RVQ.tst_6_partialP;
+                            =   RVQ.tst_6_partP_Nx1;
                                 sprintf('%d %d:', x, y)
             x_idx           =   x_idx + 1;
         end

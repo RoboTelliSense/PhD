@@ -1,12 +1,20 @@
 %> @file bPCA_1_train.m
 %> @brief Creates PCA eigenvectors
 %>
+%> assumption
+%> ----------
+%> D > N > P
+%>
+%> description
+%> -----------
 %> N                        :   number of training vectors
 %> D                        :   dimensionality of training vectors
+%> P                        :   number of eigenvectors to keep
+%>
 %> U_DxN                    :   eigenvectors for AA^T.  If N<D which I assume will normally be the 
 %>                              case, then U is DxN, otherwise, it will be DxD
-%> W_NxN                    :   eigenvectors for A^TA 
-%> S                        :   eigenvalues
+%> S_NxN                    :   eigenvalues
+%> V_NxN                    :   eigenvectors for A^TA 
 %> DM                       :   NxD design matrix, has training vectors, i.e. input vectors are in rows
 %> DM2                      :   DxN design matrix, has training vectors, i.e. input vectors are in cols
 %> DM2z                     :   zero centered, i.e., mean removed
@@ -25,6 +33,7 @@ function PCA = bPCA_1_train(DM2, PCA)
     [D, N]                  =   size(DM2);
     
     mu_Dx1                  =   mean(DM2, 2);
+    P                       =   PCA.mdl_1_P__1x1;
     DM2z         			=   DM2  - repmat(mu_Dx1, 1, N); %repeat N columns because there are N data points and there's one data point per column
 
 %------------------------------------------
@@ -37,18 +46,19 @@ function PCA = bPCA_1_train(DM2, PCA)
                                                 %svd(X,0) produces the "economy size" decomposition. 
                                                 %If X is DxN with D > N, then svd computes only the 
                                                 %first N columns of U and S is NxN. 
-%4 part model    
-    PCA.mdl_1_mu_Dx1            =	mu_Dx1;         %4 part model: 1. mean
-    PCA.mdl_2_U_DxN             =	U;              %4 part model: 2. eigenvectors of AA^T
-	PCA.mdl_3_S_NxN             =	S;              %4 part model: 3. squared eigenvalues
-	PCA.mdl_4_V_NxN             =	V;              %4 part model: 4. eigenvectors of A^TA
+        keep                    =   1:min(min(N, P),D);
+        
                                                
 %------------------------------------------
 % POST-PROCESSING
 %------------------------------------------
-%5 part training output
-    PCA.trg_1_descriptors_NxN  	=   PCA.mdl_2_U_DxN' * DM2z;                                            %trg1. projection scalars
-    PCA.trg_2_recon_DxN       	=   PCA.mdl_2_U_DxN * PCA.trg_1_descriptors_NxN + repmat(mu_Dx1, 1, N); %trg2. reconstructed signal  
-    PCA.trg_3_err_DxN         	=   PCA.trg_2_recon_DxN - DM2;                                          %trg3. error vector
-    PCA.trg_4_SNRdB             =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.trg_3_err_DxN(:));    %trg4. SNRdB
-    PCA.trg_5_rmse              =   UTIL_METRICS_compute_rms_value   (        PCA.trg_3_err_DxN(:));    %trg5. rmse
+%save model    
+    PCA.mdl_2_mu_Dx1        =	mu_Dx1;                     %1. mean
+    PCA.mdl_3_U__DxP        =	U(:,keep);                  %2. eigenvectors of AA^T
+	PCA.mdl_4_S__PxP        =	S(keep,keep);               %4. squared eigenvalues
+	PCA.mdl_5_V__PxP        =	V(keep,keep);               %5. eigenvectors of A^TA
+    
+%test training examples   
+    PCA.in_2_mode           =   'trg';
+    PCA                     =   bPCA_3_test(DM2, PCA);    
+    PCA.in_2_mode           =   'tst';

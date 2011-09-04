@@ -40,12 +40,12 @@ function RVQ = RVQ__training(DM2, RVQ)
 %INITIALIZATIONS
 %---------------
     DM2_u8                  =   uint8(DM2);     %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
-    M                       =   RVQ.in_2_M;          %number of templates per stage
-    maxP                    =   RVQ.in_1_maxP;       %max number of stages
-    sw                      =   RVQ.in_4_sw;         %snippet width
-    sh                      =   RVQ.in_5_sh;         %snippet height
-    targetSNR               =   RVQ.in_3_targetSNR;  %desired SNR
-    dir_out                 =   RVQ.in_6_dir_out;    %directory to store results in
+    M                       =   RVQ.in_4_M;          %number of templates per stage
+    maxP                    =   RVQ.in_3_maxP;       %max number of stages
+    sw                      =   RVQ.in_6_sw;         %snippet width
+    sh                      =   RVQ.in_7_sh;         %snippet height
+    targetSNR               =   RVQ.in_5_targetSNR;  %desired SNR
+    dir_out                 =   RVQ.in_8_dir_out;    %directory to store results in
 
 %!! attention: these should be parameters but I'm fixing them !!  
     iFlag                   =   0.0005;
@@ -99,11 +99,13 @@ function RVQ = RVQ__training(DM2, RVQ)
 %-------------------
 %POST-PROCESSING
 %-------------------
-%read back results
+%save model
     %decoder codebook to get actual stages, codebooks
-    [RVQ.mdl_3_P, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  ...
+    [RVQ.mdl_1_P__1x1, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  ...
                             =  RVQ_FILES_read_dcbk_file        (cfn_dcbk); 
-    RVQ.mdl_2_CB_DxMP       =   CBr_DxMP;     %CB: single channel codebook
+                        
+                        
+    RVQ.mdl_3_CB_DxMP       =   CBr_DxMP;     %CB: single channel codebook
     
     %error checking
     if (M ~= M_check || sw ~= sw_check || sh ~= sh_check)
@@ -111,12 +113,20 @@ function RVQ = RVQ__training(DM2, RVQ)
     end   
 
 %test training examples
-    %method 1: my matlab code
-    %same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
-    %such as dataset 4 created by DATAMATRIX_create_random_DM2, probably because the max value there is >255
-    RVQ.rule_stop_decoding              =   'full_stage';
-    RVQ                                 =   UTIL_METRICS_compute_training_error_RVQ_style(DM2, RVQ); 
+    RVQ.in_2_mode           =   'trg';
+    RVQ                     =   RVQ__testing_grayscale(DM2, RVQ); %my matlab code for gen.exe -l
+    RVQ.in_2_mode           =   'tst';
     
+    
+    
+
+    
+    
+    
+    
+    
+    
+
     %RVQ.trg_SNRdB_file                 =   RVQ_FILES_read_dSNR_from_genstat_file(cfn_gentxt);  %use this line if you want to see what training 
                                             %SNR RVQ reports.  i checked and it uses all 6 channels.  if i use all 6 channels, 
                                             %then my reported value and this value reported by RVQ are exactly the same.
@@ -142,7 +152,7 @@ function RVQ = RVQ__training(DM2, RVQ)
 %             system(['./RVQ__training_gen16.linux' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);        
 %         end
 %     end
-%     RVQ.trg_1_descriptors_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxP, M, true);    %notice that I do not use actualP but maxP
+%     RVQ.trg_1_descr_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxP, M, true);    %notice that I do not use actualP but maxP
 
 
 
