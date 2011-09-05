@@ -67,7 +67,7 @@ bUseIPCA=1;
 bUseBPCA=1;   
 bUseRVQ=1;
 bUseTSVQ=1;
-datasetCode=0;
+datasetCode=1;
 
 %#######################################################################
 % function TRK_subspace(  Np, Nw, bWeighting,                     ...
@@ -80,31 +80,33 @@ datasetCode=0;
 %>-----------------------------------------
 %PRE-PROCESSING
 %>-----------------------------------------
-%PARAM 
+%1. PARAMETERS
     %variable parameters (from command line)
-    PARAM.in_Np            =   Np;  %number of particles
-    PARAM.in_Nw            =   Nw;  %number of images for training, (training window)
-    PARAM.in_bWeighting    =   bWeighting;
-    PARAM.in_pca_P         =   pca_P;
-    PARAM.in_rvq_maxP      =   rvq_maxP;
-    PARAM.in_rvq_M         =   rvq_M;
-    PARAM.in_rvq_targetSNR =   rvq_targetSNR;
-    PARAM.in_tsvq_P        =   tsvq_P;
-    PARAM.in_tsvq_M        =   tsvq_M;
-    PARAM.in_bUseIPCA      =   bUseIPCA;
-    PARAM.in_bUseBPCA      =   bUseBPCA;
-    PARAM.in_bUseRVQ       =   bUseRVQ;
-    PARAM.in_bUseTSVQ      =   bUseTSVQ;
-    PARAM.in_datasetCode   =   datasetCode;
-    clear Np Nw bWeighting pca_P rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode  
+    PARAM.in_Np             =   Np;             %1. number of particles
+    PARAM.in_Nw             =   Nw;             %2. number of images for training, (training window)
+    PARAM.in_bWeighting     =   bWeighting;     %3. weighting of input data points 
+    PARAM.in_pca_P          =   pca_P;          %4. PCA: number of eigenvectors to retain for PCA
+    PARAM.in_rvq_maxP       =   rvq_maxP;       %5. RVQ: max stages
+    PARAM.in_rvq_M          =   rvq_M;          %6. RVQ: templates per stage
+    PARAM.in_rvq_targetSNR  =   rvq_targetSNR;  %7. RVQ: target SNR
+    PARAM.in_tsvq_P         =   tsvq_P;         %8. TSVQ: max stages
+    PARAM.in_tsvq_M         =   tsvq_M;         %9. TSVQ: templates per stage, 2 for binary TSVQ
+    PARAM.in_bUseIPCA       =   bUseIPCA;       %10. flag    
+    PARAM.in_bUseBPCA       =   bUseBPCA;       %11. flag
+    PARAM.in_bUseRVQ        =   bUseRVQ;        %12. flag
+    PARAM.in_bUseTSVQ       =   bUseTSVQ;       %13. flag
+    PARAM.in_datasetCode    =   datasetCode;    %14. dataset code
+  
+    %clear all 14 parameters passed in to reduce clutter
+    clear Np Nw bWeighting pca_P rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode    
     
     %fixed parameters    
     PARAM.con_errfunc       =   'L2';               %condensation related              
-    PARAM.con_reseig            =   0;
+    PARAM.con_reseig        =   0;
 	PARAM.tgt_warped_sw_sh  =   32;                 %target related, note 1 less than sw and sh which I had to increase by 1 for RVQ
     PARAM.tgt_sw            =   33;
-    PARAM.tgt_sh            =   33;
-    PARAM.tgt_sz            =   [PARAM.tgt_sh PARAM.tgt_sw];  % 					combine two above
+    PARAM.tgt_sh            =   33;    
+    PARAM.tgt_sz            =   [PARAM.tgt_sh PARAM.tgt_sw];  %combine two above
     PARAM.tgt_max_signal_val=   255;
 	PARAM.trg_B             =   5;                  %training related, batch size for how many images to use for training
 	PARAM.trg_frame_idxs    =   [];                 %"
@@ -114,25 +116,51 @@ datasetCode=0;
 	PARAM.plot_num_rows  	=   5;                  %"
 	PARAM.plot_num_cols  	=   4;                  %"
 	PARAM.plot_title_fontsz =   8;                  %", fontsize
-   
-%2. INP
-    INP                    =    TRK_read_input(PARAM.in_datasetCode, PARAM.tgt_warped_sw_sh); 
 
-    
+%2. INPUT
+    INP                     =    TRK_read_input(PARAM.in_datasetCode, PARAM.tgt_warped_sw_sh); 
+
     %back to PARAM based on input
     PARAM                   =   TRK_fileManagement(PARAM, INP);  %filenames
     PARAM.trg_T             =	round(INP.ds_9_F/PARAM.trg_B); %number of times training occurs
     
-    
-%2. ALGO
-    %data 
-    ALGO.in_1_name          =   'genericPF';
-    ALGO.DM2               	=   [];                                 %1. data 		:	design matrix, one observation per column  
-    temp_I_0t1              =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %0t1 means the image intensities are between 0 and 1       
-    ALGO.mdl_2_mu_Dx1     	=   warpimg(temp_I_0t1, INP.ds_4_affineROI_1x6, PARAM.tgt_sz); %data mean
-    clear temp_I_0t1; 
+%3. ALGORITHMS
+    %IPCA
+    IPCA.in_1_name          =   'IPCA';
+    IPCA.in_2_mode          =   'tst';
+    IPCA.mdl_1_P__1x1       =   PARAM.in_pca_P;      %number of eigenvectors to retain    
+   
+    %BPCA
+    BPCA.in_1_name          =   'BPCA';
+    BPCA.in_2_mode          =   'tst';
+    BPCA.mdl_1_P__1x1       =   PARAM.in_pca_P;    
+     
+    %RVQ
+    RVQ.in_1_name           =   'RVQ';
+    RVQ.in_2_mode           =   'tst';
+    RVQ.in_3_maxP           =   PARAM.in_rvq_maxP;
+    RVQ.in_4_M              =   PARAM.in_rvq_M;         
+    RVQ.in_5_targetSNR      =   PARAM.in_rvq_targetSNR;
+    RVQ.in_6_sw             =   PARAM.tgt_sw;
+    RVQ.in_7_sh             =   PARAM.tgt_sh;
+    RVQ.in_8_dir_out        =   PARAM.dir_out;
+    RVQ.in_9_rule_stop_decoding =   'monSNR';
+
+    %TSVQ
+    TSVQ.in_1_name          =   'TSVQ';
+    TSVQ.in_2_mode          =   'tst';
+    TSVQ.in_3_maxP          =   PARAM.in_tsvq_P;
+    TSVQ.in_4_M             =   PARAM.in_tsvq_M;
+
+    %GENERIC
+    tempALGO.in_1_name      =   'genericPF';
+    tempALGO.DM2            =   [];                                 %1. data 		:	design matrix, one observation per column  
+    first_I_0t1             =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %0t1 means the image intensities are between 0 and 1       
+    tempALGO.mdl_2_mu_Dx1   =   warpimg(first_I_0t1, INP.ds_4_affineROI_1x6, PARAM.tgt_sz); %data mean
+    clear first_I_0t1; 
     
 	
+    
 %3. structure #3: tracking, template for trkIPCA, trkBPCA, trkRVQ, trkTSVQ
 	%feature points
     TRK.fp_1_gt   			=   cat(3, INP.gt_3_initial_fp + repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), INP.gt_1_fp(:,:,1)); %1. ground truth
@@ -140,13 +168,13 @@ datasetCode=0;
 	TRK.fp_3_err  			=   zeros(1,INP.gt_2_num_fp);    	%1c. feature points: error
     TRK.fp_4_err_avg        =   zeros(1,INP.gt_2_num_fp);       %1d. feature points: average error
     
-    TRK.tgt_best_affineROI_1x6 	=   INP.ds_4_affineROI_1x6; 
+    TRK.affineROI_1x6 	=   INP.ds_4_affineROI_1x6; 
    
 	TRK.trg_RMSE_Tx1 		=   zeros(PARAM.trg_T,1);                  %3.  training
 	TRK.trg_RMSEavg_Tx1 	=   zeros(PARAM.trg_T,1);
 	TRK.trg_SNRdB_Tx1 		=   zeros(PARAM.trg_T,1);
 
-    TRK.tst_bestSnippet_0t1 =   ALGO.mdl_2_mu_Dx1;							%4.  testing
+    TRK.bestCandidate_0t1_shxsw =   tempALGO.mdl_2_mu_Dx1;							%4.  testing
 	TRK.tst_RMSE_Fx1 		=   zeros(INP.ds_9_F,1);
 	TRK.tst_RMSEavg_Fx1 	=   zeros(INP.ds_9_F,1);
 	TRK.tst_SNRdB_Fx1   	=   zeros(INP.ds_9_F,1);
@@ -158,61 +186,22 @@ datasetCode=0;
 
 
 %>-----------------------------------------
-%PRE-PROCESSING: bootstrapping
+%PRE-PROCESSING: generic particle filter for B frames for bootstrapping
 %>-----------------------------------------
-%step 1. B frames of tracking (generic particle filter)
+%step 1.
     for f = 1:PARAM.trg_B
-        %strings
-       
-        %PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
+        %strings  
+        PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
-        
-        %input
-        I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256;
-        
-        %operation
-        [ALGO TRK]          =   TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK);		
+        I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256; %input
+        [tempALGO TRK]      =   TRK_condensation(f, INP, PARAM, I_0t1, tempALGO, TRK);		
     end	   
 
-%step 2. save tracking structures	
+%step 2. save structures	
 	trkIPCA					=	TRK;
 	trkBPCA					=	TRK;
 	trkRVQ					=	TRK;
 	trkTSVQ					=	TRK;
-
-    
-%step 2. save algorithm structures	
-	IPCA 					=	ALGO;
-    BPCA                   	=   ALGO;
-    RVQ                   	=   ALGO;rmfield(RVQ, 'mdl_2_mu_Dx1');rmfield(RVQ, 'mdl_2_U_DxB');rmfield(RVQ, 'mdl_4_S_Bx1');
-    TSVQ                   	=   ALGO;rmfield(TSVQ,'mdl_2_mu_Dx1');rmfield(TSVQ,'mdl_2_U_DxB');rmfield(TSVQ,'mdl_4_S_Bx1');
-
-%step 3. extra stuff for algorithms
-    %IPCA
-    IPCA.in_1_name          =   'IPCA';
-    IPCA.mdl_1_P__1x1            =   PARAM.in_pca_P;     
-   
-    %BPCA
-    BPCA.in_1_name          =   'BPCA';
-    BPCA.mdl_1_P__1x1            =   PARAM.in_pca_P;         rmfield(PARAM,'in_pca_P'); %number of eigenvectors to retain  
-     
-    %RVQ
-    RVQ.in_1_name           =   'RVQ';
-    RVQ.in_3_maxP           =   PARAM.in_rvq_maxP;      rmfield(PARAM,'in_rvq_maxP');
-    RVQ.in_4_M              =   PARAM.in_rvq_M;         rmfield(PARAM,'in_rvq_M');
-    RVQ.in_5_targetSNR      =   PARAM.in_rvq_targetSNR; rmfield(PARAM,'in_rvq_targetSNR');
-    RVQ.in_6_sw             =   PARAM.tgt_sw;
-    RVQ.in_7_sh             =   PARAM.tgt_sh;
-    RVQ.in_8_dir_out        =   PARAM.dir_out;
-    RVQ.in_9_rule_stop_decoding =   'monSNR';
-    RVQ.in_2_mode=   false;
-    
-    %TSVQ
-    TSVQ.in_1_name          =   'TSVQ';
-    TSVQ.in_3_maxP          =   PARAM.in_tsvq_P;       rmfield(PARAM,'in_tsvq_P');
-    TSVQ.in_4_M             =   PARAM.in_tsvq_M;       rmfield(PARAM,'in_tsvq_M');
-    
-    
  
 %step 5. 1 training
     PARAM.trg_frame_idxs           =   [PARAM.trg_frame_idxs, f];
@@ -223,9 +212,6 @@ datasetCode=0;
 
     disp('initialization complete');
     
-    %PARAM.minopt         =   optimset;  %pre-defined in Matlab for optimization functions
-    %PARAM.minopt.MaxIter =   25; 
-    %PARAM.minopt.Display =   'off';                            
 %-----------------------------------------
 %PROCESSING
 %-----------------------------------------5
@@ -238,10 +224,10 @@ datasetCode=0;
         I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256;
         
 		%testing: condensation
-		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, PARAM, INP.rn_1_samples, INP.rn_2_cdf, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, PARAM);
-		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, PARAM, INP.rn_1_samples, INP.rn_2_cdf, 2); end
-		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  PARAM, INP.rn_1_samples, INP.rn_2_cdf, 3); end
-		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, PARAM, INP.rn_1_samples, INP.rn_2_cdf, 4); end
+		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, PARAM, INP.random_affine_maxFx6xNp, INP.rn_2_cdf_maxFxNp, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, PARAM);
+		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, PARAM, INP.random_affine_maxFx6xNp, INP.rn_2_cdf_maxFxNp, 2); end
+		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  PARAM, INP.random_affine_maxFx6xNp, INP.rn_2_cdf_maxFxNp, 3); end
+		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, PARAM, INP.random_affine_maxFx6xNp, INP.rn_2_cdf_maxFxNp, 4); end
 	
 		%training (update model) every few frames
         if (mod(f,PARAM.trg_B)==0) %i.e.train every batchsize images

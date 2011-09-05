@@ -94,8 +94,8 @@ function INP = TRK_read_input(code, tgt_warped_sw_sh)
     INP.gt_3_initial_fp    	=   INP.ds_4_affineROI_1x6([3,4,1;5,6,2]) * [INP.gt_1_fp(:,:,1); ones(1,INP.gt_2_num_fp)];
     
     %random input
-    INP.rn_1_samples        =   RandomData_sample;          %pre-stored random numbers to ensure repeatability  
-    INP.rn_2_cdf            =   RandomData_cdf;
+    INP.random_affine_maxFx6xNp        =   RandomData_sample;          %pre-stored random numbers to ensure repeatability  
+    INP.rn_2_cdf_maxFxNp            =   RandomData_cdf;
     
     clear data truepts RandomData_sample RandomData_cdf;
     
