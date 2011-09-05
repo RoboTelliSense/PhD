@@ -3,30 +3,30 @@
 %>
 %> Description of options
 %> ----------------------
-%> affineROI_1x6            :   [px, py, sx, sy, theta]; The location of the target in the first frame.
+%> affROI_1x6            :   [px, py, sx, sy, theta]; The location of the target in the first frame.
 %> px, py                   :   Coordinates of the centre of the box.
 %> sx, sy                   :   Size of the box in the x (width) and y (height) dimensions, before rotation.
 %> theta                    :   Rotation angle of the box
 %> Np                       :   Number of samples used in the condensation, I normally use 600.
 %>                              Increasing this will likely improve the results, but make the tracker slower.
-%> condenssig               :   The standard deviation of the observation likelihood, e.g. 0.01
+%> con_normalizer               :   The standard deviation of the observation likelihood, e.g. 0.01
 %> ff                       :   Forgetting factor, as described in the paper.  When doing the incremental update, 
 %>                              1 means remember all past INP.ds_8_I_HxWxF, and 0 means remeber none of it.
 %> batchsize                :   How often to update the eigenbasis.  We've used this value (update every 5th frame) 
 %>                              fairly consistently, so it most likely won't need to be changed.  A smaller batchsize 
 %>                              means more frequent updates, making it quicker to model changes in appearance, but also 
 %>                              a little more prone to drift, and require more computation.
-%> affineROIvar_1x6     	:   Standard deviations of the dynamics distribution, that is how much we expect the target
+%> affROIvar_1x6     	:   Standard deviations of the dynamics distribution, that is how much we expect the target
 %>                              object might move from one frame to the next.  The meaning of each number is as follows:
-%>                              affineROIvar_1x6(1) = x translation (pixels, mean is 0)
-%>                              affineROIvar_1x6(2) = y translation (pixels, mean is 0)
-%>                              affineROIvar_1x6(3) = rotation angle (radians, mean is 0)
-%>                              affineROIvar_1x6(4) = x scaling (pixels, mean is 1)
-%>                              affineROIvar_1x6(5) = y scaling (pixels, mean is 1)
-%>                              affineROIvar_1x6(6) = scaling angle (radians, mean is 0)
+%>                              affROIvar_1x6(1) = x translation (pixels, mean is 0)
+%>                              affROIvar_1x6(2) = y translation (pixels, mean is 0)
+%>                              affROIvar_1x6(3) = rotation angle (radians, mean is 0)
+%>                              affROIvar_1x6(4) = x scaling (pixels, mean is 1)
+%>                              affROIvar_1x6(5) = y scaling (pixels, mean is 1)
+%>                              affROIvar_1x6(6) = scaling angle (radians, mean is 0)
 %> sw, sh                   :   snippet width, height
 %> tmplsize                 :   snippet size, the resolution at which the tracking window is sampled, in this case 
-%>                              sw pixels by sh pixels.  If your initial window (given by affineROI_1x6) is very large you may need to increase this.
+%>                              sw pixels by sh pixels.  If your initial window (given by affROI_1x6) is very large you may need to increase this.
 %> maxbasis                 :   The number of basis vectors to keep in the learned apperance model.
 %> I_0t1                    :   Input image scaled between 0 and 1
 %> B                        :   training update interval
@@ -153,10 +153,10 @@ datasetCode=1;
     TSVQ.in_4_M             =   PARAM.in_tsvq_M;
 
     %GENERIC
-    tempALGO.in_1_name      =   'genericPF';
-    tempALGO.DM2            =   [];                                 %1. data 		:	design matrix, one observation per column  
+    genPF.in_1_name         =   'genericPF';                    %generic particle filter
+    genPF.DM2               =   [];                         %1. data 		:	design matrix, one observation per column  
     first_I_0t1             =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %0t1 means the image intensities are between 0 and 1       
-    tempALGO.mdl_2_mu_Dx1   =   warpimg(first_I_0t1, INP.ds_4_affineROI_1x6, PARAM.tgt_sz); %data mean
+    genPF.mdl_2_mu_Dx1      =   warpimg(first_I_0t1, INP.ds_4_affROI_1x6, PARAM.tgt_sz); %data mean
     clear first_I_0t1; 
     
 	
@@ -168,15 +168,15 @@ datasetCode=1;
 	TRK.fp_3_err  			=   zeros(1,INP.gt_2_num_fp);    	%1c. feature points: error
     TRK.fp_4_err_avg        =   zeros(1,INP.gt_2_num_fp);       %1d. feature points: average error
     
-    TRK.affineROI_1x6 	=   INP.ds_4_affineROI_1x6; 
+    TRK.affROI_1x6          =   INP.ds_4_affROI_1x6; 
    
 	TRK.trg_RMSE_Tx1 		=   zeros(PARAM.trg_T,1);                  %3.  training
 	TRK.trg_RMSEavg_Tx1 	=   zeros(PARAM.trg_T,1);
 	TRK.trg_SNRdB_Tx1 		=   zeros(PARAM.trg_T,1);
 
-    TRK.bestCandidate_0t1_shxsw =   tempALGO.mdl_2_mu_Dx1;							%4.  testing
-	TRK.tst_RMSE_Fx1 		=   zeros(INP.ds_9_F,1);
-	TRK.tst_RMSEavg_Fx1 	=   zeros(INP.ds_9_F,1);
+    TRK.bestCandidate_0t1_shxsw =   genPF.mdl_2_mu_Dx1;							%4.  testing
+	TRK.out_5_rmse__Fx1 		=   zeros(INP.ds_9_F,1);
+	TRK.out_6_armse_Fx1 	=   zeros(INP.ds_9_F,1);
 	TRK.tst_SNRdB_Fx1   	=   zeros(INP.ds_9_F,1);
 
 %4. %timing   
@@ -194,7 +194,7 @@ datasetCode=1;
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
         I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256; %input
-        [tempALGO TRK]      =   TRK_condensation(f, INP, PARAM, I_0t1, tempALGO, TRK);		
+        [ALGO TRK]          =   TRK_condensation(f, INP, PARAM, I_0t1, genPF, TRK);		
     end	   
 
 %step 2. save structures	
@@ -224,10 +224,10 @@ datasetCode=1;
         I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256;
         
 		%testing: condensation
-		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, PARAM, INP.random_affine_maxFx6xNp, INP.rn_2_cdf_maxFxNp, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, PARAM);
-		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, PARAM, INP.random_affine_maxFx6xNp, INP.rn_2_cdf_maxFxNp, 2); end
-		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  PARAM, INP.random_affine_maxFx6xNp, INP.rn_2_cdf_maxFxNp, 3); end
-		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, PARAM, INP.random_affine_maxFx6xNp, INP.rn_2_cdf_maxFxNp, 4); end
+		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, PARAM, INP.rand_unitvar_maxFx6xNp, INP.rand_cdf_maxFxNp, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, PARAM);
+		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, PARAM, INP.rand_unitvar_maxFx6xNp, INP.rand_cdf_maxFxNp, 2); end
+		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  PARAM, INP.rand_unitvar_maxFx6xNp, INP.rand_cdf_maxFxNp, 3); end
+		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, PARAM, INP.rand_unitvar_maxFx6xNp, INP.rand_cdf_maxFxNp, 4); end
 	
 		%training (update model) every few frames
         if (mod(f,PARAM.trg_B)==0) %i.e.train every batchsize images

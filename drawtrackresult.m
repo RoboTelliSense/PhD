@@ -11,7 +11,7 @@ function drawopt = drawtrackresult(drawopt, fno, frame, tmpl, param, pts)
 %   frame(fh,fw) : current frame
 %   tmpl.mean(th,tw) : mean image
 %       .basis(tN,nb) : basis
-%   param.tgt_best_affineROI_1x6 : current estimate
+%   param.tgt_best_affROI_1x6 : current estimate
 %        .bestimg : warped image
 %       [.err,mask] : error, mask image
 %       [.param,conf] : condensation
@@ -58,7 +58,7 @@ if (exist('pts'))
   if (size(pts,3) > 2)  plot(pts(1,:,3),pts(2,:,3),'rx','MarkerSize',10);  end;
 end
 text(5, 18, num2str(fno), 'Color','y', 'FontWeight','bold', 'FontSize',18);
-UTIL_drawQuadFrom6affine_1x6(sz, param.tgt_best_affineROI_1x6, 'Color','r', 'LineWidth',2.5);
+UTIL_drawQuadFrom6affine_1x6(sz, param.tgt_best_affROI_1x6, 'Color','r', 'LineWidth',2.5);
 axis equal tight off; hold off;
 
 if (isfield(curaxis,'basis'))

@@ -6,7 +6,7 @@ function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_dr
                                         
                                         
                                         
-            trkIPCA.FP_2_est(:,:,f)     =   trkIPCA.tgt_best_affineROI_1x6([3,4,1;5,6,2])*[INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
+            trkIPCA.FP_2_est(:,:,f)     =   trkIPCA.tgt_best_affROI_1x6([3,4,1;5,6,2])*[INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
             trkIPCA.FP_1_gt                 =   cat(3, INP.gt_3_initial_fp+repmat(sz'/2,[1,INP.gt_2_num_fp]), GT(:,:,f), trkIPCA.FP_2_est(:,:,f));
             PCAidx                  =   find(trkIPCA.FP_1_gt(1,:,2) > 0);
             if (length(PCAidx) > 0)
@@ -44,7 +44,7 @@ function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_dr
             %                            set(h1, 'Position', [10, 90, h1_pos(3), h1_pos(4)]);
 
         if (bUseBPCA )
-            BPCA.FP_2_est(:,:,f)      =   trkBPCA.tgt_best_affineROI_1x6([3,4,1;5,6,2])*[INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
+            BPCA.FP_2_est(:,:,f)      =   trkBPCA.tgt_best_affROI_1x6([3,4,1;5,6,2])*[INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
             trkBPCA.FP_1_gt                  =   cat(3, INP.gt_3_initial_fp+repmat(sz'/2,[1,INP.gt_2_num_fp]), GT(:,:,f), BPCA.FP_2_est(:,:,f));
             bPCAidx                  =   find(trkBPCA.FP_1_gt(1,:,2) > 0);
             if (length(bPCAidx) > 0)
@@ -72,7 +72,7 @@ function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_dr
         
                
         if (bUseTSVQ)
-            TSVQ.FP_2_est(:,:,f)      =   trkTSVQ.tgt_best_affineROI_1x6([3,4,1;5,6,2])*[INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
+            TSVQ.FP_2_est(:,:,f)      =   trkTSVQ.tgt_best_affROI_1x6([3,4,1;5,6,2])*[INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
             trkTSVQ.FP_1_gt                  =   cat(3, INP.gt_3_initial_fp+repmat(sz'/2,[1,INP.gt_2_num_fp]), GT(:,:,f), TSVQ.FP_2_est(:,:,f));
             TSVQidx                  =   find(trkTSVQ.FP_1_gt(1,:,2) > 0);
             if (length(TSVQidx) > 0)
@@ -101,7 +101,7 @@ function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_dr
         
         
         if (bUseRVQ)
-            RVQ.FP_2_est(:,:,f)      =   trkRVQ.tgt_best_affineROI_1x6([3,4,1;5,6,2])*[INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
+            RVQ.FP_2_est(:,:,f)      =   trkRVQ.tgt_best_affROI_1x6([3,4,1;5,6,2])*[INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
             trkRVQ.FP_1_gt                  =   cat(3, INP.gt_3_initial_fp+repmat(sz'/2,[1,INP.gt_2_num_fp]), GT(:,:,f), RVQ.FP_2_est(:,:,f));
             RVQidx                  =   find(trkRVQ.FP_1_gt(1,:,2) > 0);
             if (length(RVQidx) > 0)

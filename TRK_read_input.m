@@ -3,13 +3,13 @@
 %>
 %> Options for tracking
 %> --------------------
-%> affineROI_1x6            :   Initial affine parameters.  The affine ROI is initialized by selecting a bounding box
+%> affROI_1x6            :   Initial affine parameters.  The affine ROI is initialized by selecting a bounding box
 %>                              around the target in a software like IrfanView.  This captures the top left x and y 
 %>                              coordinates of the bounding box.  However, the code is based on the center of the 
 %>                              bounding box, called an affine ROI, so convert to center
-%> condenssig               :   
+%> con_normalizer               :   
 %> ff                       :   forgetting factor for incremental SVD
-%> affineROIvar_1x6         :   variance on affine parameters
+%> affROIvar_1x6         :   variance on affine parameters
 %> Copyright (c) Salman Aslam.  All rights reserved.
 %> Date created : Aug 17, 2011
 %> Date modified: Aug 17, 2011
@@ -41,29 +41,29 @@ function INP = TRK_read_input(code, tgt_warped_sw_sh)
     
     %get dataset affine ROI parameters  
     switch (INP.ds_2_name)
-        case 'test';        p=[133 127 110 130 -0.08]; condenssig=0.25;   ff=1.00;   affineROIvar_1x6=[9  9  .05  .05  .005  .001]; 
-        case 'Dudek';       p=[133 127 110 130 -0.08]; condenssig=0.25;   ff=1.00;   affineROIvar_1x6=[9  9  .05  .05  .005  .001]; 
-        case 'davidin300';  p=[129 67  62  78  -0.02]; condenssig=0.75;   ff=0.99;   affineROIvar_1x6=[5  5  .01  .02  .002  .001]; 
-        case 'sylv';        p=[118 54  53  53  -0.20]; condenssig=0.75;   ff=0.95;   affineROIvar_1x6=[7  7  .01  .02  .002  .001]; 
-        case 'trellis70';   p=[178 76  45  49   0   ]; condenssig=0.20;   ff=0.95;   affineROIvar_1x6=[4  4  .01  .01  .002  .001]; 
-        case 'fish';        p=[134 62  62  80   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[7  7  .01  .01  .002  .001]; 
-        case 'car4';        p=[145 105 200 150  0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[5  5  .025 .01  .002  .001];
-        case 'car11';       p=[74  128 30  25   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[5  5  .01  .01  .001  .001]; 
-        case 'PETS2001rcf'; p=[414 341 13  37   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[1  1  .01  .01  .001  .001]; 
-        case 'PETS2009';    p=[333 217 9   40   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[3  3  .05  .05  .002  .002]; 
-        case 'AVSS2007_1';  p=[69  232 43  40   0.07]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[3  3  .05  .05  .002  .002]; 
-        case 'AVSS2007_2';  p=[60  234 37  37   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[3  3  .05  .05  .002  .002]; 
-        case 'AVSS2007_3';  p=[213 67  14  14   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[2  2  .05  .05  .002  .002]; 
-        case 'motinas_fast';p=[474 60  43  67   0   ]; condenssig=0.20;   ff=1.00;   affineROIvar_1x6=[15 15 .05  .05  .005  .002]; 
+        case 'test';        p=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; affROIvar_1x6=[9  9  .05  .05  .005  .001]; 
+        case 'Dudek';       p=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; affROIvar_1x6=[9  9  .05  .05  .005  .001]; 
+        case 'davidin300';  p=[129 67  62  78  -0.02]; con_normalizer=0.75; ff=0.99; affROIvar_1x6=[5  5  .01  .02  .002  .001]; 
+        case 'sylv';        p=[118 54  53  53  -0.20]; con_normalizer=0.75; ff=0.95; affROIvar_1x6=[7  7  .01  .02  .002  .001]; 
+        case 'trellis70';   p=[178 76  45  49   0   ]; con_normalizer=0.20; ff=0.95; affROIvar_1x6=[4  4  .01  .01  .002  .001]; 
+        case 'fish';        p=[134 62  62  80   0   ]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[7  7  .01  .01  .002  .001]; 
+        case 'car4';        p=[145 105 200 150  0   ]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[5  5  .025 .01  .002  .001];
+        case 'car11';       p=[74  128 30  25   0   ]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[5  5  .01  .01  .001  .001]; 
+        case 'PETS2001rcf'; p=[414 341 13  37   0   ]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[1  1  .01  .01  .001  .001]; 
+        case 'PETS2009';    p=[333 217 9   40   0   ]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[3  3  .05  .05  .002  .002]; 
+        case 'AVSS2007_1';  p=[69  232 43  40   0.07]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[3  3  .05  .05  .002  .002]; 
+        case 'AVSS2007_2';  p=[60  234 37  37   0   ]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[3  3  .05  .05  .002  .002]; 
+        case 'AVSS2007_3';  p=[213 67  14  14   0   ]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[2  2  .05  .05  .002  .002]; 
+        case 'motinas_fast';p=[474 60  43  67   0   ]; con_normalizer=0.20; ff=1.00; affROIvar_1x6=[15 15 .05  .05  .005  .002]; 
         otherwise;  error(['unknown INP.ds_2_name ' INP.ds_2_name]);
     end    
     %convert top left coordinate to center
     p(1)                    =   p(1) + round(p(3)/2);  
     p(2)                    =   p(2) + round(p(4)/2);
     %normalize    
-    affineROI_1x6           =   [p(1), p(2), p(3)/tgt_warped_sw_sh, p(5), p(4)/p(3), 0]; %x, y, width/tgt_warped_sw_sh, angle, height/width, 0
+    affROI_1x6           =   [p(1), p(2), p(3)/tgt_warped_sw_sh, p(5), p(4)/p(3), 0]; %x, y, width/tgt_warped_sw_sh, angle, height/width, 0
     %convert 
-    affineROI_1x6           =   affparam2mat(affineROI_1x6);
+    affROI_1x6           =   affparam2mat(affROI_1x6);
 
 %-----------------------------------------------
 %PROCESSING
@@ -79,23 +79,21 @@ function INP = TRK_read_input(code, tgt_warped_sw_sh)
 %-----------------------------------------------
 %save 
 	%dataset
-    
-    INP.ds_4_affineROI_1x6 	=   affparaminv(affineROI_1x6); %affine ROI parameters
-    INP.ds_5_affineROIvar_1x6=   affineROIvar_1x6;   		%" 					  , variance of
+    INP.ds_4_affROI_1x6     =   affROI_1x6;                 %affine ROI parameters
+    INP.ds_5_affROIvar_1x6  =   affROIvar_1x6;              %" 					  , variance of
     INP.ds_6_ff            	=   ff;                 		%forgetting factor
-    INP.ds_7_con_stddev   	=   condenssig;         		%unknown
-    INP.ds_7_con_stddev     =   0.01;                       %check!!
+    INP.ds_7_con_stddev   	=   con_normalizer;             %condensation algorithm, normalizer
     INP.ds_8_I_HxWxF      	=   data;                       %read all images, height x width x number of frames 
 	INP.ds_9_F          	=   size(INP.ds_8_I_HxWxF,3);   %total number of frames
 
 	%ground truth
     INP.gt_1_fp      		=   truepts;                    %ground truth for the feature points
     INP.gt_2_num_fp        	=   size(INP.gt_1_fp,2);        %number of feature points
-    INP.gt_3_initial_fp    	=   INP.ds_4_affineROI_1x6([3,4,1;5,6,2]) * [INP.gt_1_fp(:,:,1); ones(1,INP.gt_2_num_fp)];
+    INP.gt_3_initial_fp    	=   INP.ds_4_affROI_1x6([3,4,1;5,6,2]) * [INP.gt_1_fp(:,:,1); ones(1,INP.gt_2_num_fp)];
     
     %random input
-    INP.random_affine_maxFx6xNp        =   RandomData_sample;          %pre-stored random numbers to ensure repeatability  
-    INP.rn_2_cdf_maxFxNp            =   RandomData_cdf;
+    INP.rand_unitvar_maxFx6xNp=   RandomData_sample; %pre-stored random numbers to ensure repeatability, maxF=1000 since we do not anticipate more than 1000 frames  
+    INP.rand_cdf_maxFxNp    =   RandomData_cdf;
     
     clear data truepts RandomData_sample RandomData_cdf;
     
@@ -119,18 +117,18 @@ function INP = TRK_read_input(code, tgt_warped_sw_sh)
     
 %> Use the following set of parameters for the ground truth experiment.
 %> It's much slower, but more accuracte.
-%case 'dudek';  affineROI_1x6 = [188,192,110,130,-0.08];
-%>     PARAM = struct('Np',4000, 'condenssig=0.25, 'ff',0.99, ...
-%>                 'batchsize',5, 'affineROIvar_1x6',[11,9,.05,.05,0,0], ...
+%case 'dudek';  affROI_1x6 = [188,192,110,130,-0.08];
+%>     PARAM = struct('Np',4000, 'con_normalizer=0.25, 'ff',0.99, ...
+%>                 'batchsize',5, 'affROIvar_1x6',[11,9,.05,.05,0,0], ...
 %>                 'errfunc','');
 
 
-%case 'dudekgt';  affineROI_1x6 = [188,192,110,130,-0.08]; 
-%>   PARAM = struct('Np',4000, 'condenssig=1, 'ff',1, ...
-%>                 'batchsize',5, 'affineROIvar_1x6',[6,5,.05,.05,0,0], ...
+%case 'dudekgt';  affROI_1x6 = [188,192,110,130,-0.08]; 
+%>   PARAM = struct('Np',4000, 'con_normalizer=1, 'ff',1, ...
+%>                 'batchsize',5, 'affROIvar_1x6',[6,5,.05,.05,0,0], ...
 %>                'errfunc','');
 
-%case 'toycan';    affineROI_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[7,7,.01,.01,.002,.001]);  INP.ds_3_longName='1';txt2='Dudek';
-%case 'mushiake';  affineROI_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'condenssig=0.2, 'ff',1,  'batchsize',5,'affineROIvar_1x6',[10,10,.01,.01,.002,.001]);INP.ds_3_longName='1';txt2='Dudek';
+%case 'toycan';    affROI_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'affROIvar_1x6',[7,7,.01,.01,.002,.001]);  INP.ds_3_longName='1';txt2='Dudek';
+%case 'mushiake';  affROI_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'affROIvar_1x6',[10,10,.01,.01,.002,.001]);INP.ds_3_longName='1';txt2='Dudek';
     
     

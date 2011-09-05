@@ -7,7 +7,7 @@
 
 
 
-                                TRK_draw_3b_metrics_tst( trkIPCA.tst_SNRdB_Fx1, trkIPCA.tst_RMSE_Fx1, trkIPCA.tst_RMSEavg_Fx1, f,          PARAM.plot_title_fontsz, 1);
+                                TRK_draw_3b_metrics_tst( trkIPCA.tst_SNRdB_Fx1, trkIPCA.out_5_rmse__Fx1, trkIPCA.out_6_armse_Fx1, f,          PARAM.plot_title_fontsz, 1);
     if (bUseBPCA )               TRK_draw_3b_metrics_tst( BPCA.tst_SNRdB_Fx1, bpca_tst_rmse, bpca_tst_avgrmse, f,          PARAM.plot_title_fontsz, 2);        end
     if (bUseTSVQ)               TRK_draw_3b_metrics_tst( tsvq_tst_SNRdB, tsvq_tst_rmse, tsvq_tst_avgrmse, f,          PARAM.plot_title_fontsz, 4);        end
 	if (bUseRVQ)                TRK_draw_3b_metrics_tst( rvq__tst_SNRdB, rvq__tst_rmse, rvq__tst_avgrmse, f,          PARAM.plot_title_fontsz, 3);        end      
