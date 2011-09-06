@@ -19,7 +19,7 @@
 %    out_1_snp_0t1_shxsw
 %    all_candidate_errors_0to1_DxNp
 %    recon
-%    out_4_SNRdB_1x1
+%    trk_SNRdB_1x1
 %    out_5_rmse__1x1
 %
 % INP.ds_5_affROIvar_1x6
@@ -43,7 +43,8 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
  
     rn1                             =   INP.rand_cdf_maxFxNp(f,:);          %pre-stored random numbers to ensure repeatability    
     rn2(:,:)                        =   INP.rand_unitvar_maxFx6xNp(f,:,:);  %same as above
-
+    stddev                          =   INP.ds_7_con_stddev;
+	
     D                               =   sw*sh;                              %dimensionality of input data
     
 %state variables (use and then update) 
@@ -74,16 +75,16 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 %2. apply motion        candidate parameters -> (a). motion model -> (b). new candidate parameters -> (c). new candidate images
     delta_motion_6xNp       =   rn2.*repmat(INP.ds_5_affROIvar_1x6(:),[1,Np]);       %a. motion model
     candidate_affineROIs_6xNp      	=   candidate_affineROIs_6xNp + delta_motion_6xNp;                     %b. candidate parameters
-    candidate_snippets_0t1_shxsw  =   warpimg(I_0t1, affparam2mat(candidate_affineROIs_6xNp), [sh sw]);  %c. candidate images
+    candidate_snippets_0t1_shxswxNp =   warpimg(I_0t1, affparam2mat(candidate_affineROIs_6xNp), [sh sw]);  %c. candidate images
     
 %----------------------------
 %PROCESSING
 %----------------------------
-%3a. weighting (find how well the algorithm model explains each snippet, find distances)
+%3. weighting (find how well the algorithm model explains each snippet, find distances)
 
     %generic algo
     if (strcmp(TRK.name, 'genericPF')) 
-        all_candidate_errors_0to1_DxNp             =   repmat(state_2_mu_Dx1(:),[1,Np]) - reshape(candidate_snippets_0t1_shxsw,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
+        all_candidate_errors_0to1_DxNp             =   repmat(state_2_mu_Dx1(:),[1,Np]) - reshape(candidate_snippets_0t1_shxswxNp,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
         DIFS                        =   0;
         
         
@@ -93,7 +94,7 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
         S_Bx1                       =   ALGO.mdl_4_S_Bx1;
              
         %part 1: error, distance from mean (err vector points to mean)
-        all_candidate_errors_0to1_DxNp       =   repmat(mu_Dx1(:),[1,Np]) - reshape(candidate_snippets_0t1_shxsw,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
+        all_candidate_errors_0to1_DxNp       =   repmat(mu_Dx1(:),[1,Np]) - reshape(candidate_snippets_0t1_shxswxNp,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
         DIFS                =   0;
         
         %part 2: error, reduce the part that can be explained by the basis
@@ -104,22 +105,22 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
             
             %compute DIFS for use with PPCA, if not using PPCA, not required
             if (isfield(TRK,'err_projScalars_BxNp'))
-                DIFS            =   (abs(err_projScalars_BxNp)-abs(TRK.err_projScalars_BxNp))*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
+                DIFS            				=   (abs(err_projScalars_BxNp)-abs(TRK.err_projScalars_BxNp))*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
             else
-                DIFS            =   err_projScalars_BxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
+                DIFS            				=   err_projScalars_BxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
             end
-            TRK.err_projScalars_BxNp=   err_projScalars_BxNp;
+            TRK.err_projScalars_BxNp 			=   err_projScalars_BxNp;
         
         
 	
         
     %bPCA    
     elseif (strcmp(TRK.name, 'trkBPCA'))
-        all_candidate_errors_0to1_DxNp               = 	[];
+        all_candidate_errors_0to1_DxNp         	= 	[];
         for i = 1:Np
-            Itst                    =   255*candidate_snippets_0t1_shxsw(:,:,i);
-            ALGO                    =   bPCA_3_test(Itst(:), ALGO);
-            all_candidate_errors_0to1_DxNp(:,i)   	=   ALGO.tst_3_error_DxN/255;                                
+            Itst                    			=   255*candidate_snippets_0t1_shxswxNp(:,:,i);
+            ALGO                    			=   bPCA_3_test(Itst(:), ALGO);
+            all_candidate_errors_0to1_DxNp(:,i) =   ALGO.tst_3_error_DxN/255;                                
         end
 
         
@@ -128,66 +129,80 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
         
     %RVQ    
     elseif (strcmp(TRK.name, 'trkRVQ')) 
-        all_candidate_errors_0to1_DxNp               = 	[];
+        all_candidate_errors_0to1_DxNp        	= 	[];
         for i = 1:Np
-            Itst                    =   255*candidate_snippets_0t1_shxsw(:,:,i);
-            ALGO                    =   RVQ__testing_grayscale(Itst(:), ALGO);
-            %all_candidate_errors_0to1_DxNp(:,i)     =   ALGO.tst_3_error_DxN/255;                                
-            all_candidate_errors_0to1_DxNp(:,i)      =   (abs(ALGO.tst_3_error_DxN) + 0.5*(ALGO.maxP-ALGO.P))/255;
+            Itst                    			=   255*candidate_snippets_0t1_shxswxNp(:,:,i);
+            ALGO                    			=   RVQ__testing_grayscale(Itst(:), ALGO);
+            all_candidate_errors_0to1_DxNp(:,i) =   (abs(ALGO.tst_3_error_DxN) + RVQ.in_10_lambda*(ALGO.maxP-ALGO.P))/255;
         end
         
         
     %TSVQ
     elseif (strcmp(TRK.name, 'trkTSVQ'))
-        all_candidate_errors_0to1_DxNp               = 	[];
+        all_candidate_errors_0to1_DxNp         	= 	[];
         for i = 1:Np
-            Itst                    =   255*candidate_snippets_0t1_shxsw(:,:,i);
-            ALGO                    =   TSVQ_3_test(Itst(:), ALGO);
-            all_candidate_errors_0to1_DxNp(:,i)   	=   ALGO.tst_3_error_DxN/255;                                
+            Itst                    			=   255*candidate_snippets_0t1_shxswxNp(:,:,i);
+            ALGO                    			=   TSVQ_3_test(Itst(:), ALGO);
+            all_candidate_errors_0to1_DxNp(:,i) =   ALGO.tst_3_error_DxN/255;                                
         end
     end
 
-%3b. posterior
-    stddev                          =   INP.ds_7_con_stddev;
-    DFFS                            =   all_candidate_errors_0to1_DxNp;
+%4. posterior
+    DFFS                           				=   all_candidate_errors_0to1_DxNp;
     switch (PARAM.con_errfunc)
-        case 'robust'; temp_weights  =   exp(- sum(DFFS.^2./(DFFS.^2 + PARAM.rsig.^2))./stddev)';%PARAM.rsig never defined
-        case 'ppca';   temp_weights  =   exp(-(     sum(DFFS.^2)+ sum(DIFS.^2)        )./stddev)';
-        otherwise;     temp_weights  =   exp(-      sum(DFFS.^2                       )./stddev)';
+        case 'robust'; temp_weights  			=   exp(- sum(DFFS.^2./(DFFS.^2 + PARAM.rsig.^2))./stddev)';%PARAM.rsig never defined
+        case 'ppca';   temp_weights  			=   exp(-(     sum(DFFS.^2)+ sum(DIFS.^2)        )./stddev)';
+        otherwise;     temp_weights  			=   exp(-      sum(DFFS.^2                       )./stddev)';
     end
-    weights                 =   temp_weights ./ sum(temp_weights);          %normalize weights
-    [maxprob,maxidx]        =   max(weights);                               %MAP estimate: pick best index
+    weights                 					=   temp_weights ./ sum(temp_weights);          %normalize weights
+    [maxprob,maxidx]        					=   max(weights);                               %MAP estimate: pick best index
     
     
-%4. pick MAP estimate
-    state_4_best_affROI_1x6         =   affparam2mat(candidate_affineROIs_6xNp(:,maxidx));     %MAP estimate: pick best affine parameters based on best index          
-
-    best_snippet_0t1_shxsw  =   candidate_snippets_0t1_shxsw(:,:,maxidx);                %MAP estimate: pick best candidate snippet based on best index                
-    best_error_0to1_Dx1     =   all_candidate_errors_0to1_DxNp(:,maxidx)
+%5. pick four (4) MAP estimates
+	%one (1) state variables
+    best_affROI_1x6         =   affparam2mat(candidate_affineROIs_6xNp(:,maxidx));  %best 1. affine ROI 
+    
+	%three (3) instantaneous variables
+	best_snippet_0t1_shxsw  =   candidate_snippets_0t1_shxswxNp(:,:,maxidx);        %best 2. best snippet 
+    best_error_0to1_Dx1     =   all_candidate_errors_0to1_DxNp(:,maxidx);           %best 3. best error 
     best_error_0to1_shxsw   =   reshape(best_error_0to1_Dx1, [sh sw]);
     if 	   (INP.ds_1_code==0 || 1) 
-        best_error_0to1_shxsw =   -best_error_0to1_shxsw; 
+        best_error_0to1_shxsw =   -best_error_0to1_shxsw;                           
     end
-    best_recon_shxsw        =   best_snippet_0t1_shxsw - best_error_0to1_shxsw;
+    best_recon_shxsw        =   best_snippet_0t1_shxsw - best_error_0to1_shxsw;     %best 4. best recon
+	
 %----------------------------
 %POST-PROCESSING
 %----------------------------
 %save
-    %decisions taken for this frame
-    TRK.out_1_snp_0t1_shxsw =   best_snippet_0t1_shxsw;                     %best snippet in image, i.e. it's best explained by my model
-    TRK.out_2_recon_shxsw   =   best_recon_shxsw;                           %my model's reconstruction of this best snippet
-    TRK.out_3_error_shxsw   =   best_error_0to1_shxsw;                      %the error
-    TRK.out_4_SNRdB_1x1     =   UTIL_METRICS_compute_SNRdB       (best_snippet_0t1_shxsw(:), best_error_0to1_shxsw(:)    );
-    TRK.trk_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms_value   (                           best_error_0to1_shxsw(:)*255);
-    TRK.trk_armse_Fx1(f)  =   UTIL_compute_avg(TRK.trk_rmse__Fx1(1:f));
+    %three (3) instantaneous variables
+    TRK.insta_1_snp_0t1_shxsw =   best_snippet_0t1_shxsw;                     %best snippet in image, i.e. it's best explained by my model
+    TRK.insta_2_recon_shxsw   =   best_recon_shxsw;                           %my model's reconstruction of this best snippet
+    TRK.insta_3_error_shxsw   =   best_error_0to1_shxsw;                      %the error
+	
+	%three (3) tracking metrics
+    TRK.trk_SNRdB_1x1     	=   UTIL_METRICS_compute_SNRdB       (best_snippet_0t1_shxsw(:), best_error_0to1_shxsw(:)    );
+    TRK.trk_rmse__Fx1(f)  	=   UTIL_METRICS_compute_rms_value   (                           best_error_0to1_shxsw(:)*255);
+    TRK.trk_armse_Fx1(f)  	=   UTIL_compute_avg(TRK.trk_rmse__Fx1(1:f));
     
-    %state variables
-    TRK.state_1_DM2         =   [state_1_DM2 TRK.out_1_snp_0t1_shxsw(:)];%update snippet library
+    %three (3) training metrics
+    TRK.trg_SNRdB_1x1     	=   ALGO.trg_4_SNRdB_1x1;
+    TRK.trg_rmse__Fx1(f)  	=   ALGO.trg_5_rmse__1x1
+    TRK.trg_armse_Fx1(f)  	=   UTIL_compute_avg(TRK.trg_rmse__Fx1(1:f));
+
+    %three (3) testing metrics
+    TRK.tst_SNRdB_1x1     	=   ALGO.tst_4_SNRdB_1x1;
+    TRK.tst_rmse__Fx1(f)  	=   ALGO.tst_5_rmse__1x1
+    TRK.tst_armse_Fx1(f)  	=   UTIL_compute_avg(TRK.tst_rmse__Fx1(1:f));
+    
+    
+    %four (4) state variables
+    TRK.state_1_DM2         =   [state_1_DM2 TRK.insta_1_snp_0t1_shxsw(:)];%update snippet library
     if 	   (strcmp(TRK.name, 'BPVQ') || strcmp(TRK.name, 'RVQ') || strcmp(TRK.name, 'TSVQ')) %not needed for IPCA since it has its own forgetting factor
         TRK.state_1_DM2     =   DATAMATRIX_pick_last_Nw_values_in_DM2(TRK.state_1_DM2, Nw, bWeighting); 
     end                                                                                                       
     TRK.state_3_weights     =   weights;
-    TRK.state_4_best_affROI_1x6 = state_4_best_affROI_1x6;
+    TRK.state_4_best_affROI_1x6 = best_affROI_1x6;
     
 %tracking error        
     TRK.fp_2_est                    =   TRK.state_4_best_affROI_1x6([3,4,1;5,6,2]) ...

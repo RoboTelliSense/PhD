@@ -125,7 +125,14 @@ datasetCode=1;
     PARAM                   =   TRK_fileManagement(PARAM, INP);  %filenames
     PARAM.trg_T             =	round(INP.ds_9_F/PARAM.trg_B); %number of times training occurs
     
-%3. ALGORITHMS
+%3. LEARNING ALGORITHMS
+    %NONE
+    NONE.in_1_name          =   'NONE';
+    NONE.trg_4_SNRdB_1x1    =   0;  
+    NONE.trg_5_rmse__1x1    =   0; 
+    NONE.tst_4_SNRdB_1x1    =   0;  
+    NONE.tst_5_rmse__1x1    =   0; 
+
     %IPCA
     IPCA.in_1_name          =   'IPCA';
     IPCA.in_2_mode          =   'tst';
@@ -146,6 +153,7 @@ datasetCode=1;
     RVQ.in_7_sh             =   PARAM.in_sh;
     RVQ.in_8_dir_out        =   PARAM.dir_out;
     RVQ.in_9_rule_stop_decoding =   'monSNR';
+    RVQ.in_10_lambda        =   0.5;
 
     %TSVQ
     TSVQ.in_1_name          =   'TSVQ';
