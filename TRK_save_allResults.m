@@ -46,7 +46,7 @@
         
         %5. testing error (rmse, avg rmse, snr)
         clear struct1;
-                        struct1.data(1) = trkIPCA.tst_4_SNRdB_1x1;      struct1.data(2) =  trkIPCA.tst_5_rmse__1x1;     struct1.data(3) = trkIPCA.out_6_armse_Fx1(f);        UTIL_savecsv_struct(trkIPCA.cfn_5_tst_rmse,       f, struct1);
+                        struct1.data(1) = trkIPCA.tst_4_SNRdB_1x1;      struct1.data(2) =  trkIPCA.tst_5_rmse__1x1;     struct1.data(3) = trkIPCA.trk_armse_Fx1(f);        UTIL_savecsv_struct(trkIPCA.cfn_5_tst_rmse,       f, struct1);
         if (bUseBPCA )   struct1.data(1) = trkBPCA.tst_4_SNRdB_1x1;      struct1.data(2) =  trkBPCA.tst_5_rmse__1x1;     struct1.data(3) = bpca_tst_avgrmse(f);        UTIL_savecsv_struct(trkBPCA.cfn_5_tst_rmse,       f, struct1); end
         if (bUseRVQ)    struct1.data(1) = trkRVQ.tst_4_SNRdB_1x1;      struct1.data(2) =  trkRVQ.tst_5_rmse__1x1;     struct1.data(3) = rvq__tst_avgrmse(f);        UTIL_savecsv_struct(trkRVQ.cfn_5_tst_rmse,       f, struct1); end
         if (bUseTSVQ)   struct1.data(1) = trkTSVQ.tst_4_SNRdB_1x1;      struct1.data(2) =  trkTSVQ.tst_5_rmse__1x1;     struct1.data(3) = tsvq_tst_avgrmse(f);        UTIL_savecsv_struct(trkTSVQ.cfn_5_tst_rmse,       f, struct1); end

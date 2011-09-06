@@ -104,9 +104,9 @@ datasetCode=1;
     PARAM.con_errfunc       =   'L2';               %condensation related              
     PARAM.con_reseig        =   0;
 	PARAM.tgt_warped_sw_sh  =   32;                 %target related, note 1 less than sw and sh which I had to increase by 1 for RVQ
-    PARAM.tgt_sw            =   33;
-    PARAM.tgt_sh            =   33;    
-    PARAM.tgt_sz            =   [PARAM.tgt_sh PARAM.tgt_sw];  %combine two above
+    PARAM.in_sw            =   33;
+    PARAM.in_sh            =   33;    
+    PARAM.tgt_sz            =   [PARAM.in_sh PARAM.in_sw];  %combine two above
     PARAM.tgt_max_signal_val=   255;
 	PARAM.trg_B             =   5;                  %training related, batch size for how many images to use for training
 	PARAM.trg_frame_idxs    =   [];                 %"
@@ -118,7 +118,8 @@ datasetCode=1;
 	PARAM.plot_title_fontsz =   8;                  %", fontsize
 
 %2. INPUT
-    INP                     =    TRK_read_input(PARAM.in_datasetCode, PARAM.tgt_warped_sw_sh); 
+    INP                     =   TRK_read_input(PARAM.in_datasetCode, PARAM.tgt_warped_sw_sh); 
+    first_I_0t1             =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %read first image, 0t1 means the image intensities are between 0 and 1       
 
     %back to PARAM based on input
     PARAM                   =   TRK_fileManagement(PARAM, INP);  %filenames
@@ -141,8 +142,8 @@ datasetCode=1;
     RVQ.in_3_maxP           =   PARAM.in_rvq_maxP;
     RVQ.in_4_M              =   PARAM.in_rvq_M;         
     RVQ.in_5_targetSNR      =   PARAM.in_rvq_targetSNR;
-    RVQ.in_6_sw             =   PARAM.tgt_sw;
-    RVQ.in_7_sh             =   PARAM.tgt_sh;
+    RVQ.in_6_sw             =   PARAM.in_sw;
+    RVQ.in_7_sh             =   PARAM.in_sh;
     RVQ.in_8_dir_out        =   PARAM.dir_out;
     RVQ.in_9_rule_stop_decoding =   'monSNR';
 
@@ -152,38 +153,37 @@ datasetCode=1;
     TSVQ.in_3_maxP          =   PARAM.in_tsvq_P;
     TSVQ.in_4_M             =   PARAM.in_tsvq_M;
 
-    %GENERIC
-    genPF.in_1_name         =   'genericPF';                    %generic particle filter
-    genPF.DM2               =   [];                         %1. data 		:	design matrix, one observation per column  
-    first_I_0t1             =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %0t1 means the image intensities are between 0 and 1       
-    genPF.mdl_2_mu_Dx1      =   warpimg(first_I_0t1, INP.ds_4_affROI_1x6, PARAM.tgt_sz); %data mean
-    clear first_I_0t1; 
+%4. TRACKERS    
+    %generic particle filter
+    trkPF.name              =   'genericPF';                        %generic particle filter    
     
-	
+    trkPF.state_1_DM2       =   [];                                 %1. data:	design matrix, one observation per column 
+    trkPF.state_2_mu_Dx1    =   warpimg(first_I_0t1, INP.ds_4_affROI_1x6, PARAM.tgt_sz); %data mean
+    trkPF.state_3_weights   =   [];
+    trkPF.state_4_best_affROI_1x6=   INP.ds_4_affROI_1x6; 
     
-%3. structure #3: tracking, template for trkIPCA, trkBPCA, trkRVQ, trkTSVQ
-	%feature points
-    TRK.fp_1_gt   			=   cat(3, INP.gt_3_initial_fp + repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), INP.gt_1_fp(:,:,1)); %1. ground truth
-    TRK.fp_2_est      		=   zeros(size(INP.gt_1_fp));  			%1b. estimated
-	TRK.fp_3_err  			=   zeros(1,INP.gt_2_num_fp);    	%1c. feature points: error
-    TRK.fp_4_err_avg        =   zeros(1,INP.gt_2_num_fp);       %1d. feature points: average error
+    trkPF.fp_1_gt           =   cat(3, INP.gt_3_initial_fp + repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), INP.gt_1_fp(:,:,1)); %1. ground truth
+    trkPF.fp_2_est          =   zeros(size(INP.gt_1_fp));  			%1b. estimated
+	trkPF.fp_3_err          =   zeros(1,INP.gt_2_num_fp);           %1c. feature points: error
+    trkPF.fp_4_err_avg      =   zeros(1,INP.gt_2_num_fp);           %1d. feature points: average error
+     
+	trkPF.trg_rmse__Tx1     =   zeros(PARAM.trg_T,1);               %3.  training
+	trkPF.trg_armse_Tx1 	=   zeros(PARAM.trg_T,1);
+	trkPF.trg_SNRdB_Tx1     =   zeros(PARAM.trg_T,1);
     
-    TRK.affROI_1x6          =   INP.ds_4_affROI_1x6; 
-   
-	TRK.trg_RMSE_Tx1 		=   zeros(PARAM.trg_T,1);                  %3.  training
-	TRK.trg_RMSEavg_Tx1 	=   zeros(PARAM.trg_T,1);
-	TRK.trg_SNRdB_Tx1 		=   zeros(PARAM.trg_T,1);
+	trkPF.trk_rmse__Fx1     =   zeros(INP.ds_9_F,1);
+	trkPF.trk_armse_Fx1 	=   zeros(INP.ds_9_F,1);
+    
+	trkPF.tst_SNRdB_Fx1   	=   zeros(INP.ds_9_F,1);
 
-    TRK.bestCandidate_0t1_shxsw =   genPF.mdl_2_mu_Dx1;							%4.  testing
-	TRK.out_5_rmse__Fx1 		=   zeros(INP.ds_9_F,1);
-	TRK.out_6_armse_Fx1 	=   zeros(INP.ds_9_F,1);
-	TRK.tst_SNRdB_Fx1   	=   zeros(INP.ds_9_F,1);
-
+    trkPF.bestCandidate_0t1_shxsw =   trkPF.state_2_mu_Dx1;							%4.  testing
+    
 %4. %timing   
     duration                =   0; 
     tic;
 
 
+    clear first_I_0t1; 
 
 %>-----------------------------------------
 %PRE-PROCESSING: generic particle filter for B frames for bootstrapping
@@ -194,17 +194,18 @@ datasetCode=1;
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
         I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256; %input
-        [ALGO TRK]          =   TRK_condensation(f, INP, PARAM, I_0t1, genPF, TRK);		
+        trkPF               =   TRK_condensation(f, INP, PARAM, I_0t1, [], trkPF);		
     end	   
 
 %step 2. save structures	
-	trkIPCA					=	TRK;
-	trkBPCA					=	TRK;
-	trkRVQ					=	TRK;
-	trkTSVQ					=	TRK;
+	trkIPCA					=	trkPF;  trkIPCA.name = 'trkIPCA';
+	trkBPCA					=	trkPF;  trkBPCA.name = 'trkBPCA';
+	trkRVQ					=	trkPF;  trkRVQ.name  = 'trkRVQ';
+	trkTSVQ					=	trkPF;  trkTSVQ.name = 'trkTSVQ';
+    
  
 %step 5. 1 training
-    PARAM.trg_frame_idxs           =   [PARAM.trg_frame_idxs, f];
+    PARAM.trg_frame_idxs         =   [PARAM.trg_frame_idxs, f];
     if (PARAM.in_bUseIPCA) IPCA  =   ipca_1_train  (IPCA.DM2(:,f-PARAM.trg_B+1:f),       IPCA);	 end		
     if (PARAM.in_bUseBPCA) BPCA  =   bpca_1_train  (BPCA.DM2_weighted * max_signal_val,  BPCA);  end
     if (PARAM.in_bUseRVQ)  RVQ   =   RVQ__training (RVQ.DM2_weighted  * max_signal_val,  RVQ);   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' PARAM.str_f '.txt']); end

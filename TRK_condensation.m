@@ -25,36 +25,34 @@
 % INP.ds_5_affROIvar_1x6
 %
 % requirement
-% TRK.state_3_best_affROI_1x6
+% TRK.state_4_best_affROI_1x6
 % Copyright (C) Jongwoo Lim and David Ross (modified by Salman Aslam with permission)
 % Date created      : April 25, 2011
 % Date last modified: July 18, 2011
 %%
 
-function [ALGO, TRK] = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
+function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
-    sw                              =   PARAM.tgt_sw;                       %snippet width
-    sh                              =   PARAM.tgt_sh;                       %snippet height
-    D                               =   sw*sh;                              %dimensionality of input data
-    
-    Np                              =   PARAM.in_Np;                        %particle filter: # of particles (samples) from density)
+    Np                              =   PARAM.in_Np;                        %particle filter: # of particles (samples) from density)    
+    sw                              =   PARAM.in_sw;                       %snippet width
+    sh                              =   PARAM.in_sh;                       %snippet height
+    Nw                              =   PARAM.in_Nw;
+    bWeighting                      =   PARAM.in_bWeighting;
+ 
     rn1                             =   INP.rand_cdf_maxFxNp(f,:);          %pre-stored random numbers to ensure repeatability    
     rn2(:,:)                        =   INP.rand_unitvar_maxFx6xNp(f,:,:);  %same as above
+
+    D                               =   sw*sh;                              %dimensionality of input data
     
 %state variables (use and then update) 
     state_1_DM2                     =   TRK.state_1_DM2;
-    state_2_weights                 =   TRK.state_2_weights;
-    state_3_best_affROI_1x6         =   TRK.state_3_best_affROI_1x6(:);
+    state_2_mu_Dx1                  =   TRK.state_2_mu_Dx1;
+    state_3_weights                 =   TRK.state_3_weights;
+    state_4_best_affROI_1x6         =   TRK.state_4_best_affROI_1x6(:);
     
-%all data used from ALGO structure, use but do not update
-    algo_name                       =   ALGO.in_1_name;
-    mu_Dx1                          =   ALGO.mdl_2_mu_Dx1;
-    if (strcmp(algo_name, 'IPCA'))    
-        U_DxB                       =   ALGO.mdl_2_U_DxB;   
-        S_Bx1                       =   ALGO.mdl_4_S_Bx1;
-    end
+
 %----------------------------
 %PRE-PROCESSING
 %----------------------------
@@ -64,11 +62,11 @@ function [ALGO, TRK] = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 
     if ~isfield(TRK,'affineCandidates_6xNp')
         %one time: initialize 6 affine parameters, one for each of the Np candidate snippets
-        candidate_affineROIs_6xNp      =   repmat(  affparam2geom(state_3_best_affROI_1x6(:)), [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
+        candidate_affineROIs_6xNp      =   repmat(  affparam2geom(state_4_best_affROI_1x6(:)), [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
                                     
     else
         %recurring: resample distribution in 3 lines (read details of this in my article on resampling)
-        cumconf             =   cumsum(state_2_weights);
+        cumconf             =   cumsum(state_3_weights);
         idx                 =   floor(sum(  repmat(rn1,[Np,1]) > repmat(cumconf,[1,Np])  ))+1; 
         candidate_affineROIs_6xNp      =   candidate_affineROIs_6xNp(:,idx);  %keep only good candidates (resample)
     end
@@ -84,13 +82,15 @@ function [ALGO, TRK] = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 %3a. weighting (find how well the algorithm model explains each snippet, find distances)
 
     %generic algo
-    if (strcmp(algo_name, 'genericPF')) 
-        all_candidate_errors_0to1_DxNp             =   repmat(mu_Dx1(:),[1,Np]) - reshape(candidate_snippets_0t1_shxsw,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
+    if (strcmp(TRK.name, 'genericPF')) 
+        all_candidate_errors_0to1_DxNp             =   repmat(state_2_mu_Dx1(:),[1,Np]) - reshape(candidate_snippets_0t1_shxsw,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
         DIFS                        =   0;
-    
+        
         
     %iPCA    
-    elseif (strcmp(algo_name, 'IPCA'))
+    elseif (strcmp(TRK.name, 'trkIPCA'))
+        U_DxB                       =   ALGO.mdl_2_U_DxB;   
+        S_Bx1                       =   ALGO.mdl_4_S_Bx1;
              
         %part 1: error, distance from mean (err vector points to mean)
         all_candidate_errors_0to1_DxNp       =   repmat(mu_Dx1(:),[1,Np]) - reshape(candidate_snippets_0t1_shxsw,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
@@ -114,7 +114,7 @@ function [ALGO, TRK] = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 	
         
     %bPCA    
-    elseif (strcmp(algo_name, 'BPCA'))
+    elseif (strcmp(TRK.name, 'trkBPCA'))
         all_candidate_errors_0to1_DxNp               = 	[];
         for i = 1:Np
             Itst                    =   255*candidate_snippets_0t1_shxsw(:,:,i);
@@ -127,7 +127,7 @@ function [ALGO, TRK] = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
         
         
     %RVQ    
-    elseif (strcmp(algo_name, 'RVQ')) 
+    elseif (strcmp(TRK.name, 'trkRVQ')) 
         all_candidate_errors_0to1_DxNp               = 	[];
         for i = 1:Np
             Itst                    =   255*candidate_snippets_0t1_shxsw(:,:,i);
@@ -138,7 +138,7 @@ function [ALGO, TRK] = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
         
         
     %TSVQ
-    elseif (strcmp(algo_name, 'TSVQ'))
+    elseif (strcmp(TRK.name, 'trkTSVQ'))
         all_candidate_errors_0to1_DxNp               = 	[];
         for i = 1:Np
             Itst                    =   255*candidate_snippets_0t1_shxsw(:,:,i);
@@ -160,7 +160,7 @@ function [ALGO, TRK] = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
     
     
 %4. pick MAP estimate
-    state_3_best_affROI_1x6         =   affparam2mat(candidate_affineROIs_6xNp(:,maxidx));     %MAP estimate: pick best affine parameters based on best index          
+    state_4_best_affROI_1x6         =   affparam2mat(candidate_affineROIs_6xNp(:,maxidx));     %MAP estimate: pick best affine parameters based on best index          
 
     best_snippet_0t1_shxsw  =   candidate_snippets_0t1_shxsw(:,:,maxidx);                %MAP estimate: pick best candidate snippet based on best index                
     best_error_0to1_Dx1     =   all_candidate_errors_0to1_DxNp(:,maxidx)
@@ -178,19 +178,19 @@ function [ALGO, TRK] = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
     TRK.out_2_recon_shxsw   =   best_recon_shxsw;                           %my model's reconstruction of this best snippet
     TRK.out_3_error_shxsw   =   best_error_0to1_shxsw;                      %the error
     TRK.out_4_SNRdB_1x1     =   UTIL_METRICS_compute_SNRdB       (best_snippet_0t1_shxsw(:), best_error_0to1_shxsw(:)    );
-    TRK.out_5_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms_value   (                           best_error_0to1_shxsw(:)*255);
-    TRK.out_6_armse_Fx1(f)  =   UTIL_compute_avg(TRK.out_5_rmse__Fx1(1:f));
+    TRK.trk_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms_value   (                           best_error_0to1_shxsw(:)*255);
+    TRK.trk_armse_Fx1(f)  =   UTIL_compute_avg(TRK.trk_rmse__Fx1(1:f));
     
     %state variables
     TRK.state_1_DM2         =   [state_1_DM2 TRK.out_1_snp_0t1_shxsw(:)];%update snippet library
-    if 	   (INP.ds_1_code==2 || INP.ds_1_code==3 || INP.ds_1_code==4) %not needed for IPCA since it has its own forgetting factor
-		TRK.state_2_DM2_weighted           =   DATAMATRIX_pick_last_Nw_values_in_DM2(TRK.state_1_DM2, PARAM.Nw, PARAM.bWeighting); 
+    if 	   (strcmp(TRK.name, 'BPVQ') || strcmp(TRK.name, 'RVQ') || strcmp(TRK.name, 'TSVQ')) %not needed for IPCA since it has its own forgetting factor
+        TRK.state_1_DM2     =   DATAMATRIX_pick_last_Nw_values_in_DM2(TRK.state_1_DM2, Nw, bWeighting); 
     end                                                                                                       
     TRK.state_3_weights     =   weights;
-    TRK.state_4_best_affROI_1x6 = state_3_best_affROI_1x6;
+    TRK.state_4_best_affROI_1x6 = state_4_best_affROI_1x6;
     
 %tracking error        
-    TRK.fp_2_est                    =   TRK.state_3_best_affROI_1x6([3,4,1;5,6,2]) ...
+    TRK.fp_2_est                    =   TRK.state_4_best_affROI_1x6([3,4,1;5,6,2]) ...
                                         * ...
                                        [INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
     TRK.fp_1_gt                     =   cat(3, ...
