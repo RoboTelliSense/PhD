@@ -1,23 +1,103 @@
 \include{begin_article}
-\title{Incremental SVD with Mean Update}
+\title{Batch and incremental SVD}
 \author{Salman Aslam\\ Georgia Institute of Technology}
 \begin{document}
 \maketitle
 \rule[0pt]{\textwidth}{1pt}
 \tableofcontents
 \rule[0pt]{\textwidth}{1pt}
+
+%==================================
+\section{Batch SVD}
+%==================================
+We start off by saying that we would like to map an orthonormal subspace $(\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_r)$ into an orthonormal subspace $(\mathbf{u}_1, \mathbf{u}_2, \ldots, \mathbf{u}_r)$ using a linear transformation matrix $\mathbf{A}$ and scalars $\lambda_1, \lambda_2, \ldots \lambda_r$, i.e., 
+
+\begin{equation}
+\begin{array}{ll}
+\mathbf{A}\mathbf{v}_1 &= \lambda_1 \mathbf{u}_1\\ 
+\mathbf{A}\mathbf{v}_2 &= \lambda_2 \mathbf{u}_2\\ 
+\vdots\\
+\mathbf{A}\mathbf{v}_r &= \lambda_r \mathbf{u}_r\\ 
+\end{array}
+\end{equation}
+
+Writing this in matrix form, we get,
+\begin{equation}
+\begin{array}{ll}
+\mathbf{A}\left[\begin{array}{cccc}\mathbf{v}_1 & \mathbf{v}_2 &\ldots &\mathbf{v}_r\end{array}\right] &=\left[\begin{array}{cccc}\mathbf{u}_1 & \mathbf{u}_2 &\ldots & \mathbf{u}_r\end{array}\right]\left[\begin{array}{cccc}\lambda_1 &  & & \\& \lambda_2 & & \\& & \ddots &  \\& & & \lambda_r\end{array}\right]\\
+\mathbf{A}\mathbf{V} &=\mathbf{U} \mathbf{S}\\ \\
+\mathbf{A} &=\mathbf{U} \mathbf{S} \mathbf{V}^T \\
+\end{array}
+\end{equation}
+
+since by definition, an orthonormal matrix $\mathbf{V}$ has to have $\mathbf{V}^T = \mathbf{V}^{-1}$.  The question is, how do we construct $\mathbf{A}$.  For lack of a better place to start, let's see if the matrices $\mathbf{A}\mathbf{A}^T$ and $\mathbf{A}^T\mathbf{A}$ give us any insight.  We know that they're symmetric matrices so it may be a good place to start.
+
+%We do know that $N$x$N$ real symmetric matrices have an eigendecomposition of the form $\mathbf{Q}\mathbf{\Lambda}\mathbf{Q}^T$.  So,
+%\mathbf{Q}_2\mathbf{\Lambda}_2\mathbf{Q}_2^T \\
+%\mathbf{Q}_1\mathbf{\Lambda}_1\mathbf{Q}_1^T \\
+
+\begin{equation}
+\begin{array}{llll}
+\mathbf{A}\mathbf{A}^T&= \mathbf{U} \mathbf{S} \mathbf{V}^T \mathbf{V} \mathbf{S}^T \mathbf{U}^T\\
+&=\mathbf{U} (\mathbf{S} \mathbf{S}^T) \mathbf{U}^T\\ 
+\end{array}
+\label{Eq:first}
+\end{equation}
+
+Similarly,
+
+\begin{equation}
+\begin{array}{llll}
+\mathbf{A}^T\mathbf{A}&=\mathbf{V} \mathbf{S}^T \mathbf{U}^T \mathbf{U} \mathbf{S} \mathbf{V}^T\\
+&=\mathbf{V} (\mathbf{S}^T \mathbf{S}) \mathbf{V}^T
+\end{array}
+\label{Eq:second}
+\end{equation}
+
+where $\mathbf{U}^T \mathbf{U} =\mathbf{V}^T \mathbf{V} = \mathbf{I}$ since $\mathbf{U}$ and $\mathbf{V}$ are orthonormal matrices.  Also, $\mathbf{S} \mathbf{S}^T = \mathbf{S}^T \mathbf{S}$ since $\mathbf{S}$ is a diagonal matrix.  
+
+So, to summarize, at this point we have 3 equations,
+
+\begin{equation}
+\boxed{
+\begin{array}{llll}
+\mathbf{A} &=\mathbf{U} \mathbf{S} \mathbf{V}^T\\
+\mathbf{A}\mathbf{A}^T&=\mathbf{U} (\mathbf{S} \mathbf{S}^T) \mathbf{U}^T\\
+\mathbf{A}^T\mathbf{A}&=\mathbf{V} (\mathbf{S}^T \mathbf{S}) \mathbf{V}^T\\
+\end{array}}
+\label{Eq:summary}
+\end{equation}
+
+The second and third equations above have a curious structure.  We know that $\mathbf{A}\mathbf{A}^T$ and $\mathbf{A}^T\mathbf{A}$ are symmetric matrices and therefore have an eigendecomposition of the form $\mathbf{Q}\mathbf{\Lambda}\mathbf{Q}^T$.  So, $\mathbf{U}$ contains the eigenvectors of $\mathbf{A}\mathbf{A}^T$, $\mathbf{V}$ contains the eigenvectors of $\mathbf{A}^T\mathbf{A}$ and $\mathbf{S} \mathbf{S}^T = \mathbf{S}^T \mathbf{S}$ contains the squared eigenvalues of  $\mathbf{A}$.
+
+Now, how do we put all of this together.
+
+We started off saying that we have the following knowns: $\mathbf{U}$ and $\mathbf{V}$.  Also, we have the following unknowns: $\mathbf{A}$ and $\mathbf{S}$.  Given $\mathbf{U}$ and $\mathbf{V}$, it is not immediately clear how to construct $\mathbf{A}$ and $\mathbf{S}$.  However, as a result of our manipulations, we have an insight in a slightly different direction, i.e., given only $\mathbf{A}$, how we can construct $\mathbf{U}$, $\mathbf{S}$ and $\mathbf{V}$.  And this insight is summarized below:
+
+\begin{enumerate}
+\item  Compute the eigenvectors of $\mathbf{A}\mathbf{A}^T$ to get $\mathbf{U}$.
+\item  Compute the eigenvectors of $\mathbf{A}^T\mathbf{A}$ to get $\mathbf{V}$.
+\item  Compute the eigenvalues of either $\mathbf{A}\mathbf{A}^T$ or $\mathbf{A}^T\mathbf{A}$, take the square root of these eigenvalues and these form the diagonal matrix $\mathbf{S}$.
+\end{enumerate}
+
+This gives the SVD decomposition of $\mathbf{A}$, i.e., $\mathbf{A} =\mathbf{U} \mathbf{S} \mathbf{V}^T$.
+
 %================================
-\section{Introduction}
+\section{Incremental SVD}
 %================================
+
+%-----------------------------------------------------------------
+\subsection{Introduction}
+%-----------------------------------------------------------------
 Dimensionality reduction is a commonly used method to remove redundancies in data.  In tracking applications, a dimensionality reduction method such as PCA can be used to create an eigenbasis based appearance model.  Using a batch approach in which the eigenbasis is recomputed at every frame is costly in terms of memory and computations.  Therefore, in online applications, it is desired to have an incremental update to the eigenbasis.  This can be performed using an incremental SVD procedure.
 
 We assume that we start with some initial data, such as $N$ vectors in $\mathbb{R}^D$.  Each of these vectors could represent a vectorized training image.  These vectors are arranged in a $D$x$N$ data matrix for which the SVD is computed such that $\mathbf{A}=\mathbf{U}\mathbf{\Lambda}\mathbf{V}^T$.  Now, an additional $M$ vectors are made available in an online framework.  These vectors are placed in a $D$x$M$ data matrix $\mathbf{B}$.  The goal is to compute the SVD of $\mathbf{C} = [\mathbf{A} \ \ \mathbf{B}]$.  The naive approach is to recompute the SVD of this augmented data matrix.  If this naive approach is used whenever new data arrives, it is clear that the computations will grow as more and more data arrives.  Moreover, all data will have to be stored.
 
 We now explain the incremental SVD approach in which the existing SVD is used and all prior data is discarded.  For our example, this would mean that $\mathbf{A}$ could be discarded, and only ${\color{darkgreen}}\mathbf{U}$ and $\mathbf{B}$ would be used to compute the SVD of $\mathbf{C}$.
 
-%================================
-\section{Theory}
-%================================
+%-----------------------------------------------------------------
+\subsection{Theory}
+%-----------------------------------------------------------------
 The augmented data matrix $\mathbf{C}$ can be written as follows,
 
 \begin{equation}
@@ -57,7 +137,7 @@ In summary then, the computation of our goal, the SVD of $\mathbf{C}$, is a four
 Two questions now remain.  What can be said of the covariance matrix and mean of $\left[{\mathbf{A}} \ \ \mathbf{B}\right]$ in relation to this incremental SVD procedure?  We now address these questions.
 
 
-\subsection{Mean and covariance of incremental SVD}
+\subsubsection{Mean and covariance of incremental SVD}
 %--------------------
 The mean $\mathbf{\mu}_\mathbf{C}$ and covariance matrix $\mathbf{\Sigma}_C$ of input matrix $\mathbf{C}$ is given by,
 
@@ -126,7 +206,7 @@ ${\color{red}\mathbf{\tilde{B}}}$ is then computed using the QR decomposition of
 %\item \underline{Find component of $\mathbf{B}$ orthogonal to $\color{darkgreen}\mathbf{U}$}.
 %\end{enumerate}
 
-For clarity, we explicitly write out the dimensions of all matrices in Equation~\ref{Eqn:short}
+For clarity, we explicitly write out the dimensions of all matrices in Equation~\ref{Eqn:long}
 
 \scriptsize
 \begin{equation}
@@ -142,11 +222,12 @@ For clarity, we explicitly write out the dimensions of all matrices in Equation~
 \normalsize
 
 
-\cite{2008_JNL_subspaceTRK_Ross}
+For a more terse overview, see~\cite{2008_JNL_subspaceTRK_Ross}.
 
-%================================
-\section{Experiments}
-%================================
+%-----------------------------------------------------------------
+\subsection{Experiments}
+%-----------------------------------------------------------------
+
 In order to show that incremental SVD produces results close to batch SVD, we run two experiments.
 
 In the first experiment, we create matrix $\mathbf{A}$ as 400 observations of a gaussian random variable with unit variance in $\mathbb{R}^{10000}$.  Matrix $\mathbf{B}$ is created as 300 observations of a gaussian random variable with unit variance in $\mathbb{R}^{10000}$.  
@@ -155,9 +236,10 @@ In the second experiment, we create matrix $\mathbf{A}$ as 10 observations of a 
 
 
 
-%================================
-\section{Results}
-%================================
+%-----------------------------------------------------------------
+\subsection{Results}
+%-----------------------------------------------------------------
+
 In the first experiment, the rmse of the error in the basis is 0.0143.
 
 In the second experiment, the rmse of the error in the basis is 0.0378.  A plot of the error values for every point in the basis is given in Figure~\ref{iPCA_results}.
@@ -165,14 +247,16 @@ In the second experiment, the rmse of the error in the basis is 0.0378.  A plot 
 
 
 
-%================================
-\section{Conclusions}
-%================================
+%-----------------------------------------------------------------
+\subsection{Conclusions}
+%-----------------------------------------------------------------
+
 In this report, we have shown that the incremental SVD method produces results very close to batch SVD.
 
 
-\appendix
-\section{Source code}
+%-----------------------------------------------------------------
+\subsection{Source code}
+%-----------------------------------------------------------------
 \scriptsize
 \lstinputlisting[language=Matlab, caption={demo\_iPCA.m.}, 	label=lst:demo_iPCA]	{demo_iPCA.m}
 \lstinputlisting[language=Matlab, caption={sklm2.m.}, 			label=lst:sklm2]		{sklm2.m}
