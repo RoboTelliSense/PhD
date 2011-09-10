@@ -77,7 +77,7 @@
     format compact;
 
 %data input (5 different datasets, pick one of them)
-    dataset                 =   3;                                          %change this to 1, 2, 3, 4 or 5
+    dataset                 =   4;                                          %change this to 1, 2, 3, 4 or 5
     
     %deterministic, simple scalar examples
     if     (dataset==1) DM2 =   [4 6 8 10 20 22 24 26];       sw=1; sh=1;   %simplest possible, i've worked this out by hand in a pdf
@@ -98,6 +98,9 @@
     
 %algorithm parameters
     %ipca
+    
+    %ppca
+
     
     %bpca
     BPCA.in_1_name            	=   'BPCA';

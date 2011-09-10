@@ -4,19 +4,7 @@
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 In this chapter, we build on the theoretical and experimental knowledge that has been explained in the previous chapters.  In the introductory first chapter, we looked at various forms of object representation.  In this chapter, we explain in detail the object representation used in this work.  The second chapter looks at the theoretical aspects of RVQ.  We use the knowledge and notation introduced there and explain how RVQ is used in tracking.  The third chapter begins with the usage of RVQ for recognition on images and transitions to the usage of RVQ for recognition in image sequences.  We take this a step forward and explain how RVQ is used in tracking on image sequences.  The fourth chapter discusses tracking methods used in the literature.  Some standard approaches, including filtering methods and some relatively newer subspace methods were discussed.  We combine these approaches in a manner similar to existing PCA tracking approaches in the literature and extend this work to RVQ and TSVQ tracking.  This is significant since PCA is commonly used in the Pattern Recognition, Machine Learning and Computer Vision communities.  RVQ and TSVQ however are not commonly used in these communities.  On the other hand, two-stage RVQ and multi-stage TSVQ are commonly used in the Signal Processing and Information Theory communities.  By using more-than-two-stage RVQ in visual tracking, we hope that our work will extend and bring together knowledge from different fields and allow researchers to build on the results we present in this chapter, and the conclusions we arrive to in the next.
 
-\begin{table}[t]
-\centering
-\begin{tabular}{| l | c | c | p{2.5in} |}
-\hline
-Transformation & DoF & Matrix & Distortion\\ \hline 
-& & & \\ Projective & 8 & $\ProjMatrix$ & any arbitrary quadrilateral as long as no three points are collinear\\  & & & \\ \hline
-& & & \\ Affine & 6 & $\AffMatrix$ & rotation and non-isotropic scaling\\  & & & \\ \hline
-& & & \\ Similarity & 5 & $\SimMatrix$ & scaling and rigid motion\\  & & & \\ \hline
-& & & \\ Euclidean & 4 & $\EucMatrix$ & rigid motion (rotation, translation) \\  & & & \\ \hline
-\end{tabular}\
-\caption{2D transformations}
-\label{table:2Dtransformations}
-\end{table}
+
 
 Before continuing, we present a very high level approach taken to tracking in this chapter.  This is exactly the same approach used in Ross et. al. \cite{2008_JNL_subspaceTRK_Ross}.  As a matter of fact, we use the excellent software they have provided on their website \cite{2008_SFT_Ross} and build on it.  The advantage of using existing software is that it is open to scrutiny, avoids duplication of work, avoids implementation mistakes, allows researchers to more readily build on existing work and allows for direct comparisons.  In this spirit, we make our own software available for download at \url{http://users.ece.gatech.edu/~msalman} and also present it in Appendix~\ref{App:software}.  The only code not available for download is the RVQ codebook generation process.  This is a patented technology.  The binaries of this code were provided for this project by the inventor, Dr Christopher Barnes in the Georgia Institute of Technology.
 
@@ -91,70 +79,6 @@ In this section, we discuss the representation model.  We refer back to Figure~\
 
 
 
-Table \ref{table:2Dtransformations} shows different kinds of 2D linear transformations.  Every transformation generalizes the transformation below it in the table.  In this work, we use the 2D affine transform since it is flexible enough to account for most distortions in real images.  However, it cannot handle perspective effects, for which a projective transformation is required. The affine transform is given by,
-
-\begin{equation}
-\begin{array}{cccc}
-\mathbf{\acute{x}} &=& \mathbf{A}\mathbf{x} + \mathbf{t}\\
-&=&\mathbf{H}_A \mathbf{x}\\
-&=& \left[\begin{array}{cccc}\mathbf{A} & \mathbf{t}\\\mathbf{0}^T & 1\end{array}\right] \mathbf{x}\\
-\left[\begin{array}{l}\acute{x}\\\acute{y}\\1\end{array}\right]   &=& \AffMatrix \left[\begin{array}{l}x\\y\\1\end{array}\right]
-\end{array}
-\end{equation}
-
-$t_x$ and $t_y$ are translations in the $x$ and $y$ directions respectively.  Including these 2 parameters in $\mathbf{H}_A$ allows the affine transformation to be expressed as a single matrix multiply.  
-
-The affine matrix $\mathbf{A}$ can always be decomposed using the SVD decomposition as the product of orthogonal matrices $\mathbf{U}$ and $\mathbf{V}$ and a diagonal matrix $\mathbf{S}$, \cite{2004_BOOK_CG_Hartley}:
-
-\begin{equation}
-\begin{array}{llllllll}
-\mathbf{A} &= \left[\begin{array}{lll}a_{11} & a_{12} \\ a_{21} & a_{22}\\ \end{array}\right] \\
-&=\mathbf{U}{\color{blue}\mathbf{S}}\mathbf{V}^t \\
-&={\color{red}(\mathbf{U}\mathbf{V}^t)}\mathbf{V}{\color{blue}\mathbf{S}}\mathbf{V}^t\\
-&={\color{red}\mathbf{R}(\theta)}\mathbf{R}(-\phi){\color{blue}\mathbf{S}}\mathbf{R} (\phi)\\
-&={\color{red}\RotMatrixTheta}\RotMatrixminusPhi{\color{blue}\EigenvalueMatrix}\RotMatrixPhi\\\\
-\end{array}
-\label{Eq:AffineDecomposition}
-\end{equation}
-
-The affine matrix $\mathbf{A}$ can therefore be viewed as a succession of the following 4 steps:
-
-\begin{enumerate} 
-\item Rotation by angle $\phi$ 
-\item This rotation is followed by a scaling of $\lambda_1$ and $\lambda_2$ in the rotated $x$ and $y$ directions
-\item A rotation by angle -$\phi$ which brings the scaled object back to its original orientation
-\item A rotation by angle $\theta$
-\end{enumerate}
-
-We now discuss how to go from affine parameters to affine matrix.  For a given tracking scenario, the initial target planar bounding region is more intuitively expressed in terms of the affine parameters $\theta, \phi, \lambda_1, \lambda_2$ than in terms of the affine matrix $\mathbf{A}$.  However, the actual affine warp is more easily carried out using matrix multiplication.  Therefore, computing $\mathbf{A}$ explicitly is often required and can be done by substituting the affine parameters into Equation \ref{Eq:AffineDecomposition} to get,
-
-\begin{equation}
-\mathbf{A} = \bigMatrix
-\end{equation}
-where,
-
-\begin{equation*}
-\begin{array}{llll}
-\mathrm{ccc} &= \cos(\theta) \cos(\phi) \cos(\phi), & \mathrm{ccs} &= \cos(\theta) \cos(\phi) \sin(\phi)\\
-\mathrm{css} &= \cos(\theta) \sin(\phi) \sin(\phi), & \mathrm{scc} &= \sin(\theta) \cos(\phi) \cos(\phi)\\
-\mathrm{scs} &= \sin(\theta) \cos(\phi) \sin(\phi), & \mathrm{sss} &= \sin(\theta) \sin(\phi) \sin(\phi)\\
-a   &=  \mathrm{css} - \mathrm{scs}, & b   &=  \mathrm{ccc} + \mathrm{scs}\\
-c   &= \mathrm{ccs} + \mathrm{sss}, & d   &=  \mathrm{ccs} - \mathrm{scc}\\
-s 			    &= \lambda_1, & r 			    &= \frac{\lambda_2}{\lambda_1}\\
-\end{array}
-\end{equation*}
-
-
-Here we discuss how to go from affine matrix to affine parameters.  It is possible to recover the affine parameters from the affine matrix using Equation \ref{Eq:AffineDecomposition} again.  $\theta$  can be computed as follows,  
-
-\begin{equation}
-\begin{array}{lllllll}
-\mathbf{R}(\theta) &= \RotMatrixTheta \\
-&= \mathbf{U}\mathbf{V}^T \\
-&= \left[\begin{array}{llll}\mathbf{U}(1,1) & \mathbf{U}(1,2)\\\mathbf{U}(2,1) & \mathbf{U}(2,2)\end{array}\right]\left[\begin{array}{llll}\mathbf{V}(1,1) & \mathbf{V}(2,1)\\\mathbf{V}(1,2) & \mathbf{V}(2,2)\end{array}\right] \\
-\Rightarrow \theta &= \tan^{-1}\frac{\mathbf{U}(2,1)\mathbf{V}(1,1) + \mathbf{U}(2,2)\mathbf{V}(1,2)}{\mathbf{U}(1,1)\mathbf{V}(1,1) + \mathbf{U}(1,2)\mathbf{V}(1,2)}
-\end{array}
-\end{equation}
 
 								\begin{figure}[t]
 								\centering
@@ -165,36 +89,6 @@ Here we discuss how to go from affine matrix to affine parameters.  It is possib
 
 
 
-$\phi$ is computed as follows,
-
-%%%CAUTION: RECONCILE THIS WITH CODE%%%
-\begin{equation*}
-\phi = \tan^{-1}\frac{\mathbf{V}(2,1)}{\mathbf{V}(1,1)}
-\end{equation*}
-
-$s$ and $r$ are computed as follows,
-
-\begin{equation}
-\begin{array}{llll}
-s &= \lambda_1 &=  \mathbf{S}(1,1)\\
-r &= \frac{\lambda_2}{\lambda_1} &= \frac{\mathbf{S}(2,2)}{\mathbf{S}(1,1)}
-\end{array}
-\end{equation}
-
-
-A target is initially specified using a rotated bounding box which requires 5 parameters for complete specification:
-
-\begin{enumerate}
-\item $x_c$, bounding box center x coordinate
-\item $y_c$, bounding box center y coordinate
-\item $w$, width of bounding box
-\item $h$, height of bounding box
-\item $\theta$, rotation angle of bounding box in radians.  Counter-clockwise rotations of the bounding box are taken as negative angles.  
-\end{enumerate}
-
-%\item \underline{Target scale and orientation changes}.  Since we choose to model the deformations in the target bounding quadrilateral with an affine transform, we can handle target scale and orientation changes.  
-%\end{enumerate}
-%Another aspect is that we allow for pose and scale changesthe target bounding quadrilateral to undergo affine deformation.  The state vector $\mathbf{X}$  instead of constituting the commonly used $(x,y)$ coordinates of the target now constitutes 
 
 
 %########################

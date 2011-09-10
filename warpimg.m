@@ -1,11 +1,9 @@
-function wimg = warpimg(img, p, sz)
-% function wimg = warpimg(img, p, sz)
+function wimg = UTIL_2D_warp_image(img, p, sz)
+% function wimg = UTIL_2D_warp_image(img, p, sz)
 %
 %    img(h,w)
 %    p(6,n) : mat format
 %    sz(th,tw)
-%
-
 %% Copyright (C) 2005 Jongwoo Lim and David Ross.
 %% All rights reserved.
 

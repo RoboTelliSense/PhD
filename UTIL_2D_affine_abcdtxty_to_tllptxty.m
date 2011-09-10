@@ -21,7 +21,7 @@ function tllptxty = UTIL_2D_affine_abcdtxty_to_tllptxty(abcdtxty)
     %SVD of A
     [U,S,V]                 =   svd(A);
     
-    %check on U, S, V
+    %check on U, S, V                                   %taken from Jongwoo Lim and David Ross
     if (det(U) < 0)                                     %you want the determinant to be positive so that there's no reflection, just rotation
         U                   =   U(:      , 2:-1:1);     %switch columns, this changes the parity of the determinant
         V                   =   V(:      , 2:-1:1);     %same thing
@@ -55,4 +55,4 @@ function tllptxty = UTIL_2D_affine_abcdtxty_to_tllptxty(abcdtxty)
     lambda1                 =   S(1,1); 
     lambda2                 =   S(2,2); 
    
-    tllptxty                 =   [theta lambda1 lambda2 phi tx ty];
+    tllptxty                =   [theta lambda1 lambda2 phi tx ty];

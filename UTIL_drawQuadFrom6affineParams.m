@@ -26,7 +26,7 @@ if (length(varargin) < 1 || any(length(varargin{1}) ~= 6))
 else
   p = varargin{1};
   if (length(varargin) > 1 && strcmp(varargin{2},'geom'))
-    p = affparam2mat(p);
+    p = UTIL_2D_affine_tllptxty_to_abcdtxty(p);
     varargin(1:2) = [];
   else
     varargin(1) = [];

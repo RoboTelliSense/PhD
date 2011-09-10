@@ -7,7 +7,7 @@ function [err,afferr,recon,diff] = esterrfunc(p, frm, tmpl, opt)
 
 recon = [];
 if isstruct(tmpl)
-  diff = tmpl.mean - warpimg(frm, p, size(tmpl.mean));
+  diff = tmpl.mean - UTIL_2D_warp_image(frm, p, size(tmpl.mean));
   if (size(tmpl.basis,2) > 0)
     recon = tmpl.basis*(tmpl.basis'*diff(:));
     diff(:) = diff(:) + recon;
@@ -16,7 +16,7 @@ if isstruct(tmpl)
     recon = tmpl.mean;
   end
 else
-  diff = tmpl - warpimg(frm, p, size(tmpl));
+  diff = tmpl - UTIL_2D_warp_image(frm, p, size(tmpl));
 end
 if (nargin < 4)
   opt = [];
@@ -30,7 +30,7 @@ else
   err = sum(diff(:).^2);
 end
 if (isfield(opt,'affsig') && isfield(opt,'param0'))
-  afferr = sum(((affparam2geom(p)-opt.param0)./opt.affsig).^2);
+  afferr = sum(((UTIL_2D_affine_abcdtxty_to_tllptxty(p)-opt.param0)./opt.affsig).^2);
   if (isfield(opt,'affsigcoef'))
     afferr = afferr * opt.affsigcoef;
   end

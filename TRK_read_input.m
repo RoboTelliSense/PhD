@@ -3,7 +3,7 @@
 %>
 %> Options for tracking
 %> --------------------
-%> affROI_1x6            :   Initial affine parameters.  The affine ROI is initialized by selecting a bounding box
+%> affine2_1x6            :   Initial affine parameters.  The affine ROI is initialized by selecting a bounding box
 %>                              around the target in a software like IrfanView.  This captures the top left x and y 
 %>                              coordinates of the bounding box.  However, the code is based on the center of the 
 %>                              bounding box, called an affine ROI, so convert to center
@@ -60,10 +60,18 @@ function INP = TRK_read_input(code, tgt_warped_sw_sh)
     %convert top left coordinate to center
     p(1)                    =   p(1) + round(p(3)/2);  
     p(2)                    =   p(2) + round(p(4)/2);
-    %normalize    
-    affROI_1x6           =   [p(1), p(2), p(3)/tgt_warped_sw_sh, p(5), p(4)/p(3), 0]; %x, y, width/tgt_warped_sw_sh, angle, height/width, 0
+    
+    %affine2 parameters
+    tx                      =   p(1);
+    ty                      =   p(2);
+    lambda1                 =   p(3)/tgt_warped_sw_sh;
+    lambda2                 =   p(4)/tgt_warped_sw_sh;
+    theta                   =   p(5);
+    phi                     =   0;
+    affine2_1x6           	=   [tx ty, lambda1, theta, lambda2, phi];
+    
     %convert 
-    affROI_1x6           =   affparam2mat(affROI_1x6);
+    affine2_1x6              =   UTIL_2D_affine_tllptxty_to_abcdtxty(affine2_1x6);
 
 %-----------------------------------------------
 %PROCESSING
@@ -79,7 +87,7 @@ function INP = TRK_read_input(code, tgt_warped_sw_sh)
 %-----------------------------------------------
 %save 
 	%dataset
-    INP.ds_4_affROI_1x6     =   affROI_1x6;                 %affine ROI parameters
+    INP.ds_4_affine2_1x6     =   affine2_1x6;                 %affine ROI parameters
     INP.ds_5_affROIvar_1x6  =   affROIvar_1x6;              %" 					  , variance of
     INP.ds_6_ff            	=   ff;                 		%forgetting factor
     INP.ds_7_con_stddev   	=   con_normalizer;             %condensation algorithm, normalizer
@@ -89,7 +97,7 @@ function INP = TRK_read_input(code, tgt_warped_sw_sh)
 	%ground truth
     INP.gt_1_fp      		=   truepts;                    %ground truth for the feature points
     INP.gt_2_num_fp        	=   size(INP.gt_1_fp,2);        %number of feature points
-    INP.gt_3_initial_fp    	=   INP.ds_4_affROI_1x6([3,4,1;5,6,2]) * [INP.gt_1_fp(:,:,1); ones(1,INP.gt_2_num_fp)];
+    INP.gt_3_initial_fp    	=   INP.ds_4_affine2_1x6([3,4,1;5,6,2]) * [INP.gt_1_fp(:,:,1); ones(1,INP.gt_2_num_fp)];
     
     %random input
     INP.rand_unitvar_maxFx6xNp=   RandomData_sample; %pre-stored random numbers to ensure repeatability, maxF=1000 since we do not anticipate more than 1000 frames  
@@ -117,18 +125,18 @@ function INP = TRK_read_input(code, tgt_warped_sw_sh)
     
 %> Use the following set of parameters for the ground truth experiment.
 %> It's much slower, but more accuracte.
-%case 'dudek';  affROI_1x6 = [188,192,110,130,-0.08];
+%case 'dudek';  affine2_1x6 = [188,192,110,130,-0.08];
 %>     PARAM = struct('Np',4000, 'con_normalizer=0.25, 'ff',0.99, ...
 %>                 'batchsize',5, 'affROIvar_1x6',[11,9,.05,.05,0,0], ...
 %>                 'errfunc','');
 
 
-%case 'dudekgt';  affROI_1x6 = [188,192,110,130,-0.08]; 
+%case 'dudekgt';  affine2_1x6 = [188,192,110,130,-0.08]; 
 %>   PARAM = struct('Np',4000, 'con_normalizer=1, 'ff',1, ...
 %>                 'batchsize',5, 'affROIvar_1x6',[6,5,.05,.05,0,0], ...
 %>                'errfunc','');
 
-%case 'toycan';    affROI_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'affROIvar_1x6',[7,7,.01,.01,.002,.001]);  INP.ds_3_longName='1';txt2='Dudek';
-%case 'mushiake';  affROI_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'affROIvar_1x6',[10,10,.01,.01,.002,.001]);INP.ds_3_longName='1';txt2='Dudek';
+%case 'toycan';    affine2_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'affROIvar_1x6',[7,7,.01,.01,.002,.001]);  INP.ds_3_longName='1';txt2='Dudek';
+%case 'mushiake';  affine2_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'affROIvar_1x6',[10,10,.01,.01,.002,.001]);INP.ds_3_longName='1';txt2='Dudek';
     
     

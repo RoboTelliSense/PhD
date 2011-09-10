@@ -1,6 +1,7 @@
 \include{begin_article}
 \title{Batch and incremental SVD}
 \author{Salman Aslam\\ Georgia Institute of Technology}
+\date{}
 \begin{document}
 \maketitle
 \rule[0pt]{\textwidth}{1pt}
@@ -111,12 +112,12 @@ The augmented data matrix $\mathbf{C}$ can be written as follows,
 &= \bigg(\left[\mathbf{U} \ \ {\color{red}\mathbf{\tilde{B}}}\right]\mathbf{\tilde{U}}\bigg) \mathbf{\tilde{\Lambda}} \bigg(\mathbf{\tilde{V}}^T \left[\begin{array}{llll}\mathbf{V}^T & \mathbf{0}\\ \mathbf{0} & \mathbf{I}\end{array}\right]\bigg)\\
 &=\mathbf{U'}\mathbf{\tilde{\Lambda}}\mathbf{V'}^T
 \end{array}
-\label{Eqn:short}
+\label{Eqn:iSVDmain}
 \end{equation}
 
 The significance of this decomposition is that the new basis, $\mathbf{U'}$ depends only on the computation of ${\color{red}\mathbf{\tilde{B}}}$ which in turn only depends on the prior basis $\mathbf{U}$ and the new data  $\mathbf{B}$.  It does not depend on the prior data $\mathbf{A}$ which can be discarded.  (There is also a dependence on $\mathbf{R}$ but that too depends on ${\color{red}\mathbf{\tilde{B}}}$).
 
-We now turn to the computation of $ {\color{red}\mathbf{\tilde{B}}}$.  We know from Equation~\ref{Eqn:short} that $\mathbf{B}=\mathbf{U}\mathbf{U}^T\mathbf{B} + {\color{red}\mathbf{\tilde{B}}} {{\color{red}\mathbf{\tilde{B}}}^T}\mathbf{B}$.  Here, $\mathbf{U}\mathbf{U}^T\mathbf{B}$ is a matrix of projections of $\mathbf{B}$ onto the subspace $\mathbf{U}$.  Similarly, ${\color{red}\mathbf{\tilde{B}}} {\color{red}\mathbf{\tilde{B}}^T}\mathbf{B}$ is a matrix of projections of $\mathbf{B}$ onto the subspace ${\color{red}\mathbf{\tilde{B}}}$.  This tells us that the goal of ${\color{red}\mathbf{\tilde{B}}}$ is to capture the variation in the data that is orthogonal to the existing subspace $\mathbf{U}$.  Therefore, ${\color{red}\mathbf{\tilde{B}}}$ has to be computed so that it forms a basis that is orthogonal to $\mathbf{U}$.  Quite simply then, ${\color{red}\mathbf{\tilde{B}}}$ can be computed using a QR decomposition as follows,
+We now turn to the computation of $ {\color{red}\mathbf{\tilde{B}}}$.  We know from Equation~\ref{Eqn:iSVDmain} that $\mathbf{B}=\mathbf{U}\mathbf{U}^T\mathbf{B} + {\color{red}\mathbf{\tilde{B}}} {{\color{red}\mathbf{\tilde{B}}}^T}\mathbf{B}$.  Here, $\mathbf{U}\mathbf{U}^T\mathbf{B}$ is a matrix of projections of $\mathbf{B}$ onto the subspace $\mathbf{U}$.  Similarly, ${\color{red}\mathbf{\tilde{B}}} {\color{red}\mathbf{\tilde{B}}^T}\mathbf{B}$ is a matrix of projections of $\mathbf{B}$ onto the subspace ${\color{red}\mathbf{\tilde{B}}}$.  This tells us that the goal of ${\color{red}\mathbf{\tilde{B}}}$ is to capture the variation in the data that is orthogonal to the existing subspace $\mathbf{U}$.  Therefore, ${\color{red}\mathbf{\tilde{B}}}$ has to be computed so that it forms a basis that is orthogonal to $\mathbf{U}$.  Quite simply then, ${\color{red}\mathbf{\tilde{B}}}$ can be computed using a QR decomposition as follows,
 
 
 \begin{equation}
@@ -125,7 +126,7 @@ We now turn to the computation of $ {\color{red}\mathbf{\tilde{B}}}$.  We know f
 
 We will see later that a slight adjustment has to be made to $\mathbf{B}$ before making this computation.
 
-In summary then, the computation of our goal, the SVD of $\mathbf{C}$, is a four step process: (a) compute ${\color{red}\mathbf{\tilde{B}}}$, (b) use ${\color{red}\mathbf{\tilde{B}}}$ to compute $\mathbf{R}$ as given in Equation~\ref{Eqn:short}, (c) compute the SVD of $\mathbf{R}$, and (d) use the SVD of $\mathbf{R}$ to to compute the SVD of $\mathbf{C}$ as given in Equation~\ref{Eqn:short}.  
+In summary then, the computation of our goal, the SVD of $\mathbf{C}$, is a four step process: (a) compute ${\color{red}\mathbf{\tilde{B}}}$, (b) use ${\color{red}\mathbf{\tilde{B}}}$ to compute $\mathbf{R}$ as given in Equation~\ref{Eqn:iSVDmain}, (c) compute the SVD of $\mathbf{R}$, and (d) use the SVD of $\mathbf{R}$ to to compute the SVD of $\mathbf{C}$ as given in Equation~\ref{Eqn:iSVDmain}.  
 
 								\begin{figure}[t]
 								\centering
@@ -134,10 +135,10 @@ In summary then, the computation of our goal, the SVD of $\mathbf{C}$, is a four
 								\label{iPCA_results}
 								\end{figure}
 
-Two questions now remain.  What can be said of the covariance matrix and mean of $\left[{\mathbf{A}} \ \ \mathbf{B}\right]$ in relation to this incremental SVD procedure?  We now address these questions.
+Two questions now remain.  What can be said of the covariance matrix and mean of $\mathbf{C} = \left[{\mathbf{A}} \ \ \mathbf{B}\right]$ in relation to this incremental SVD procedure?  We now address these questions.
 
 
-\subsubsection{Mean and covariance of incremental SVD}
+\subsubsection{Mean and covariance}
 %--------------------
 The mean $\mathbf{\mu}_\mathbf{C}$ and covariance matrix $\mathbf{\Sigma}_C$ of input matrix $\mathbf{C}$ is given by,
 
@@ -206,7 +207,7 @@ ${\color{red}\mathbf{\tilde{B}}}$ is then computed using the QR decomposition of
 %\item \underline{Find component of $\mathbf{B}$ orthogonal to $\color{darkgreen}\mathbf{U}$}.
 %\end{enumerate}
 
-For clarity, we explicitly write out the dimensions of all matrices in Equation~\ref{Eqn:long}
+For clarity, we explicitly write out the dimensions of all matrices in the first few lines of Equation~\ref{Eqn:iSVDmain} as follows,
 
 \scriptsize
 \begin{equation}
@@ -244,8 +245,7 @@ In the first experiment, the rmse of the error in the basis is 0.0143.
 
 In the second experiment, the rmse of the error in the basis is 0.0378.  A plot of the error values for every point in the basis is given in Figure~\ref{iPCA_results}.
 
-
-
+The code used to generate these results is given in subsection~\ref{Sec:sourceCode}.
 
 %-----------------------------------------------------------------
 \subsection{Conclusions}
@@ -256,6 +256,7 @@ In this report, we have shown that the incremental SVD method produces results v
 
 %-----------------------------------------------------------------
 \subsection{Source code}
+\label{Sec:sourceCode}
 %-----------------------------------------------------------------
 \scriptsize
 \lstinputlisting[language=Matlab, caption={demo\_iPCA.m.}, 	label=lst:demo_iPCA]	{demo_iPCA.m}

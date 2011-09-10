@@ -3,7 +3,7 @@
 %>
 %> Description of options
 %> ----------------------
-%> affROI_1x6            :   [px, py, sx, sy, theta]; The location of the target in the first frame.
+%> affine2_1x6            :   [px, py, sx, sy, theta]; The location of the target in the first frame.
 %> px, py                   :   Coordinates of the centre of the box.
 %> sx, sy                   :   Size of the box in the x (width) and y (height) dimensions, before rotation.
 %> theta                    :   Rotation angle of the box
@@ -26,7 +26,7 @@
 %>                              affROIvar_1x6(6) = scaling angle (radians, mean is 0)
 %> sw, sh                   :   snippet width, height
 %> tmplsize                 :   snippet size, the resolution at which the tracking window is sampled, in this case 
-%>                              sw pixels by sh pixels.  If your initial window (given by affROI_1x6) is very large you may need to increase this.
+%>                              sw pixels by sh pixels.  If your initial window (given by affine2_1x6) is very large you may need to increase this.
 %> maxbasis                 :   The number of basis vectors to keep in the learned apperance model.
 %> I_0t1                    :   Input image scaled between 0 and 1
 %> B                        :   training update interval
@@ -166,9 +166,9 @@ datasetCode=1;
     trkPF.name              =   'genericPF';                        %generic particle filter    
     
     trkPF.state_1_DM2       =   [];                                 %1. data:	design matrix, one observation per column 
-    trkPF.state_2_mu_Dx1    =   warpimg(first_I_0t1, INP.ds_4_affROI_1x6, PARAM.tgt_sz); %data mean
+    trkPF.state_2_mu_Dx1    =   UTIL_2D_warp_image(first_I_0t1, INP.ds_4_affine2_1x6, PARAM.tgt_sz); %data mean
     trkPF.state_3_weights   =   [];
-    trkPF.state_4_best_affROI_1x6=   INP.ds_4_affROI_1x6; 
+    trkPF.state_4_best_affine2_1x6=   INP.ds_4_affine2_1x6; 
     
     trkPF.fp_1_gt           =   cat(3, INP.gt_3_initial_fp + repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), INP.gt_1_fp(:,:,1)); %1. ground truth
     trkPF.fp_2_est          =   zeros(size(INP.gt_1_fp));  			%1b. estimated
@@ -202,7 +202,7 @@ datasetCode=1;
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
         I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256; %input
-        trkPF               =   TRK_condensation(f, INP, PARAM, I_0t1, [], trkPF);		
+        trkPF               =   TRK_condensation(f, INP, PARAM, I_0t1, NONE, trkPF);		
     end	   
 
 %step 2. save structures	
