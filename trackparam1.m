@@ -119,7 +119,7 @@ if (~exist('datatitle') | ~strcmp(title,datatitle))
 end
 
 param0 = [p(1), p(2), p(3)/32, p(5), p(4)/p(3), 0];
-param0 = UTIL_2D_affine_tllptxty_to_abcdtxty(param0);
+param0 = UTIL_2D_affine_tllpxy_to_abcdxy(param0);
 
 opt.dump = dump_frames;
 if (opt.dump & exist('dump') ~= 7)

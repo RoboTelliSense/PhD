@@ -3,7 +3,7 @@
 %>
 %> Description of options
 %> ----------------------
-%> affine2_1x6            :   [px, py, sx, sy, theta]; The location of the target in the first frame.
+%> aff_abcdxy_1x6            :   [px, py, sx, sy, theta]; The location of the target in the first frame.
 %> px, py                   :   Coordinates of the centre of the box.
 %> sx, sy                   :   Size of the box in the x (width) and y (height) dimensions, before rotation.
 %> theta                    :   Rotation angle of the box
@@ -16,17 +16,17 @@
 %>                              fairly consistently, so it most likely won't need to be changed.  A smaller batchsize 
 %>                              means more frequent updates, making it quicker to model changes in appearance, but also 
 %>                              a little more prone to drift, and require more computation.
-%> affROIvar_1x6     	:   Standard deviations of the dynamics distribution, that is how much we expect the target
+%> aff_tllpxy_var_1x6     	:   Standard deviations of the dynamics distribution, that is how much we expect the target
 %>                              object might move from one frame to the next.  The meaning of each number is as follows:
-%>                              affROIvar_1x6(1) = x translation (pixels, mean is 0)
-%>                              affROIvar_1x6(2) = y translation (pixels, mean is 0)
-%>                              affROIvar_1x6(3) = rotation angle (radians, mean is 0)
-%>                              affROIvar_1x6(4) = x scaling (pixels, mean is 1)
-%>                              affROIvar_1x6(5) = y scaling (pixels, mean is 1)
-%>                              affROIvar_1x6(6) = scaling angle (radians, mean is 0)
+%>                              aff_tllpxy_var_1x6(1) = x translation (pixels, mean is 0)
+%>                              aff_tllpxy_var_1x6(2) = y translation (pixels, mean is 0)
+%>                              aff_tllpxy_var_1x6(3) = rotation angle (radians, mean is 0)
+%>                              aff_tllpxy_var_1x6(4) = x scaling (pixels, mean is 1)
+%>                              aff_tllpxy_var_1x6(5) = y scaling (pixels, mean is 1)
+%>                              aff_tllpxy_var_1x6(6) = scaling angle (radians, mean is 0)
 %> sw, sh                   :   snippet width, height
 %> tmplsize                 :   snippet size, the resolution at which the tracking window is sampled, in this case 
-%>                              sw pixels by sh pixels.  If your initial window (given by affine2_1x6) is very large you may need to increase this.
+%>                              sw pixels by sh pixels.  If your initial window (given by aff_abcdxy_1x6) is very large you may need to increase this.
 %> maxbasis                 :   The number of basis vectors to keep in the learned apperance model.
 %> I_0t1                    :   Input image scaled between 0 and 1
 %> B                        :   training update interval
@@ -103,7 +103,7 @@ datasetCode=1;
     %fixed parameters    
     PARAM.con_errfunc       =   'L2';               %condensation related              
     PARAM.con_reseig        =   0;
-	PARAM.tgt_warped_sw_sh  =   32;                 %target related, note 1 less than sw and sh which I had to increase by 1 for RVQ
+	PARAM.scale  =   32;                 %target related, note 1 less than sw and sh which I had to increase by 1 for RVQ
     PARAM.in_sw            =   33;
     PARAM.in_sh            =   33;    
     PARAM.tgt_sz            =   [PARAM.in_sh PARAM.in_sw];  %combine two above
@@ -118,7 +118,7 @@ datasetCode=1;
 	PARAM.plot_title_fontsz =   8;                  %", fontsize
 
 %2. INPUT
-    INP                     =   TRK_read_input(PARAM.in_datasetCode, PARAM.tgt_warped_sw_sh); 
+    INP                     =   TRK_read_input(PARAM.in_datasetCode, PARAM.scale); 
     first_I_0t1             =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %read first image, 0t1 means the image intensities are between 0 and 1       
 
     %back to PARAM based on input
@@ -165,10 +165,10 @@ datasetCode=1;
     %generic particle filter
     trkPF.name              =   'genericPF';                        %generic particle filter    
     
-    trkPF.state_1_DM2       =   [];                                 %1. data:	design matrix, one observation per column 
-    trkPF.state_2_mu_Dx1    =   UTIL_2D_warp_image(first_I_0t1, INP.ds_4_affine2_1x6, PARAM.tgt_sz); %data mean
-    trkPF.state_3_weights   =   [];
-    trkPF.state_4_best_affine2_1x6=   INP.ds_4_affine2_1x6; 
+    trkPF.stt_1_DM2       =   [];                                 %1. data:	design matrix, one observation per column 
+    trkPF.stt_2_mu_Dx1    =   UTIL_2D_warp_image(first_I_0t1, INP.ds_4_aff_abcdxy_1x6, PARAM.tgt_sz); %data mean
+    trkPF.stt_3_weights   =   [];
+    trkPF.stt_4_aff_abcdxy_1x6=   INP.ds_4_aff_abcdxy_1x6; 
     
     trkPF.fp_1_gt           =   cat(3, INP.gt_3_initial_fp + repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), INP.gt_1_fp(:,:,1)); %1. ground truth
     trkPF.fp_2_est          =   zeros(size(INP.gt_1_fp));  			%1b. estimated
@@ -184,7 +184,7 @@ datasetCode=1;
     
 	trkPF.tst_SNRdB_Fx1   	=   zeros(INP.ds_9_F,1);
 
-    trkPF.bestCandidate_0t1_shxsw =   trkPF.state_2_mu_Dx1;							%4.  testing
+    trkPF.bestCandidate_0t1_shxsw =   trkPF.stt_2_mu_Dx1;							%4.  testing
     
 %4. %timing   
     duration                =   0; 

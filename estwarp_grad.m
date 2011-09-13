@@ -18,8 +18,8 @@ else
 end
 
 if (isfield(opt,'affsig'))
-  opt.param0 = UTIL_2D_affine_abcdtxty_to_tllptxty(param.tst_bestaffine_1x6);
-%disp(cat(1,p0,opt.param0,UTIL_2D_affine_tllptxty_to_abcdtxty(opt.param0)));
+  opt.param0 = UTIL_2D_affine_abcdxy_to_tllpxy(param.tst_bestaffine_1x6);
+%disp(cat(1,p0,opt.param0,UTIL_2D_affine_tllpxy_to_abcdxy(opt.param0)));
 disp(opt.param0);
 end
 param.tst_bestaffine_1x6 = fminsearch(@esterrfunc, param.tst_bestaffine_1x6, opt.minopt, frm, tmpl, opt);

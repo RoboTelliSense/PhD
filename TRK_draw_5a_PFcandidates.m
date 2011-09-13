@@ -21,7 +21,7 @@ function TRK_draw_5_PF_candidates(I, sz, PFcandidates_6xNp, out_num_rows, out_nu
     hold on
     
     for i=1:Np
-        UTIL_drawQuadFrom6affine_1x6(sz, UTIL_2D_affine_tllptxty_to_abcdtxty(PFcandidates_6xNp(:,i)), 'Color', color, 'LineWidth',1); 
+        UTIL_drawQuadFrom6affine_1x6(sz, UTIL_2D_affine_tllpxy_to_abcdxy(PFcandidates_6xNp(:,i)), 'Color', color, 'LineWidth',1); 
     end
     
     UTIL_makeTitle([str ', PF candidates'], color, PARAM.plot_title_fontsz);

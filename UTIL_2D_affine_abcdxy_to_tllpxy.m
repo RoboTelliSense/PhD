@@ -1,19 +1,19 @@
-%> @file UTIL_2D_affine_abcdtxty_to_tllptxty.m
+%> @file UTIL_2D_affine_abcdxy_to_tllpxy.m
 %>
 %> Reference "Multiple View Geometry in Computer Vision" by Richard
 %> Hartley and Andrew Zisserman and Jongwoo Lim and David Ross
 %>
 %> Copyright (c) Salman Aslam.  All rights reserved.  
 
-function tllptxty = UTIL_2D_affine_abcdtxty_to_tllptxty(abcdtxty)
+function tllpxy = UTIL_2D_affine_abcdxy_to_tllpxy(abcdxy)
 
     %input
-    a                       =   abcdtxty(1);
-    b                       =   abcdtxty(2);
-    c                       =   abcdtxty(3);
-    d                       =   abcdtxty(4);
-    tx                      =   abcdtxty(5);
-    ty                      =   abcdtxty(6);  
+    a                       =   abcdxy(1);
+    b                       =   abcdxy(2);
+    c                       =   abcdxy(3);
+    d                       =   abcdxy(4);
+    tx                      =   abcdxy(5);
+    ty                      =   abcdxy(6);  
     
     A                       =   [a b; ...
                                  c d];
@@ -55,4 +55,4 @@ function tllptxty = UTIL_2D_affine_abcdtxty_to_tllptxty(abcdtxty)
     lambda1                 =   S(1,1); 
     lambda2                 =   S(2,2); 
    
-    tllptxty                =   [theta lambda1 lambda2 phi tx ty];
+    tllpxy                =   [theta lambda1 lambda2 phi tx ty];

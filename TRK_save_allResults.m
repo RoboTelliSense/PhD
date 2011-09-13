@@ -13,10 +13,10 @@
         
         %1. affine parameters
         clear struct1;
-                        struct1.data     =   trkIPCA.tgt_best_affine2_1x6;                                                                                           UTIL_savecsv_struct(trkIPCA.cfn_1_affine_1x6, f, struct1);
-        if (bUseBPCA )   struct1.data     =   trkBPCA.tgt_best_affine2_1x6;                                                                                           UTIL_savecsv_struct(trkBPCA.cfn_1_affine_1x6, f, struct1); end
-        if (bUseRVQ)    struct1.data     =   trkRVQ.tgt_best_affine2_1x6;                                                                                           UTIL_savecsv_struct(trkRVQ.cfn_1_affine_1x6, f, struct1); end
-        if (bUseTSVQ)   struct1.data     =   trkTSVQ.tgt_best_affine2_1x6;                                                                                           UTIL_savecsv_struct(trkTSVQ.cfn_1_affine_1x6, f, struct1); end
+                        struct1.data     =   trkIPCA.tgt_best_aff_abcdxy_1x6;                                                                                           UTIL_savecsv_struct(trkIPCA.cfn_1_affine_1x6, f, struct1);
+        if (bUseBPCA )   struct1.data     =   trkBPCA.tgt_best_aff_abcdxy_1x6;                                                                                           UTIL_savecsv_struct(trkBPCA.cfn_1_affine_1x6, f, struct1); end
+        if (bUseRVQ)    struct1.data     =   trkRVQ.tgt_best_aff_abcdxy_1x6;                                                                                           UTIL_savecsv_struct(trkRVQ.cfn_1_affine_1x6, f, struct1); end
+        if (bUseTSVQ)   struct1.data     =   trkTSVQ.tgt_best_aff_abcdxy_1x6;                                                                                           UTIL_savecsv_struct(trkTSVQ.cfn_1_affine_1x6, f, struct1); end
 
         %2. feature points
         clear struct1;

@@ -30,7 +30,7 @@ else
   err = sum(diff(:).^2);
 end
 if (isfield(opt,'affsig') && isfield(opt,'param0'))
-  afferr = sum(((UTIL_2D_affine_abcdtxty_to_tllptxty(p)-opt.param0)./opt.affsig).^2);
+  afferr = sum(((UTIL_2D_affine_abcdxy_to_tllpxy(p)-opt.param0)./opt.affsig).^2);
   if (isfield(opt,'affsigcoef'))
     afferr = afferr * opt.affsigcoef;
   end

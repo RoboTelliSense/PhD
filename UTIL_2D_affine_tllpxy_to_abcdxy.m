@@ -1,4 +1,4 @@
-%> @file UTIL_2D_affine_tllptxty_to_abcdtxty.m
+%> @file UTIL_2D_affine_tllpxy_to_abcdxy.m
 %> @brief 
 %> 
 %> affine1_6x1 : [a      b        c        d     tx   ty]
@@ -11,15 +11,15 @@
 %> Date created             :   around Jan 2011
 %> Date modified            :   Sep 10, 2011
 
-function abcdtxty = UTIL_2D_affine_tllptxty_to_abcdtxty(tllptxty) %tllptxty: lambda1, lambda2, theta, phi, tx, ty
+function abcdxy = UTIL_2D_affine_tllpxy_to_abcdxy(tllpxy) %tllpxy: lambda1, lambda2, theta, phi, tx, ty
     
-    %input (read tllptxty)
-    theta                   =   tllptxty(1,:);  
-    lambda1                 =   tllptxty(2,:);  
-    lambda2                 =   tllptxty(3,:);  
-    phi                     =   tllptxty(4,:);
-    tx                      =   tllptxty(5,:);           
-    ty                      =   tllptxty(6,:);               
+    %input (read tllpxy)
+    theta                   =   tllpxy(1,:);  
+    lambda1                 =   tllpxy(2,:);  
+    lambda2                 =   tllpxy(3,:);  
+    phi                     =   tllpxy(4,:);
+    tx                      =   tllpxy(5,:);           
+    ty                      =   tllpxy(6,:);               
 
     %intermediate
     ccc                     =   cos(theta)*(cos(phi))^2;   %can be made quicker by prestoring trigonometric values
@@ -34,10 +34,10 @@ function abcdtxty = UTIL_2D_affine_tllptxty_to_abcdtxty(tllptxty) %tllptxty: lam
     r                       =   ccs + sss;
     s                       =   ccs - scc;
 
-    %output (create abcdtxty)
+    %output (create abcdxy)
     a                       =   lambda2*p + lambda1*q;      
     b                       =   lambda2*s - lambda1*r;
     c                       =   lambda2*r - lambda1*s;
     d                       =   lambda2*q + lambda1*p;
     
-    abcdtxty                =   [a b c d tx ty];
+    abcdxy                =   [a b c d tx ty];
