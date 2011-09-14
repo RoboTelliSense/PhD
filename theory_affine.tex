@@ -1,0 +1,277 @@
+\include{begin_article}
+\title{Affine Warping in $\mathbb{R}^2$}
+\author{Salman Aslam\\ Georgia Institute of Technology}
+\date{}
+\include{figs/inkscapeLatex}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+%================================
+\section{Introduction}
+%================================
+In many situations, it is necessary to track a visual target that is undergoing deformations.  Several targets of interest fall in this category, particularly non-rigid targets such as humans.  Even rigid objects can undergo severe deformation in a matter of seconds as shown in Figure~\ref{Fig:PETS2001_deformation}.  
+
+
+								\begin{figure}
+								\subfigure[Frame 770.]{\includegraphics[width=0.45\textwidth]{figs/PETS2001_00770.jpg}}
+								\subfigure[Frame 1770.]{\includegraphics[width=0.45\textwidth]{figs/PETS2001_01770.jpg}}
+								\caption{Over time, even rigid objects can undergo severe deformations as shown in these images from the PETS2001 dataset.}
+								\label{Fig:PETS2001_deformation}
+								\end{figure}
+
+In such cases, using a rigid rectangular bounding box to represent the target will inevitably lead to inclusion of background pixels in the matching process.  This can easily lead to tracker drift, particularly if the tracker is also trying to learn the appearance model of the target.
+
+We now show how to use affine warping of the rectangular bounding box so that it more closely captures the outline of the target of interest.  This minimizes inclusion of background pixels in the matching process and leads to more robust tracking.
+
+%================================
+\section{Theory}
+%================================
+Table \ref{table:2Dtransformations} shows different kinds of 2D linear transformations.  Every transformation generalizes the transformation below it in the table.  In this report, we are interested in the 2D affine transform since it is flexible enough to account for most distortions in real images.
+
+								\begin{table}[t]
+								\centering
+								\begin{tabular}{| l | c | c | p{2.5in} |}
+								\hline
+								Transformation & DoF & Matrix & Distortion\\ \hline 
+								& & & \\ Projective & 8 & $\ProjMatrix$ & any arbitrary quadrilateral as long as no three points are collinear\\  & & & \\ \hline
+								& & & \\ Affine & 6 & $\AffMatrix$ & rotation and non-isotropic scaling\\  & & & \\ \hline
+								& & & \\ Similarity & 5 & $\SimMatrix$ & scaling and rigid motion\\  & & & \\ \hline
+								& & & \\ Euclidean & 4 & $\EucMatrix$ & rigid motion (rotation, translation) \\  & & & \\ \hline
+								\end{tabular}\
+								\caption{2D transformations}
+								\label{table:2Dtransformations}
+								\end{table}
+
+The affine transform\footnote{The notation adopted by some books for the affine transform is,
+
+\begin{equation}
+\begin{array}{llllllll}
+X &= ax + by + e\\
+Y &= cx + dy + f
+\end{array}
+\label{Eq:AffineDecomposition}
+\end{equation}
+
+where the input coordinate (x,y) has been transformed through 6 affine parameters, $a, b, c, d, e, f$ to the output coordinate $(X,Y)$.  Instead of $e$ and $f$, we will be using $t_x$ and $t_y$ respectively.}
+ is given by,
+
+\begin{equation}
+\begin{array}{cllll}
+\left[\begin{array}{l}\acute{x}\\\acute{y}\\1\end{array}\right]   &=& \AffMatrix \left[\begin{array}{l}x\\y\\1\end{array}\right]\\
+\mathbf{\acute{x}} &=& \left[\begin{array}{cccc}\mathbf{A} & \mathbf{t}\\\mathbf{0}^T & 1\end{array}\right] \mathbf{x}\\
+&=& \mathbf{A}\mathbf{x} + \mathbf{t}\\
+&=& \mathbf{H}_A \mathbf{x}\\
+\end{array}
+\end{equation}
+
+$t_x$ and $t_y$ are translations in the $x$ and $y$ directions respectively and $\mathbf{H}_A$ is the affine transformation matrix.  The matrix $\mathbf{A}$ above can always be decomposed using the SVD decomposition as the product of orthonormal matrix $\mathbf{U}$ containing the eigenvectors of $\mathbf{A}\mathbf{A}^T$, orthonormal matrix $\mathbf{V}$ containing the eigenvectors  $\mathbf{A}^T\mathbf{A}$ and a diagonal matrix $\mathbf{S}$ containing the eigenvalues of $\mathbf{A}$~\cite{2004_BOOK_CG_Hartley}:
+
+\begin{equation}
+\begin{array}{llllllll}
+\mathbf{A} &= \left[\begin{array}{lll}a & b \\ c & d\\ \end{array}\right] \\
+&=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t} \\
+&={\color{blue}(\mathbf{U}\mathbf{V}^t)}{\color{red}\mathbf{V}}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}\\
+&={\color{blue}\mathbf{R}(\theta)}{\color{red}\mathbf{R}(-\phi)}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{R} (\phi)}\\
+&={\color{blue}\RotMatrixTheta}{\color{red}\RotMatrixminusPhi}{\color{darkgreen}\EigenvalueMatrix}{\color{red}\RotMatrixPhi}\\\\
+\end{array}
+\label{Eq:AffineDecomposition}
+\end{equation}
+
+${\color{blue}\mathbf{U}\mathbf{V}^t}$ is an orthogonal matrix since $({\color{blue}\mathbf{U}\mathbf{V}^t})^t =({\color{blue}\mathbf{U}\mathbf{V}^t})^{-1}$.  Therefore, without loss of generality, it can be written as a rotation matrix.  Of the possible 6 DOFs (degrees of freedom) of the affine transformation, the 4 DOFs in $\mathbf{A}$, i.e., ($a, b, c$, $d$) have been replaced with $(\theta, \lambda_1, \lambda_2, \phi)$.
+
+The affine matrix $\mathbf{A}$ can therefore be viewed as a succession of the following 4 steps:
+
+\begin{enumerate} 
+\item Rotation by angle $\phi$ 
+\item This rotation is followed by a scaling of $\lambda_1$ and $\lambda_2$ in the rotated $x$ and $y$ directions
+\item A rotation by angle -$\phi$ which brings the scaled object back to its original orientation
+\item A rotation by angle $\theta$
+\end{enumerate}
+
+\subsection{\underline{Converting $(a, b, c, d)$ to$(\theta, \lambda_1, \lambda_2, \phi)$}}
+%-------------------------------------------------
+In several cases, the affine parameters are given in the form of $(a, b, c, d)$.  However, it is difficult to get a physical intuition when the parameterization is done in this form.  In such cases, converting to $(\theta, \lambda_1, \lambda_2, \phi)$ helps in getting an insight into how the object of interest is being deformed.  For this step, first compute the SVD decomposition $\mathbf{A}=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}$.  
+
+The first parameter, angle $\phi$, is computed as follows,
+
+%%%CAUTION: RECONCILE THIS WITH CODE%%%
+\begin{equation}
+\begin{array}{ccccll}
+&{\color{red}\mathbf{R}(\phi)}&=&{\color{red}\mathbf{V}^T}\\
+\Rightarrow &{\color{red}\RotMatrixPhi} &=& \left[\begin{array}{llll}v_{1,1} &v_{2,1}\\v_{1,2} & v_{2,2}\end{array}\right]\\
+\end{array}
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+\boxed{\phi = \tan^{-1}\frac{v_{1,2}}{v_{1,1}}}
+\end{equation}
+
+The second and third parameters, scaling factors $\lambda_1$ and $\lambda_2$, are computed as follows,
+
+\begin{equation}
+\begin{array}{ccccc}
+&{\color{darkgreen}\EigenvalueMatrix} &=&{\color{darkgreen}\mathbf{S}}\\
+&&=&\left[\begin{array}{cccc}s_{1,1} & 0\\0 &s_{2,2}\end{array}\right]\\
+\end{array}
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+\boxed{
+\begin{array}{cccc}
+\Rightarrow \lambda_1 &=&  s_{1,1}\\
+\Rightarrow \lambda_2 &=& s_{2,2}
+\end{array}}
+\end{equation}
+
+The fourth parameter, angle $\theta$, is computed as follows,  
+
+\begin{equation}
+\begin{array}{ccccc}
+{\color{blue}\mathbf{R}(\theta)} &=&  {\color{blue}\mathbf{U}\mathbf{V}^T}\\
+{\color{blue}\RotMatrixTheta} &= &\left[\begin{array}{llll}u_{1,1} & u_{1,2}\\u_{2,1} & u_{2,2}\end{array}\right]\left[\begin{array}{llll}v_{1,1} & v_{2,1}\\v_{1,2} & v_{2,2}\end{array}\right] \\
+\end{array}
+\end{equation}
+
+
+Therefore,
+
+\begin{equation}
+\boxed{\theta = \tan^{-1}\frac{u_{2,1}v_{1,1} + u_{2,2}v_{1,2}}{u_{1,1}v_{1,1} + u_{1,2}v_{1,2}}}
+\end{equation}
+
+The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_abcdxy_to_lltpxy}.
+
+\subsection{\underline{Converting  $(\theta, \lambda_1, \lambda_2, \phi)$ to $(a, b, c, d)$}}
+%-------------------------------------------------
+In visual tracking, the initial target planar bounding region is more intuitively expressed in terms of $(\theta, \lambda_1, \lambda_2, \phi)$ than in terms of $(a, b, c, d)$.  However, the actual affine warp is more easily carried out using matrix multiplication for which we need $(a, b, c, d)$.  This can be done by multiplying out all the terms in Equation~\ref{Eq:AffineDecomposition} to get
+
+\begin{equation}
+\boxed{
+\begin{array}{llll}
+a &= (\lambda_2) p + (\lambda_1) q\\
+b &= (\lambda_2) s  - (\lambda_1) r \\
+c &= (\lambda_2) r  - (\lambda_1) s \\
+d &= (\lambda_2)q + (\lambda_1) p
+\end{array}}
+\end{equation}
+
+
+%\begin{equation}
+%\begin{array}{llll}
+%\mathbf{A} &= \left[\begin{array}{lll}a & b \\ c & d\\ \end{array}\right]\\
+%&=\bigMatrixTwo
+%\end{array}
+%\end{equation}
+
+where temporary variables $p, q, r, s$ are computed from angles $\theta$ and $\phi$ using,
+
+\begin{equation*}
+\begin{array}{llll}
+\mathrm{ccc} &= \cos(\theta) \cos^2(\phi)\\
+\mathrm{ccs} &= \cos(\theta) \cos(\phi) \sin(\phi)\\
+\mathrm{css} &= \cos(\theta) \sin^2(\phi)\\
+\mathrm{scc} &= \sin(\theta) \cos^2(\phi) \\
+\mathrm{scs} &= \sin(\theta) \cos(\phi) \sin(\phi)\\
+\mathrm{sss} &= \sin(\theta) \sin^2(\phi)\\
+p   &=  \mathrm{css} - \mathrm{scs}\\
+q   &=  \mathrm{ccc} + \mathrm{scs}\\
+r   &= \mathrm{ccs} + \mathrm{sss}\\
+s   &=  \mathrm{ccs} - \mathrm{scc}\\
+\end{array}
+\end{equation*}
+
+The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_lltpxy_to_abcdxy}.
+
+
+%================================
+\section{Experiments}
+%================================
+A target is initially specified by drawing a bounding box, and then rotating the bounding box so that it fits the target.  At this point, the target is specified using a rigid and not an affine transformation since this works well enough for most tracking scenarios.  This requires 5 parameters for complete specification:
+
+
+\begin{enumerate}
+\item $t_x$, bounding box center x coordinate
+\item $t_y$, bounding box center y coordinate
+\item $w$, width of bounding box
+\item $h$, height of bounding box
+\item $\theta$, rotation angle of bounding box in radians.  In the cartesian coordinate system, a positive $\theta$ corresponds to counter-clockwise direction.  This can be verified quickly since a $90^{\circ}$ left turn for a vector $(x,y)^T$ in $\mathbb{R}^2$ is given by $(-y,x)^T$.  This is obtained using,
+
+\begin{equation}
+\left[\begin{array}{ccc}
+-y 
+\\ 
+x
+\end{array}
+\right]=
+\left[
+\begin{array}{ccc}
+\cos(90^{\circ}) & -\sin(90^{\circ}) \\
+\sin(90^{\circ}) & \cos(90^{\circ})
+\end{array}
+\right]
+\left[\begin{array}{ccc}
+x 
+\\ 
+y
+\end{array}
+\right]
+\end{equation}
+
+
+The term left turn is commonly used in computer graphics.  In  $\mathbb{R}^2$, it corresponds to a counter-clockwise rotation.  In images, where the $y$ coordinate normally decreases vertically downwards, a left turn is given by $(y,-x)^T$.  Notice that $(x,y)^T(-y,x) = (x,y)^T(y,-x) = 0$, and therefore both $ (-y,x)^T$ and $(y,-x)^T$ are orthogonal to $(x,y)^T$.
+\end{enumerate}
+
+								\begin{figure}
+								\centering
+								\includegraphics[width=0.65\textwidth]{figs/affine_grid.pdf}
+								\caption{A w x h grid is created which is centered around the origin.  In this case, the dimensions of the grid are 33x33.}
+								\end{figure}
+
+
+								\begin{figure}
+								\centering
+								\includegraphics[width=0.65\textwidth]{figs/affineCandidates.pdf}
+								\caption{Examples of affine warps.  Each image snippet is 33x33 pixels.}
+								\end{figure}
+
+
+
+
+
+%\item \underline{Target scale and orientation changes}.  Since we choose to model the deformations in the target bounding quadrilateral with an affine transform, we can handle target scale and orientation changes.  
+%\end{enumerate}
+%Another aspect is that we allow for pose and scale changesthe target bounding quadrilateral to undergo affine deformation.  The state vector $\mathbf{X}$  instead of constituting the commonly used $(x,y)$ coordinates of the target now constitutes 
+%================================
+\section{Results}
+%================================
+
+
+%================================
+\section{Conclusions}
+%================================
+
+
+
+%-----------------------------------------------------------------
+\newpage
+\appendix
+\section{Source code}
+\label{Sec:sourceCode}
+%-----------------------------------------------------------------
+\scriptsize
+\lstinputlisting[language=Matlab, caption={warpimg.m.}, 									label=lst:warpimg]									{warpimg.m}
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_abcdtxty\_to\_tllpxy.m.}, 	label=lst:UTIL_2D_affine_abcdxy_to_tllpxy]		{UTIL_2D_affine_abcdxy_to_tllpxy.m}
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_tllpxy\_to\_abcdxy.m.}, 		label=lst:UTIL_2D_affine_tllpxy_to_abcdxy]		{UTIL_2D_affine_tllpxy_to_abcdxy.m}
+\lstinputlisting[language=Matlab, caption={affparaminv.m.}, 								label=lst:affparaminv]								{affparaminv.m}
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_make\_rotation\_matrix.m}, 			label=lst:UTIL_2D_make_rotation_matrix]			{UTIL_2D_make_rotation_matrix.m}
+
+
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}
