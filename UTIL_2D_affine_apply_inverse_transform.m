@@ -1,8 +1,8 @@
-function [x_1xN, y_1xN]     =   UTIL_2D_affine_apply_inverse_transform(H_2x3, X_1xN, Y_1xN)
+function [x_1xN, y_1xN]     =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, X_1xN, Y_1xN)
 
-    N                       =   length(x_1xN);
-    T_2x1                   =   H_2x3(:,3);
-    A_2x2                   =   H_2x3(1:2,1:2);
+    N                       =   length(X_1xN);
+    T_2x1                   =   Ha_2x3(:,3);
+    A_2x2                   =   Ha_2x3(1:2,1:2);
     
     %put into 3xN matrix
     inppoints_xy1_2xN       =   [   X_1xN ; ...      

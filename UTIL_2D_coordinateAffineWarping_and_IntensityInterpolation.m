@@ -25,7 +25,7 @@
 %> Date created             :   Sep 13, 2011
 %> Date modified            :   Sep 14, 2011
 
-function [X_hxw, Y_hxw, I_hxw] = UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I_HxW, H_2x3, w, h)
+function [X_hxw, Y_hxw, I_hxw] = UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I_HxW, Ha_2x3, w, h)
 
 %----------------------------------------------------
 %PRE-PROCESSING
@@ -42,7 +42,7 @@ function [X_hxw, Y_hxw, I_hxw] = UTIL_2D_coordinateAffineWarping_and_IntensityIn
     ref_grid_y_1xD          =   grid_y_hxw(:)';                 %"
     
     %warp grid coordinates (not intensities!) to new grid
-    [grid_X_1xD, grid_Y_1xD]=   UTIL_2D_affine_apply_transform(H_2x3, ref_grid_x_1xD, ref_grid_y_1xD);
+    [grid_X_1xD, grid_Y_1xD]=   UTIL_2D_affine_apply_transform(Ha_2x3, ref_grid_x_1xD, ref_grid_y_1xD);
     X_hxw                   =   reshape(grid_X_1xD, h, w);
     Y_hxw                   =   reshape(grid_Y_1xD, h, w);
     
