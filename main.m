@@ -103,9 +103,9 @@ datasetCode=1;
     %fixed parameters    
     PARAM.con_errfunc       =   'L2';               %condensation related              
     PARAM.con_reseig        =   0;
-	PARAM.scale  =   32;                 %target related, note 1 less than sw and sh which I had to increase by 1 for RVQ
-    PARAM.in_sw            =   33;
-    PARAM.in_sh            =   33;    
+	PARAM.scale             =   32;                 %target related, note 1 less than sw and sh which I had to increase by 1 for RVQ
+    PARAM.in_sw             =   33;
+    PARAM.in_sh             =   33;    
     PARAM.tgt_sz            =   [PARAM.in_sh PARAM.in_sw];  %combine two above
     PARAM.tgt_max_signal_val=   255;
 	PARAM.trg_B             =   5;                  %training related, batch size for how many images to use for training
@@ -165,10 +165,13 @@ datasetCode=1;
     %generic particle filter
     trkPF.name              =   'genericPF';                        %generic particle filter    
     
-    trkPF.stt_1_DM2       =   [];                                 %1. data:	design matrix, one observation per column 
-    trkPF.stt_2_mu_Dx1    =   UTIL_2D_warp_image(first_I_0t1, INP.ds_4_aff_abcdxy_1x6, PARAM.tgt_sz); %data mean
-    trkPF.stt_3_weights   =   [];
-    trkPF.stt_4_aff_abcdxy_1x6=   INP.ds_4_aff_abcdxy_1x6; 
+    trkPF.stt_1_DM2         =   [];                                 %1. data:	design matrix, one observation per column 
+    [temp1, temp2, trkPF.stt_2_mu_shxsw]   ...
+                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, INP.ds_4_aff_abcdxy_1x6, PARAM.in_sw, PARAM.in_sh);
+    %trkPF.stt_2_mu_Dx1     =   UTIL_2D_warp_image(first_I_0t1, INP.ds_4_aff_abcdxy_1x6, PARAM.tgt_sz); %data mean
+    trkPF.stt_3_weights     =   [];
+    trkPF.stt_4_aff_abcdxy_1x6  ...
+                            =   INP.ds_4_aff_abcdxy_1x6; 
     
     trkPF.fp_1_gt           =   cat(3, INP.gt_3_initial_fp + repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), INP.gt_1_fp(:,:,1)); %1. ground truth
     trkPF.fp_2_est          =   zeros(size(INP.gt_1_fp));  			%1b. estimated
@@ -184,7 +187,7 @@ datasetCode=1;
     
 	trkPF.tst_SNRdB_Fx1   	=   zeros(INP.ds_9_F,1);
 
-    trkPF.bestCandidate_0t1_shxsw =   trkPF.stt_2_mu_Dx1;							%4.  testing
+    trkPF.bestCandidate_0t1_shxsw =   trkPF.stt_2_mu_shxsw;							%4.  testing
     
 %4. %timing   
     duration                =   0; 

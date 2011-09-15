@@ -15,9 +15,10 @@ In many situations, it is necessary to track a visual target that is undergoing 
 
 
 								\begin{figure}
+								\centering
 								\subfigure[Frame 770.]{\includegraphics[width=0.45\textwidth]{figs/PETS2001_00770.jpg}}
 								\subfigure[Frame 1770.]{\includegraphics[width=0.45\textwidth]{figs/PETS2001_01770.jpg}}
-								\caption{Over time, even rigid objects can undergo severe deformations as shown in these images from the PETS2001 dataset.}
+								\caption{Over time, even rigid objects can undergo severe deformations such as the car in these images from the PETS2001 dataset.}
 								\label{Fig:PETS2001_deformation}
 								\end{figure}
 
@@ -64,6 +65,7 @@ where the input coordinate (x,y) has been transformed through 6 affine parameter
 &=& \mathbf{A}\mathbf{x} + \mathbf{t}\\
 &=& \mathbf{H}_A \mathbf{x}\\
 \end{array}
+\label{Eqn:top_level}
 \end{equation}
 
 $t_x$ and $t_y$ are translations in the $x$ and $y$ directions respectively and $\mathbf{H}_A$ is the affine transformation matrix.  The matrix $\mathbf{A}$ above can always be decomposed using the SVD decomposition as the product of orthonormal matrix $\mathbf{U}$ containing the eigenvectors of $\mathbf{A}\mathbf{A}^T$, orthonormal matrix $\mathbf{V}$ containing the eigenvectors  $\mathbf{A}^T\mathbf{A}$ and a diagonal matrix $\mathbf{S}$ containing the eigenvalues of $\mathbf{A}$~\cite{2004_BOOK_CG_Hartley}:
@@ -90,7 +92,7 @@ The affine matrix $\mathbf{A}$ can therefore be viewed as a succession of the fo
 \item A rotation by angle $\theta$
 \end{enumerate}
 
-\subsection{\underline{Converting $(a, b, c, d)$ to$(\theta, \lambda_1, \lambda_2, \phi)$}}
+\subsection{\underline{Converting $(a, b, c, d)$ to $(\theta, \lambda_1, \lambda_2, \phi)$}}
 %-------------------------------------------------
 In several cases, the affine parameters are given in the form of $(a, b, c, d)$.  However, it is difficult to get a physical intuition when the parameterization is done in this form.  In such cases, converting to $(\theta, \lambda_1, \lambda_2, \phi)$ helps in getting an insight into how the object of interest is being deformed.  For this step, first compute the SVD decomposition $\mathbf{A}=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}$.  
 
@@ -145,7 +147,7 @@ Therefore,
 \boxed{\theta = \tan^{-1}\frac{u_{2,1}v_{1,1} + u_{2,2}v_{1,2}}{u_{1,1}v_{1,1} + u_{1,2}v_{1,2}}}
 \end{equation}
 
-The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_abcdxy_to_lltpxy}.
+The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_abcdxy_to_tllpxy}.
 
 \subsection{\underline{Converting  $(\theta, \lambda_1, \lambda_2, \phi)$ to $(a, b, c, d)$}}
 %-------------------------------------------------
@@ -159,7 +161,17 @@ b &= (\lambda_2) s  - (\lambda_1) r \\
 c &= (\lambda_2) r  - (\lambda_1) s \\
 d &= (\lambda_2)q + (\lambda_1) p
 \end{array}}
+\label{Eqn:tllpxy_to_abcdxy}
 \end{equation}
+
+								\begin{figure}
+								\centering
+								\fbox{
+								\includegraphics[width=0.75\textwidth]{figs/GRAPHICS_2D_left_turn.pdf}
+								}
+								\caption{Turning clockwise (left turn) in $\mathbb{R}^2$.}
+								\label{fig:left_turn}
+								\end{figure}
 
 
 %\begin{equation}
@@ -186,14 +198,36 @@ s   &=  \mathrm{ccs} - \mathrm{scc}\\
 \end{array}
 \end{equation*}
 
-The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_lltpxy_to_abcdxy}.
-
+The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_tllpxy_to_abcdxy}.
 
 %================================
 \section{Experiments}
 %================================
-A target is initially specified by drawing a bounding box, and then rotating the bounding box so that it fits the target.  At this point, the target is specified using a rigid and not an affine transformation since this works well enough for most tracking scenarios.  This requires 5 parameters for complete specification:
+In our experiments, we demonstrate the following in sequence:
 
+\begin{enumerate}
+\item Manually initialize an object of interest.
+\item Compute affine parameters from this manual rigid-parameter initialization.
+\item Compute affine ROI (region of interest) sample points lying on object.
+\item Compute actual pixel intensities on these sample points.
+\end{enumerate}
+
+
+								\begin{figure}
+								\centering
+								\subfigure[An initial zero-centered reference 33x33 grid is affinely warped to sample an object of interest.  Notice that the density of grid points is greater in the horizontal direction.]{\fbox{\includegraphics[width=0.65\textwidth]{figs/dataset_Dudek_00001_sampled2.pdf}}}
+								\subfigure[Warped 33x33 output for parameters shown in the left figure.]{\includegraphics[width=0.25\textwidth]{figs/dataset_Dudek_00001_sampled3.pdf}}
+								\subfigure[Different affine parameters will produce different 33x33 outputs.]{\includegraphics[width=0.65\textwidth]{figs/affineCandidates.pdf}}
+								\caption{Dudek dataset, frame 1, demonstration of affine warping.  The dimensions of the object of interest, the face, are 110x130 (width x height).  The warped output is 33x33.}
+								\label{Fig:affine_warping}
+								\end{figure}
+
+The source code for these steps is given in Listing~\ref{lst:demo_UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation}.
+
+
+\subsection{Manual initialization of object of interest}
+%------------------------------------------------------------
+An object of interest in an image can be manually specified by drawing a bounding box around it, and then rotating the bounding box so that it reasonably encloses the object.  This step is relatively straightforward to do in standard image processing software.  In most cases, this rigid representation, as opposed to an affine representation, will suffice to reasonably enclose the object of interest for the purposes of initialization.  This requires 5 parameters for complete specification:
 
 \begin{enumerate}
 \item $t_x$, bounding box center x coordinate
@@ -210,7 +244,7 @@ x
 \end{array}
 \right]=
 \left[
-\begin{array}{ccc}
+\begin{array}{rrr}
 \cos(90^{\circ}) & -\sin(90^{\circ}) \\
 \sin(90^{\circ}) & \cos(90^{\circ})
 \end{array}
@@ -223,25 +257,22 @@ y
 \right]
 \end{equation}
 
-
-The term left turn is commonly used in computer graphics.  In  $\mathbb{R}^2$, it corresponds to a counter-clockwise rotation.  In images, where the $y$ coordinate normally decreases vertically downwards, a left turn is given by $(y,-x)^T$.  Notice that $(x,y)^T(-y,x) = (x,y)^T(y,-x) = 0$, and therefore both $ (-y,x)^T$ and $(y,-x)^T$ are orthogonal to $(x,y)^T$.
+The term "left turn" is commonly used in computer graphics.  In  $\mathbb{R}^2$, it corresponds to a counter-clockwise rotation.  In images, where the $y$ coordinate normally decreases vertically downwards, a left turn is given by $(y,-x)^T$.  Notice that $(x,y)^T(-y,x) = (x,y)^T(y,-x) = 0$, and therefore both $ (-y,x)^T$ and $(y,-x)^T$ are orthogonal to $(x,y)^T$.  See Figure~\ref{fig:left_turn} for a graphical representation.
 \end{enumerate}
 
-								\begin{figure}
-								\centering
-								\includegraphics[width=0.65\textwidth]{figs/affine_grid.pdf}
-								\caption{A w x h grid is created which is centered around the origin.  In this case, the dimensions of the grid are 33x33.}
-								\end{figure}
+As an example, consider Figure~\ref{Fig:affine_warping}.  We are interested in segmenting the face.  The initial parameters are: $t_x=188, t_y=192, w=110, h=130, \theta=-4.58^\circ$.  Note that we specify angles in radians.  $\theta$ is written here in degrees for clarity.  Moreover, notice that the bounding box is rotated in the counter-clockwise direction.  Since the y axis increases downwards, $\theta$ is negative.
 
+\subsection{Compute affine parameters from rigid parameters}
+%------------------------------------------------------------
+Once we have an initial rigid representation of the object of interest, we can transform this representation into an affine representation.  Since the affine representation allows for scaling, we can scale the object and obtain its segmentation in scaled form.  For instance, in Figure~\ref{Fig:affine_warping}, the dimensions of the object of interest are 110x130.  However, for computational efficiency, we want the dimensions to be 33x33.  The affine parameters then become $\theta=-4.58^\circ, \lambda_1=110/32=3.4375, \lambda_2=130/32=4.0625, \phi=0^\circ, t_x=188, t_y=192$.  \footnote{Notice that we have divided by 32 instead of 33.  The reason is that the grid used in~\cite{2008_JNL_subspaceTRK_Ross} is 32x32 and they have accordingly used a divisor of 32.  In our case, for RVQ we require an odd dimensional grid due to the way the closed source codebook encoding software, gen.exe is setup.  Therefore, we pick a 33x33 grid.  Not changing the divisor to 33 was an oversight but this omission is expected to have minimal effect on results.}
 
-								\begin{figure}
-								\centering
-								\includegraphics[width=0.65\textwidth]{figs/affineCandidates.pdf}
-								\caption{Examples of affine warps.  Each image snippet is 33x33 pixels.}
-								\end{figure}
+\subsection{Compute affine coordinates (sample points) of ROI (region of interest)}
+%------------------------------------------------------------
+In this step, the affine parameters $(\theta, \lambda_1, \lambda_2, \phi, t_x, t_y)$ computed above are changed to $(a, b, c, d, t_x, t_y)$ using Equation~\ref{Eqn:tllpxy_to_abcdxy}.  Affine matrix $\mathbf{H}_A$ is formed using Equation~\ref{Eqn:top_level}.  A reference 33x33 grid centered on the origin is transformed using these affine coordinates to a 33x33 grid centerd on the object of interest using the affine transformation also given in Equation~\ref{Eqn:top_level}.  This can be seen in Figure~\ref{Fig:affine_warping}.
 
-
-
+\subsection{Compute pixel intensities on these sample points}
+%------------------------------------------------------------
+The final step is to read off the pixel intensity values at the affinely warped grid obtained in the step above.  Most of these grid points will not have integer values.  Rounding to integer values will create artefacts.  Some form of interpolation will be required to read sub-pixel intensities.  In our experiments, we use bilinear interpolation. 
 
 
 %\item \underline{Target scale and orientation changes}.  Since we choose to model the deformations in the target bounding quadrilateral with an affine transform, we can handle target scale and orientation changes.  
@@ -250,12 +281,12 @@ The term left turn is commonly used in computer graphics.  In  $\mathbb{R}^2$, i
 %================================
 \section{Results}
 %================================
-
+Figure~\ref{Fig:affine_warping} shows the result of affine warping to compute grid points and bilinear interpolation to compute pixel intensities.  We see that the affine region of interest accurately samples the object of interest and minimizes inclusion of background pixels.  Also, bilinear interpolation produces an accurate representation of the target of interest.  Also shown are other outputs for a set of random perturbations of our affine parameters.  These outputs can for instance be candidate samples for a particle filter.
 
 %================================
 \section{Conclusions}
 %================================
-
+Affine warping is an effective way of downsampling an object of interest as well as allowing a region of interest to be defined that minimizes inclusion of background pixels.
 
 
 %-----------------------------------------------------------------
@@ -265,13 +296,17 @@ The term left turn is commonly used in computer graphics.  In  $\mathbb{R}^2$, i
 \label{Sec:sourceCode}
 %-----------------------------------------------------------------
 \scriptsize
-\lstinputlisting[language=Matlab, caption={warpimg.m.}, 									label=lst:warpimg]									{warpimg.m}
+
+\lstinputlisting[language=Matlab, caption={demo\_UTIL\_2D\_coordinateAffineWarping\_and\_IntensityInterpolation.m}, 		label=lst:demo_UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation]			{demo_UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation.m}
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_coordinateAffineWarping\_and\_IntensityInterpolation.m}, 		label=lst:UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation]			{UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation.m}
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_apply\_transform.m}, 		label=lst:UTIL_2D_affine_apply_transform]		{UTIL_2D_affine_apply_transform.m}
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_A\_2x3\_from\_abcdxy.m}, 	label=lst:UTIL_2D_affine_A_2x3_from_abcdxy]	{UTIL_2D_affine_A_2x3_from_abcdxy.m}
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_abcdtxty\_to\_tllpxy.m.}, 	label=lst:UTIL_2D_affine_abcdxy_to_tllpxy]		{UTIL_2D_affine_abcdxy_to_tllpxy.m}
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_tllpxy\_to\_abcdxy.m.}, 		label=lst:UTIL_2D_affine_tllpxy_to_abcdxy]		{UTIL_2D_affine_tllpxy_to_abcdxy.m}
-\lstinputlisting[language=Matlab, caption={affparaminv.m.}, 								label=lst:affparaminv]								{affparaminv.m}
+%\lstinputlisting[language=Matlab, caption={affparaminv.m.}, 								label=lst:affparaminv]								%{affparaminv.m}
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_make\_rotation\_matrix.m}, 			label=lst:UTIL_2D_make_rotation_matrix]			{UTIL_2D_make_rotation_matrix.m}
 
-
+\normalsize
 \bibliographystyle{ieee}
 \bibliography{MyCitations}
 \end{document}

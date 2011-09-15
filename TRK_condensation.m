@@ -40,23 +40,23 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
-    Np                              =   PARAM.in_Np;                        %particle filter: # of particles (samples) from density)    
-    sw                              =   PARAM.in_sw;                       %snippet width
-    sh                              =   PARAM.in_sh;                       %snippet height
-    Nw                              =   PARAM.in_Nw;
-    bWeighting                      =   PARAM.in_bWeighting;
+    Np                      =   PARAM.in_Np;                        %particle filter: # of particles (samples) from density)    
+    sw                      =   PARAM.in_sw;                       %snippet width
+    sh                      =   PARAM.in_sh;                       %snippet height
+    Nw                      =   PARAM.in_Nw;
+    bWeighting              =   PARAM.in_bWeighting;
  
-    rn1                             =   INP.rand_cdf_maxFxNp(f,:);          %pre-stored random numbers to ensure repeatability    
-    rn2(:,:)                        =   INP.rand_unitvar_maxFx6xNp(f,:,:);  %same as above
-    stddev                          =   INP.ds_7_con_stddev;
+    rn1                     =   INP.rand_cdf_maxFxNp(f,:);          %pre-stored random numbers to ensure repeatability    
+    rn2(:,:)                =   INP.rand_unitvar_maxFx6xNp(f,:,:);  %same as above
+    stddev                  =   INP.ds_7_con_stddev;
 	
-    D                               =   sw*sh;                              %dimensionality of input data
+    D                       =   sw*sh;                              %dimensionality of input data
     
 %state variables (use and then update) 
-    stt_1_DM2                     =   TRK.stt_1_DM2;
-    stt_2_mu_Dx1                  =   TRK.stt_2_mu_Dx1;
-    stt_3_weights                 =   TRK.stt_3_weights;
-    stt_4_aff_abcdxy_1x6          =   TRK.stt_4_aff_abcdxy_1x6(:);
+    stt_1_DM2               =   TRK.stt_1_DM2;
+    stt_2_mu_shxsw          =   TRK.stt_2_mu_shxsw;
+    stt_3_weights           =   TRK.stt_3_weights;
+    stt_4_aff_abcdxy_1x6    =   TRK.stt_4_aff_abcdxy_1x6(:);
     
 
 %----------------------------
@@ -66,10 +66,11 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
                                                 %the reason is that in the first run, initialization is done, but not resampling.
                                                 %then motion model is applied after resampling.  so after the initialization)
 
-    %a. candidate parameters
+    %a. candidate affine tllpxy parameters
     if ~isfield(TRK,'aff_tllpxy_6xNp')
         %first time? initialize affine geometric (tllpxy) parameters, one for each of the Np candidate snippets
-        aff_tllpxy_6xNp      =   repmat(  UTIL_2D_affine_abcdxy_to_tllpxy(stt_4_aff_abcdxy_1x6(:)), [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
+        aff_tllpxy_1x6      =   UTIL_2D_affine_abcdxy_to_tllpxy(stt_4_aff_abcdxy_1x6);
+        aff_tllpxy_6xNp     =   repmat(aff_tllpxy_1x6'  , [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
                                     
     else
         %not first time? resample distribution in aff_tllpxy_6xNp space (read details of these steps in my article on resampling)
@@ -78,14 +79,20 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
         aff_tllpxy_6xNp     =   aff_tllpxy_6xNp(:,idx);  %keep only good candidates (resample)
     end
 
-    %b. apply motion 
-    delta_tllpxy_6xNp       =   rn2.*repmat(INP.ds_5_aff_tllpxy_var_1x6(:),[1,Np]);       %a. motion model
+    %b. apply uniform random motion on tllpxy (theta, lambda1, lambda2, phi, tx, ty)
+    rand_motion_tllpxy_6xNp =   rn2.*repmat(INP.ds_5_aff_tllpxy_var_1x6(:),[1,Np]);       
     
-    %c. get candidate parameters
-    aff_tllpxy_6xNp      	=   aff_tllpxy_6xNp + delta_tllpxy_6xNp;                     %b. candidate parameters
+    %c. get candidate parameters after motion
+    aff_tllpxy_6xNp      	=   aff_tllpxy_6xNp + rand_motion_tllpxy_6xNp;                        
+    
     
     %d. get candidate snippets
-    snippets_0t1_shxswxNp   =   UTIL_2D_warp_image(I_0t1, UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_6xNp), [sh sw]);  %c. candidate images
+    for np=1:Np
+        aff_abcdxy_1x6      =   (UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_6xNp(:,np)))';             
+        [X_hxw, Y_hxw, snippets_0t1_shxswxNp(:,:,np)]   ...
+                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I_0t1, aff_abcdxy_1x6, sw, sh);
+    end
+    %snippets_0t1_shxswxNp   =   UTIL_2D_warp_image(I_0t1, UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_6xNp), [sh sw]);  %c. candidate images
     
 %----------------------------
 %PROCESSING
@@ -94,7 +101,7 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 
     %generic algo
     if (strcmp(TRK.name, 'genericPF')) 
-        all_candidate_errors_0to1_DxNp             =   repmat(stt_2_mu_Dx1(:),[1,Np]) - reshape(snippets_0t1_shxswxNp,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
+        all_candidate_errors_0to1_DxNp             =   repmat(stt_2_mu_shxsw(:),[1,Np]) - reshape(snippets_0t1_shxswxNp,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
         DIFS                        =   0;
         
         

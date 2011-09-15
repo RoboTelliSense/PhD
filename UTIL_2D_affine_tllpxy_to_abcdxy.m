@@ -14,12 +14,12 @@
 function abcdxy = UTIL_2D_affine_tllpxy_to_abcdxy(tllpxy) %tllpxy: lambda1, lambda2, theta, phi, tx, ty
     
     %input (read tllpxy)
-    theta                   =   tllpxy(1,:);  
-    lambda1                 =   tllpxy(2,:);  
-    lambda2                 =   tllpxy(3,:);  
-    phi                     =   tllpxy(4,:);
-    tx                      =   tllpxy(5,:);           
-    ty                      =   tllpxy(6,:);               
+    theta                   =   tllpxy(1);  
+    lambda1                 =   tllpxy(2);  
+    lambda2                 =   tllpxy(3);  
+    phi                     =   tllpxy(4);
+    tx                      =   tllpxy(5);           
+    ty                      =   tllpxy(6);               
 
     %intermediate
     ccc                     =   cos(theta)*(cos(phi))^2;   %can be made quicker by prestoring trigonometric values
