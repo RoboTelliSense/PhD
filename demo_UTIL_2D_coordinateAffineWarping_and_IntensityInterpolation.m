@@ -33,7 +33,7 @@ close all;
 %POST-PROCESSING
 %--------------------------------------------- 
 %view original figure with overlaid warped grid and feature points
-    figure;
+    h=figure;
     imagesc(I_0t1);
    
     hold on;
@@ -46,10 +46,10 @@ close all;
     colormap('gray');
     axis equal;
     axis tight;
-
+    UTIL_FILE_save2pdf('out.pdf', h, 300);
     
 %view warped image with overlaid feature points
-    figure;
+    h=figure;
     imagesc(I_hxw)
     
     hold on;
@@ -61,3 +61,4 @@ close all;
     colormap('gray');
     axis equal;
     axis tight;
+    UTIL_FILE_save2pdf('out.pdf', h, 300);
