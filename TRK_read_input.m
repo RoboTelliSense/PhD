@@ -14,32 +14,32 @@
 %> Date modified: Aug 17, 2011
 
 
-function INP = TRK_read_input(code, scale)
+function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images, ground truth, random data
 
-	INP.ds_1_code = code;
+	         
 %-----------------------------------------------
 %PRE-PROCESSING
 %-----------------------------------------------
 	
 %fn: filename (convert datasetCode to datasetName)
-    if      (INP.ds_1_code==0)  INP.ds_2_name = 'test';          INP.ds_3_longName='0___test___________';
-    elseif  (INP.ds_1_code==1)  INP.ds_2_name = 'Dudek';         INP.ds_3_longName='1___Dudek__________';
-    elseif  (INP.ds_1_code==2)  INP.ds_2_name = 'davidin300';    INP.ds_3_longName='2___davidin300_____';
-    elseif  (INP.ds_1_code==3)  INP.ds_2_name = 'sylv';          INP.ds_3_longName='3___sylv___________';
-    elseif  (INP.ds_1_code==4)  INP.ds_2_name = 'trellis70';     INP.ds_3_longName='4___trellis70______';
-    elseif  (INP.ds_1_code==5)  INP.ds_2_name = 'fish';          INP.ds_3_longName='5___fish___________';
-    elseif  (INP.ds_1_code==6)  INP.ds_2_name = 'car4';          INP.ds_3_longName='6___car4___________';
-    elseif  (INP.ds_1_code==7)  INP.ds_2_name = 'car11';         INP.ds_3_longName='7___car11__________';
-    elseif  (INP.ds_1_code==8)  INP.ds_2_name = 'PETS2001rcf';   INP.ds_3_longName='8___PETS2001rcf____';
-    elseif  (INP.ds_1_code==9)  INP.ds_2_name = 'PETS2009';      INP.ds_3_longName='9___PETS2009_______';
-    elseif  (INP.ds_1_code==10) INP.ds_2_name = 'AVSS2007_1';    INP.ds_3_longName='10__AVSS2007_1_____';
-    elseif  (INP.ds_1_code==11) INP.ds_2_name = 'AVSS2007_2';    INP.ds_3_longName='11__AVSS2007_2_____'; 
-    elseif  (INP.ds_1_code==12) INP.ds_2_name = 'AVSS2007_3';    INP.ds_3_longName='12__AVSS2007_3_____'; 
-    elseif  (INP.ds_1_code==13) INP.ds_2_name = 'motinasFast';   INP.ds_3_longName='13__motinasFast____';  
+    if      (PARAM_in_datasetCode==0)  PARAM.ds_2_name = 'test';          PARAM.ds_3_longName='0___test___________'; %ds is for dataset
+    elseif  (PARAM_in_datasetCode==1)  PARAM.ds_2_name = 'Dudek';         PARAM.ds_3_longName='1___Dudek__________';
+    elseif  (PARAM_in_datasetCode==2)  PARAM.ds_2_name = 'davidin300';    PARAM.ds_3_longName='2___davidin300_____';
+    elseif  (PARAM_in_datasetCode==3)  PARAM.ds_2_name = 'sylv';          PARAM.ds_3_longName='3___sylv___________';
+    elseif  (PARAM_in_datasetCode==4)  PARAM.ds_2_name = 'trellis70';     PARAM.ds_3_longName='4___trellis70______';
+    elseif  (PARAM_in_datasetCode==5)  PARAM.ds_2_name = 'fish';          PARAM.ds_3_longName='5___fish___________';
+    elseif  (PARAM_in_datasetCode==6)  PARAM.ds_2_name = 'car4';          PARAM.ds_3_longName='6___car4___________';
+    elseif  (PARAM_in_datasetCode==7)  PARAM.ds_2_name = 'car11';         PARAM.ds_3_longName='7___car11__________';
+    elseif  (PARAM_in_datasetCode==8)  PARAM.ds_2_name = 'PETS2001rcf';   PARAM.ds_3_longName='8___PETS2001rcf____';
+    elseif  (PARAM_in_datasetCode==9)  PARAM.ds_2_name = 'PETS2009';      PARAM.ds_3_longName='9___PETS2009_______';
+    elseif  (PARAM_in_datasetCode==10) PARAM.ds_2_name = 'AVSS2007_1';    PARAM.ds_3_longName='10__AVSS2007_1_____';
+    elseif  (PARAM_in_datasetCode==11) PARAM.ds_2_name = 'AVSS2007_2';    PARAM.ds_3_longName='11__AVSS2007_2_____'; 
+    elseif  (PARAM_in_datasetCode==12) PARAM.ds_2_name = 'AVSS2007_3';    PARAM.ds_3_longName='12__AVSS2007_3_____'; 
+    elseif  (PARAM_in_datasetCode==13) PARAM.ds_2_name = 'motinasFast';   PARAM.ds_3_longName='13__motinasFast____';  
     end
     
-    %get dataset affine ROI parameters, 
-    switch (INP.ds_2_name)
+    %rigid parameters 
+    switch (PARAM.ds_2_name)
         case 'test';        xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tllpxy_var_1x6=[9  9  .05  .05  .005  .001]; 
         case 'Dudek';       xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tllpxy_var_1x6=[9  9  .05  .05  .005  .001]; 
         case 'davidin300';  xywht=[129 67  62  78  -0.02]; con_normalizer=0.75; ff=0.99; aff_tllpxy_var_1x6=[5  5  .01  .02  .002  .001]; 
@@ -54,34 +54,30 @@ function INP = TRK_read_input(code, scale)
         case 'AVSS2007_2';  xywht=[60  234 37  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[3  3  .05  .05  .002  .002]; 
         case 'AVSS2007_3';  xywht=[213 67  14  14   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[2  2  .05  .05  .002  .002]; 
         case 'motinas_fast';xywht=[474 60  43  67   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[15 15 .05  .05  .005  .002]; 
-        otherwise;  error(['unknown INP.ds_2_name ' INP.ds_2_name]);
+        otherwise;  error(['unknown PARAM.ds_2_name ' PARAM.ds_2_name]);
     end    
-    
-    %initial geometric parameters (easy to get from an image)
     top_left_x              =   xywht(1);
     top_left_y              =   xywht(2);
     w                       =   xywht(3);       
     h                       =   xywht(4);
     theta                   =   xywht(5);
     
-    %convert to affine geometric parameters (tllpxy)
+    %affine parameters (abcdxy and tllpxy)
     theta                   =   theta;                      %1.
-    lambda1                 =   w/scale;                    %2.
-    lambda2                 =   h/scale;                    %3.
+    lambda1                 =   w/PARAM.aff_scale;          %2.
+    lambda2                 =   h/PARAM.aff_scale;          %3.
     phi                     =   0;                          %4. 
     tx                      =   top_left_x + round(w/2);    %5. x coordinate, central pixel of bounding box
     ty                      =   top_left_y + round(h/2);    %6. y coordinate, central pixel of bounding box       
     aff_tllpxy_1x6          =   [theta, lambda1, lambda2, phi, tx ty];
-    
-    %convert to affine parameters (abcdxy)
-    aff_abcdxy_1x6          =   UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_1x6);
+    aff_abcdxy_1x6          =   UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_1x6); %convert to affine parameters (abcdxy)
 
 %-----------------------------------------------
 %PROCESSING
 %-----------------------------------------------	
 %load data
-	disp(['loading dataset ' INP.ds_2_name ' and its ground truth ...']);
-	load([INP.ds_2_name '.mat'],'data','datatitle','truepts');
+	disp(['loading dataset ' PARAM.ds_2_name ' and its ground truth ...']);
+	load([PARAM.ds_2_name '.mat'],'data','datatitle','truepts');
 
     disp(['loading pre-stored random data for repeatability ...']);
     load RandomData 
@@ -89,22 +85,26 @@ function INP = TRK_read_input(code, scale)
 %POST-PROCESSING
 %-----------------------------------------------
 %save 
-	%dataset
-    INP.ds_4_aff_abcdxy_1x6     =   aff_abcdxy_1x6;                 %affine ROI parameters
-    INP.ds_5_aff_tllpxy_var_1x6  =   aff_tllpxy_var_1x6;              %" 					  , variance of
-    INP.ds_6_ff            	=   ff;                 		%forgetting factor
-    INP.ds_7_con_stddev   	=   con_normalizer;             %condensation algorithm, normalizer
-    INP.ds_8_I_HxWxF      	=   data;                       %read all images, height x width x number of frames 
-	INP.ds_9_F          	=   size(INP.ds_8_I_HxWxF,3);   %total number of frames
-
-	%ground truth
-    INP.gt_1_fp      		=   truepts;                    %ground truth for the feature points
-    INP.gt_2_num_fp        	=   size(INP.gt_1_fp,2);        %number of feature points
-    INP.gt_3_initial_fp    	=   INP.ds_4_aff_abcdxy_1x6([3,4,1;5,6,2]) * [INP.gt_1_fp(:,:,1); ones(1,INP.gt_2_num_fp)];
+	%metadata
+    PARAM.ds_4_F            =   size(data,3);               %total number of frames
+    PARAM.ds_5_ff           =   ff;                         %forgetting factor
+    PARAM.ds_6_con_stddev   =   con_normalizer;             %condensation algorithm, normalizer
+    PARAM.ds_aff_abcdxy_1x6 =   aff_abcdxy_1x6;             %affine a, b, c, d, tx, ty
+    PARAM.ds_aff_tllpxy_var_1x6  ...
+                            =   aff_tllpxy_var_1x6;         %affine theta, lambda1, lambda1, phi, tx, ty (variances)
+	
+    %image data
+    I_HxWxF             =   data;                           %read all images, height x width x number of frames 
+	
+    %ground truth
+    GT.fp_1_all_2xGxF       =   truepts;                    %ground truth for the feature points
+    GT.fp_2_G               =   size(GT.fp_1_all_2xGxF,2);  %number of feature points per image, this is 7 for Dudek and I think 2 for others
+    GT.fp_3_ref_upright_zc  =   PARAM.ds_aff_abcdxy_1x6([3,4,1;5,6,2]) * [GT.fp_1_all_2xGxF(:,:,1); ones(1,GT.fp_2_G)];
     
     %random input
-    INP.rand_unitvar_maxFx6xNp=   RandomData_sample; %pre-stored random numbers to ensure repeatability, maxF=1000 since we do not anticipate more than 1000 frames  
-    INP.rand_cdf_maxFxNp    =   RandomData_cdf;
+    RAND.gauss_unitvar_maxFx6xNp ...
+                            =   RandomData_sample; %pre-stored random numbers to ensure repeatability, maxF=1000 since we do not anticipate more than 1000 frames  
+    RAND.unif_cdf_maxFxNp   =   RandomData_cdf;
     
     clear data truepts RandomData_sample RandomData_cdf;
     
@@ -139,7 +139,7 @@ function INP = TRK_read_input(code, scale)
 %>                 'batchsize',5, 'aff_tllpxy_var_1x6',[6,5,.05,.05,0,0], ...
 %>                'errfunc','');
 
-%case 'toycan';    aff_abcdxy_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tllpxy_var_1x6',[7,7,.01,.01,.002,.001]);  INP.ds_3_longName='1';txt2='Dudek';
-%case 'mushiake';  aff_abcdxy_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tllpxy_var_1x6',[10,10,.01,.01,.002,.001]);INP.ds_3_longName='1';txt2='Dudek';
+%case 'toycan';    aff_abcdxy_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tllpxy_var_1x6',[7,7,.01,.01,.002,.001]);  PARAM.ds_3_longName='1';txt2='Dudek';
+%case 'mushiake';  aff_abcdxy_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tllpxy_var_1x6',[10,10,.01,.01,.002,.001]);PARAM.ds_3_longName='1';txt2='Dudek';
     
     

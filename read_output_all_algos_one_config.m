@@ -2,7 +2,7 @@ j=0;
 k=0;
 avg_trk_err = -1*zeros(4,4);
 
-    [INP.ds_2_name, INP.ds_3_longName, F] = dataset_getName(datasetCode);
+    [PARAM.ds_2_name, PARAM.ds_3_longName, F] = dataset_getName(datasetCode);
     
 
         
@@ -14,7 +14,7 @@ avg_trk_err = -1*zeros(4,4);
                 rvq_targetSNR   =   config(c,4);
                 tsvq_T          =   config(c,5);
                 j               =   j+1;
-                [txt_overall_config dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(INP.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+                [txt_overall_config dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
                 cfn             =   [dir_out 'FPerr_3_ipca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);

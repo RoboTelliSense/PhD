@@ -27,7 +27,7 @@
 %    trk_SNRdB_1x1
 %    out_5_rmse__1x1
 %
-% INP.ds_5_aff_tllpxy_var_1x6
+% PARAM.ds_aff_tllpxy_var_1x6
 %
 % requirement
 % TRK.stt_4_aff_abcdxy_1x6
@@ -36,7 +36,7 @@
 % Date last modified: July 18, 2011
 %%
 
-function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
+function TRK = TRK_condensation(f, IMG, GT, PARAM, I_0t1, ALGO, TRK)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
@@ -46,9 +46,9 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
     Nw                      =   PARAM.in_Nw;
     bWeighting              =   PARAM.in_bWeighting;
  
-    rn1                     =   INP.rand_cdf_maxFxNp(f,:);          %pre-stored random numbers to ensure repeatability    
-    rn2(:,:)                =   INP.rand_unitvar_maxFx6xNp(f,:,:);  %same as above
-    stddev                  =   INP.ds_7_con_stddev;
+    rn1                     =   RAND.unif_cdf_maxFxNp(f,:);          %pre-stored random numbers to ensure repeatability    
+    rn2(:,:)                =   RAND.gauss_unitvar_maxFx6xNp(f,:,:);  %same as above
+    stddev                  =   PARAM.ds_6_con_stddev;
 	
     D                       =   sw*sh;                              %dimensionality of input data
     
@@ -80,7 +80,7 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
     end
 
     %b. apply uniform random motion on tllpxy (theta, lambda1, lambda2, phi, tx, ty)
-    rand_motion_tllpxy_6xNp =   rn2.*repmat(INP.ds_5_aff_tllpxy_var_1x6(:),[1,Np]);       
+    rand_motion_tllpxy_6xNp =   rn2.*repmat(PARAM.ds_aff_tllpxy_var_1x6(:),[1,Np]);       
     
     %c. get candidate parameters after motion
     aff_tllpxy_6xNp      	=   aff_tllpxy_6xNp + rand_motion_tllpxy_6xNp;                        
@@ -183,7 +183,7 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 	best_snippet_0t1_shxsw  =   snippets_0t1_shxswxNp(:,:,maxidx);        %best 2. best snippet 
     best_error_0to1_Dx1     =   all_candidate_errors_0to1_DxNp(:,maxidx);           %best 3. best error 
     best_error_0to1_shxsw   =   reshape(best_error_0to1_Dx1, [sh sw]);
-    if 	   (INP.ds_1_code==0 || 1) 
+    if 	   (PARAM.ds_1_code==0 || 1) 
         best_error_0to1_shxsw =   -best_error_0to1_shxsw;                           
     end
     best_recon_shxsw        =   best_snippet_0t1_shxsw - best_error_0to1_shxsw;     %best 4. best recon
@@ -224,10 +224,10 @@ function TRK = TRK_condensation(f, INP, PARAM, I_0t1, ALGO, TRK)
 %tracking error        
     TRK.fp_2_est                    =   TRK.stt_4_aff_abcdxy_1x6([3,4,1;5,6,2]) ...
                                         * ...
-                                       [INP.gt_3_initial_fp; ones(1,INP.gt_2_num_fp)];
+                                       [GT.fp_3_ref_upright_zc; ones(1,GT.fp_2_G)];
     TRK.fp_1_gt                     =   cat(3, ...
-                                        INP.gt_3_initial_fp+repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), ...
-                                        INP.gt_1_fp(:,:,f), ...
+                                        GT.fp_3_ref_upright_zc+repmat(PARAM.tgt_sz'/2,[1,GT.fp_2_G]), ...
+                                        GT.fp_1_all_2xGxF(:,:,f), ...
                                         TRK.fp_2_est);
     idx                             =   find(TRK.fp_1_gt(1,:,2) > 0);
     if (length(idx) > 0)

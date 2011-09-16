@@ -19,7 +19,7 @@ function H=circle(center,radius,NOP,style)
 %---------------------------------------------------------------------------------------------
 
 if (nargin <3),
- error('Please see help for INPUT DATA.');
+ error('Please see help for IMGUT DATA.');
 elseif (nargin==3)
     style='b-';
 end;

@@ -1,4 +1,4 @@
-[INP.ds_2_name, INP.ds_3_longName, actualF] = UTIL_DATASET_getName2(d);
+[PARAM.ds_2_name, PARAM.ds_3_longName, actualF] = UTIL_DATASET_getName2(d);
             if (~strcmp(errType, 'Trg_4'))
                 F               =   actualF;
             else
@@ -19,13 +19,13 @@
             nw=nw+1;
 
             %go over configs
-            dir_iPCA_2          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__bPCA_002/'];
-            dir_iPCA_4          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_004__bPCA_004/'];
-            dir_iPCA_8          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_008__bPCA_008/'];            
-            dir_iPCA_16         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
-            dir_iPCA_32         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
-            dir_iPCA_64         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
-            dir_iPCA_128        =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
+            dir_iPCA_2          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__bPCA_002/'];
+            dir_iPCA_4          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_004__bPCA_004/'];
+            dir_iPCA_8          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_008__bPCA_008/'];            
+            dir_iPCA_16         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
+            dir_iPCA_32         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
+            dir_iPCA_64         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
+            dir_iPCA_128        =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
 
             cfn_iPCA_2          =   [dir_iPCA_2   'err' errType '_ipca.csv'];
             cfn_iPCA_4          =   [dir_iPCA_4   'err' errType '_ipca.csv'];
@@ -55,13 +55,13 @@
             nw=nw+1;
 
             %go over configs
-            dir_bPCA_2          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__bPCA_002/'];
-            dir_bPCA_4          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_004__bPCA_004/'];
-            dir_bPCA_8          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_008__bPCA_008/'];            
-            dir_bPCA_16         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
-            dir_bPCA_32         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
-            dir_bPCA_64         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
-            dir_bPCA_128        =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
+            dir_bPCA_2          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__bPCA_002/'];
+            dir_bPCA_4          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_004__bPCA_004/'];
+            dir_bPCA_8          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_008__bPCA_008/'];            
+            dir_bPCA_16         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
+            dir_bPCA_32         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
+            dir_bPCA_64         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
+            dir_bPCA_128        =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
 
             cfn_bPCA_2          =   [dir_bPCA_2   'err' errType '_bpca.csv'];
             cfn_bPCA_4          =   [dir_bPCA_4   'err' errType '_bpca.csv'];
@@ -90,14 +90,14 @@
             nw=nw+1;
 
             %go over configs
-            dir_rvq_8x2         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
-            dir_rvq_8x4         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
-            dir_rvq_8x8         =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
-            dir_rvq_8x16        =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
-            dir_rvq_16x2        =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__RVQ__16_02_1000/'];
-            dir_rvq_16x4        =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__RVQ__16_04_1000/'];
-            dir_rvq_16x8        =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__RVQ__16_08_1000/'];
-            dir_rvq_16x16       =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__RVQ__16_16_1000/'];
+            dir_rvq_8x2         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
+            dir_rvq_8x4         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
+            dir_rvq_8x8         =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
+            dir_rvq_8x16        =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
+            dir_rvq_16x2        =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__RVQ__16_02_1000/'];
+            dir_rvq_16x4        =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__RVQ__16_04_1000/'];
+            dir_rvq_16x8        =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__RVQ__16_08_1000/'];
+            dir_rvq_16x16       =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__RVQ__16_16_1000/'];
                                     
             cfn_rvq_8x2         =   [dir_rvq_8x2 'err' errType '_rvq.csv'];
             cfn_rvq_8x4         =   [dir_rvq_8x4 'err' errType '_rvq.csv'];
@@ -128,12 +128,12 @@
             nw=nw+1;
 
             %go over configs
-            dir_tsvq_1          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__TSVQ_01/'];
-            dir_tsvq_2          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__TSVQ_02/'];
-            dir_tsvq_3          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
-            dir_tsvq_4          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
-            dir_tsvq_5          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
-            dir_tsvq_6          =   ['results_thesis\results_' INP.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
+            dir_tsvq_1          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__TSVQ_01/'];
+            dir_tsvq_2          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_002__TSVQ_02/'];
+            dir_tsvq_3          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
+            dir_tsvq_4          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
+            dir_tsvq_5          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
+            dir_tsvq_6          =   ['results_thesis\results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
 
             cfn_tsvq_1          =   [dir_tsvq_1 'err' errType '_tsvq.csv'];
             cfn_tsvq_2          =   [dir_tsvq_2 'err' errType '_tsvq.csv'];
@@ -236,34 +236,34 @@ end
     if (~strcmp(errType, 'Trg_4')) %for iPCA, we don't have training error
         h=figure(1);
         %disptable(iPCA, '2|4|8|16|32|64|128|10000', 'iPCA_2|iPCA_4|iPCA_8|iPCA_16|iPCA_32|iPCA_64|iPCA_128');
-        bar(iPCA(:,:,d)');set(gca, 'XTickLabel', [2,4,8,16,32,64,128,10000]);legend('iPCA 2', 'iPCA 4', 'iPCA 8', 'iPCA 16', 'iPCA 32', 'iPCA 64', 'iPCA 128');xlabel('N_w (number of images in sliding training-window)');ylabel(ylab);%title(INP.ds_3_longName, 'Interpreter', 'None');
+        bar(iPCA(:,:,d)');set(gca, 'XTickLabel', [2,4,8,16,32,64,128,10000]);legend('iPCA 2', 'iPCA 4', 'iPCA 8', 'iPCA 16', 'iPCA 32', 'iPCA 64', 'iPCA 128');xlabel('N_w (number of images in sliding training-window)');ylabel(ylab);%title(PARAM.ds_3_longName, 'Interpreter', 'None');
         axis(ax)
         grid on;
-        UTIL_FILE_save2pdf  (['results_err' errType '_____'  INP.ds_3_longName '_iPCA.pdf'],      h,     300); 
+        UTIL_FILE_save2pdf  (['results_err' errType '_____'  PARAM.ds_3_longName '_iPCA.pdf'],      h,     300); 
     end
 
     %bPCA
         h=figure(2);
         %disptable(bPCA, '2|4|8|16|32|64|128|10000', 'bPCA_2|bPCA_4|bPCA_8|bPCA_16|bPCA_32|bPCA_64|bPCA_128');
-        bar(bPCA(:,:,d)');set(gca, 'XTickLabel', [2,4,8,16,32,64,128,10000]);legend('bPCA 2', 'bPCA 4', 'bPCA 8', 'bPCA 16', 'bPCA 32', 'bPCA 64', 'bPCA 128');xlabel('N_w (number of images in sliding training-window)');ylabel(ylab);%title(INP.ds_3_longName, 'Interpreter', 'None');
+        bar(bPCA(:,:,d)');set(gca, 'XTickLabel', [2,4,8,16,32,64,128,10000]);legend('bPCA 2', 'bPCA 4', 'bPCA 8', 'bPCA 16', 'bPCA 32', 'bPCA 64', 'bPCA 128');xlabel('N_w (number of images in sliding training-window)');ylabel(ylab);%title(PARAM.ds_3_longName, 'Interpreter', 'None');
         axis(ax)
         grid on;
-        UTIL_FILE_save2pdf  (['results_err' errType '_____'  INP.ds_3_longName '_bPCA.pdf'],      h,     300); 
+        UTIL_FILE_save2pdf  (['results_err' errType '_____'  PARAM.ds_3_longName '_bPCA.pdf'],      h,     300); 
 
     %RVQ
         h=figure(3);
         %disptable(RVQ, '2|4|8|16|32|64|128|10000', 'RVQ_8x2|RVQ_8x4|RVQ_8x8|RVQ_8x16');
-        bar(RVQ(:,:,d)');set(gca, 'XTickLabel', [2,4,8,16,32,64,128,10000]);legend('RVQ 8x2', 'RVQ 16x2', 'RVQ 8x4', 'RVQ 16x4', 'RVQ 8x8', 'RVQ 16x8', 'RVQ 8x16', 'RVQ 16x16');xlabel('N_w (number of images in sliding training-window)');ylabel(ylab);%title(INP.ds_3_longName, 'Interpreter', 'None');
+        bar(RVQ(:,:,d)');set(gca, 'XTickLabel', [2,4,8,16,32,64,128,10000]);legend('RVQ 8x2', 'RVQ 16x2', 'RVQ 8x4', 'RVQ 16x4', 'RVQ 8x8', 'RVQ 16x8', 'RVQ 8x16', 'RVQ 16x16');xlabel('N_w (number of images in sliding training-window)');ylabel(ylab);%title(PARAM.ds_3_longName, 'Interpreter', 'None');
         axis(ax)
         grid on;
-        UTIL_FILE_save2pdf  (['results_err' errType '_____'  INP.ds_3_longName '_RVQ.pdf'],      h,     300); 
+        UTIL_FILE_save2pdf  (['results_err' errType '_____'  PARAM.ds_3_longName '_RVQ.pdf'],      h,     300); 
 
     %TSVQ
         h=figure(4);
         %disptable(TSVQ, '2|4|8|16|32|64|128|10000', 'TSVQ_1|TSVQ_2|TSVQ_3|TSVQ_4|TSVQ_5|TSVQ_6');
-        bar(TSVQ(:,:,d)');set(gca, 'XTickLabel', [2,4,8,16,32,64,128,10000]);legend('TSVQ 1', 'TSVQ 2', 'TSVQ 3', 'TSVQ 4', 'TSVQ 5', 'TSVQ 6');xlabel('N_w (number of images in sliding training-window)');ylabel(ylab);%title(INP.ds_3_longName, 'Interpreter', 'None');
+        bar(TSVQ(:,:,d)');set(gca, 'XTickLabel', [2,4,8,16,32,64,128,10000]);legend('TSVQ 1', 'TSVQ 2', 'TSVQ 3', 'TSVQ 4', 'TSVQ 5', 'TSVQ 6');xlabel('N_w (number of images in sliding training-window)');ylabel(ylab);%title(PARAM.ds_3_longName, 'Interpreter', 'None');
         axis(ax)
         grid on;
-        UTIL_FILE_save2pdf  (['results_err' errType '_____'  INP.ds_3_longName '_TSVQ.pdf'],      h,     300); 
+        UTIL_FILE_save2pdf  (['results_err' errType '_____'  PARAM.ds_3_longName '_TSVQ.pdf'],      h,     300); 
         
        

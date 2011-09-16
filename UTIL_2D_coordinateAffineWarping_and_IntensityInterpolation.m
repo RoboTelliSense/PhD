@@ -37,7 +37,7 @@ function [X_hxw, Y_hxw, I_hxw] = UTIL_2D_coordinateAffineWarping_and_IntensityIn
 %----------------------------------------------------    
 %coordinate warping
     %reference 0 centered grid
-    [grid_x_hxw, grid_y_hxw]=   meshgrid([1:w]-w/2, [1:h]-h/2); %input grid based on w and h centered around 0    
+    [grid_x_hxw, grid_y_hxw] =  UTIL_2D_grid_create(w, h, 'meshgrid_zc');  %0 centered mesh grid
     ref_grid_x_1xD          =   grid_x_hxw(:)';                 %vectorize grid coordinates
     ref_grid_y_1xD          =   grid_y_hxw(:)';                 %"
     

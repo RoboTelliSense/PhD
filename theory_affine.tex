@@ -200,40 +200,47 @@ s   &=  \mathrm{ccs} - \mathrm{scc}\\
 
 The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_tllpxy_to_abcdxy}.
 
+								\begin{figure}[t]
+								\centering
+								\subfigure[User defined bounding box and feature points.]{\includegraphics[width=0.65\textwidth]{figs/dataset_Dudek_with_feature_points_00001.pdf}}\\
+								\subfigure[Desired output.]{\includegraphics[width=0.25\textwidth]{figs/dataset_Dudek_desired_00001.pdf}}
+								\caption{The goal is to scale and warp a user defined object of interest and corresponding feature points to an upright position.}
+								\label{Fig:overall}
+								\end{figure}
+
+
 %================================
 \section{Experiments}
 %================================
-We conduct the following 2 experiments:
+For our experiments, consider Figure~\ref{Fig:overall}.  The goal is to scale and warp a user defined object of interest and corresponding feature points to an upright position.  To achieve our goal, we design 2 experiments.  The goal of the first experiment is to warp and scale the actual image and the goal of the second experiment is to warp and scale the feature points.
 
-\begin{enumerate}
-\item Experiment 1: Forward affine transform to extract object of interest from larger image
-\begin{enumerate}
-\item Manually initialize an object of interest using rigid-parameter initialization.
-\item Convert rigid-parameter initialization to affine-parameter initialization.
-\item Warp arbitrary sized grid using affine-parameter initialization to sample object of interest
-\item Compute pixel intensities at warped grid-points.
-\end{enumerate}
-\item Experiment 2: Inverse affine transform to warp feature points on larger image to warped image
-\end{enumerate}
+Before we explain the experiments in detail, we discuss the overall idea.  Ideally, we could apply an inverse affine transform and be done with it.  There is one challenge though.  We do not know the pixel coordinates of every point inside the bounding region.  To deal with this, we design experiment 1 in which we take a rectangular grid whose coordinates we know, warp it using our affine parameters to cover the object of interest, interpolate image intensities on those points to create an upright scaled output image.  For the feature points, we do know their pixel coordinates and so in experiment 2, we straight away apply the inverse affine transform to compute their new positions in the output image.  So, in summary,
 
-
-								\begin{figure}
+								\begin{figure}[t]
 								\centering
-								\subfigure[An initial zero-centered reference 33x33 grid is affinely warped to sample an object of interest.  Notice that the density of grid points is greater in the horizontal direction.]{\fbox{\includegraphics[width=0.65\textwidth]{figs/dataset_Dudek_00001_sampled2.pdf}}}
-								\subfigure[Warped 33x33 output for parameters shown in the left figure.]{\includegraphics[width=0.25\textwidth]{figs/dataset_Dudek_00001_sampled3.pdf}}
-								\subfigure[Different affine parameters will produce different 33x33 outputs.]{\includegraphics[width=0.65\textwidth]{figs/affineCandidates.pdf}}
-								\caption{Dudek dataset, frame 1, demonstration of affine warping.  The dimensions of the object of interest, the face, are 110x130 (width x height).  The warped output is 33x33.}
+								\fbox{\includegraphics[width=0.85\textwidth]{figs/dataset_Dudek_00001_forwardAffine.pdf}}
+								\caption{Experiment 1, Dudek dataset, frame 1, application of the forward affine transform.  In this experiment, we warp an arbitrary zero-centered grid to a grid covering the object of interest.  The dimensions of the object of interest, the face, are 110x130 (width x height).  The dimensions of the warped output grid are 33x33.  Notice that the density of grid points is greater in the horizontal direction.}
 								\label{Fig:affine_warping}
 								\end{figure}
 
-The source code for these steps is given in Listing~\ref{lst:demo_UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation}.
 
-%----------------------------------
-\subsection{Experiment 1: Forward affine transform}
-%----------------------------------
-In this experiment, our goal is to extract an object of interest from a larger image.
 
-\subsubsection{Manually initialize an object of interest using rigid-parameter initialization}
+\begin{enumerate}
+\item Experiment 1: Forward affine transform to extract object of interest from original image
+\begin{enumerate}
+\item Warp user-defined grid using affine-parameter initialization to sample object of interest
+\item Interpolate pixel intensities at warped grid-points.
+\end{enumerate}
+\item Experiment 2: Inverse affine transform to warp feature points on original image to warped image
+\end{enumerate}
+
+
+Before explaining these experiments in detail, we take a brief digression to explain how to compute affine parameters of the object of interest.
+
+The source code for all these steps is given in Listing~\ref{lst:demo_UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation}.
+
+%------------------------------------------------------------
+\subsection{Computing affine parameters of manually initialized object}
 %------------------------------------------------------------
 An object of interest in an image can be manually specified by drawing a bounding box around it, and then rotating the bounding box so that it reasonably encloses the object.  This step is relatively straightforward to do in standard image processing software.  In most cases, this rigid representation, as opposed to an affine representation, will suffice to reasonably enclose the object of interest for the purposes of initialization.  This requires 5 parameters for complete specification:
 
@@ -244,6 +251,12 @@ An object of interest in an image can be manually specified by drawing a boundin
 \item $h$, height of bounding box
 \item $\theta$, rotation angle of bounding box in radians.  In the cartesian coordinate system, a positive $\theta$ corresponds to counter-clockwise direction.  This can be verified quickly since a $90^{\circ}$ left turn for a vector $(x,y)^T$ in $\mathbb{R}^2$ is given by $(-y,x)^T$.  This is obtained using,
 
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=0.65\textwidth]{figs/affineCandidates.pdf}
+								\caption{Different affine parameters will produce different 33x33 outputs.}
+								\label{Fig:affine_candidates}
+								\end{figure}
 \begin{equation}
 \left[\begin{array}{ccc}
 -y 
@@ -267,9 +280,8 @@ y
 
 								\begin{figure}[t]
 								\centering
-								\subfigure[Input image with given feature points.]{\includegraphics[width=0.65\textwidth]{figs/dataset_Dudek_00001_feature_points.pdf}}\\
-								\subfigure[Inverse affine mapping of feature points.]{\includegraphics[width=0.25\textwidth]{figs/dataset_Dudek_00001_feature_points_inverse_warped.pdf}}
-								\caption{An input image with given feature points.}
+								\includegraphics[width=0.75\textwidth]{figs/dataset_Dudek_00001_inverseAffine.pdf}
+								\caption{Experiment 2, Dudek dataset, frame 1, application of inverse affine transform.  In this experiment, we apply the inverse affine transform to warp a set of given feature points and place them on Grid B from Figure~\ref{Fig:affine_warping}.}
 								\label{fig:original_feature_points}
 								\end{figure}
 
@@ -279,23 +291,29 @@ The term "left turn" is commonly used in computer graphics.  In  $\mathbb{R}^2$,
 
 As an example, consider Figure~\ref{Fig:affine_warping}.  We are interested in segmenting the face.  The initial parameters are: $t_x=188, t_y=192, w=110, h=130, \theta=-4.58^\circ$.  Note that we specify angles in radians.  $\theta$ is written here in degrees for clarity.  Moreover, notice that the bounding box is rotated in the counter-clockwise direction.  Since the y axis increases downwards, $\theta$ is negative.
 
-\subsubsection{Convert rigid-parameter initialization to affine-parameter initialization}
-%------------------------------------------------------------
 Once we have an initial rigid representation of the object of interest, we can transform this representation into an affine representation.  Since the affine representation allows for scaling, we can scale the object and obtain its segmentation in scaled form.  For instance, in Figure~\ref{Fig:affine_warping}, the dimensions of the object of interest are 110x130.  However, for computational efficiency, we want the dimensions to be 33x33.  The affine parameters then become $\theta=-4.58^\circ, \lambda_1=110/32=3.4375, \lambda_2=130/32=4.0625, \phi=0^\circ, t_x=188, t_y=192$.  \footnote{Notice that we have divided by 32 instead of 33.  The reason is that the grid used in~\cite{2008_JNL_subspaceTRK_Ross} is 32x32 and they have accordingly used a divisor of 32.  In our case, for RVQ we require an odd dimensional grid due to the way the closed source codebook encoding software, gen.exe is setup.  Therefore, we pick a 33x33 grid.  Not changing the divisor to 33 was an oversight but this omission is expected to have minimal effect on results.}
 
-\subsubsection{Warp arbitrary sized grid using affine-parameter initialization to sample object of interest}
+
+%----------------------------------
+\subsection{Experiment 1: Forward affine transform}
+%----------------------------------
+In this experiment, our goal is to extract an object of interest from an original image, scale it and make it upright.  We start with an arbitrary zero-centered grid, grid A as shown in Figure~\ref{Fig:affine_candidates}.  The forward affine transform is applied to this grid so that it covers the object of interest and is now called grid B.  Note that the dimensions of grid B are also 33x33.  Grid B is now placed at coordinates (1,1) so that its coordinates go from 1 to 33 in the horizontal direction and 1 to 33 in the vertical direction.  Note that this grid now samples the object of interest.  This grid is then placed at the origin as shown in Figure~\ref{fig:original_feature_points}.  
+
+\subsubsection{Warp user-defined grid}
 %------------------------------------------------------------
 In this step, the affine parameters $(\theta, \lambda_1, \lambda_2, \phi, t_x, t_y)$ computed above are changed to $(a, b, c, d, t_x, t_y)$ using Equation~\ref{Eqn:tllpxy_to_abcdxy}.  Affine matrix $\mathbf{H}_A$ is formed using Equation~\ref{Eqn:top_level}.  A reference $w$ x $h$ = 33x33 grid centered on the origin is transformed using these affine coordinates to a 33x33 grid centerd on the object of interest using the affine transformation also given in Equation~\ref{Eqn:top_level}.  This can be seen in Figure~\ref{Fig:affine_warping}.
 
-\subsubsection{Compute pixel intensities at warped grid-points}
+\subsubsection{Interpolate pixel intensities}
 %------------------------------------------------------------
 The final step is to read off the pixel intensity values at the affinely warped grid obtained in the step above.  Most of these grid points will not have integer values.  Rounding to integer values will create artefacts.  Some form of interpolation will be required to read sub-pixel intensities.  In our experiments, we use bilinear interpolation. 
+
+As a sidenote, we show the effects of applying different affine transform parameters in Figure~\ref{Fig:affine_candidates}.  This can be useful for instance to generate samples in the particle filter.
 
 
 %----------------------------------
 \subsection{Experiment 2, Inverse affine transform}
 %----------------------------------
-In this experiment, we assume that we have some feature points on the object of interest as shown in Figure~\ref{fig:original_feature_points}.  Our goal is to be able to plot these points on the warped output image from Experiment 1.  For this, we need to inverse warp these points.  A point $(X,Y)$ can be inverse mapped to $(x,y)$ using
+Now, feature points on the original figure are inverse-affine-transformed and superimposed on grid B.  A feature point with coordinates $(X,Y)$ can be inverse affine mapped to $(x,y)$ using
 
 \begin{equation}
 \left[\begin{array}{ccc}
@@ -318,21 +336,71 @@ Y - t_y
 \right]
 \end{equation}
 
-This causes the inverse mapped feature points to be zero-centered.  Add half width and half height ($w/2, h/2$ for even sized grids, $(w-1)/2, (h-1)/2$ for odd sized grids) to the x and y coordinates to center on the warped image.  The code for this experiment is also given in Listing~\ref{lst:demo_UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation}.
+For our example, the initial feature points are 
+
+\begin{equation*}
+\left[\begin{array}{ccc}
+X  
+\\ 
+Y
+\end{array}
+\right]=
+\left[
+\begin{array}{cccccccc}
+148.9306 & 187.2747 & 226.0674 & 169.6408 & 192.6433 & 218.8531 & 194.5372\\
+179.0198 & 172.5994 & 174.0397 & 230.2172 & 224.5582 & 223.3328 & 243.8089\\
+\end{array}
+\right]
+\end{equation*}
+
+Applying the inverse affine transform yields
+
+\begin{equation*}
+\left[\begin{array}{ccc}
+x  
+\\ 
+y
+\end{array}
+\right]=
+\left[
+\begin{array}{rrrrrrrrrrr}
+  -11.0275 &   0.2407 &  11.4563 &  -6.2122  &  0.5896 &   8.2183 &   0.6912\\
+   -3.9534  & -4.7745  & -3.6580  &  9.0161  &  8.0800  &  8.2949  & 12.8408
+\end{array}
+\right]
+\end{equation*}
 
 
+Notice that the inverse mapped feature points are zero-centered.  We add $(w/2, h/2)$ so that these warped feature points correctly align with grid B whose first x and y coordinate is at (1,1).\footnote{This uses Matlab notation rather than C++ notation where the first x and y coordinates are at (0,0).}  This gives,
 
+\begin{equation*}
+\left[\begin{array}{ccc}
+x  
+\\ 
+y
+\end{array}
+\right]=
+\left[
+\begin{array}{rrrrrrrrrrr}
+   5.4725  & 16.7407 &  27.9563  & 10.2878  & 17.0896 &  24.7183  & 17.1912 \\
+   12.5466 &  11.7255 &  12.8420 &   25.5161 &  24.5800  & 24.7949 &   29.3408
+\end{array}
+\right]
+\end{equation*}
 
+These points are plotted in Figure~\ref{fig:original_feature_points}.
 
 %================================
 \section{Results}
 %================================
-Figure~\ref{Fig:affine_warping} shows the result of affine warping to compute grid points and bilinear interpolation to compute pixel intensities.  We see that the affine region of interest accurately samples the object of interest and minimizes inclusion of background pixels.  Also, bilinear interpolation produces an accurate representation of the target of interest.  Also shown are other outputs for a set of random perturbations of our affine parameters.  These outputs can for instance be candidate samples for a particle filter.  Finally, feature points on the original image can be inversely mapped to the warped image.
+Figure~\ref{Fig:affine_warping} shows the result of affine warping to compute warped grid points and bilinear interpolation to compute pixel intensities on those warped grid points to produce an upright scaled image.  We see that the affine region of interest accurately samples the object of interest and minimizes inclusion of background pixels.  Also, bilinear interpolation produces an accurate representation of the target of interest.  The original feature points are also correctly warped and overlaid on the output image.
 
 %================================
 \section{Conclusions}
 %================================
-Affine warping is an effective way of downsampling an object of interest as well as allowing a region of interest to be defined that minimizes inclusion of background pixels.  Feature points on the orignal image can be inverse warped on the output image.
+Affine warping is an effective way of extracting an object of interest and associated feature points from a given image.  The affine representation is rich enough to bound many objects of interest while minimizing inclusion of background pixels.
+
+
 
 
 %-----------------------------------------------------------------
@@ -347,6 +415,8 @@ Affine warping is an effective way of downsampling an object of interest as well
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_coordinateAffineWarping\_and\_IntensityInterpolation.m}, 		label=lst:UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation]			{UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation.m}
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_apply\_transform.m}, 		label=lst:UTIL_2D_affine_apply_transform]		{UTIL_2D_affine_apply_transform.m}
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_apply\_inverse\_transform.m}, label=lst:UTIL_2D_affine_apply_inverse_transform]		{UTIL_2D_affine_apply_inverse_transform.m}
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_grid\_create.m}, label=lst:UTIL_2D_grid_create]		{UTIL_2D_grid_create.m}
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_xywht\_to\_Ha\_2x3.m}, label=lst:UTIL_2D_affine_xywht_to_Ha_2x3]		{UTIL_2D_affine_xywht_to_Ha_2x3.m}
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_Ha\_2x3\_from\_abcdxy.m}, 	label=lst:UTIL_2D_affine_Ha_2x3_from_abcdxy]	{UTIL_2D_affine_Ha_2x3_from_abcdxy.m}
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_abcdtxty\_to\_tllpxy.m.}, 	label=lst:UTIL_2D_affine_abcdxy_to_tllpxy]		{UTIL_2D_affine_abcdxy_to_tllpxy.m}
 \lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_tllpxy\_to\_abcdxy.m.}, 		label=lst:UTIL_2D_affine_tllpxy_to_abcdxy]		{UTIL_2D_affine_tllpxy_to_abcdxy.m}

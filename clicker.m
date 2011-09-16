@@ -42,11 +42,11 @@ disp('');
 
 
 
-INP.ds_2_name = input('what is the name?  ', 's');
-load(INP.ds_2_name)
+PARAM.ds_2_name = input('what is the name?  ', 's');
+load(PARAM.ds_2_name)
 
 numPt = input('which point are you clicking?  ', 's');
-cfn_out = [INP.ds_2_name '_' numPt];
+cfn_out = [PARAM.ds_2_name '_' numPt];
 
 
 [tempp1, tempp2, T] = size(data);

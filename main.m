@@ -11,7 +11,7 @@
 %>                              Increasing this will likely improve the results, but make the tracker slower.
 %> con_normalizer               :   The standard deviation of the observation likelihood, e.g. 0.01
 %> ff                       :   Forgetting factor, as described in the paper.  When doing the incremental update, 
-%>                              1 means remember all past INP.ds_8_I_HxWxF, and 0 means remeber none of it.
+%>                              1 means remember all past I_HxWxF, and 0 means remeber none of it.
 %> batchsize                :   How often to update the eigenbasis.  We've used this value (update every 5th frame) 
 %>                              fairly consistently, so it most likely won't need to be changed.  A smaller batchsize 
 %>                              means more frequent updates, making it quicker to model changes in appearance, but also 
@@ -103,7 +103,7 @@ datasetCode=1;
     %fixed parameters    
     PARAM.con_errfunc       =   'L2';               %condensation related              
     PARAM.con_reseig        =   0;
-	PARAM.scale             =   32;                 %target related, note 1 less than sw and sh which I had to increase by 1 for RVQ
+	PARAM.aff_scale         =   32;                 %target affine scaling, note 1 less than sw and sh which I had to increase by 1 for RVQ
     PARAM.in_sw             =   33;
     PARAM.in_sh             =   33;    
     PARAM.tgt_sz            =   [PARAM.in_sh PARAM.in_sw];  %combine two above
@@ -117,13 +117,13 @@ datasetCode=1;
 	PARAM.plot_num_cols  	=   4;                  %"
 	PARAM.plot_title_fontsz =   8;                  %", fontsize
 
-%2. INPUT
-    INP                     =   TRK_read_input(PARAM.in_datasetCode, PARAM.scale); 
-    first_I_0t1             =   double(INP.ds_8_I_HxWxF(:,:,1))/256; %read first image, 0t1 means the image intensities are between 0 and 1       
+%2. IMGUT
+    [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM); 
+    first_I_0t1             =   double(I_HxWxF(:,:,1))/256; %read first image, 0t1 means the image intensities are between 0 and 1       
 
     %back to PARAM based on input
-    PARAM                   =   TRK_fileManagement(PARAM, INP);  %filenames
-    PARAM.trg_T             =	round(INP.ds_9_F/PARAM.trg_B); %number of times training occurs
+    PARAM                   =   TRK_fileManagement(PARAM, IMG);  %filenames
+    PARAM.trg_T             =	round(PARAM.ds_4_F/PARAM.trg_B); %number of times training occurs
     
 %3. LEARNING ALGORITHMS
     %NONE
@@ -167,25 +167,25 @@ datasetCode=1;
     
     trkPF.stt_1_DM2         =   [];                                 %1. data:	design matrix, one observation per column 
     [temp1, temp2, trkPF.stt_2_mu_shxsw]   ...
-                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, INP.ds_4_aff_abcdxy_1x6, PARAM.in_sw, PARAM.in_sh);
-    %trkPF.stt_2_mu_Dx1     =   UTIL_2D_warp_image(first_I_0t1, INP.ds_4_aff_abcdxy_1x6, PARAM.tgt_sz); %data mean
+                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, PARAM.ds_aff_abcdxy_1x6, PARAM.in_sw, PARAM.in_sh);
+    %trkPF.stt_2_mu_Dx1     =   UTIL_2D_warp_image(first_I_0t1, PARAM.ds_aff_abcdxy_1x6, PARAM.tgt_sz); %data mean
     trkPF.stt_3_weights     =   [];
     trkPF.stt_4_aff_abcdxy_1x6  ...
-                            =   INP.ds_4_aff_abcdxy_1x6; 
+                            =   PARAM.ds_aff_abcdxy_1x6; 
     
-    trkPF.fp_1_gt           =   cat(3, INP.gt_3_initial_fp + repmat(PARAM.tgt_sz'/2,[1,INP.gt_2_num_fp]), INP.gt_1_fp(:,:,1)); %1. ground truth
-    trkPF.fp_2_est          =   zeros(size(INP.gt_1_fp));  			%1b. estimated
-	trkPF.fp_3_err          =   zeros(1,INP.gt_2_num_fp);           %1c. feature points: error
-    trkPF.fp_4_err_avg      =   zeros(1,INP.gt_2_num_fp);           %1d. feature points: average error
+    trkPF.fp_1_gt           =   cat(3, GT.fp_3_ref_upright_zc + repmat(PARAM.tgt_sz'/2,[1,GT.fp_2_G]), GT.fp_1_all_2xGxF(:,:,1)); %1. ground truth
+    trkPF.fp_2_est          =   zeros(size(GT.fp_1_all_2xGxF));  			%1b. estimated
+	trkPF.fp_3_err          =   zeros(1,GT.fp_2_G);           %1c. feature points: error
+    trkPF.fp_4_err_avg      =   zeros(1,GT.fp_2_G);           %1d. feature points: average error
      
 	trkPF.trg_rmse__Tx1     =   zeros(PARAM.trg_T,1);               %3.  training
 	trkPF.trg_armse_Tx1 	=   zeros(PARAM.trg_T,1);
 	trkPF.trg_SNRdB_Tx1     =   zeros(PARAM.trg_T,1);
     
-	trkPF.trk_rmse__Fx1     =   zeros(INP.ds_9_F,1);
-	trkPF.trk_armse_Fx1 	=   zeros(INP.ds_9_F,1);
+	trkPF.trk_rmse__Fx1     =   zeros(PARAM.ds_4_F,1);
+	trkPF.trk_armse_Fx1 	=   zeros(PARAM.ds_4_F,1);
     
-	trkPF.tst_SNRdB_Fx1   	=   zeros(INP.ds_9_F,1);
+	trkPF.tst_SNRdB_Fx1   	=   zeros(PARAM.ds_4_F,1);
 
     trkPF.bestCandidate_0t1_shxsw =   trkPF.stt_2_mu_shxsw;							%4.  testing
     
@@ -204,8 +204,8 @@ datasetCode=1;
         %strings  
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
-        I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256; %input
-        trkPF               =   TRK_condensation(f, INP, PARAM, I_0t1, NONE, trkPF);		
+        I_0t1               =   double(I_HxWxF(:,:,f))/256; %input
+        trkPF               =   TRK_condensation(f, IMG, GT, PARAM, I_0t1, NONE, trkPF);		
     end	   
 
 %step 2. save structures	
@@ -228,18 +228,18 @@ datasetCode=1;
 %PROCESSING
 %-----------------------------------------5
     duration=0;    
-    for f = PARAM.trg_B+1 : INP.ds_9_F
+    for f = PARAM.trg_B+1 : PARAM.ds_4_F
         tic
         f
         PARAM.str_f        =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
-        I_0t1               =   double(INP.ds_8_I_HxWxF(:,:,f))/256;
+        I_0t1               =   double(I_HxWxF(:,:,f))/256;
         
 		%testing: condensation
-		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, PARAM, INP.rand_unitvar_maxFx6xNp, INP.rand_cdf_maxFxNp, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, PARAM);
-		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, PARAM, INP.rand_unitvar_maxFx6xNp, INP.rand_cdf_maxFxNp, 2); end
-		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  PARAM, INP.rand_unitvar_maxFx6xNp, INP.rand_cdf_maxFxNp, 3); end
-		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, PARAM, INP.rand_unitvar_maxFx6xNp, INP.rand_cdf_maxFxNp, 4); end
+		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, PARAM, RAND.gauss_unitvar_maxFx6xNp, RAND.unif_cdf_maxFxNp, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, PARAM);
+		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, PARAM, RAND.gauss_unitvar_maxFx6xNp, RAND.unif_cdf_maxFxNp, 2); end
+		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  PARAM, RAND.gauss_unitvar_maxFx6xNp, RAND.unif_cdf_maxFxNp, 3); end
+		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, PARAM, RAND.gauss_unitvar_maxFx6xNp, RAND.unif_cdf_maxFxNp, 4); end
 	
 		%training (update model) every few frames
         if (mod(f,PARAM.trg_B)==0) %i.e.train every batchsize images
@@ -250,7 +250,7 @@ datasetCode=1;
             if (PARAM.in_bUseTSVQ)   TSVQ           =   tsvq_1_train  (TSVQ.DM2_weighted * max_signal_val,   TSVQ);   end  
         end
         
-        TRK_draw_results(f, INP.ds_8_I_HxWxF, PARAM, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQ.FP_1_gt, trkTSVQ.FP_1_gt);
+        TRK_draw_results(f, I_HxWxF, PARAM, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQ.FP_1_gt, trkTSVQ.FP_1_gt);
         TRK_save_allResults;
         %[f trkIPCA.FPerr_avg(f) RVQ.FPerr_avg(f) TSVQ.FPerr_avg(f)]
         toc
