@@ -6,7 +6,7 @@ Np=600;
 for f=1:1000
     f
     RAND.unif_cdf_maxFxNp     (f,:)    =   rand(1,Np); 
-    RAND.gauss_unitvar_maxFx6xNp  (f,:,:)  =   randn(6,Np); 
+    RAND.gaus_maxFx6xNp  (f,:,:)  =   randn(6,Np); 
 end
 
 clear Np;

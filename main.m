@@ -117,12 +117,12 @@ datasetCode=1;
 	PARAM.plot_num_cols  	=   4;                  %"
 	PARAM.plot_title_fontsz =   8;                  %", fontsize
 
-%2. IMGUT
+%2. INPUT
     [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM); 
     first_I_0t1             =   double(I_HxWxF(:,:,1))/256; %read first image, 0t1 means the image intensities are between 0 and 1       
 
     %back to PARAM based on input
-    PARAM                   =   TRK_fileManagement(PARAM, IMG);  %filenames
+    PARAM                   =   TRK_fileManagement(PARAM);  %filenames
     PARAM.trg_T             =	round(PARAM.ds_4_F/PARAM.trg_B); %number of times training occurs
     
 %3. LEARNING ALGORITHMS
@@ -166,8 +166,11 @@ datasetCode=1;
     trkPF.name              =   'genericPF';                        %generic particle filter    
     
     trkPF.stt_1_DM2         =   [];                                 %1. data:	design matrix, one observation per column 
+    PARAM.ds_aff_Ha_2x3     =   UTIL_2D_affine_Ha_2x3_from_abcdxy(PARAM.ds_aff_abcdxy_1x6);
     [temp1, temp2, trkPF.stt_2_mu_shxsw]   ...
-                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, PARAM.ds_aff_abcdxy_1x6, PARAM.in_sw, PARAM.in_sh);
+                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, PARAM.ds_aff_Ha_2x3, PARAM.in_sw, PARAM.in_sh);
+    clear temp1 temp2;
+    
     %trkPF.stt_2_mu_Dx1     =   UTIL_2D_warp_image(first_I_0t1, PARAM.ds_aff_abcdxy_1x6, PARAM.tgt_sz); %data mean
     trkPF.stt_3_weights     =   [];
     trkPF.stt_4_aff_abcdxy_1x6  ...
@@ -205,7 +208,7 @@ datasetCode=1;
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
         I_0t1               =   double(I_HxWxF(:,:,f))/256; %input
-        trkPF               =   TRK_condensation(f, IMG, GT, PARAM, I_0t1, NONE, trkPF);		
+        trkPF               =   TRK_condensation(f, I_0t1, GT, RAND, PARAM, NONE, trkPF); %frame num, image, ground truth, random data, parameters, learning algo, tracking structure
     end	   
 
 %step 2. save structures	
@@ -236,10 +239,10 @@ datasetCode=1;
         I_0t1               =   double(I_HxWxF(:,:,f))/256;
         
 		%testing: condensation
-		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, PARAM, RAND.gauss_unitvar_maxFx6xNp, RAND.unif_cdf_maxFxNp, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, PARAM);
-		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, PARAM, RAND.gauss_unitvar_maxFx6xNp, RAND.unif_cdf_maxFxNp, 2); end
-		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  PARAM, RAND.gauss_unitvar_maxFx6xNp, RAND.unif_cdf_maxFxNp, 3); end
-		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, PARAM, RAND.gauss_unitvar_maxFx6xNp, RAND.unif_cdf_maxFxNp, 4); end
+		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(I_0t1, f, IPCA, GT, trkIPCA, PARAM, RAND.gaus_maxFx6xNp, RAND.unif_cdf_maxFxNp, 1); end %estwarp_grad    (I_0t1, IPCA, trkIPCA, PARAM);
+		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(I_0t1, f, BPCA, GT, trkBPCA, PARAM, RAND.gaus_maxFx6xNp, RAND.unif_cdf_maxFxNp, 2); end
+		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(I_0t1, f, RVQ,  GT, trkRVQ,  PARAM, RAND.gaus_maxFx6xNp, RAND.unif_cdf_maxFxNp, 3); end
+		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(I_0t1, f, TSVQ, GT, trkTSVQ, PARAM, RAND.gaus_maxFx6xNp, RAND.unif_cdf_maxFxNp, 4); end
 	
 		%training (update model) every few frames
         if (mod(f,PARAM.trg_B)==0) %i.e.train every batchsize images

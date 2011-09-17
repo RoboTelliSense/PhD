@@ -20,7 +20,7 @@
 %    (a) tgt_best_aff_abcdxy_1x6: MAP estimate of best affine parameters that describe target bounding region
 %    (b) affineCandidates_6xNp: possible affine candidates that describe target bounding region
 %    weights
-%    err_projScalars_BxNp
+%    err_descr_BxNp
 %    out_1_snp_0t1_shxsw
 %    all_candidate_errors_0to1_DxNp
 %    recon
@@ -36,7 +36,7 @@
 % Date last modified: July 18, 2011
 %%
 
-function TRK = TRK_condensation(f, IMG, GT, PARAM, I_0t1, ALGO, TRK)
+function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
@@ -46,8 +46,8 @@ function TRK = TRK_condensation(f, IMG, GT, PARAM, I_0t1, ALGO, TRK)
     Nw                      =   PARAM.in_Nw;
     bWeighting              =   PARAM.in_bWeighting;
  
-    rn1                     =   RAND.unif_cdf_maxFxNp(f,:);          %pre-stored random numbers to ensure repeatability    
-    rn2(:,:)                =   RAND.gauss_unitvar_maxFx6xNp(f,:,:);  %same as above
+    RN1_1xNp                =   RAND.unif_cdf_maxFxNp(f,:);     %pre-stored uniform random numbers to ensure repeatability    
+    RN2_6xNp(:,:)           =   RAND.gaus_maxFx6xNp(f,:,:);     %     "     gaussian  "       "    "      "        "
     stddev                  =   PARAM.ds_6_con_stddev;
 	
     D                       =   sw*sh;                              %dimensionality of input data
@@ -75,12 +75,12 @@ function TRK = TRK_condensation(f, IMG, GT, PARAM, I_0t1, ALGO, TRK)
     else
         %not first time? resample distribution in aff_tllpxy_6xNp space (read details of these steps in my article on resampling)
         prior_cdf           =   cumsum(stt_3_weights);
-        idx                 =   floor(sum(  repmat(rn1,[Np,1]) > repmat(prior_cdf,[1,Np])  ))+1; 
+        idx                 =   floor(sum(  repmat(RN1_1xNp,[Np,1]) > repmat(prior_cdf,[1,Np])  ))+1; 
         aff_tllpxy_6xNp     =   aff_tllpxy_6xNp(:,idx);  %keep only good candidates (resample)
     end
 
     %b. apply uniform random motion on tllpxy (theta, lambda1, lambda2, phi, tx, ty)
-    rand_motion_tllpxy_6xNp =   rn2.*repmat(PARAM.ds_aff_tllpxy_var_1x6(:),[1,Np]);       
+    rand_motion_tllpxy_6xNp =   RN2_6xNp.*repmat(PARAM.ds_aff_tllpxy_var_1x6(:),[1,Np]);       
     
     %c. get candidate parameters after motion
     aff_tllpxy_6xNp      	=   aff_tllpxy_6xNp + rand_motion_tllpxy_6xNp;                        
@@ -115,18 +115,18 @@ function TRK = TRK_condensation(f, IMG, GT, PARAM, I_0t1, ALGO, TRK)
         DIFS                =   0;
         
         %part 2: error, reduce the part that can be explained by the basis
-            err_projScalars_BxNp    =   U_DxB'*all_candidate_errors_0to1_DxNp;              %error projection on basis: scalars
-            err_projVectors_DxNp    =   U_DxB*err_projScalars_BxNp;        %error projection on basis: vectors
-            all_candidate_errors_0to1_DxNp         =   all_candidate_errors_0to1_DxNp - err_projVectors_DxNp;   %this is DFFS
+            err_descr_BxNp    =   U_DxB'*all_candidate_errors_0to1_DxNp;              %error projection on basis: scalars
+            err_recon_DxNp    =   U_DxB*err_descr_BxNp;        %error projection on basis: vectors
+            all_candidate_errors_0to1_DxNp         =   all_candidate_errors_0to1_DxNp - err_recon_DxNp;   %this is DFFS
                                                         
             
             %compute DIFS for use with PPCA, if not using PPCA, not required
-            if (isfield(TRK,'err_projScalars_BxNp'))
-                DIFS            				=   (abs(err_projScalars_BxNp)-abs(TRK.err_projScalars_BxNp))*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
+            if (isfield(TRK,'err_descr_BxNp'))
+                DIFS            				=   (abs(err_descr_BxNp)-abs(TRK.err_descr_BxNp))*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
             else
-                DIFS            				=   err_projScalars_BxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
+                DIFS            				=   err_descr_BxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
             end
-            TRK.err_projScalars_BxNp 			=   err_projScalars_BxNp;
+            TRK.err_descr_BxNp 			=   err_descr_BxNp;
         
         
 	

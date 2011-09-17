@@ -29,15 +29,15 @@ function abcdxy = UTIL_2D_affine_tllpxy_to_abcdxy(tllpxy) %tllpxy: lambda1, lamb
     scs                     =   sin(theta)*cos(phi)*sin(phi);  
     sss                     =   sin(theta)*(sin(phi))^2;
 
-    p                       =   css - scs;
-    q                       =   ccc + scs;
-    r                       =   ccs + sss;
-    s                       =   ccs - scc;
+    m                       =   css - scs;
+    n                       =   ccc + scs;
+    o                       =   ccs + sss;
+    p                       =   ccs - scc;
 
     %output (create abcdxy)
-    a                       =   lambda2*p + lambda1*q;      
-    b                       =   lambda2*s - lambda1*r;
-    c                       =   lambda2*r - lambda1*s;
-    d                       =   lambda2*q + lambda1*p;
+    a                       =   lambda2*m + lambda1*n;      
+    b                       =   lambda2*p - lambda1*o;
+    c                       =   lambda2*o - lambda1*p;
+    d                       =   lambda2*n + lambda1*m;
     
     abcdxy                =   [a b c d tx ty];

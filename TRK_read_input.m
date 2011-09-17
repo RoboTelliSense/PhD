@@ -22,38 +22,38 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
 %-----------------------------------------------
 	
 %fn: filename (convert datasetCode to datasetName)
-    if      (PARAM_in_datasetCode==0)  PARAM.ds_2_name = 'test';          PARAM.ds_3_longName='0___test___________'; %ds is for dataset
-    elseif  (PARAM_in_datasetCode==1)  PARAM.ds_2_name = 'Dudek';         PARAM.ds_3_longName='1___Dudek__________';
-    elseif  (PARAM_in_datasetCode==2)  PARAM.ds_2_name = 'davidin300';    PARAM.ds_3_longName='2___davidin300_____';
-    elseif  (PARAM_in_datasetCode==3)  PARAM.ds_2_name = 'sylv';          PARAM.ds_3_longName='3___sylv___________';
-    elseif  (PARAM_in_datasetCode==4)  PARAM.ds_2_name = 'trellis70';     PARAM.ds_3_longName='4___trellis70______';
-    elseif  (PARAM_in_datasetCode==5)  PARAM.ds_2_name = 'fish';          PARAM.ds_3_longName='5___fish___________';
-    elseif  (PARAM_in_datasetCode==6)  PARAM.ds_2_name = 'car4';          PARAM.ds_3_longName='6___car4___________';
-    elseif  (PARAM_in_datasetCode==7)  PARAM.ds_2_name = 'car11';         PARAM.ds_3_longName='7___car11__________';
-    elseif  (PARAM_in_datasetCode==8)  PARAM.ds_2_name = 'PETS2001rcf';   PARAM.ds_3_longName='8___PETS2001rcf____';
-    elseif  (PARAM_in_datasetCode==9)  PARAM.ds_2_name = 'PETS2009';      PARAM.ds_3_longName='9___PETS2009_______';
-    elseif  (PARAM_in_datasetCode==10) PARAM.ds_2_name = 'AVSS2007_1';    PARAM.ds_3_longName='10__AVSS2007_1_____';
-    elseif  (PARAM_in_datasetCode==11) PARAM.ds_2_name = 'AVSS2007_2';    PARAM.ds_3_longName='11__AVSS2007_2_____'; 
-    elseif  (PARAM_in_datasetCode==12) PARAM.ds_2_name = 'AVSS2007_3';    PARAM.ds_3_longName='12__AVSS2007_3_____'; 
-    elseif  (PARAM_in_datasetCode==13) PARAM.ds_2_name = 'motinasFast';   PARAM.ds_3_longName='13__motinasFast____';  
+    if      (PARAM.in_datasetCode==0)  PARAM.ds_2_name = 'test';          PARAM.ds_3_longName='0___test___________'; %ds is for dataset
+    elseif  (PARAM.in_datasetCode==1)  PARAM.ds_2_name = 'Dudek';         PARAM.ds_3_longName='1___Dudek__________';
+    elseif  (PARAM.in_datasetCode==2)  PARAM.ds_2_name = 'davidin300';    PARAM.ds_3_longName='2___davidin300_____';
+    elseif  (PARAM.in_datasetCode==3)  PARAM.ds_2_name = 'sylv';          PARAM.ds_3_longName='3___sylv___________';
+    elseif  (PARAM.in_datasetCode==4)  PARAM.ds_2_name = 'trellis70';     PARAM.ds_3_longName='4___trellis70______';
+    elseif  (PARAM.in_datasetCode==5)  PARAM.ds_2_name = 'fish';          PARAM.ds_3_longName='5___fish___________';
+    elseif  (PARAM.in_datasetCode==6)  PARAM.ds_2_name = 'car4';          PARAM.ds_3_longName='6___car4___________';
+    elseif  (PARAM.in_datasetCode==7)  PARAM.ds_2_name = 'car11';         PARAM.ds_3_longName='7___car11__________';
+    elseif  (PARAM.in_datasetCode==8)  PARAM.ds_2_name = 'PETS2001rcf';   PARAM.ds_3_longName='8___PETS2001rcf____';
+    elseif  (PARAM.in_datasetCode==9)  PARAM.ds_2_name = 'PETS2009';      PARAM.ds_3_longName='9___PETS2009_______';
+    elseif  (PARAM.in_datasetCode==10) PARAM.ds_2_name = 'AVSS2007_1';    PARAM.ds_3_longName='10__AVSS2007_1_____';
+    elseif  (PARAM.in_datasetCode==11) PARAM.ds_2_name = 'AVSS2007_2';    PARAM.ds_3_longName='11__AVSS2007_2_____'; 
+    elseif  (PARAM.in_datasetCode==12) PARAM.ds_2_name = 'AVSS2007_3';    PARAM.ds_3_longName='12__AVSS2007_3_____'; 
+    elseif  (PARAM.in_datasetCode==13) PARAM.ds_2_name = 'motinasFast';   PARAM.ds_3_longName='13__motinasFast____';  
     end
     
     %rigid parameters 
     switch (PARAM.ds_2_name)
-        case 'test';        xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tllpxy_var_1x6=[9  9  .05  .05  .005  .001]; 
-        case 'Dudek';       xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tllpxy_var_1x6=[9  9  .05  .05  .005  .001]; 
-        case 'davidin300';  xywht=[129 67  62  78  -0.02]; con_normalizer=0.75; ff=0.99; aff_tllpxy_var_1x6=[5  5  .01  .02  .002  .001]; 
-        case 'sylv';        xywht=[118 54  53  53  -0.20]; con_normalizer=0.75; ff=0.95; aff_tllpxy_var_1x6=[7  7  .01  .02  .002  .001]; 
-        case 'trellis70';   xywht=[178 76  45  49   0   ]; con_normalizer=0.20; ff=0.95; aff_tllpxy_var_1x6=[4  4  .01  .01  .002  .001]; 
-        case 'fish';        xywht=[134 62  62  80   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[7  7  .01  .01  .002  .001]; 
-        case 'car4';        xywht=[145 105 200 150  0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[5  5  .025 .01  .002  .001];
-        case 'car11';       xywht=[74  128 30  25   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[5  5  .01  .01  .001  .001]; 
-        case 'PETS2001rcf'; xywht=[414 341 13  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[1  1  .01  .01  .001  .001]; 
-        case 'PETS2009';    xywht=[333 217 9   40   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[3  3  .05  .05  .002  .002]; 
-        case 'AVSS2007_1';  xywht=[69  232 43  40   0.07]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[3  3  .05  .05  .002  .002]; 
-        case 'AVSS2007_2';  xywht=[60  234 37  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[3  3  .05  .05  .002  .002]; 
-        case 'AVSS2007_3';  xywht=[213 67  14  14   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[2  2  .05  .05  .002  .002]; 
-        case 'motinas_fast';xywht=[474 60  43  67   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[15 15 .05  .05  .005  .002]; 
+        case 'test';        xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .005  .001 9  9  ]; 
+        case 'Dudek';       xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .005  .001 9  9  ]; 
+        case 'davidin300';  xywht=[129 67  62  78  -0.02]; con_normalizer=0.75; ff=0.99; aff_tllpxy_var_1x6=[.02  .01  .002  .001 5  5  ]; 
+        case 'sylv';        xywht=[118 54  53  53  -0.20]; con_normalizer=0.75; ff=0.95; aff_tllpxy_var_1x6=[.02  .01  .002  .001 7  7  ]; 
+        case 'trellis70';   xywht=[178 76  45  49   0   ]; con_normalizer=0.20; ff=0.95; aff_tllpxy_var_1x6=[.01  .01  .002  .001 4  4  ]; 
+        case 'fish';        xywht=[134 62  62  80   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.01  .01  .002  .001 7  7  ]; 
+        case 'car4';        xywht=[145 105 200 150  0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.01  .025 .002  .001 5  5  ];
+        case 'car11';       xywht=[74  128 30  25   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.01  .01  .001  .001 5  5  ]; 
+        case 'PETS2001rcf'; xywht=[414 341 13  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.01  .01  .001  .001 1  1  ]; 
+        case 'PETS2009';    xywht=[333 217 9   40   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .002  .002 3  3  ]; 
+        case 'AVSS2007_1';  xywht=[69  232 43  40   0.07]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .002  .002 3  3  ]; 
+        case 'AVSS2007_2';  xywht=[60  234 37  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .002  .002 3  3  ]; 
+        case 'AVSS2007_3';  xywht=[213 67  14  14   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .002  .002 2  2  ]; 
+        case 'motinas_fast';xywht=[474 60  43  67   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .005  .002 15 15 ]; 
         otherwise;  error(['unknown PARAM.ds_2_name ' PARAM.ds_2_name]);
     end    
     top_left_x              =   xywht(1);
@@ -102,7 +102,7 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     GT.fp_3_ref_upright_zc  =   PARAM.ds_aff_abcdxy_1x6([3,4,1;5,6,2]) * [GT.fp_1_all_2xGxF(:,:,1); ones(1,GT.fp_2_G)];
     
     %random input
-    RAND.gauss_unitvar_maxFx6xNp ...
+    RAND.gaus_maxFx6xNp ...
                             =   RandomData_sample; %pre-stored random numbers to ensure repeatability, maxF=1000 since we do not anticipate more than 1000 frames  
     RAND.unif_cdf_maxFxNp   =   RandomData_cdf;
     
