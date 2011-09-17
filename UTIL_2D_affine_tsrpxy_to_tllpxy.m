@@ -1,4 +1,4 @@
-function tsrpxy = UTIL_2D_affine_tsrpxy_to_tllpxy(tsrpxy) %tsrpxy: lambda1, lambda2, theta, phi, tx, ty
+function tllpxy = UTIL_2D_affine_tsrpxy_to_tllpxy(tsrpxy) %tsrpxy: lambda1, lambda2, theta, phi, tx, ty
 
     theta                   =   tsrpxy(1);
     s                       =   tsrpxy(2);
@@ -10,4 +10,4 @@ function tsrpxy = UTIL_2D_affine_tsrpxy_to_tllpxy(tsrpxy) %tsrpxy: lambda1, lamb
     lambda1                 =   s;
     lambda2                 =   r*s;
     
-    tsrpxy                  =   [theta lambda1 lambda2 phi tx ty];
+    tllpxy                  =   [theta lambda1 lambda2 phi tx ty];
