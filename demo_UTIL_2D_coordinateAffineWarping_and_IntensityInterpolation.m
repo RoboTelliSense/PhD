@@ -27,6 +27,22 @@ close all;
     sw                      =   33;         %desired (output) snippet width (grid)
     sh                      =   33;         %desired (output) snippet height (grid)
     
+%check all 6 conversions first
+    %entry point
+    tllpxy                  =   UTIL_2D_affine_xywht_to_tllpxy(xywht);   %[-0.0800  3.4375    4.0625        0  188.0000  192.0000]
+    
+    %from tllpxy
+    tsrpxy                  =   UTIL_2D_affine_tllpxy_to_tsrpxy(tllpxy); %[-0.0800  3.4375    1.1818        0  188.0000  192.0000]
+    abcdxy                  =   UTIL_2D_affine_tllpxy_to_abcdxy(tllpxy); %[ 3.4265  0.3247   -0.2747   4.0495  188.0000  192.0000]
+    
+    %from tsrpxy
+    tllpxy                  =   UTIL_2D_affine_tsrpxy_to_tllpxy(tsrpxy);
+    abcdxy                  =   UTIL_2D_affine_tsrpxy_to_abcdxy(tsrpxy);
+    
+    %from abcdxy
+    tllpxy                  =   UTIL_2D_affine_abcdxy_to_tllpxy(abcdxy);
+    tsrpxy                  =   UTIL_2D_affine_abcdxy_to_tsrpxy(abcdxy);
+    
 %---------------------------------------------
 %PRE-PROCESSING
 %---------------------------------------------
