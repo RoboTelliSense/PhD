@@ -16,14 +16,14 @@
 %>                              fairly consistently, so it most likely won't need to be changed.  A smaller batchsize 
 %>                              means more frequent updates, making it quicker to model changes in appearance, but also 
 %>                              a little more prone to drift, and require more computation.
-%> aff_tllpxy_var_1x6     	:   Standard deviations of the dynamics distribution, that is how much we expect the target
+%> aff_tsrpxy_stddev_1x6     	:   Standard deviations of the dynamics distribution, that is how much we expect the target
 %>                              object might move from one frame to the next.  The meaning of each number is as follows:
-%>                              aff_tllpxy_var_1x6(1) = x translation (pixels, mean is 0)
-%>                              aff_tllpxy_var_1x6(2) = y translation (pixels, mean is 0)
-%>                              aff_tllpxy_var_1x6(3) = rotation angle (radians, mean is 0)
-%>                              aff_tllpxy_var_1x6(4) = x scaling (pixels, mean is 1)
-%>                              aff_tllpxy_var_1x6(5) = y scaling (pixels, mean is 1)
-%>                              aff_tllpxy_var_1x6(6) = scaling angle (radians, mean is 0)
+%>                              aff_tsrpxy_stddev_1x6(1) = x translation (pixels, mean is 0)
+%>                              aff_tsrpxy_stddev_1x6(2) = y translation (pixels, mean is 0)
+%>                              aff_tsrpxy_stddev_1x6(3) = rotation angle (radians, mean is 0)
+%>                              aff_tsrpxy_stddev_1x6(4) = x scaling (pixels, mean is 1)
+%>                              aff_tsrpxy_stddev_1x6(5) = y scaling (pixels, mean is 1)
+%>                              aff_tsrpxy_stddev_1x6(6) = scaling angle (radians, mean is 0)
 %> sw, sh                   :   snippet width, height
 %> tmplsize                 :   snippet size, the resolution at which the tracking window is sampled, in this case 
 %>                              sw pixels by sh pixels.  If your initial window (given by aff_abcdxy_1x6) is very large you may need to increase this.

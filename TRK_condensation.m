@@ -6,7 +6,7 @@
 % I_0t1 is the input image.
 % f is the frame number.
 %
-%> aff_tllpxy_6xNp          :   Np affine candidates in (theta, lambda1, lambda2, phi, tx, ty) format
+%> aff_tsrpxy_6xNp          :   Np affine candidates in (theta, lambda1, lambda2, phi, tx, ty) format
 %> snippets_0t1_shxswxNp    :   Np candidate snippets
 %>
 %> TRK.stt_                   :   state variable for tracking
@@ -27,7 +27,7 @@
 %    trk_SNRdB_1x1
 %    out_5_rmse__1x1
 %
-% PARAM.ds_aff_tllpxy_var_1x6
+% PARAM.ds_aff_tsrpxy_stddev_1x6
 %
 % requirement
 % TRK.stt_4_aff_abcdxy_1x6
@@ -67,32 +67,32 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
                                                 %then motion model is applied after resampling.  so after the initialization)
 
     %a. candidate affine tllpxy parameters
-    if ~isfield(TRK,'aff_tllpxy_6xNp')
+    if ~isfield(TRK,'aff_tsrpxy_6xNp')
         %first time? initialize affine geometric (tllpxy) parameters, one for each of the Np candidate snippets
-        aff_tllpxy_1x6      =   UTIL_2D_affine_abcdxy_to_tllpxy(stt_4_aff_abcdxy_1x6);
-        aff_tllpxy_6xNp     =   repmat(aff_tllpxy_1x6'  , [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
+        aff_tsrpxy_1x6      =   UTIL_2D_affine_abcdxy_to_tllpxy(stt_4_aff_abcdxy_1x6);
+        aff_tsrpxy_6xNp     =   repmat(aff_tsrpxy_1x6'  , [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
                                     
     else
-        %not first time? resample distribution in aff_tllpxy_6xNp space (read details of these steps in my article on resampling)
+        %not first time? resample distribution in aff_tsrpxy_6xNp space (read details of these steps in my article on resampling)
         prior_cdf           =   cumsum(stt_3_weights);
         idx                 =   floor(sum(  repmat(RN1_1xNp,[Np,1]) > repmat(prior_cdf,[1,Np])  ))+1; 
-        aff_tllpxy_6xNp     =   aff_tllpxy_6xNp(:,idx);  %keep only good candidates (resample)
+        aff_tsrpxy_6xNp     =   aff_tsrpxy_6xNp(:,idx);  %keep only good candidates (resample)
     end
 
     %b. apply uniform random motion on tllpxy (theta, lambda1, lambda2, phi, tx, ty)
-    rand_motion_tllpxy_6xNp =   RN2_6xNp.*repmat(PARAM.ds_aff_tllpxy_var_1x6(:),[1,Np]);       
+    rand_motion_tllpxy_6xNp =   RN2_6xNp.*repmat(PARAM.ds_aff_tsrpxy_stddev_1x6(:),[1,Np]);       
     
     %c. get candidate parameters after motion
-    aff_tllpxy_6xNp      	=   aff_tllpxy_6xNp + rand_motion_tllpxy_6xNp;                        
+    aff_tsrpxy_6xNp      	=   aff_tsrpxy_6xNp + rand_motion_tllpxy_6xNp;                        
     
     
     %d. get candidate snippets
     for np=1:Np
-        aff_abcdxy_1x6      =   (UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_6xNp(:,np)))';             
+        aff_abcdxy_1x6      =   (UTIL_2D_affine_tsrpxy_to_abcdxy(aff_tsrpxy_6xNp(:,np)))';             
         [X_hxw, Y_hxw, snippets_0t1_shxswxNp(:,:,np)]   ...
                             =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I_0t1, aff_abcdxy_1x6, sw, sh);
     end
-    %snippets_0t1_shxswxNp   =   UTIL_2D_warp_image(I_0t1, UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_6xNp), [sh sw]);  %c. candidate images
+    %snippets_0t1_shxswxNp   =   UTIL_2D_warp_image(I_0t1, UTIL_2D_affine_tllpxy_to_abcdxy(aff_tsrpxy_6xNp), [sh sw]);  %c. candidate images
     
 %----------------------------
 %PROCESSING
@@ -177,7 +177,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     
 %5. pick four best (MAP) estimates
 	%one state variable
-    best_aff_abcdxy_1x6         =   UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_6xNp(:,maxidx));  %best 1. affine ROI 
+    best_aff_abcdxy_1x6         =   UTIL_2D_affine_tllpxy_to_abcdxy(aff_tsrpxy_6xNp(:,maxidx));  %best 1. affine ROI 
     
 	%three instantaneous variables
 	best_snippet_0t1_shxsw  =   snippets_0t1_shxswxNp(:,:,maxidx);        %best 2. best snippet 

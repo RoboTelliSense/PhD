@@ -8,7 +8,7 @@
 %> aff_abcdxy_1x6               :   i convert from 
 %> con_normalizer               :   
 %> ff                       :   forgetting factor for incremental SVD
-%> aff_tllpxy_var_1x6         :   variance on affine parameters
+%> aff_tsrpxy_stddev_1x6         :   variance on affine parameters
 %> Copyright (c) Salman Aslam.  All rights reserved.
 %> Date created : Aug 17, 2011
 %> Date modified: Aug 17, 2011
@@ -40,37 +40,25 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     
     %rigid parameters 
     switch (PARAM.ds_2_name)
-        case 'test';        xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .005  .001 9  9  ]; 
-        case 'Dudek';       xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .005  .001 9  9  ]; 
-        case 'davidin300';  xywht=[129 67  62  78  -0.02]; con_normalizer=0.75; ff=0.99; aff_tllpxy_var_1x6=[.02  .01  .002  .001 5  5  ]; 
-        case 'sylv';        xywht=[118 54  53  53  -0.20]; con_normalizer=0.75; ff=0.95; aff_tllpxy_var_1x6=[.02  .01  .002  .001 7  7  ]; 
-        case 'trellis70';   xywht=[178 76  45  49   0   ]; con_normalizer=0.20; ff=0.95; aff_tllpxy_var_1x6=[.01  .01  .002  .001 4  4  ]; 
-        case 'fish';        xywht=[134 62  62  80   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.01  .01  .002  .001 7  7  ]; 
-        case 'car4';        xywht=[145 105 200 150  0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.01  .025 .002  .001 5  5  ];
-        case 'car11';       xywht=[74  128 30  25   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.01  .01  .001  .001 5  5  ]; 
-        case 'PETS2001rcf'; xywht=[414 341 13  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.01  .01  .001  .001 1  1  ]; 
-        case 'PETS2009';    xywht=[333 217 9   40   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .002  .002 3  3  ]; 
-        case 'AVSS2007_1';  xywht=[69  232 43  40   0.07]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .002  .002 3  3  ]; 
-        case 'AVSS2007_2';  xywht=[60  234 37  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .002  .002 3  3  ]; 
-        case 'AVSS2007_3';  xywht=[213 67  14  14   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .002  .002 2  2  ]; 
-        case 'motinas_fast';xywht=[474 60  43  67   0   ]; con_normalizer=0.20; ff=1.00; aff_tllpxy_var_1x6=[.05  .05  .005  .002 15 15 ]; 
+        case 'test';        xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tsrpxy_stddev_1x6=[.05  .05  .005  .001 9  9  ]; 
+        case 'Dudek';       xywht=[133 127 110 130 -0.08]; con_normalizer=0.25; ff=1.00; aff_tsrpxy_stddev_1x6=[.05  .05  .005  .001 9  9  ]; 
+        case 'davidin300';  xywht=[129 67  62  78  -0.02]; con_normalizer=0.75; ff=0.99; aff_tsrpxy_stddev_1x6=[.02  .01  .002  .001 5  5  ]; 
+        case 'sylv';        xywht=[118 54  53  53  -0.20]; con_normalizer=0.75; ff=0.95; aff_tsrpxy_stddev_1x6=[.02  .01  .002  .001 7  7  ]; 
+        case 'trellis70';   xywht=[178 76  45  49   0   ]; con_normalizer=0.20; ff=0.95; aff_tsrpxy_stddev_1x6=[.01  .01  .002  .001 4  4  ]; 
+        case 'fish';        xywht=[134 62  62  80   0   ]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.01  .01  .002  .001 7  7  ]; 
+        case 'car4';        xywht=[145 105 200 150  0   ]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.01  .025 .002  .001 5  5  ];
+        case 'car11';       xywht=[74  128 30  25   0   ]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.01  .01  .001  .001 5  5  ]; 
+        case 'PETS2001rcf'; xywht=[414 341 13  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.01  .01  .001  .001 1  1  ]; 
+        case 'PETS2009';    xywht=[333 217 9   40   0   ]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.05  .05  .002  .002 3  3  ]; 
+        case 'AVSS2007_1';  xywht=[69  232 43  40   0.07]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.05  .05  .002  .002 3  3  ]; 
+        case 'AVSS2007_2';  xywht=[60  234 37  37   0   ]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.05  .05  .002  .002 3  3  ]; 
+        case 'AVSS2007_3';  xywht=[213 67  14  14   0   ]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.05  .05  .002  .002 2  2  ]; 
+        case 'motinas_fast';xywht=[474 60  43  67   0   ]; con_normalizer=0.20; ff=1.00; aff_tsrpxy_stddev_1x6=[.05  .05  .005  .002 15 15 ]; 
         otherwise;  error(['unknown PARAM.ds_2_name ' PARAM.ds_2_name]);
     end    
-    top_left_x              =   xywht(1);
-    top_left_y              =   xywht(2);
-    w                       =   xywht(3);       
-    h                       =   xywht(4);
-    theta                   =   xywht(5);
     
-    %affine parameters (abcdxy and tllpxy)
-    theta                   =   theta;                      %1.
-    lambda1                 =   w/PARAM.aff_scale;          %2.
-    lambda2                 =   h/PARAM.aff_scale;          %3.
-    phi                     =   0;                          %4. 
-    tx                      =   top_left_x + round(w/2);    %5. x coordinate, central pixel of bounding box
-    ty                      =   top_left_y + round(h/2);    %6. y coordinate, central pixel of bounding box       
-    aff_tllpxy_1x6          =   [theta, lambda1, lambda2, phi, tx ty];
-    aff_abcdxy_1x6          =   UTIL_2D_affine_tllpxy_to_abcdxy(aff_tllpxy_1x6); %convert to affine parameters (abcdxy)
+    aff_tsrpxy_1x6          =   UTIL_2D_affine_xywht_to_tsrpxy(xywht, PARAM.aff_scale);    
+    aff_abcdxy_1x6          =   UTIL_2D_affine_tsrpxy_to_abcdxy(aff_tsrpxy_1x6); %convert to affine parameters (abcdxy)
 
 %-----------------------------------------------
 %PROCESSING
@@ -89,12 +77,12 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     PARAM.ds_4_F            =   size(data,3);               %total number of frames
     PARAM.ds_5_ff           =   ff;                         %forgetting factor
     PARAM.ds_6_con_stddev   =   con_normalizer;             %condensation algorithm, normalizer
-    PARAM.ds_aff_abcdxy_1x6 =   aff_abcdxy_1x6;             %affine a, b, c, d, tx, ty
-    PARAM.ds_aff_tllpxy_var_1x6  ...
-                            =   aff_tllpxy_var_1x6;         %affine theta, lambda1, lambda1, phi, tx, ty (variances)
+    PARAM.ds_aff_abcdxy_1x6 =   aff_abcdxy_1x6;             %affine: a, b, c, d, tx, ty
+    PARAM.ds_aff_tsrpxy_stddev_1x6  ...
+                            =   aff_tsrpxy_stddev_1x6;      %affine: theta, s, r, phi, tx, ty
 	
     %image data
-    I_HxWxF             =   data;                           %read all images, height x width x number of frames 
+    I_HxWxF                 =   data;                           %read all images, height x width x number of frames 
 	
     %ground truth
     GT.fp_1_all_2xGxF       =   truepts;                    %ground truth for the feature points
@@ -130,16 +118,16 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
 %> It's much slower, but more accuracte.
 %case 'dudek';  aff_abcdxy_1x6 = [188,192,110,130,-0.08];
 %>     PARAM = struct('Np',4000, 'con_normalizer=0.25, 'ff',0.99, ...
-%>                 'batchsize',5, 'aff_tllpxy_var_1x6',[11,9,.05,.05,0,0], ...
+%>                 'batchsize',5, 'aff_tsrpxy_stddev_1x6',[11,9,.05,.05,0,0], ...
 %>                 'errfunc','');
 
 
 %case 'dudekgt';  aff_abcdxy_1x6 = [188,192,110,130,-0.08]; 
 %>   PARAM = struct('Np',4000, 'con_normalizer=1, 'ff',1, ...
-%>                 'batchsize',5, 'aff_tllpxy_var_1x6',[6,5,.05,.05,0,0], ...
+%>                 'batchsize',5, 'aff_tsrpxy_stddev_1x6',[6,5,.05,.05,0,0], ...
 %>                'errfunc','');
 
-%case 'toycan';    aff_abcdxy_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tllpxy_var_1x6',[7,7,.01,.01,.002,.001]);  PARAM.ds_3_longName='1';txt2='Dudek';
-%case 'mushiake';  aff_abcdxy_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tllpxy_var_1x6',[10,10,.01,.01,.002,.001]);PARAM.ds_3_longName='1';txt2='Dudek';
+%case 'toycan';    aff_abcdxy_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[7,7,.01,.01,.002,.001]);  PARAM.ds_3_longName='1';txt2='Dudek';
+%case 'mushiake';  aff_abcdxy_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'con_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[10,10,.01,.01,.002,.001]);PARAM.ds_3_longName='1';txt2='Dudek';
     
     
