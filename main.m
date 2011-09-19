@@ -162,19 +162,16 @@ datasetCode=1;
     TSVQ.in_4_M             =   PARAM.in_tsvq_M;
 
 %4. TRACKERS    
-    %generic particle filter
-    trkPF.name              =   'genericPF';                        %generic particle filter    
-    
-    trkPF.stt_1_DM2         =   [];                                 %1. data:	design matrix, one observation per column 
-    PARAM.ds_aff_Ha_2x3     =   UTIL_2D_affine_abcdxy_to_Ha_2x3(PARAM.ds_aff_abcdxy_1x6);
-    [temp1, temp2, trkPF.stt_2_mu_shxsw]   ...
-                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, PARAM.ds_aff_Ha_2x3, PARAM.in_sw, PARAM.in_sh);
-    clear temp1 temp2;
-    
-    %trkPF.stt_2_mu_Dx1     =   UTIL_2D_warp_image(first_I_0t1, PARAM.ds_aff_abcdxy_1x6, PARAM.tgt_sz); %data mean
-    trkPF.stt_3_weights     =   [];
-    trkPF.stt_4_aff_abcdxy_1x6  ...
+%generic particle filter
+    trkPF.name              =   'genericPF';                        %generic particle filter     
+    %persistent variables
+    trkPF.per_1_DM2         =   [];                                 %1. data:	design matrix, one observation per column 
+    [temp1, temp2, trkPF.per_2_mu_shxsw]   ...
+                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, UTIL_2D_affine_abcdxy_to_Ha_2x3(PARAM.ds_aff_abcdxy_1x6), PARAM.in_sw, PARAM.in_sh);
+    trkPF.per_3_weights     =   [];
+    trkPF.per_4_aff_abcdxy_1x6  ...
                             =   PARAM.ds_aff_abcdxy_1x6; 
+    clear temp1 temp2;
     
     trkPF.fp_1_gt           =   cat(3, GT.fp_3_ref_upright_zc + repmat(PARAM.tgt_sz'/2,[1,GT.fp_2_G]), GT.fp_1_all_2xGxF(:,:,1)); %1. ground truth
     trkPF.fp_2_est          =   zeros(size(GT.fp_1_all_2xGxF));  			%1b. estimated
@@ -190,7 +187,7 @@ datasetCode=1;
     
 	trkPF.tst_SNRdB_Fx1   	=   zeros(PARAM.ds_4_F,1);
 
-    trkPF.bestCandidate_0t1_shxsw =   trkPF.stt_2_mu_shxsw;							%4.  testing
+    trkPF.bestCandidate_0t1_shxsw =   trkPF.per_2_mu_shxsw;							%4.  testing
     
 %4. %timing   
     duration                =   0; 
