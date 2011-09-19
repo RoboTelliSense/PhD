@@ -129,10 +129,10 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     %generic algo
     if (strcmp(TRK.name, 'trkMEAN')) 
         cand_errs_0t1_DxNp  =   repmat(ALGO.mdl_mu_2_shxsw(:),[1,Np]) - reshape(cand_snps_0t1_shxswxNp,[D,Np]); 
-        trg_4_SNRdB_1x1     =   -1;
-        trg_5_rmse__1x1     =   -1;
-        tst_4_SNRdB_1x1     =   -1;
-        tst_5_rmse__1x1     =   -1;
+        ALGO.trg_4_SNRdB_1x1=   -1;
+        ALGO.trg_5_rmse__1x1=   -1;
+        ALGO.tst_4_SNRdB_1x1=   -1;
+        ALGO.tst_5_rmse__1x1=   -1;
         DIFS                =   0;
         
         
@@ -240,17 +240,17 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     TRK.fpt_3_error_2xG     =   TRK.fpt_1_truth_2xG - TRK.fpt_2_estim_2xG;
     
 %three tracking metrics
-    TRK.trk_1_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNR2dB      (TRK.fpt_1_truth_2xG,   TRK.fpt_3_error_2xG);  
+    TRK.trk_1_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB2      (TRK.fpt_1_truth_2xG,   TRK.fpt_3_error_2xG);  
     TRK.trk_2_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms2_value  (                       TRK.fpt_3_error_2xG);  
     TRK.trk_3_armse_Fx1(f)  =   UTIL_compute_avg                 (                       TRK.trk_2_rmse__Fx1(1:f));              
    
 %three (3) training metrics
     TRK.trg_1_SNRdB_Fx1(f)  =   ALGO.trg_4_SNRdB_1x1;
     TRK.trg_2_rmse__Fx1(f)  =   ALGO.trg_5_rmse__1x1;
-    TRK.trg_3_armse_Fx1(f)  =   UTIL_compute_avg(TRK.trg_rmse__Fx1(1:f));
+    TRK.trg_3_armse_Fx1(f)  =   UTIL_compute_avg(TRK.trg_2_rmse__Fx1(1:f));
 
 %three (3) testing metrics
     TRK.tst_1_SNRdB_Fx1(f)  =   ALGO.tst_4_SNRdB_1x1;
     TRK.tst_2_rmse__Fx1(f)  =   ALGO.tst_5_rmse__1x1;
-    TRK.tst_3_armse_Fx1(f)  =   UTIL_compute_avg(TRK.tst_rmse__Fx1(1:f));
+    TRK.tst_3_armse_Fx1(f)  =   UTIL_compute_avg(TRK.tst_2_rmse__Fx1(1:f));
     
