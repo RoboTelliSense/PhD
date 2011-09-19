@@ -3,13 +3,13 @@
 %>
 %> Description of options
 %> ----------------------
-%> aff_abcdxy_1x6            :   [px, py, sx, sy, theta]; The location of the target in the first frame.
+%> aff_abcdxy_1x6           :   [px, py, sx, sy, theta]; The location of the target in the first frame.
 %> px, py                   :   Coordinates of the centre of the box.
 %> sx, sy                   :   Size of the box in the x (width) and y (height) dimensions, before rotation.
 %> theta                    :   Rotation angle of the box
 %> Np                       :   Number of samples used in the condensation, I normally use 600.
 %>                              Increasing this will likely improve the results, but make the tracker slower.
-%> con_normalizer               :   The standard deviation of the observation likelihood, e.g. 0.01
+%> con_normalizer           :   The standard deviation of the observation likelihood, e.g. 0.01
 %> ff                       :   Forgetting factor, as described in the paper.  When doing the incremental update, 
 %>                              1 means remember all past I_HxWxF, and 0 means remeber none of it.
 %> batchsize                :   How often to update the eigenbasis.  We've used this value (update every 5th frame) 
@@ -33,8 +33,8 @@
 %>
 %> abbreviations
 %> -------------
-%> FP_2_est 						: 	Feature points
-%> gt 						: 	Ground truth
+%> fp                       : 	feature points
+%> GT						: 	Ground truth
 %> DM2 						:	Data matrix, one observation per column.  If DM, then one observation per row.
 %> structures
 %> ----------
@@ -166,7 +166,7 @@ datasetCode=1;
     trkPF.name              =   'genericPF';                        %generic particle filter    
     
     trkPF.stt_1_DM2         =   [];                                 %1. data:	design matrix, one observation per column 
-    PARAM.ds_aff_Ha_2x3     =   UTIL_2D_affine_Ha_2x3_from_abcdxy(PARAM.ds_aff_abcdxy_1x6);
+    PARAM.ds_aff_Ha_2x3     =   UTIL_2D_affine_abcdxy_to_Ha_2x3(PARAM.ds_aff_abcdxy_1x6);
     [temp1, temp2, trkPF.stt_2_mu_shxsw]   ...
                             =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, PARAM.ds_aff_Ha_2x3, PARAM.in_sw, PARAM.in_sh);
     clear temp1 temp2;

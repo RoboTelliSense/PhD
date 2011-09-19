@@ -1,40 +1,49 @@
 %> @file TRK_condensation.m
 %> @brief This function implements the particle filter (condensation algorithm).
-% 
-% 0t1 means that the min value is 0, max value is 1.
-%
-% I_0t1 is the input image.
-% f is the frame number.
-%
-%> aff_tsrpxy_6xNp          :   Np affine candidates in (theta, lambda1, lambda2, phi, tx, ty) format
+%> 
+%> I_0t1                    :   input image, 0t1 means that the min value is 0, max value is 1
+%> f                        :   frame number
+%> aff_tsrpxy_6xNp          :   Np affine candidates in (theta, s, r, phi,
+%tx, ty) format
 %> snippets_0t1_shxswxNp    :   Np candidate snippets
-%>
-%> TRK.stt_                   :   state variable for tracking
-%>
-%> ALGO.mdl_2_U_DxB         :   basis, normally, I would write U_DxN,
-%but
+%> TRK.stt_                 :   state variable for tracking
+%> ALGO.mdl_2_U_DxB         :   basis, normally, I would write U_DxN, but
 %>                              here I use mdl_2_U_DxB because B is the number of
 %>                              training examples in one batch
-% TRK is the structure that holds information about the
-% condensation algorithm.  It has the following members:
-%    (a) tgt_best_aff_abcdxy_1x6: MAP estimate of best affine parameters that describe target bounding region
-%    (b) affineCandidates_6xNp: possible affine candidates that describe target bounding region
-%    weights
-%    err_descr_BxNp
-%    out_1_snp_0t1_shxsw
-%    all_candidate_errors_0to1_DxNp
-%    recon
-%    trk_SNRdB_1x1
-%    out_5_rmse__1x1
-%
-% PARAM.ds_aff_tsrpxy_stddev_1x6
-%
-% requirement
-% TRK.stt_4_aff_abcdxy_1x6
-% Copyright (C) Jongwoo Lim and David Ross (modified by Salman Aslam with permission)
-% Date created      : April 25, 2011
-% Date last modified: July 18, 2011
-%%
+%> TRK                      :   structure that holds information about the condensation algorithm.  has following members:
+%>
+%>      name                :   
+%>      err_descr_BxNp      :   used only with IPCA, should change this because i don't want algo specific structures here
+%>
+%>      stt_1_DM2           :   state variable, 
+%>      stt_2_mu_shxsw      :     "      "
+%>      stt_3_weights       :     "      "
+%>      stt_4_aff_abcdxy_1x6:     "      "
+%>
+%>      frm_1_snp_0t1_shxsw :   frame stats, best snippet in image, i.e. it's best explained by my model
+%>      frm_2_recon_shxsw   :      "    "  , my model's reconstruction of this best snippet
+%>      frm_3_error_shxsw   :      "    "  , the error
+%>	
+%>      trk_SNRdB_Fx1(f)    :   tracking results
+%>      trk_rmse__Fx1(f)  	:       "       "
+%>      trk_armse_Fx1(f)  	:       "       "
+%>
+%>      trg_SNRdB_1x1       :   training results 
+%>      trg_rmse__Fx1       :       "       "
+%>      trg_armse_Fx1       :       "       "
+%>
+%>      tst_SNRdB_Fx1(f)    :   testing results
+%>      tst_rmse__Fx1(f)  	:       "       "
+%>      tst_armse_Fx1(f)  	:       "       "
+%>
+%>      fp_1_gt             :   feature points, ground truth
+%>      fp_2_est            :       "      "  , estimate
+%>      fp_3_err            :       "      "  , error
+%>
+%> Copyright (c) Salman Aslam.  All rights reserved.  (IPCA part and computing weights comes from Jongwoo Lim and David Ross with permission)
+%> Date created              :   April 25, 2011
+%> Date last modified        :   September 18, 2011
+
 
 function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 %----------------------------
@@ -69,7 +78,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     %a. candidate affine tllpxy parameters
     if ~isfield(TRK,'aff_tsrpxy_6xNp')
         %first time? initialize affine geometric (tllpxy) parameters, one for each of the Np candidate snippets
-        aff_tsrpxy_1x6      =   UTIL_2D_affine_abcdxy_to_tllpxy(stt_4_aff_abcdxy_1x6);
+        aff_tsrpxy_1x6      =   UTIL_2D_affine_abcdxy_to_tsrpxy(stt_4_aff_abcdxy_1x6);
         aff_tsrpxy_6xNp     =   repmat(aff_tsrpxy_1x6'  , [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
                                     
     else
@@ -79,20 +88,21 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
         aff_tsrpxy_6xNp     =   aff_tsrpxy_6xNp(:,idx);  %keep only good candidates (resample)
     end
 
-    %b. apply uniform random motion on tllpxy (theta, lambda1, lambda2, phi, tx, ty)
-    rand_motion_tllpxy_6xNp =   RN2_6xNp.*repmat(PARAM.ds_aff_tsrpxy_stddev_1x6(:),[1,Np]);       
+    %b. apply uniform random motion on tsrpxy (theta, s, r, phi, tx, ty)
+    rand_motion_tsrpxy_6xNp =   RN2_6xNp.*repmat(PARAM.ds_aff_tsrpxy_stddev_1x6(:),[1,Np]);       
     
     %c. get candidate parameters after motion
-    aff_tsrpxy_6xNp      	=   aff_tsrpxy_6xNp + rand_motion_tllpxy_6xNp;                        
+    aff_tsrpxy_6xNp      	=   aff_tsrpxy_6xNp + rand_motion_tsrpxy_6xNp;                        
     
     
     %d. get candidate snippets
     for np=1:Np
-        aff_abcdxy_1x6      =   (UTIL_2D_affine_tsrpxy_to_abcdxy(aff_tsrpxy_6xNp(:,np)))';             
+        aff_abcdxy_1x6      =   (UTIL_2D_affine_tsrpxy_to_abcdxy(aff_tsrpxy_6xNp(:,np)))'; 
+        Ha_2x3              =   UTIL_2D_affine_abcdxy_to_Ha_2x3(aff_abcdxy_1x6);
         [X_hxw, Y_hxw, snippets_0t1_shxswxNp(:,:,np)]   ...
-                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I_0t1, aff_abcdxy_1x6, sw, sh);
+                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I_0t1, Ha_2x3, sw, sh);
     end
-    %snippets_0t1_shxswxNp   =   UTIL_2D_warp_image(I_0t1, UTIL_2D_affine_tllpxy_to_abcdxy(aff_tsrpxy_6xNp), [sh sw]);  %c. candidate images
+    
     
 %----------------------------
 %PROCESSING
@@ -101,8 +111,9 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 
     %generic algo
     if (strcmp(TRK.name, 'genericPF')) 
-        all_candidate_errors_0to1_DxNp             =   repmat(stt_2_mu_shxsw(:),[1,Np]) - reshape(snippets_0t1_shxswxNp,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
-        DIFS                        =   0;
+        all_candidate_errors_0to1_DxNp  ...
+                            =   repmat(stt_2_mu_shxsw(:),[1,Np]) - reshape(snippets_0t1_shxswxNp,[D,Np]); %all_candidate_errors_0to1_DxNp: (sw)(sh) x Np
+        DIFS                =   0;
         
         
     %iPCA    
@@ -193,9 +204,9 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 %----------------------------
 %save
     %three (3) instantaneous variables
-    TRK.inst_1_snp_0t1_shxsw =   best_snippet_0t1_shxsw;                     %best snippet in image, i.e. it's best explained by my model
-    TRK.inst_2_recon_shxsw   =   best_recon_shxsw;                           %my model's reconstruction of this best snippet
-    TRK.inst_3_error_shxsw   =   best_error_0to1_shxsw;                      %the error
+    TRK.frm_1_snp_0t1_shxsw =   best_snippet_0t1_shxsw;                     %best snippet in image, i.e. it's best explained by my model
+    TRK.frm_2_recon_shxsw   =   best_recon_shxsw;                           %my model's reconstruction of this best snippet
+    TRK.frm_3_error_shxsw   =   best_error_0to1_shxsw;                      %the error
 	
 	%three (3) tracking metrics
     TRK.trk_SNRdB_Fx1(f)    =   UTIL_METRICS_compute_SNRdB       (best_snippet_0t1_shxsw(:), best_error_0to1_shxsw(:)    );
@@ -214,7 +225,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     
 
     %four (4) state variables
-    TRK.stt_1_DM2         =   [stt_1_DM2 TRK.inst_1_snp_0t1_shxsw(:)];%update snippet library
+    TRK.stt_1_DM2         =   [stt_1_DM2 TRK.frm_1_snp_0t1_shxsw(:)];%update snippet library
     if 	   (strcmp(TRK.name, 'BPVQ') || strcmp(TRK.name, 'RVQ') || strcmp(TRK.name, 'TSVQ')) %not needed for IPCA since it has its own forgetting factor
         TRK.stt_1_DM2     =   DATAMATRIX_pick_last_Nw_values_in_DM2(TRK.stt_1_DM2, Nw, bWeighting); 
     end                                                                                                       

@@ -90,8 +90,7 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     GT.fp_3_ref_upright_zc  =   PARAM.ds_aff_abcdxy_1x6([3,4,1;5,6,2]) * [GT.fp_1_all_2xGxF(:,:,1); ones(1,GT.fp_2_G)];
     
     %random input
-    RAND.gaus_maxFx6xNp ...
-                            =   RandomData_sample; %pre-stored random numbers to ensure repeatability, maxF=1000 since we do not anticipate more than 1000 frames  
+    RAND.gaus_maxFx6xNp     =   RandomData_sample; %pre-stored random numbers to ensure repeatability, maxF=1000 since we do not anticipate more than 1000 frames  
     RAND.unif_cdf_maxFxNp   =   RandomData_cdf;
     
     clear data truepts RandomData_sample RandomData_cdf;

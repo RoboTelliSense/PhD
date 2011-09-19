@@ -1,4 +1,4 @@
-function Ha_2x3 = UTIL_2D_affine_Ha_2x3_from_abcdxy(abcdxy)
+function Ha_2x3 = UTIL_2D_affine_abcdxy_to_Ha_2x3(abcdxy)
 
     a                       =   abcdxy(1);
     b                       =   abcdxy(2);

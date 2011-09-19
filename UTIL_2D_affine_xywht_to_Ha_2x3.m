@@ -7,4 +7,4 @@ function Ha_2x3 = UTIL_2D_affine_xywht_to_Ha_2x3(xywht)
     abcdxy                  =   UTIL_2D_affine_tllpxy_to_abcdxy(tllpxy);
 
 %step 3: Ha_2x3    
-    Ha_2x3                  =   UTIL_2D_affine_Ha_2x3_from_abcdxy(abcdxy);
+    Ha_2x3                  =   UTIL_2D_affine_abcdxy_to_Ha_2x3(abcdxy);
