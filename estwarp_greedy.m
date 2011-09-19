@@ -24,9 +24,9 @@ if (size(tmpl.basis,2) > 0)
   diff = diff - tmpl.basis*(tmpl.basis'*diff);
 end
 if (isfield(opt,'errfunc') && strcmp(opt.errfunc,'robust'))
-  param.conf = exp(-sum(diff.^2./(diff.^2+opt.rsig.^2))./opt.con_normalizer)';
+  param.conf = exp(-sum(diff.^2./(diff.^2+opt.rsig.^2))./opt.PF_normalizer)';
 else
-  param.conf = exp(-sum(diff.^2)./opt.con_normalizer)';
+  param.conf = exp(-sum(diff.^2)./opt.PF_normalizer)';
 end
 param.conf = param.conf ./ sum(param.conf);
 [maxprob,maxidx] = max(param.conf);

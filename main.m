@@ -9,7 +9,7 @@
 %> theta                    :   Rotation angle of the box
 %> Np                       :   Number of samples used in the condensation, I normally use 600.
 %>                              Increasing this will likely improve the results, but make the tracker slower.
-%> con_normalizer           :   The standard deviation of the observation likelihood, e.g. 0.01
+%> PF_normalizer           :   The standard deviation of the observation likelihood, e.g. 0.01
 %> ff                       :   Forgetting factor, as described in the paper.  When doing the incremental update, 
 %>                              1 means remember all past I_HxWxF, and 0 means remeber none of it.
 %> batchsize                :   How often to update the eigenbasis.  We've used this value (update every 5th frame) 
@@ -128,7 +128,7 @@ datasetCode=1;
 %3. LEARNING ALGORITHMS
     %NONE
     MEAN.in_1_name          =   'MEAN';
-    [a,b,NONE.mdl_mu_2_shxsw]=   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, UTIL_2D_affine_abcdxy_to_Ha_2x3(PARAM.ds_aff_abcdxy_1x6), PARAM.in_sw, PARAM.in_sh);
+    [a,b,NONE.mdl_mu_2_shxsw]=   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, UTIL_2D_affine_abcdxy_to_Ha_2x3(PARAM.ds_7_aff_abcdxy_1x6), PARAM.in_sw, PARAM.in_sh);
     clear first_I_0t1 a b;
    
     %IPCA
@@ -164,7 +164,7 @@ datasetCode=1;
     
     trkMEAN.per_1_DM2       =   [];                                 %1. data:	design matrix, one observation per column 
     trkMEAN.per_2_PFweights =   [];                                 %2. particle filter weights
-    trkMEAN.per_3_aff_abcdxy_1x6 =PARAM.ds_aff_abcdxy_1x6;            %3. affine parameters
+    trkMEAN.per_3_aff_abcdxy_1x6 =PARAM.ds_7_aff_abcdxy_1x6;            %3. affine parameters
     
     trkMEAN.fpt_1_truth_2xG =   cat(3, GT.fp_3_refzc_2xG + repmat(PARAM.tgt_sz'/2,[1,GT.fp_2_G_____1x1]), GT.fp_1_truth_2xGxF(:,:,1)); %1. ground truth
     trkMEAN.fpt_2_estim_2xG =   zeros(2, GT.fp_2_G_____1x1);  			%x, y coordinates, GT.fp_2_G_____1x1 of them

@@ -26,18 +26,20 @@ close all;
                                                          %some points that I know are on the target in important positions, like eyes, etc
     sw                      =   33;         %desired (output) snippet width (grid)
     sh                      =   33;         %desired (output) snippet height (grid)
+    scale                   =   32;         %should have been 33 but keeping this way, explained in my affine warping report
     
 %check all 6 conversions first
     %entry point
-    tllpxy                  =   UTIL_2D_affine_xywht_to_tllpxy(xywht);   %[-0.0800  3.4375    4.0625        0  188.0000  192.0000]
-    
-    %from tllpxy
-    tsrpxy                  =   UTIL_2D_affine_tllpxy_to_tsrpxy(tllpxy); %[-0.0800  3.4375    1.1818        0  188.0000  192.0000]
-    abcdxy                  =   UTIL_2D_affine_tllpxy_to_abcdxy(tllpxy); %[ 3.4265  0.3247   -0.2747   4.0495  188.0000  192.0000]
+    tsrpxy                  =   UTIL_2D_affine_xywht_to_tsrpxy(xywht, scale); %correct: [-0.0800 3.4375  1.1818  0      188  192]  
     
     %from tsrpxy
-    tllpxy                  =   UTIL_2D_affine_tsrpxy_to_tllpxy(tsrpxy);
+    tllpxy                  =   UTIL_2D_affine_tsrpxy_to_tllpxy(tsrpxy);      %correct: [-0.0800 3.4375  4.0625  0      188  192]
     abcdxy                  =   UTIL_2D_affine_tsrpxy_to_abcdxy(tsrpxy);
+
+    %from tllpxy
+    tsrpxy                  =   UTIL_2D_affine_tllpxy_to_tsrpxy(tllpxy); 
+    abcdxy                  =   UTIL_2D_affine_tllpxy_to_abcdxy(tllpxy);      %correct: [ 3.4265 0.3247 -0.2747 4.0495  188  192]
+    
     
     %from abcdxy
     tllpxy                  =   UTIL_2D_affine_abcdxy_to_tllpxy(abcdxy);
@@ -46,7 +48,7 @@ close all;
 %---------------------------------------------
 %PRE-PROCESSING
 %---------------------------------------------
-    Ha_2x3                  =   UTIL_2D_affine_xywht_to_Ha_2x3(xywht);
+    Ha_2x3                  =   UTIL_2D_affine_xywht_to_Ha_2x3(xywht, scale);
     [temp, G]               =   size(fp_gt);
     
 %---------------------------------------------
@@ -56,9 +58,9 @@ close all;
     [X_hxw, Y_hxw, outI_shxsw]   =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(double(I_ui8), Ha_2x3, sw, sh);  
     
 %process feature points (zero center  them)    
-    [fp_x_1xG, fp_y_1xG]    =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, fp_gt(1,:), fp_gt(2,:));
-    fp_x_1xG                =   fp_x_1xG + (sw)/2;             %image starts from (1,1), so shift by half width and half height of output image
-    fp_y_1xG                =   fp_y_1xG + (sh)/2;             % "
+    temp                    =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, [fp_gt(1,:) ; fp_gt(2,:)]);
+    fp_x_1xG                =   temp(1,:) + (sw)/2;             %image starts from (1,1), so shift by half width and half height of output image
+    fp_y_1xG                =   temp(2,:) + (sh)/2;             % "
     
 %---------------------------------------------
 %POST-PROCESSING

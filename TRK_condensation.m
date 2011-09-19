@@ -44,7 +44,7 @@
 %>
 %> GT                       :   structure holding ground truth data
 %>      fpt_1_truth_2xGxF   :   feature points, all of them   
-%>      fpt_2_G_____1x1     :        "      " , number of feature points in an image     
+%>      fpt_2_G     :        "      " , number of feature points in an image     
 %>      fpt_3_refzc_2xG     :        "      " , reference for a zero centered target
 %>
 %> for every algo, compute
@@ -72,7 +72,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
  
     RN1_1xNp                =   RAND.unif_cdf_maxFxNp(f,:);     %pre-stored uniform random numbers to ensure repeatability    
     RN2_6xNp(:,:)           =   RAND.gaus_maxFx6xNp(f,:,:);     %     "     gaussian  "       "    "      "        "
-    stddev                  =   PARAM.ds_6_con_stddev;
+    stddev                  =   PARAM.ds_6_PF_normalizer;
 	
     D                       =   sw*sh;                              %dimensionality of input data
     
@@ -109,7 +109,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     end
 
     %b. apply uniform random motion on tsrpxy (theta, s, r, phi, tx, ty)
-    rand_motion_tsrpxy_6xNp =   RN2_6xNp.*repmat(PARAM.ds_aff_tsrpxy_stddev_1x6(:),[1,Np]);       
+    rand_motion_tsrpxy_6xNp =   RN2_6xNp.*repmat(PARAM.ds_8_aff_tsrpxy_stddev_1x6(:),[1,Np]);       
     
     %c. get candidate parameters after motion
     aff_tsrpxy_6xNp      	=   aff_tsrpxy_6xNp + rand_motion_tsrpxy_6xNp;                        
@@ -251,6 +251,6 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 
 %three (3) testing metrics
     TRK.tst_1_SNRdB_Fx1(f)  =   ALGO.tst_4_SNRdB_1x1;
-    TRK.tst_2_rmse__Fx1(f)  =   ALGO.tst_5_rmse__1x1
+    TRK.tst_2_rmse__Fx1(f)  =   ALGO.tst_5_rmse__1x1;
     TRK.tst_3_armse_Fx1(f)  =   UTIL_compute_avg(TRK.tst_rmse__Fx1(1:f));
     

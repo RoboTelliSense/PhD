@@ -1,17 +1,9 @@
-function [x_1xN, y_1xN]     =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, X_1xN, Y_1xN)
+function xy_2xN             =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, XY_2xN)
 
-    N                       =   length(X_1xN);
-    T_2x1                   =   Ha_2x3(:,3);
-    A_2x2                   =   Ha_2x3(1:2,1:2);
-    
-    %put into 3xN matrix
-    inppoints_xy1_2xN       =   [   X_1xN ; ...      
-                                    Y_1xN ]; 
+    [temp,N]                =   size(XY_2xN);
+    T_2x1                   =   Ha_2x3(:,3);            %tx, ty
+    A_2x2                   =   Ha_2x3(1:2,1:2);        %a, b, c, d
+     
     %transform
-    temp_2xN                =   inppoints_xy1_2xN - repmat(T_2x1, 1, N);
-    
-    outpoints_xy_2xN        =   inv(A_2x2) * temp_2xN;   %transform to new coordinates  
-    
-    %pull out of matrix
-    x_1xN                   =   outpoints_xy_2xN(1,:);       
-    y_1xN                   =   outpoints_xy_2xN(2,:);
+    temp_2xN                =   XY_2xN - repmat(T_2x1, 1, N);   %translate by tx, ty
+    xy_2xN                  =   inv(A_2x2) * temp_2xN;          %apply inv a, b, c, d
