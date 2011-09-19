@@ -160,15 +160,15 @@ datasetCode=1;
     TSVQ.in_4_M             =   PARAM.in_tsvq_M;
 
 %4. TRACKER    
-    trkMEAN.name            =   'trkMEAN';                        %generic particle filter     
+    trkMEAN.name            =   'trkMEAN';                          %learning algo only uses mean of data (simplest learning algo)
     
     trkMEAN.per_1_DM2       =   [];                                 %1. data:	design matrix, one observation per column 
     trkMEAN.per_2_PFweights =   [];                                 %2. particle filter weights
-    trkMEAN.per_3_aff_abcdxy_1x6 =PARAM.ds_7_aff_abcdxy_1x6;            %3. affine parameters
+    trkMEAN.per_3_aff_abcdxy_1x6 =PARAM.ds_7_aff_abcdxy_1x6;        %3. affine parameters
     
-    trkMEAN.fpt_1_truth_2xG =   cat(3, GT.fp_3_refzc_2xG + repmat(PARAM.tgt_sz'/2,[1,GT.fp_2_G_____1x1]), GT.fp_1_truth_2xGxF(:,:,1)); %1. ground truth
-    trkMEAN.fpt_2_estim_2xG =   zeros(2, GT.fp_2_G_____1x1);  			%x, y coordinates, GT.fp_2_G_____1x1 of them
-	trkMEAN.fpt_3_error_2xG =   zeros(2, GT.fp_2_G_____1x1);  			%x, y coordinates, GT.fp_2_G_____1x1 of them
+    trkMEAN.fpt_1_truth_2xG =   [];
+    trkMEAN.fpt_2_estim_2xG =   [];                                 %
+	trkMEAN.fpt_3_error_2xG =   [];                                 %
         
     trkMEAN.trk_1_SNRdB_Fx1 =   zeros(PARAM.ds_4_F,1);              %1. tracking
     trkMEAN.trk_2_rmse__Fx1 =   zeros(PARAM.ds_4_F,1);

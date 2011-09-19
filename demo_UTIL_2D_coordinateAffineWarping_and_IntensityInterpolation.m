@@ -74,7 +74,9 @@ close all;
     imagesc(I_ui8);
     hold on;
     [boundary_x, boundary_y]=   UTIL_2D_grid_create(sw, sh, 'boundary_zc');
-    [boundary_X, boundary_Y]=   UTIL_2D_affine_apply_transform(Ha_2x3, boundary_x, boundary_y);
+    temp                    =   UTIL_2D_affine_apply_transform(Ha_2x3, [boundary_x ;boundary_y]);
+    boundary_X              =   temp(1,:);
+    boundary_Y              =   temp(2,:);
     plot(boundary_X, boundary_Y, '.');
     
     hold on;

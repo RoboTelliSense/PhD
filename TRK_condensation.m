@@ -229,20 +229,20 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     TRK.per_3_aff_abcdxy_1x6=   UTIL_2D_affine_tsrpxy_to_abcdxy(aff_tsrpxy_6xNp(:,maxidx));  %best 1. affine ROI 
     
 %three feature point metrics
-    TRK.fpt_1_truth_2xG         =   cat(2, ...
-                                        GT.fp_3_refzc_2xG+repmat(PARAM.tgt_sz'/2,[1,GT.fp_2_G_____1x1]), ...
-                                        GT.fp_1_truth_2xGxF(:,:,f));
-                                        
-    TRK.fpt_2_estim_2xG            =   TRK.per_3_aff_abcdxy_1x6([3,4,1;5,6,2]) ...
-                                        * ...
-                                       [GT.fp_3_refzc_2xG; ones(1,GT.fp_2_G_____1x1)];
+    TRK.fpt_1_truth_2xG     =   GT.fpt_1_truth_2xGxF(:,:,f);
+
+    Ha_2x3                  =   UTIL_2D_affine_abcdxy_to_Ha_2x3(TRK.per_3_aff_abcdxy_1x6);
+    x                       =   GT.fpt_3_refzc_2xG(1,:);         %x coordinates, ground-truth reference zero-centered feature points in first frame
+    y                       =   GT.fpt_3_refzc_2xG(2,:);         %y      "          "     "      "           "            "       "   "   "    "   
+    TRK.fpt_2_estim_2xG     =   UTIL_2D_affine_apply_transform(Ha_2x3, [x;y]);
+    clear x y
     
-    TRK.fpt_3_error_2xG            =   zeros(2,7);
+    TRK.fpt_3_error_2xG     =   TRK.fpt_1_truth_2xG - TRK.fpt_2_estim_2xG;
     
 %three tracking metrics
-    TRK.trk_1_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB       (TRK.fpt_1_truth_2xG(:),   TRK.fpt_3_error_2xG(:));  
-    TRK.trk_2_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms_value   (                          TRK.fpt_3_error_2xG(:));  
-    TRK.trk_3_armse_Fx1(f)  =   UTIL_compute_avg                 (                          TRK.fpt_2_rmse__Fx1(1:f));              
+    TRK.trk_1_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNR2dB      (TRK.fpt_1_truth_2xG,   TRK.fpt_3_error_2xG);  
+    TRK.trk_2_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms2_value  (                       TRK.fpt_3_error_2xG);  
+    TRK.trk_3_armse_Fx1(f)  =   UTIL_compute_avg                 (                       TRK.trk_2_rmse__Fx1(1:f));              
    
 %three (3) training metrics
     TRK.trg_1_SNRdB_Fx1(f)  =   ALGO.trg_4_SNRdB_1x1;

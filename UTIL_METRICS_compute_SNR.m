@@ -11,10 +11,10 @@
 function SNR = UTIL_METRICS_compute_SNR(Sig_Dx1, Err_Dx1)
 
 %signal
-    power_signal            =   UTIL_METRICS_compute_power (Sig_Dx1); %Sig_Dx1 can also be a row vector
+    power_signal_1x1        =   UTIL_METRICS_compute_power (Sig_Dx1); %Sig_Dx1 can also be a row vector
 
 %error
-    power_noise             =   UTIL_METRICS_compute_power (Err_Dx1); %Err_Dx1 can also be a row vector  
+    power_noise_1x1         =   UTIL_METRICS_compute_power (Err_Dx1); %Err_Dx1 can also be a row vector  
 
 %SNR
-    SNR                     =   power_signal / power_noise;
+    SNR                     =   power_signal_1x1 / power_noise_1x1;
