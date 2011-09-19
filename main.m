@@ -127,12 +127,10 @@ datasetCode=1;
     
 %3. LEARNING ALGORITHMS
     %NONE
-    NONE.in_1_name          =   'NONE';
-    NONE.trg_4_SNRdB_1x1    =   0;  
-    NONE.trg_5_rmse__1x1    =   0; 
-    NONE.tst_4_SNRdB_1x1    =   0;  
-    NONE.tst_5_rmse__1x1    =   0; 
-
+    MEAN.in_1_name          =   'MEAN';
+    [a,b,NONE.mdl_mu_2_shxsw]=   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, UTIL_2D_affine_abcdxy_to_Ha_2x3(PARAM.ds_aff_abcdxy_1x6), PARAM.in_sw, PARAM.in_sh);
+    clear first_I_0t1 a b;
+   
     %IPCA
     IPCA.in_1_name          =   'IPCA';
     IPCA.in_2_mode          =   'tst';
@@ -161,40 +159,34 @@ datasetCode=1;
     TSVQ.in_3_maxP          =   PARAM.in_tsvq_P;
     TSVQ.in_4_M             =   PARAM.in_tsvq_M;
 
-%4. TRACKERS    
-%generic particle filter
-    trkPF.name              =   'genericPF';                        %generic particle filter     
-    %persistent variables
-    trkPF.per_1_DM2         =   [];                                 %1. data:	design matrix, one observation per column 
-    [temp1, temp2, trkPF.per_2_mu_shxsw]   ...
-                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, UTIL_2D_affine_abcdxy_to_Ha_2x3(PARAM.ds_aff_abcdxy_1x6), PARAM.in_sw, PARAM.in_sh);
-    trkPF.per_3_weights     =   [];
-    trkPF.per_4_aff_abcdxy_1x6  ...
-                            =   PARAM.ds_aff_abcdxy_1x6; 
-    clear temp1 temp2;
+%4. TRACKER    
+    trkMEAN.name            =   'trkMEAN';                        %generic particle filter     
     
-    trkPF.fp_1_gt           =   cat(3, GT.fp_3_ref_upright_zc + repmat(PARAM.tgt_sz'/2,[1,GT.fp_2_G]), GT.fp_1_all_2xGxF(:,:,1)); %1. ground truth
-    trkPF.fp_2_est          =   zeros(size(GT.fp_1_all_2xGxF));  			%1b. estimated
-	trkPF.fp_3_err          =   zeros(1,GT.fp_2_G);           %1c. feature points: error
-    trkPF.fp_4_err_avg      =   zeros(1,GT.fp_2_G);           %1d. feature points: average error
-     
-	trkPF.trg_rmse__Tx1     =   zeros(PARAM.trg_T,1);               %3.  training
-	trkPF.trg_armse_Tx1 	=   zeros(PARAM.trg_T,1);
-	trkPF.trg_SNRdB_Tx1     =   zeros(PARAM.trg_T,1);
+    trkMEAN.per_1_DM2       =   [];                                 %1. data:	design matrix, one observation per column 
+    trkMEAN.per_2_PFweights =   [];                                 %2. particle filter weights
+    trkMEAN.per_3_aff_abcdxy_1x6 =PARAM.ds_aff_abcdxy_1x6;            %3. affine parameters
     
-	trkPF.trk_rmse__Fx1     =   zeros(PARAM.ds_4_F,1);
-	trkPF.trk_armse_Fx1 	=   zeros(PARAM.ds_4_F,1);
+    trkMEAN.fpt_1_truth_2xG =   cat(3, GT.fp_3_refzc_2xG + repmat(PARAM.tgt_sz'/2,[1,GT.fp_2_G_____1x1]), GT.fp_1_truth_2xGxF(:,:,1)); %1. ground truth
+    trkMEAN.fpt_2_estim_2xG =   zeros(2, GT.fp_2_G_____1x1);  			%x, y coordinates, GT.fp_2_G_____1x1 of them
+	trkMEAN.fpt_3_error_2xG =   zeros(2, GT.fp_2_G_____1x1);  			%x, y coordinates, GT.fp_2_G_____1x1 of them
+        
+    trkMEAN.trk_1_SNRdB_Fx1 =   zeros(PARAM.ds_4_F,1);              %1. tracking
+    trkMEAN.trk_2_rmse__Fx1 =   zeros(PARAM.ds_4_F,1);
+	trkMEAN.trk_3_armse_Fx1 =   zeros(PARAM.ds_4_F,1);
     
-	trkPF.tst_SNRdB_Fx1   	=   zeros(PARAM.ds_4_F,1);
+    trkMEAN.trg_1_SNRdB_Fx1 =   zeros(PARAM.ds_4_F,1);
+	trkMEAN.trg_2_rmse__Fx1 =   zeros(PARAM.ds_4_F,1);              %2.  training
+	trkMEAN.trg_3_armse_Fx1 =   zeros(PARAM.ds_4_F,1);
 
-    trkPF.bestCandidate_0t1_shxsw =   trkPF.per_2_mu_shxsw;							%4.  testing
+	trkMEAN.tst_1_SNRdB_Fx1 =   zeros(PARAM.ds_4_F,1);
+	trkMEAN.tst_2_rmse__Tx1 =   zeros(PARAM.ds_4_F,1);              %3.  training
+	trkMEAN.tst_3_armse_Tx1 =   zeros(PARAM.ds_4_F,1);
+
     
 %4. %timing   
     duration                =   0; 
     tic;
 
-
-    clear first_I_0t1; 
 
 %>-----------------------------------------
 %PRE-PROCESSING: generic particle filter for B frames for bootstrapping
@@ -205,14 +197,14 @@ datasetCode=1;
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
         I_0t1               =   double(I_HxWxF(:,:,f))/256; %input
-        trkPF               =   TRK_condensation(f, I_0t1, GT, RAND, PARAM, NONE, trkPF); %frame num, image, ground truth, random data, parameters, learning algo, tracking structure
+        trkMEAN               =   TRK_condensation(f, I_0t1, GT, RAND, PARAM, NONE, trkMEAN); %frame num, image, ground truth, random data, parameters, learning algo, tracking structure
     end	   
 
 %step 2. save structures	
-	trkIPCA					=	trkPF;  trkIPCA.name = 'trkIPCA';
-	trkBPCA					=	trkPF;  trkBPCA.name = 'trkBPCA';
-	trkRVQ					=	trkPF;  trkRVQ.name  = 'trkRVQ';
-	trkTSVQ					=	trkPF;  trkTSVQ.name = 'trkTSVQ';
+	trkIPCA					=	trkMEAN;  trkIPCA.name = 'trkIPCA';
+	trkBPCA					=	trkMEAN;  trkBPCA.name = 'trkBPCA';
+	trkRVQ					=	trkMEAN;  trkRVQ.name  = 'trkRVQ';
+	trkTSVQ					=	trkMEAN;  trkTSVQ.name = 'trkTSVQ';
     
  
 %step 5. 1 training

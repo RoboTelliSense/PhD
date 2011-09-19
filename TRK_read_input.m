@@ -70,10 +70,9 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     disp(['loading pre-stored random data for repeatability ...']);
     load RandomData 
 %-----------------------------------------------
-%POST-PROCESSING
+%POST-PROCESSING (return 4 structures)
 %-----------------------------------------------
-%save 
-	%metadata
+%1. parameters
     PARAM.ds_4_F            =   size(data,3);               %total number of frames
     PARAM.ds_5_ff           =   ff;                         %forgetting factor
     PARAM.ds_6_con_stddev   =   con_normalizer;             %condensation algorithm, normalizer
@@ -81,15 +80,15 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     PARAM.ds_aff_tsrpxy_stddev_1x6  ...
                             =   aff_tsrpxy_stddev_1x6;      %affine: theta, s, r, phi, tx, ty
 	
-    %image data
+%2. image data
     I_HxWxF                 =   data;                           %read all images, height x width x number of frames 
 	
-    %ground truth
-    GT.fp_1_all_2xGxF       =   truepts;                    %ground truth for the feature points
-    GT.fp_2_G               =   size(GT.fp_1_all_2xGxF,2);  %number of feature points per image, this is 7 for Dudek and I think 2 for others
-    GT.fp_3_ref_upright_zc  =   PARAM.ds_aff_abcdxy_1x6([3,4,1;5,6,2]) * [GT.fp_1_all_2xGxF(:,:,1); ones(1,GT.fp_2_G)];
+%3. ground truth
+    GT.fpt_1_truth_2xGxF    =   truepts;                    %ground truth for the feature points
+    GT.fpt_2_G_____1x1      =   size(GT.fp_1_truth_2xGxF,2);  %number of feature points per image, this is 7 for Dudek and I think 2 for others
+    GT.fpt_3_refzc_2xG      =   PARAM.ds_aff_abcdxy_1x6([3,4,1;5,6,2]) * [GT.fp_1_truth_2xGxF(:,:,1); ones(1,GT.fp_2_G_____1x1)];
     
-    %random input
+%4. random input
     RAND.gaus_maxFx6xNp     =   RandomData_sample; %pre-stored random numbers to ensure repeatability, maxF=1000 since we do not anticipate more than 1000 frames  
     RAND.unif_cdf_maxFxNp   =   RandomData_cdf;
     
