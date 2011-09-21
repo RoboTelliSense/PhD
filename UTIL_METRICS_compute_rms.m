@@ -7,7 +7,7 @@
 % Date last modified : July 7, 2011
 %%
 
-function rms_value = UTIL_METRICS_compute_rms_value(Sig_Dx1)
+function rms_value = UTIL_METRICS_compute_rms(Sig_Dx1)
 
     rms_value               =   sqrt( UTIL_METRICS_compute_power(Sig_Dx1) );
     

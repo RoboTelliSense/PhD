@@ -4,21 +4,21 @@
 %> 
 %> ======================================================================
 %> 
-%> tst_XDR_parPx1: normally, you would have tst_1_descr_PxN, the P showing full
+%> tst_XDR_parPx1: normally, you would have tst_1_featr_PxN, the P showing full
 %> stages.  Here, I have parPx1, the parP showing partial stages.
 %>
 %> Copyright (C) Salman Aslam.  All rights reserved.
 %> Date created       : July 29, 2011.
 %> Date last modified : July 29, 2011.
 
-function continue_decoding = RVQ_RULES_DECODE_STOPPING_RoE(descriptors_PxN, tst_XDR_parPx1)
+function continue_decoding = RVQ_RULES_DECODE_STOPPING_RoE(feature vectors_PxN, tst_XDR_parPx1)
     
-    [P, N]                  =   size(descriptors_PxN);
+    [P, N]                  =   size(feature vectors_PxN);
     parP                    =   length(tst_XDR_parPx1);
     continue_decoding       =   false;
     
     for n=1:N  %go over all training XDRs
-        trg_XDR_parPx1      =   descriptors_PxN(1:parP, n);
+        trg_XDR_parPx1      =   feature vectors_PxN(1:parP, n);
         if (sum(tst_XDR_parPx1 - trg_XDR_parPx1)==0)
             continue_decoding   ...
                             =   true;

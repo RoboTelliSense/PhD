@@ -12,7 +12,7 @@
 %>
 %> TRK                      :   structure that holds information about the condensation algorithm.  has following members:
 %>      name                :   
-%>      candErrs_descr_PxNp :   used only with IPCA, should change this because i don't want algo specific structures here
+%>      candErrs_featr_PxNp :   used only with IPCA, should change this because i don't want algo specific structures here
 %>
 %>      DM2                 :   design (data) matrix, contains all best snippets for all frames
 %>
@@ -138,18 +138,18 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
         candErrs_0t1_DxNp   =   repmat(ALGO.mdl_mu_2_Dx1(:),[1,Np]) - reshape(cand_snps_0t1_shxswxNp,[D,Np]); %distance from mean of candidate snippets
         
         %part 2: error, reduce the part that can be explained by the basis
-        candErrs_descr_PxNp =   U_DxP' * candErrs_0t1_DxNp;                 %1. projections
-        candErrs_recon_DxNp =   U_DxP  * candErrs_descr_PxNp;               %2. reconstructions (mean removed though)
+        candErrs_featr_PxNp =   U_DxP' * candErrs_0t1_DxNp;                 %1. projections
+        candErrs_recon_DxNp =   U_DxP  * candErrs_featr_PxNp;               %2. reconstructions (mean removed though)
         candErrs_0t1_DxNp   =   candErrs_0t1_DxNp - candErrs_recon_DxNp;    %3. reconstruction errors (of the candidate errors!), 
                                                                             %   this is DFFS
                                                             
         %compute DIFS for use with PPCA, if not using PPCA, not required
-        if (isfield(TRK,'candErrs_descr_PxNp'))
-            DIFS            =   (abs(candErrs_descr_PxNp)-abs(TRK.candErrs_descr_PxNp))*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
+        if (isfield(TRK,'candErrs_featr_PxNp'))
+            DIFS            =   (abs(candErrs_featr_PxNp)-abs(TRK.candErrs_featr_PxNp))*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
         else
-            DIFS            =   candErrs_descr_PxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
+            DIFS            =   candErrs_featr_PxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
         end
-        TRK.candErrs_descr_PxNp  =   candErrs_descr_PxNp;
+        TRK.candErrs_featr_PxNp  =   candErrs_featr_PxNp;
         
         
 	
@@ -210,7 +210,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     end
     TRK.snp_3_recon_shxsw   =   TRK.snp_0_0t1__shxsw - TRK.snp_2_error_shxsw;       %3. best recon        
     TRK.snp_4_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB       (TRK.snp_0_0t1__shxsw(:), TRK.snp_2_error_shxsw(:)    );     %4.
-    TRK.snp_5_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms_value   (                              TRK.snp_2_error_shxsw(:)*255);%5.
+    TRK.snp_5_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms   (                              TRK.snp_2_error_shxsw(:)*255);%5.
     TRK.snp_6_armse_Fx1(f)  =   UTIL_compute_avg(TRK.snp_5_rmse__Fx1(1:f));                                                   %6.
     
     
@@ -237,7 +237,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     
 %three tracking metrics
     TRK.trk_1_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB2      (TRK.fpt_1_truth_2xG,   TRK.fpt_3_error_2xG);  
-    TRK.trk_2_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms2_value  (                       TRK.fpt_3_error_2xG);  
+    TRK.trk_2_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms2  (                       TRK.fpt_3_error_2xG);  
     TRK.trk_3_armse_Fx1(f)  =   UTIL_compute_avg                 (                       TRK.trk_2_rmse__Fx1(1:f));              
    
 %three (3) training metrics

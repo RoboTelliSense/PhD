@@ -1,4 +1,4 @@
-%A is matrix of training SoC descriptors, previously called trg_mat_SoC
+%A is matrix of training SoC feature vectors, previously called trg_mat_SoC
 
 
 function [pX1, CCD] = RVQ_3_createCCD(A, M, lambda) %A has one SoC per row, pX1 is the probability of stage 1, CCD has the rest of the probabilities

@@ -85,13 +85,13 @@ function BPCAnew = sklm2(BPCAold, B_DxM2, ff)
     [Bspan_DxNpMp1_old,R_old,E_old]=   qr([ ff*Ua_DxM1*Stilde_Nx1, Bhat_DxMp1 ], 0); %> old way
 
     %step 3. find Bhat reconstruction error
-    Bhat_descr_M1xMp1       =   Ua_DxM1'*Bhat_DxMp1;                %projections on M1 basis vectors
-    Bhat_recon_DxMp1        =   Ua_DxM1*Bhat_descr_M1xMp1;          %reconstruction
+    Bhat_featr_M1xMp1       =   Ua_DxM1'*Bhat_DxMp1;                %projections on M1 basis vectors
+    Bhat_recon_DxMp1        =   Ua_DxM1*Bhat_featr_M1xMp1;          %reconstruction
     Bhat_error_DxMp1        =   Bhat_DxMp1 - Bhat_recon_DxMp1;      %error
     
     [Btilde_DxMp1, dummy]   =   qr(Bhat_error_DxMp1, 0);
     Bspan_DxNpMp1           =   [Ua_DxM1 Btilde_DxMp1];                       %spans A (old) and B (new), NpMp1 = N+M2+1
-    R                       =   [ff*diag(Sa_Nx1)                                Bhat_descr_M1xMp1; ...
+    R                       =   [ff*diag(Sa_Nx1)                                Bhat_featr_M1xMp1; ...
                                 zeros([size(Bhat_DxMp1,2) length(Sa_Nx1)])      Btilde_DxMp1'*Bhat_error_DxMp1];
 
     %step 4.

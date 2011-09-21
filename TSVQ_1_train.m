@@ -60,7 +60,8 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
         [CB_DxKt(:,2*m), CB_DxKt(:, 2*m+1), partitionedData{2*m}, partitionedData{2*m+1}] ...
                             =   TSVQ_basicTrainingUnit(partitionedData{m}); %at each ntn, create 2 children nodes
     end
-
+    [temp Kt]               =   size(CB_DxKt);
+    
 %------------------------------
 % POST-PROCESSING
 %------------------------------    
@@ -68,6 +69,8 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
     TSVQ.mdl_1_P__1x1       =	maxP;   	%in this code, i force P to be equal to maxP    
     TSVQ.mdl_3_CB_DxKt      =   CB_DxKt;  %terminal and non-terminal codevectors
 	TSVQ.mdl_4_CB_DxK     	=   CB_DxKt(:, M+1:M+K);
+    TSVQ.mdl_5_K__1x1       =   K;
+    TSVQ.mdl_6_Kt_1x1       =   Kt;
     
 %test training examples   
     TSVQ.in_2_mode          =   'trg';

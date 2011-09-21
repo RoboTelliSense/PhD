@@ -91,8 +91,8 @@
      %err1_DxN               =   BPCA_C.mdl_3_U__DxP  - Usklm_DxN; %sklm is original code by David Ross
      %norm(err1_DxN(:))
 %     err2_DxN               =   U_DxN2 - U_DxN; %my code with cosmetic changes to make more readable
-%     rmse1                   =   UTIL_METRICS_compute_rms_value(err1_DxN(:))
-%     rmse2                   =   UTIL_METRICS_compute_rms_value(err2_DxN(:))
+%     rmse1                   =   UTIL_METRICS_compute_rms(err1_DxN(:))
+%     rmse2                   =   UTIL_METRICS_compute_rms(err2_DxN(:))
 %                                 surf(err1_DxN)
 %                                 
 %     err1                    =   U_DxN - U_DxN2;

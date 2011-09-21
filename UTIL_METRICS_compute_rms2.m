@@ -7,7 +7,7 @@
 % Date last modified : Sep 19, 2011
 %%
 
-function rms_value = UTIL_METRICS_compute_rms2_value(Sig_2xN)
+function rms_value = UTIL_METRICS_compute_rms2(Sig_2xN)
     
 %square
     Sig_1xN                 =   Sig_2xN(1,:).^2 + Sig_2xN(2,:).^2;  %add 1 first row (dimension) squared to 2nd row (dimension) squared

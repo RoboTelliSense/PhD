@@ -4,7 +4,7 @@
 %
 % sw=1, sh=1 means scalar example
 % 
-% RVQ.trg_1_descr_PxN: training XDRs from using gen.exe -l or my Matlab software
+% RVQ.trg_1_featr_PxN: training XDRs from using gen.exe -l or my Matlab software
 %
 % gen.exe -l crashes on dataset 4, and so i'm not using it any more instead, i have my own matlab code for it
 % I think gen.exe -l may be crashing because I have values higher than 255
@@ -32,10 +32,10 @@
 % The first M=2 numbers in RVQ.mdl_3_CB_DxMP are the scalar codevectors for stage 1,
 % the second M=2 numbers are the scalar codevectors for stage 2, and so on.
 % 
-% If test point is 192, descriptors_PxN(:,192) produced by RVQ.rule_stop_decoding='monPSNR' will give 
+% If test point is 192, feature vectors_PxN(:,192) produced by RVQ.rule_stop_decoding='monRMSE' will give 
 % [1;9;9;9;  9;9;9;9], the 9's, i.e., P+1s, showing early termination.
 % So, the reproduction value is 192 and the error is 0.5.  
-% descriptors_PxN produced by gen.exe -l or RVQ.rule_stop_decoding='maxP' always gives full path,
+% feature vectors_PxN produced by gen.exe -l or RVQ.rule_stop_decoding='maxP' always gives full path,
 % and the answer is [1;1;2;2   2;2;2;2].  So the reproduction value is also 192, and the error is again 0.5 
 % 
 % If test point is 253, my software gives reproduction of 252.5, an error of 0.5: 192.5 + 32 + 16 + 8 + 4              = 252.5 
@@ -51,7 +51,7 @@
 %
 % for reference, SNRs for dataset==3 are [46.0277   17.7511  25.2638   30.7671],
 % and rmse's are                         [1.0737    27.8433  11.7242    6.2219]
-% in order these are PCA, RVQ (monPSNR), RVQ (RoE), TSVQ
+% in order these are PCA, RVQ (monRMSE), RVQ (RoE), TSVQ
 % TSVQ values can change though since the K-means can produce different
 % results each time
 %
@@ -77,7 +77,7 @@
     format compact;
 
 %data input (5 different datasets, pick one of them)
-    dataset                 =   4;                                          %change this to 1, 2, 3, 4 or 5
+    dataset                 =   3;                                          %change this to 1, 2, 3, 4 or 5
     
     %deterministic, simple scalar examples
     if     (dataset==1) DM2 =   [4 6 8 10 20 22 24 26];       sw=1; sh=1;   %simplest possible, i've worked this out by hand in a pdf
@@ -116,7 +116,7 @@
     RVQ.in_6_sw__           =   sw;                                         %snippet width
     RVQ.in_7_sh__           =   sh;                                         %snippet height
     RVQ.in_8_odir           =   '';
-    RVQ.in_9_rule           =   'monPSNR';
+    RVQ.in_9_rule           =   'monRMSE';
 
     %tsvq
     TSVQ.in_1_name          =   'TSVQ';
@@ -137,11 +137,10 @@
     TSVQ                    =    TSVQ_1_train     (DM2, TSVQ); 
     
 %testing
-    tst_Dx1                 =   DM2(:,8);    
-    
+   
     BPCA                    =   bPCA_3_test(DM2, BPCA);                  
-    RVQ                     =   RVQ__testing_grayscale      (tst_Dx1, RVQ);%here, the rule is always monotonic PSNR
-    TSVQ                    =   TSVQ_3_test                 (tst_Dx1, TSVQ);
+    RVQ                     =   RVQ__testing_grayscale      (DM2(:,24), RVQ);%here, the rule is always monotonic PSNR
+    TSVQ                    =   TSVQ_3_test                 (DM2, TSVQ);
     
 %-----------------------------
 %RESULTS
@@ -152,6 +151,7 @@
                                 figure;DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols);title('input');
                                 figure;DATAMATRIX_display_DM2_as_image(BPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols);title('BPCA eigenvectors');
                                 figure;DATAMATRIX_display_DM2_as_image(RVQ.mdl_3_CB_DxMP, sh, sw, RVQ.mdl_1_P__1x1, RVQ.in_4_M___);title('RVQ codebooks');
+                                figure;DATAMATRIX_display_DM2_as_image(TSVQ.mdl_4_CB_DxK, sh, sw, TSVQ.mdl_1_P__1x1, TSVQ.mdl_5_K__1x1);title('TSVQ codebooks');
     
     [BPCA.trg_5_rmse__1x1     RVQ.trg_5_rmse__1x1    TSVQ.trg_5_rmse__1x1         ]
     [BPCA.tst_5_rmse__1x1     RVQ.tst_5_rmse__1x1    TSVQ.tst_5_rmse__1x1         ]

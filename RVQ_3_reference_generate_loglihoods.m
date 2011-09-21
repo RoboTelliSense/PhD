@@ -63,7 +63,7 @@
             %TGT =  [180 142 6 21    ]*2;
             TGT         =   uint16([TGT(1)-sw/2 TGT(2)-sh/2 TGT(3) TGT(4)]);
             rectangle('Position', TGT, 'EdgeColor', [1 0 0 ])
-            title('log likelihood using the SoC descriptor')
+            title('log likelihood using the SoC feature vector')
             colorbar;
             
             pause;

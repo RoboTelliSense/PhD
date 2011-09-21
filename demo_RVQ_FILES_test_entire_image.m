@@ -19,8 +19,8 @@
     RVQ.in_6_sw__                 =   sw;                                         %snippet width
     RVQ.in_7_sh__                 =   sh;                                         %snippet height
     RVQ.in_8_odir            =   '';
-    RVQ.trg_1_descr_PxN =   [];
-    RVQ.tst_1_descr_PxN  =   [];
+    RVQ.trg_1_featr_PxN =   [];
+    RVQ.tst_1_featr_PxN  =   [];
 
     %test image
     I                       =   imread('referenceRVQ/00472.jpg');

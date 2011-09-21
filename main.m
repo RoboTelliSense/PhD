@@ -204,6 +204,7 @@ datasetCode                 =   1;
 %>-----------------------------------------
 %step 1.
     for f = 1:PARAM.trg_B
+        f
         %strings  
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];

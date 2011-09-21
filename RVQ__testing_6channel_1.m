@@ -72,10 +72,10 @@ function RVQ = RVQ__testing_grayscale_6D(tst_Dx1, RVQ)
     %pass out
         RVQ.tst_2_recon_DxN    =   recon_6Dx1;
         RVQ.tst_3_error_DxN      =   err_6Dx1;
-        RVQ.tst_1_descr_PxN   =   SoC;
+        RVQ.tst_1_featr_PxN   =   SoC;
         
         RVQ.tst_6_partP_Nx1 =   numStagesUsed;
                 
         RVQ.tst_4_SNRdB_1x1      =   UTIL_METRICS_compute_SNRdB       (tst_6Dx1,  err_6Dx1);  %for PSNR, you only give error signal
-        RVQ.tst_5_rmse__1x1     =   UTIL_METRICS_compute_rms_value   (           err_6Dx1);
+        RVQ.tst_5_rmse__1x1     =   UTIL_METRICS_compute_rms   (           err_6Dx1);
         RVQ.tst_PSNRdB     =   max(PSNR_dB);

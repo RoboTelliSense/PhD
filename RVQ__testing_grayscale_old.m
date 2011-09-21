@@ -95,10 +95,10 @@ function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
 %pass out
     RVQ.tst_2_recon_DxN    =   xhat_Dx1;
     RVQ.tst_3_error_DxN     =   R_Dx1;
-    RVQ.tst_1_descr_PxN  =   XDR;
+    RVQ.tst_1_featr_PxN  =   XDR;
         
     RVQ.tst_6_partP_Nx1=   partialP;
 
     RVQ.tst_4_SNRdB_1x1     =   UTIL_METRICS_compute_SNRdB       (x_Dx1,  R_Dx1);  %for PSNR, you only give error signal
-    RVQ.tst_5_rmse__1x1    =   UTIL_METRICS_compute_rms_value   (        R_Dx1);
+    RVQ.tst_5_rmse__1x1    =   UTIL_METRICS_compute_rms   (        R_Dx1);
     RVQ.tst_PSNRdB    =   max(successive_PSNRdB);
