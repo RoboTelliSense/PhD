@@ -15,7 +15,7 @@
 % A good way to check RVQ is to use the 1:256 scalar example in the IDDM paper.  For that use the following settings:
 % dataset     =   25
 % RVQ.in_3_maxP   =   8
-% RVQ.in_4_M      =   2
+% RVQ.in_4_M___      =   2
 % Then RVQ.mdl_3_CB_DxMP (the red channel of the codebooks) is 
 %       m=1   m=2
 %       ---   ---
@@ -103,26 +103,26 @@
 
     
     %bpca
-    BPCA.in_1_name            	=   'BPCA';
-	BPCA.in_2_mode 				=	'tst';
-    BPCA.mdl_1_P__1x1           =   16;                                         
+    BPCA.in_1_name          =   'BPCA';
+	BPCA.in_2_mode          =	'tst';
+    BPCA.mdl_1_P__1x1       =   16;                                         
     
     %rvq    
-    RVQ.in_1_name              	=   'RVQ';
-	RVQ.in_2_mode 				=   'tst';
-    RVQ.in_3_maxP              	=   8;                                          %number of stages  
-    RVQ.in_4_M                  =   2;                                          %number of codevectors/stage
-    RVQ.in_5_targetSNR          =   1000;
-    RVQ.in_6_sw                 =   sw;                                         %snippet width
-    RVQ.in_7_sh                 =   sh;                                         %snippet height
-    RVQ.in_8_dir_out            =   '';
-    RVQ.in_9_rule_stop_decoding =   'monPSNR';
+    RVQ.in_1_name           =   'RVQ';
+	RVQ.in_2_mode           =   'tst';
+    RVQ.in_3_maxP           =   8;                                          %number of stages  
+    RVQ.in_4_M___           =   2;                                          %number of codevectors/stage
+    RVQ.in_5_tSNR           =   1000;
+    RVQ.in_6_sw__           =   sw;                                         %snippet width
+    RVQ.in_7_sh__           =   sh;                                         %snippet height
+    RVQ.in_8_odir           =   '';
+    RVQ.in_9_rule           =   'monPSNR';
 
     %tsvq
-    TSVQ.in_1_name             	=   'TSVQ';
-	TSVQ.in_2_mode 				=	'tst';
-    TSVQ.in_3_maxP              =   4;                                          %number of stages
-    TSVQ.in_4_M                	=   2;                                          %2 is for binary TSVQ
+    TSVQ.in_1_name          =   'TSVQ';
+	TSVQ.in_2_mode          =	'tst';
+    TSVQ.in_3_maxP          =   4;                                          %number of stages
+    TSVQ.in_4_M___          =   2;                                          %2 is for binary TSVQ
     
     
     
@@ -151,7 +151,7 @@
     numDisplayCols          =   10;
                                 figure;DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols);title('input');
                                 figure;DATAMATRIX_display_DM2_as_image(BPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols);title('BPCA eigenvectors');
-                                figure;DATAMATRIX_display_DM2_as_image(RVQ.mdl_3_CB_DxMP, sh, sw, RVQ.mdl_1_P__1x1, RVQ.in_4_M);title('RVQ codebooks');
+                                figure;DATAMATRIX_display_DM2_as_image(RVQ.mdl_3_CB_DxMP, sh, sw, RVQ.mdl_1_P__1x1, RVQ.in_4_M___);title('RVQ codebooks');
     
     [BPCA.trg_5_rmse__1x1     RVQ.trg_5_rmse__1x1    TSVQ.trg_5_rmse__1x1         ]
     [BPCA.tst_5_rmse__1x1     RVQ.tst_5_rmse__1x1    TSVQ.tst_5_rmse__1x1         ]

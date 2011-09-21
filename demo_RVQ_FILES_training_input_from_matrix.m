@@ -24,11 +24,11 @@
     [D,N]                   =   size(DM2);      %
     
     RVQ.in_3_maxP               =   8;              %max number of stages, RVQ.P contains actual number of stages 
-    RVQ.in_4_M                  =   2;              %number of codevectors/stage
-    RVQ.in_5_targetSNR          =   1000;
-    RVQ.in_6_sw                 =   1;              %snippet width
-    RVQ.in_7_sh                 =   1;              %snippet height
-    RVQ.in_8_dir_out            =   '';             %directory where output files are saved
+    RVQ.in_4_M___                  =   2;              %number of codevectors/stage
+    RVQ.in_5_tSNR          =   1000;
+    RVQ.in_6_sw__                 =   1;              %snippet width
+    RVQ.in_7_sh__                 =   1;              %snippet height
+    RVQ.in_8_odir            =   '';             %directory where output files are saved
 
 %-------------------------------
 % PROCESSING

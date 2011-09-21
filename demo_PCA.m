@@ -2,9 +2,16 @@
     clc;
     close all;
     
-    DM2                     =   [1 4 5 -2 -2 -6; ...
+    DM2z                    =   [1 4 5 -2 -2 -6; ...
                                  3 2 4 -2 -3 -4];
-    PCA                     =   [];   
+    mu                      =   [2;3];
+    DM2                     =   DM2z + repmat(mu, 1, 6)
+    
+    PCA                     =   []; 
+    PCA.mdl_1_P__1x1             =   100;
     PCA.mode                =   'batch';
-    PCA                     =   bPCA_1_train(DM2, PCA);   
+    
+    PCA                     =   bPCA_1_train(DM2, PCA);  
+    
+    5.1414*(PCA.mdl_3_U__DxP)
        

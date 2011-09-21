@@ -26,7 +26,7 @@
 %> parameters
 %> -------------
 %> ff                       :   forgetting factor (def=1.0)
-%> Q                        :   maximeanm number of basis vectors to retain
+%> P                        :   maximeanm number of basis vectors to retain
 %>
 %> output
 %> ------
@@ -52,58 +52,59 @@
 %> Date modified: Aug 13, 201
 
 
-function PCA = sklm2(PCA)
+function BPCAnew = sklm2(BPCAold, B_DxM2, ff)
 
 %-----------------------------------------------
 %PRE-PROCESSING
 %----------------------------------------------
-    muA_Dx1                 =   PCA.inc_muA_Dx1;    %old data
-    Ua_DxM1                 =   PCA.inc_Ua_DxM1;    %old basis
-    Sa_Nx1                  =   PCA.inc_Sa_Nx1;     %old eigenvalues
-    B_DxM2                  =   PCA.inc_B_DxM2;     %new data       
-    ff                      =   PCA.ff;             %forgetting factor
-    Q                       =   PCA.Q;              %number of eigenvectors to keep
+%old
+    P                       =   BPCAold.mdl_1_P__1x1;           %number of eigenvectors to keep
+    muA_Dx1                 =   BPCAold.mdl_2_mu_Dx1;    
+    Ua_DxM1                 =   BPCAold.mdl_3_U__DxP;    
+    Sa_Nx1                  =   diag(BPCAold.mdl_4_S__PxP);     
     
+%new          
     [D,M2]                  =   size(B_DxM2);
 
 %-----------------------------------------------
 %PROCESSING
 %-----------------------------------------------
             
-    %step 1. compute mean of C_DxN=[A B]
+    %step 1. compute mean of C_DxN=[A B]    
     muB_Dx1                 =   mean(B_DxM2,2);                             %new data
     newM                    =   ff*M2;
     muC_Dx1                 =  (newM*muA_Dx1 + M2*muB_Dx1)/(M2+newM);       %combined data
 
-    %step 2. augment mean removed B with wmd (weighted mean difference)
+    %step 2. augment mean removed B with weighted mean difference
     Bz_DxM2                 =   B_DxM2 - repmat(muB_Dx1,[1,M2]);            %z: centered around zero, i.e. mean removed
     extra_col_Dx1           =   sqrt(M2*M2/(M2+M2))*(muA_Dx1 - muB_Dx1);    %extra term is weighted mean difference between means of A and B
-    B_hat_DxMp1             =   [Bz_DxM2      extra_col_Dx1];     
+    Bhat_DxMp1              =   [Bz_DxM2      extra_col_Dx1];     
 
     M2                      =   M2+newM;
     Stilde_Nx1              =   diag(Sa_Nx1);
-    [Bspan_DxNpMp1_old,R_old,E_old]=   qr([ ff*Ua_DxM1*Stilde_Nx1, B_hat_DxMp1 ], 0); %> old way
+    [Bspan_DxNpMp1_old,R_old,E_old]=   qr([ ff*Ua_DxM1*Stilde_Nx1, Bhat_DxMp1 ], 0); %> old way
 
-    %step 3.
-    Bproj_NxMp1             =   Ua_DxM1'*B_hat_DxMp1;            %> projections on U
-    Bin_DxMp1               =   Ua_DxM1*Bproj_NxMp1;
-    Bout_DxMp1              =   B_hat_DxMp1 - Bin_DxMp1;
-    [Btilde_DxMp1, dummy]   =   qr(Bout_DxMp1, 0);
+    %step 3. find Bhat reconstruction error
+    Bhat_descr_M1xMp1       =   Ua_DxM1'*Bhat_DxMp1;                %projections on M1 basis vectors
+    Bhat_recon_DxMp1        =   Ua_DxM1*Bhat_descr_M1xMp1;          %reconstruction
+    Bhat_error_DxMp1        =   Bhat_DxMp1 - Bhat_recon_DxMp1;      %error
+    
+    [Btilde_DxMp1, dummy]   =   qr(Bhat_error_DxMp1, 0);
     Bspan_DxNpMp1           =   [Ua_DxM1 Btilde_DxMp1];                       %spans A (old) and B (new), NpMp1 = N+M2+1
-    R                       =   [ff*diag(Sa_Nx1)                               Bproj_NxMp1; ...
-                                zeros([size(B_hat_DxMp1,2) length(Sa_Nx1)])   Btilde_DxMp1'*Bout_DxMp1];
+    R                       =   [ff*diag(Sa_Nx1)                                Bhat_descr_M1xMp1; ...
+                                zeros([size(Bhat_DxMp1,2) length(Sa_Nx1)])      Btilde_DxMp1'*Bhat_error_DxMp1];
 
     %step 4.
-    [Utilde_DxN,Stilde_Nx1,Vtilde]  ...
+    [Utilde_DxN,Stilde_NxN,Vtilde]  ...
                             =   svd(R, 0);
 
     %step 5.
-    Stilde_Nx1              =   diag(Stilde_Nx1);
+    Stilde_Nx1              =   diag(Stilde_NxN);
     if nargin < 7
         cutoff              =   sum(Stilde_Nx1.^2) * 1e-6;
         keep                =   find(Stilde_Nx1.^2 >= cutoff);
     else
-        keep                =   1:min(Q,length(Stilde_Nx1));
+        keep                =   1:min(P,length(Stilde_Nx1));
     end
     Stilde_Nx1              =   Stilde_Nx1(keep);
     Utilde_DxN              =   Bspan_DxNpMp1 * Utilde_DxN(:, keep);
@@ -111,6 +112,7 @@ function PCA = sklm2(PCA)
 %-----------------------------------------------
 %POST-PROCESSING
 %-----------------------------------------------
-    PCA.Utilde_DxN          =   Utilde_DxN;
-    PCA.Stilde_Nx1          =   Stilde_Nx1;
-    PCA.muC_Dx1             =   muC_Dx1;
+    BPCAnew.mdl_2_mu_Dx1    =   muC_Dx1;
+    BPCAnew.mdl_3_U__DxP    =   Utilde_DxN;
+    BPCAnew.mdl_4_S__PxP    =   Stilde_NxN;
+    

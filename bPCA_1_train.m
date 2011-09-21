@@ -42,11 +42,11 @@ function PCA = bPCA_1_train(DM2, PCA)
 %compute model 
     
     
-        [U, S, V]               =   svd(DM2z, 0);    %notice i do not remove the mean for SVD
-                                                %svd(X,0) produces the "economy size" decomposition. 
-                                                %If X is DxN with D > N, then svd computes only the 
-                                                %first N columns of U and S is NxN. 
-        keep                    =   1:min(min(N, P),D);
+        [U, S, V]           =   svd(DM2z, 0);       %notice, zero centered (i.e., mean removed)    
+                                                    %svd(X,0) produces the "economy size" decomposition. 
+                                                    %If X is DxN with D > N, then svd computes only the 
+                                                    %first N columns of U and S is NxN. 
+        keep                =   1:min(min(N, P),D); %keep the min of N, P, D
         
                                                
 %------------------------------------------

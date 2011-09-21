@@ -37,35 +37,36 @@ function RVQ = RVQ__testing_grayscale(DM2, RVQ)
 %-------------------------------
     [D,N]                   =   size(DM2);
     
-    M                       =   RVQ.in_4_M;             %number of codevectors/stage
-    sw                      =   RVQ.in_6_sw;            %snippet width
-    sh                      =   RVQ.in_7_sh;            %snippet height
+    M                       =   RVQ.in_4_M___;          %number of codevectors/stage
+    sw                      =   RVQ.in_6_sw__;          %snippet width
+    sh                      =   RVQ.in_7_sh__;          %snippet height
     
     CB_DxMP                 =   RVQ.mdl_3_CB_DxMP;      %1 channel codebook, get it from the red, green or blue channel
-    P                       =   RVQ.mdl_1_P__1x1;            %actual number of stages in the codebook
+    P                       =   RVQ.mdl_1_P__1x1;       %actual number of stages in the codebook
 
     if (strcmp(RVQ.in_2_mode, 'trg'))                   %if we're doing training snippets, use maxP
         rule_stop_decoding = 'maxP';                    %same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
                                                         %such as dataset 4 created by DATAMATRIX_create_random_DM2, probably
                                                         %because the max value there is >255
     elseif (strcmp(RVQ.in_2_mode, 'tst'))
-        rule_stop_decoding = RVQ.in_9_rule_stop_decoding;%otherwise use the other rule
+        rule_stop_decoding = RVQ.in_9_rule;%otherwise use the other rule
     end
         
 %-------------------------------
 %PRE-PROCESSING
 %-------------------------------    
-    recon_prev_Dx1           =   zeros(D,1);             %state variable
-    PSNRdB_prev             =   0;                      %state variable
-    descr_Px1                 =   (P+1) * ones(P,1);      %i initialize with P+1, the code for early termination
-    temp2_XDR_parPx1        =   [];                     %contains a partial descr_Px1, i.e., all indeces up to p-th stage
 
     for n=1:N
         %-------------------------------
         %PRE-PROCESSING
         %-------------------------------    
-        x_Dx1                   =   DM2(:,n);
-        partialP                =   0;
+        recon_prev_Dx1          =   zeros(D,1);             %state variable
+        PSNRdB_prev             =   0;                      %state variable
+        descr_Px1               =   (P+1) * ones(P,1);      %i initialize with P+1, the code for early termination
+        temp2_XDR_parPx1        =   [];                     %contains a partial descr_Px1, i.e., all indeces up to p-th stage
+
+        x_Dx1               =   DM2(:,n);
+        partialP            =   0;
         
         %-------------------------------
         %POST-PROCESSING
@@ -79,7 +80,7 @@ function RVQ = RVQ__testing_grayscale(DM2, RVQ)
             for m=1:M                         
                 CV_Dx1          =	RVQ_FILES_getCodevectorFromCodebook(m, p, M, CB_DxMP);      %get codevector 
                 temp1_recon_Dx1 =   recon_prev_Dx1 + CV_Dx1;                                    %(a) reconstruction
-                temp1_error_Dx1   =   x_Dx1 - temp1_recon_Dx1;                                    %(b) residual error
+                temp1_error_Dx1 =   x_Dx1 - temp1_recon_Dx1;                                    %(b) residual error
                 temp1_err_norm  =   norm(  temp1_error_Dx1, 2  );                                 %(c) comparison metric 
 
                 if (temp1_err_norm < err_norm_min)

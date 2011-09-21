@@ -40,12 +40,12 @@ function RVQ = RVQ__training(DM2, RVQ)
 %INITIALIZATIONS
 %---------------
     DM2_u8                  =   uint8(DM2);     %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
-    M                       =   RVQ.in_4_M;          %number of templates per stage
+    M                       =   RVQ.in_4_M___;          %number of templates per stage
     maxP                    =   RVQ.in_3_maxP;       %max number of stages
-    sw                      =   RVQ.in_6_sw;         %snippet width
-    sh                      =   RVQ.in_7_sh;         %snippet height
-    targetSNR               =   RVQ.in_5_targetSNR;  %desired SNR
-    dir_out                 =   RVQ.in_8_dir_out;    %directory to store results in
+    sw                      =   RVQ.in_6_sw__;         %snippet width
+    sh                      =   RVQ.in_7_sh__;         %snippet height
+    targetSNR               =   RVQ.in_5_tSNR;  %desired SNR
+    dir_out                 =   RVQ.in_8_odir;    %directory to store results in
 
 %!! attention: these should be parameters but I'm fixing them !!  
     iFlag                   =   0.0005;

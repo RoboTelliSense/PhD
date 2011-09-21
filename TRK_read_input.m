@@ -58,7 +58,7 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     end    
     
     aff_tsrpxy_1x6          =   UTIL_2D_affine_xywht_to_tsrpxy(xywht, PARAM.aff_scale);    
-    aff_abcdxy_1x6          =   UTIL_2D_affine_tsrpxy_to_abcdxy(aff_tsrpxy_1x6); %convert to affine parameters (abcdxy)
+    
 
 %-----------------------------------------------
 %PROCESSING
@@ -76,8 +76,8 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     PARAM.ds_4_F            =   size(data,3);               %total number of frames
     PARAM.ds_5_ff           =   ff;                         %forgetting factor
     PARAM.ds_6_PF_normalizer=   PF_normalizer;              %particle filter, normalizer
-    PARAM.ds_7_aff_abcdxy_1x6=  aff_abcdxy_1x6;             %affine: a, b, c, d, tx, ty
-    PARAM.ds_8_aff_tsrpxy_stddev_1x6  ...
+    PARAM.ds_7_tsrpxy_1x6   =   aff_tsrpxy_1x6;             %affine: theta, s, r, phi, tx, ty
+    PARAM.ds_8_tsrpxy_1x6_stddev  ...
                             =   aff_tsrpxy_stddev_1x6;      %affine: theta, s, r, phi, tx, ty
 	
 %2. image data
@@ -87,7 +87,7 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
     GT.fpt_1_truth_2xGxF    =   truepts;                            %ground truth for the feature points
     GT.fpt_2_G              =   size(GT.fpt_1_truth_2xGxF,2);       %number of feature points per image, this is 7 for Dudek and I think 2 for others
     
-    Ha_2x3                  =   UTIL_2D_affine_abcdxy_to_Ha_2x3(PARAM.ds_7_aff_abcdxy_1x6);
+    Ha_2x3                  =   UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6);
     X                       =   GT.fpt_1_truth_2xGxF(1,:,1);         %x coordinates, ground truth feature points in first frame
     Y                       =   GT.fpt_1_truth_2xGxF(2,:,1);         %y      "          "     "      "      "     "   "     "
     GT.fpt_3_refzc_2xG      =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, [X;Y]);

@@ -1,7 +1,7 @@
 %Nw: a window on training examples, so keep last Nw training examples
 %bWeighting: weighting or not?
 
-function DM2_weighted = DATAMATRIX_pick_last_Nw_values_in_DM2(DM2, Nw, bWeighting)
+function DM2_weighted = DATAMATRIX_pick_last_Nw_values_and_weight_in_DM2(DM2, Nw, bWeighting)
 
 
     [D, N] = size(DM2);

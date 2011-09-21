@@ -45,7 +45,7 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
 %------------------------------
 % PRE-PROCESSING
 %------------------------------
-    M                       =   TSVQ.in_4_M;
+    M                       =   TSVQ.in_4_M___;
     maxP                    =   TSVQ.in_3_maxP;
     
     [M, K]                  =   TSVQ_find_Ks_and_K(M, maxP);
