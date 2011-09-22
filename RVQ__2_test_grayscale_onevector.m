@@ -123,13 +123,24 @@ function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 %-------------------------------
     %save
     if (strcmp(RVQ.in_2_mode, 'trg'))
+        RVQ.trg_1_featr_PxN     =   [];                                                
+        RVQ.trg_2_recon_DxN     =   [];                                             
+        RVQ.trg_3_error_DxN     =   [];                                             
+         
         RVQ.trg_1_featr_PxN(:,n)=   featr_Px1;                                                
         RVQ.trg_2_recon_DxN(:,n)=   recon_Dx1;                                             
         RVQ.trg_3_error_DxN(:,n)=   error_Dx1;                                             
-        RVQ.trg_6_partP_Nx1(n,1)=   partialP;                                              
+        
+        RVQ.trg_6_partP_1x1     =   partialP;     
+        
     elseif (strcmp(RVQ.in_2_mode, 'tst'))
+        RVQ.tst_1_featr_PxN     =   [];                                             
+        RVQ.tst_2_recon_DxN     =   [];                                             
+        RVQ.tst_3_error_DxN     =   [];                                             
+        
         RVQ.tst_1_featr_PxN(:,n)=   featr_Px1;                                             
         RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                                             
-        RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                                             
-        RVQ.tst_6_partP_Nx1(n,1)=   partialP;                                              
+        RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                                      
+        
+        RVQ.tst_6_partP_1x1     =   partialP;                                              
     end

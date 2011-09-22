@@ -127,7 +127,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
     %if (strcmp(TRK.name, 'trkRVQ'))
-    %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lgrn*(ALGO.in_3_maxP-ALGO.P));
+    %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lambda*(ALGO.in_3_maxP-ALGO.P));
     %end
 
        

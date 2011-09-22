@@ -116,6 +116,13 @@ datasetCode                 =   1;
 	PARAM.plot_num_cols  	=   4;                  %"
 	PARAM.plot_title_fontsz =   8;                  %", fontsize
 
+    PARAM.out_cfn           =   'out.txt';          %cfn: complete filename
+    PARAM.out_fid           =   fopen(PARAM.out_cfn, 'w');
+                                UTIL_FILE_checkFileOpen(PARAM.out_fid, PARAM.out_cfn);
+    
+    PARAM.T_sec             =   0;                      %total running time in sec              
+
+    
 %2. INPUT
     [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM); 
     first_I_0t1             =   double(I_HxWxF(:,:,1));     %read first image, 0t1 means the image intensities are between 0 and 1       
@@ -156,12 +163,12 @@ datasetCode                 =   1;
     aRVQ.in_3_maxP          =   PARAM.in_rvq_maxP;
     aRVQ.in_4_M___          =   PARAM.in_rvq_M;         
     aRVQ.in_5_tSNR          =   PARAM.in_rvq_targetSNR;
-    aRVQ.in_6_sw__          =   PARAM.in_sw;            %snippet width
+    aRVQ.in_6_sw__          =   PARAM.in_sw;                %snippet width
     aRVQ.in_7_sh__          =   PARAM.in_sh;
-    aRVQ.in_8_odir          =   PARAM.dir_out;          %output directory
+    aRVQ.in_8_odir          =   PARAM.dir_out;              %output directory
     aRVQ.in_9_trgrule       =   'maxP';
-    aRVQ.in_10_tstrule      =   'monRMSE';               %rule to stop decoding in RVQ testing function
-    aRVQ.in_11_lgrn         =   0;                    %acts like a lagrange multiplier
+    aRVQ.in_10_tstrule      =   'monRMSE';                  %rule to stop decoding in RVQ testing function
+    aRVQ.in_11_lambda         =   0;                          %acts like a lagrange multiplier
 
     %aTSVQ
     aTSVQ.in_1_name         =   'aTSVQ';
@@ -169,34 +176,9 @@ datasetCode                 =   1;
     aTSVQ.in_4_M___         =   PARAM.in_tsvq_M;
 
 %4. TRACKER    
-    trkMEAN.name            =   'trkMEAN';                          %learning algo only uses mean of data (simplest learning algo)
-    
+    trkMEAN.name            =   'trkMEAN';                          %learning algo only uses mean of data (simplest learning algo)    
     trkMEAN.DM2             =   [];                                 %1. all "best" snippets picked by tracker (one snippet per column)
-    
-    trkMEAN.PRF_1_tsrpxy_6xNp=  [];                                 %1. particle filter, state (affine parameters)
-    trkMEAN.PRF_2_densty_Npx1=  [];                                 %2.    "        "  , density (weights)
-    trkMEAN.PRF_3_numfr     =   1;                                  %3.    "        "  , number of frames 
-    
-    trkMEAN.fpt_1_truth_2xG =   [];                                 %1.
-    trkMEAN.fpt_2_estim_2xG =   [];                                 %2.
-	trkMEAN.fpt_3_error_2xG =   [];                                 %3.
-        
-%     trkMEAN.trk_1_SNRdB_Fx1 =   zeros(PARAM.ds_4_F,1);              %1.
-%     trkMEAN.trk_2_rmse__Fx1 =   zeros(PARAM.ds_4_F,1);              %2.
-% 	trkMEAN.trk_3_armse_Fx1 =   zeros(PARAM.ds_4_F,1);              %3.
-%     
-%     trkMEAN.trg_1_SNRdB_Fx1 =   zeros(PARAM.ds_4_F,1);              %1.
-% 	trkMEAN.trg_2_rmse__Fx1 =   zeros(PARAM.ds_4_F,1);              %2.
-% 	trkMEAN.trg_3_armse_Fx1 =   zeros(PARAM.ds_4_F,1);              %3.
-% 
-% 	trkMEAN.tst_1_SNRdB_Fx1 =   zeros(PARAM.ds_4_F,1);              %1.
-% 	trkMEAN.tst_2_rmse__Fx1 =   zeros(PARAM.ds_4_F,1);              %2.
-% 	trkMEAN.tst_3_armse_Fx1 =   zeros(PARAM.ds_4_F,1);              %3.
-
-    
-%4. %timing   
-    duration                =   0; 
-    tic;
+    trkMEAN.PRF_3_numfr     =   1;                                  %number of frames the particle filter runs
 
 
 %>-----------------------------------------
@@ -204,12 +186,17 @@ datasetCode                 =   1;
 %>-----------------------------------------
 %step 1.
     for f = 1:PARAM.trg_B
-        f 
+        tic
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
         I_0t1               =   double(I_HxWxF(:,:,f)); %input
         trkMEAN             =   TRK_condensation(f, I_0t1, GT, RAND, PARAM, aMEAN, trkMEAN); %frame num, image, ground truth, random data, parameters, learning algo, tracking structure
-        trkMEAN.trk_2_rmse__Fx1(f)
+
+        PARAM.t_sec(f)      =   toc;                                %time for this frame
+        PARAM.T_sec         =   PARAM.T_sec + PARAM.t_sec(f);       %total time for all frames
+        PARAM.fps           =   f/PARAM.T_sec;                      %frames per sec
+                                fprintf(PARAM.out_fid, '%4d  %3.2f %3.2f       %3.2f\n', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f)); 
+                                sprintf(               '%4d  %3.2f %3.2f       %3.2f\n', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f))
     end	   
 
 %step 2. save structures	
@@ -227,18 +214,17 @@ datasetCode                 =   1;
 
     disp('initialization complete');
     
-%-----------------------------------------
-%PROCESSING
-%-----------------------------------------
 % clear;
 % clc;
 % close all;
 % load  
 
-    duration=0;    
+%-----------------------------------------
+%PROCESSING
+%-----------------------------------------
+
     for f = PARAM.trg_B+1 : PARAM.ds_4_F
         tic
-        f
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
         I_0t1               =   double(I_HxWxF(:,:,f));
@@ -254,29 +240,19 @@ datasetCode                 =   1;
 			PARAM.trg_frame_idxs = [PARAM.trg_frame_idxs, f];
 			if (PARAM.in_bUseIPCA) aIPCA =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);	end		
             if (PARAM.in_bUseBPCA) aBPCA =   PCA__1_train  (trkBPCA.DM2,                      aBPCA);   end
-            if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__1_train  (trkRVQ.DM2 ,                      aRVQ );   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
+            if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__1_train  (trkRVQ.DM2 ,                      aRVQ );   UTIL_copyFile([aRVQ.in_8_odir 'rvq__trg_verbose.txt'], [aRVQ.in_8_odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
             if (PARAM.in_bUseTSVQ) aTSVQ =   TSVQ_1_train  (trkTSVQ.DM2,                      aTSVQ);   end  
         end
-        [trkIPCA.trk_2_rmse__Fx1(f) trkBPCA.trk_2_rmse__Fx1(f) trkRVQ.trk_2_rmse__Fx1(f) trkTSVQ.trk_2_rmse__Fx1(f)]
-        
-        
-        
-        %TRK_draw_results(f, I_HxWxF, PARAM, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQ.FP_1_gt, trkTSVQ.FP_1_gt);
-        %TRK_save_allResults;
-        %[f trkIPCA.FPerr_avg(f) aRVQ.FPerr_avg(f) aTSVQ.FPerr_avg(f)]
-        toc
-        duration            =   duration + toc;
-        %fprintf('This frame: %d sec, all frames: %f seconds, frame rate: %.2f\n',f, toc, duration, f/duration);
-        
+        PARAM.t_sec(f)      =   toc;                                %time for this frame
+        PARAM.T_sec         =   PARAM.T_sec + PARAM.t_sec(f);       %total time for all frames
+        PARAM.fps           =   f/PARAM.T_sec;                      %frames per sec
+                                fprintf(PARAM.out_fid, '%4d  %3.2f %3.2f       %3.2f %3.2f %3.2f %3.2f\n', f, PARAM.t_sec(f), PARAM.fps, trkIPCA.trk_2_rmse__Fx1(f), trkBPCA.trk_2_rmse__Fx1(f), trkRVQ.trk_2_rmse__Fx1(f), trkTSVQ.trk_2_rmse__Fx1(f)); 
+                                sprintf(               '%4d  %3.2f %3.2f       %3.2f %3.2f %3.2f %3.2f\n', f, PARAM.t_sec(f), PARAM.fps, trkIPCA.trk_2_rmse__Fx1(f), trkBPCA.trk_2_rmse__Fx1(f), trkRVQ.trk_2_rmse__Fx1(f), trkTSVQ.trk_2_rmse__Fx1(f));
     end
 
 %>-----------------------------------------
 %POST-PROCESSING
 %>-----------------------------------------
-
-
-
-
-
-
-
+    fclose(PARAM.out_fid);
+        %TRK_draw_results(f, I_HxWxF, PARAM, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQ.FP_1_gt, trkTSVQ.FP_1_gt);
+        %TRK_save_allResults;
