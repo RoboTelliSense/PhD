@@ -29,7 +29,7 @@
 % Date created       : April 17, 2011.
 % Date last modified : July 30, 2011.
 %%
-function RVQ = RVQ__2_test_onevector(x_Dx1, RVQ, n)
+function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 
 %-------------------------------
 %INITIALIZATION

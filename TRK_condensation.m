@@ -126,9 +126,9 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     end
     candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
-    if (strcmp(TRK.name, 'trkRVQ'))
-        candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + RVQ.in_11_lgrn*(ALGO.maxP-ALGO.P));
-    end
+    %if (strcmp(TRK.name, 'trkRVQ'))
+    %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lgrn*(ALGO.in_3_maxP-ALGO.P));
+    %end
 
        
 %3. weights, maxidx (posterior)
