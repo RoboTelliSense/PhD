@@ -21,7 +21,8 @@ function PCA = BPCA_2_test(DM2, PCA)
     recon_DxN               =   U_DxP  * featr_PxN + repmat(mu_Dx1, 1, N);               %2. reconstructed signal  
     error_DxN               =   DM2 - recon_DxN;                                         %3. error vector
     SNRdB_Nx1               =   UTIL_METRICS_compute_SNRdB       (DM2(:), error_DxN(:)); %4. SNRdB
-    rmse__Nx1               =   UTIL_METRICS_compute_rms   (        error_DxN(:)); %5. rmse
+    rmse__Nx1               =   UTIL_METRICS_compute_rms         (        error_DxN(:)); %5. rmse
+    
 %--------------------------------------------
 % POST-PROCESSING
 %--------------------------------------------      
