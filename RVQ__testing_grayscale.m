@@ -1,5 +1,5 @@
 
-function RVQ = RVQ__testing_grayscale(DM2, RVQ)
+function RVQ = RVQ__2_test_grayscale(DM2, RVQ)
 
 %-------------------------------
 %INITIALIZATION
@@ -13,7 +13,7 @@ function RVQ = RVQ__testing_grayscale(DM2, RVQ)
 
     for n=1:N
         x_Dx1               =   DM2(:,n);
-        RVQ                 =   RVQ__testing_grayscale_onevector(x_Dx1, RVQ, n);
+        RVQ                 =   RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n);
     end        
 
     if (strcmp(RVQ.in_2_mode, 'trg'))

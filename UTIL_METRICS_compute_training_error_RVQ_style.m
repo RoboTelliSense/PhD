@@ -24,9 +24,9 @@ function algo = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo)
 	for n=1:N
 		x_Dx1                           =   DM2(:,n);                                %test vector
         if      (strcmp(algo.in_1_name, 'RVQ'))
-            algo                        =   RVQ__testing_grayscale(x_Dx1, algo);     %test
+            algo                        =   RVQ__2_test_grayscale(x_Dx1, algo);     %test
         elseif (strcmp(algo.in_1_name, 'TSVQ'))
-            algo                        =   TSVQ_3_test(x_Dx1, algo);     
+            algo                        =   TSVQ_2_test(x_Dx1, algo);     
         end
 		algo.trg_1_featr_PxN(:,n)	=   algo.tst_1_featr_PxN;                                         %trg1.
 		algo.trg_2_recon_DxN(:,n)     	=   algo.tst_2_recon_DxN;                                              %trg2.

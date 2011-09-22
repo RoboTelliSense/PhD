@@ -172,7 +172,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
                             = 	[];
         for i = 1:Np
             Itst            =   255*cand_snps_0t1_shxswxNp(:,:,i);
-            ALGO            =   RVQ__testing_grayscale(Itst(:), ALGO);
+            ALGO            =   RVQ__2_test_grayscale(Itst(:), ALGO);
             candErrs_0t1_DxNp(:,i) ...
                             =   (abs(ALGO.tst_3_error_DxN) + RVQ.in_10_lgrn*(ALGO.maxP-ALGO.P))/255;
         end
@@ -182,7 +182,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     elseif (strcmp(TRK.name, 'trkTSVQ'))
         for i = 1:Np
             Itst            =   255*cand_snps_0t1_shxswxNp(:,:,i);
-            ALGO            =   TSVQ_3_test(Itst(:), ALGO);
+            ALGO            =   TSVQ_2_test(Itst(:), ALGO);
             candErrs_0t1_DxNp(:,i) ....
                             =   ALGO.tst_3_error_DxN/255;                                
         end

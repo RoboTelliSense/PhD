@@ -2,7 +2,7 @@
 %
 % I used this function for the first draft of my thesis.  However, a few parts
 % of it were not intuitive, although it has been tested to be absolutely correct.
-% I made a few changes to create RVQ__testing_grayscale.m.  Both functions produce
+% I made a few changes to create RVQ__2_test_grayscale.m.  Both functions produce
 % exactly the same output, but the new function is more intuitive.
 % 
 % This version is for grayscale images.  In RVQ, I make grayscale images 3
@@ -21,7 +21,7 @@
 % Date last modified : July 7, 2011.
 %%
 
-function RVQ = RVQ__testing_grayscale_old(x_Dx1, RVQ)
+function RVQ = RVQ__2_test_grayscale_old(x_Dx1, RVQ)
 
 %-------------------------------
 %INITIALIZATION
