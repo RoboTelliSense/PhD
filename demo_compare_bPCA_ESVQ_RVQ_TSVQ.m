@@ -77,7 +77,7 @@
     format compact;
 
 %data input (5 different datasets, pick one of them)
-    dataset                 =   5;                                          %change this to 1, 2, 3, 4 or 5
+    dataset                 =   3;                                          %change this to 1, 2, 3, 4 or 5
     
     %deterministic, simple scalar examples
     if     (dataset==1) DM2 =   [4 6 8 10 20 22 24 26];       sw=1; sh=1;   %simplest possible, i've worked this out by hand in a pdf
@@ -141,7 +141,7 @@
 %testing
    
     BPCA                    =   BPCA_2_test(DM2, BPCA);                  
-    RVQ                     =   RVQ__2_test_grayscale      (DM2, RVQ);%here, the rule is always monotonic PSNR
+    RVQ                     =   RVQ__2_test      (DM2, RVQ);%here, the rule is always monotonic PSNR
     TSVQ                    =   TSVQ_2_test                 (DM2, TSVQ);
     
 %-----------------------------

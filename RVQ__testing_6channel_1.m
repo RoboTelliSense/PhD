@@ -1,4 +1,4 @@
-function RVQ = RVQ__2_test_grayscale_6D(tst_Dx1, RVQ)
+function RVQ = RVQ__2_test_6D(tst_Dx1, RVQ)
 
     tst_6Dx1                            =   RVQ_FILES_create_posnegImage(tst_Dx1, '', 0, 0);
 

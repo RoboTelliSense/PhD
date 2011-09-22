@@ -114,7 +114,7 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 
 %test training examples
     RVQ.in_2_mode           =   'trg';
-    RVQ                     =   RVQ__2_test_grayscale(DM2, RVQ); %my matlab code for gen.exe -l
+    RVQ                     =   RVQ__2_test(DM2, RVQ); %my matlab code for gen.exe -l
     RVQ.in_2_mode           =   'tst';
     
     

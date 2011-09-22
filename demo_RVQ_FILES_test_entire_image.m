@@ -51,7 +51,7 @@
             snippet_dims    =   RVQ_UTIL_givenSnippetCenterFindDimensions(x,y, sw, sh);
             snippet         =   I(snippet_dims.top_y : snippet_dims.bottom_y, snippet_dims.left_x : snippet_dims.right_x, 1);
                                 %imshow(snippet);
-            RVQ            =   RVQ__2_test_grayscale(double(snippet(:)), RVQ);
+            RVQ            =   RVQ__2_test(double(snippet(:)), RVQ);
             Isnr(y_idx, x_idx)  ...
                             =   RVQ.tst_4_SNRdB_1x1;
             Istg(y_idx, x_idx)  ...
