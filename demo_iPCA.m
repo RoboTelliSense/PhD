@@ -62,14 +62,14 @@
    
 %batch PCA (reference)
     BPCA_C.mdl_1_P__1x1     =   M1+M2;
-    BPCA_C                  =   bPCA_1_train(DM2, BPCA_C);        %reference SVD
+    BPCA_C                  =   BPCA_1_train(DM2, BPCA_C);        %reference SVD
     
 %---------------------------------------
 %PROCESSING
 %---------------------------------------
 %step 1: batch SVD for A
     BPCA_A.mdl_1_P__1x1     =   M1;
-    BPCA_A                  =   bPCA_1_train(A_DxM1, BPCA_A);        %reference SVD
+    BPCA_A                  =   BPCA_1_train(A_DxM1, BPCA_A);        %reference SVD
     
     muA_Dx1                 =   BPCA_A.mdl_2_mu_Dx1;
     Ua_DxM1                 =   BPCA_A.mdl_3_U__DxP;

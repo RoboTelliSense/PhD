@@ -34,7 +34,7 @@
 % PROCESSING
 %-------------------------------
     %training (gen -l will test training examples as well)
-    RVQ                    =   RVQ__training       (DM2, RVQ);    %creates the .sml file for RVQ, then runs gen.exe for training
+    RVQ                    =   RVQ__1_train       (DM2, RVQ);    %creates the .sml file for RVQ, then runs gen.exe for training
                                                                     %codebooks, then runs gen.exe -l to test training vectors and 
                                                                     %saves results in positiveExamples.idx
 

@@ -43,8 +43,8 @@
 %>
 %> dependencies
 %> ------------
-%> Dudek.mat, RandomData.mat, RVQ__training_gen8.exe
-%> on Linux, make sure you do chmod +x RVQ__training_gen8.linux
+%> Dudek.mat, RandomData.mat, RVQ__1_train_gen8.exe
+%> on Linux, make sure you do chmod +x RVQ__1_train_gen8.linux
 %>
 %> Copyright (c) Salman Aslam.  All rights reserved. (used parts of Jongwoo Lim and David Ross with permission)
 %> Date created             :   around Feb, 2011
@@ -160,7 +160,7 @@ datasetCode                 =   1;
     aRVQ.in_6_sw__          =   PARAM.in_sw;            %snippet width
     aRVQ.in_7_sh__          =   PARAM.in_sh;
     aRVQ.in_8_odir          =   PARAM.dir_out;          %output directory
-    aRVQ.in_10_tstrule          =   'monSNR';               %rule to stop decoding in RVQ testing function
+    aRVQ.in_10_tstrule      =   'monSNR';               %rule to stop decoding in RVQ testing function
     aRVQ.in_10_lgrn         =   0.5;                    %acts like a lagrange multiplier
 
     %aTSVQ
@@ -225,9 +225,9 @@ datasetCode                 =   1;
 
 %step 5. 1 training
     PARAM.trg_frame_idxs          =   [PARAM.trg_frame_idxs, f];
-    if (PARAM.in_bUseIPCA) aIPCA  =   ipca_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f),  aIPCA);  end		
-    if (PARAM.in_bUseBPCA) aBPCA  =   bpca_1_train  (trkBPCA.DM2 * PARAM.max_intensity, aBPCA);  end
-    if (PARAM.in_bUseRVQ)  aRVQ   =   RVQ__training (trkRVQ.DM2  * PARAM.max_intensity, aRVQ);   UTIL_copyFile([aRVQ.in_8_odir 'rvq__trg_verbose.txt'], [aRVQ.in_8_odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
+    if (PARAM.in_bUseIPCA) aIPCA  =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f),  aIPCA);  end		
+    if (PARAM.in_bUseBPCA) aBPCA  =   BPCA_1_train  (trkBPCA.DM2 * PARAM.max_intensity, aBPCA);  end
+    if (PARAM.in_bUseRVQ)  aRVQ   =   RVQ__1_train (trkRVQ.DM2  * PARAM.max_intensity, aRVQ);   UTIL_copyFile([aRVQ.in_8_odir 'rvq__trg_verbose.txt'], [aRVQ.in_8_odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
     if (PARAM.in_bUseTSVQ) aTSVQ  =   tsvq_1_train  (trkTSVQ.DM2 * PARAM.max_intensity, aTSVQ);  end  
 
     disp('initialization complete');
@@ -252,9 +252,9 @@ datasetCode                 =   1;
 		%training (update model) every few frames
         if (mod(f,PARAM.trg_B)==0) %i.e.train every batchsize images
 			PARAM.trg_frame_idxs = [PARAM.trg_frame_idxs, f];
-			if (PARAM.in_bUseIPCA) aIPCA =   ipca_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);	end		
-            if (PARAM.in_bUseBPCA) aBPCA =   bpca_1_train  (trkBPCA.DM2 * max_signal_val,     aBPCA);   end
-            if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__training (trkRVQ.DM2  * max_signal_val,     aRVQ );   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
+			if (PARAM.in_bUseIPCA) aIPCA =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);	end		
+            if (PARAM.in_bUseBPCA) aBPCA =   BPCA_1_train  (trkBPCA.DM2 * max_signal_val,     aBPCA);   end
+            if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__1_train (trkRVQ.DM2  * max_signal_val,     aRVQ );   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
             if (PARAM.in_bUseTSVQ) aTSVQ =   tsvq_1_train  (trkTSVQ.DM2 * max_signal_val,     aTSVQ);   end  
         end
         

@@ -1,4 +1,4 @@
-%> @file bPCA_1_train.m
+%> @file BPCA_1_train.m
 %> @brief Creates PCA eigenvectors
 %>
 %> assumption
@@ -25,7 +25,7 @@
 %> Date created             :   around Feb 2011  
 %> Date modified            :   Aug 27, 2011
 
-function PCA = bPCA_1_train(DM2, PCA)
+function PCA = BPCA_1_train(DM2, PCA)
 
 %------------------------------------------
 % PRE-PROCESSING
