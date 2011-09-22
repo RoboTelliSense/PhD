@@ -74,7 +74,7 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
     
 %test training examples   
     TSVQ.in_2_mode          =   'trg';
-    TSVQ                    =   TSVQ_3_test(DM2, TSVQ);    
+    TSVQ                    =   TSVQ_2_test(DM2, TSVQ);    
     TSVQ.in_2_mode          =   'tst';
     
 
