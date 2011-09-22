@@ -43,8 +43,8 @@
 %>
 %> dependencies
 %> ------------
-%> Dudek.mat, RandomData.mat, RVQ__1_train_gen8.exe
-%> on Linux, make sure you do chmod +x RVQ__1_train_gen8.linux
+%> Dudek.mat, RandomData.mat, RVQ__training_gen8.exe
+%> on Linux, make sure you do chmod +x RVQ__training_gen8.linux
 %>
 %> Copyright (c) Salman Aslam.  All rights reserved. (used parts of Jongwoo Lim and David Ross with permission)
 %> Date created             :   around Feb, 2011
@@ -227,8 +227,8 @@ datasetCode                 =   1;
     PARAM.trg_frame_idxs          =   [PARAM.trg_frame_idxs, f];
     if (PARAM.in_bUseIPCA) aIPCA  =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f),  aIPCA);  end		
     if (PARAM.in_bUseBPCA) aBPCA  =   BPCA_1_train  (trkBPCA.DM2 * PARAM.max_intensity, aBPCA);  end
-    if (PARAM.in_bUseRVQ)  aRVQ   =   RVQ__1_train (trkRVQ.DM2  * PARAM.max_intensity, aRVQ);   UTIL_copyFile([aRVQ.in_8_odir 'rvq__trg_verbose.txt'], [aRVQ.in_8_odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
-    if (PARAM.in_bUseTSVQ) aTSVQ  =   tsvq_1_train  (trkTSVQ.DM2 * PARAM.max_intensity, aTSVQ);  end  
+    if (PARAM.in_bUseRVQ)  aRVQ   =   RVQ__1_train  (trkRVQ.DM2  * PARAM.max_intensity, aRVQ);   UTIL_copyFile([aRVQ.in_8_odir 'rvq__trg_verbose.txt'], [aRVQ.in_8_odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
+    if (PARAM.in_bUseTSVQ) aTSVQ  =   TSVQ_1_train  (trkTSVQ.DM2 * PARAM.max_intensity, aTSVQ);  end  
 
     disp('initialization complete');
     
@@ -255,7 +255,7 @@ datasetCode                 =   1;
 			if (PARAM.in_bUseIPCA) aIPCA =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);	end		
             if (PARAM.in_bUseBPCA) aBPCA =   BPCA_1_train  (trkBPCA.DM2 * max_signal_val,     aBPCA);   end
             if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__1_train (trkRVQ.DM2  * max_signal_val,     aRVQ );   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
-            if (PARAM.in_bUseTSVQ) aTSVQ =   tsvq_1_train  (trkTSVQ.DM2 * max_signal_val,     aTSVQ);   end  
+            if (PARAM.in_bUseTSVQ) aTSVQ =   TSVQ_1_train  (trkTSVQ.DM2 * max_signal_val,     aTSVQ);   end  
         end
         
         %TRK_draw_results(f, I_HxWxF, PARAM, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQ.FP_1_gt, trkTSVQ.FP_1_gt);

@@ -81,7 +81,7 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     if (ispc)
 
         if (maxP==8)
-            system(['RVQ__1_train_gen8.exe    ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
+            system(['RVQ__training_gen8.exe    ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
         elseif (maxP==16)
             system(['RVQ__1_train_gen16.exe   ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
         end
@@ -89,7 +89,7 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     elseif (isunix)
 
         if (maxP==8)
-            system(['./RVQ__1_train_gen8.linux ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);            
+            system(['./RVQ__training_gen8.linux ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);            
         elseif (maxP == 16)
             system(['./RVQ__1_train_gen16.linux' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
         end
@@ -139,7 +139,7 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %     if (ispc)
 % 
 %         if (maxP==8)
-%             system(['RVQ__1_train_gen8.exe    ' cfn_trgvec  ' ' cfn_ecbk ' ' cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
+%             system(['RVQ__training_gen8.exe    ' cfn_trgvec  ' ' cfn_ecbk ' ' cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
 %         elseif (maxP==16)
 %             system(['RVQ__1_train_gen16.exe   ' cfn_trgvec  ' ' cfn_ecbk ' ' cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
 %         end
@@ -147,7 +147,7 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %     elseif (isunix)
 % 
 %         if (maxP==8)
-%             system(['./RVQ__1_train_gen8.linux ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
+%             system(['./RVQ__training_gen8.linux ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
 %         elseif (maxP == 16)
 %             system(['./RVQ__1_train_gen16.linux' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);        
 %         end

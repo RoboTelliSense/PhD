@@ -22,7 +22,7 @@
 %-------------------------------
 % PROCESSING
 %-------------------------------
-    system(['RVQ__1_train_gen8.exe referenceRVQ\F1.sml referenceRVQ\F1.ecbk referenceRVQ\F1.dcbk 3 -S1000 -i0.0005 -j0.0005']);
+    system(['RVQ__training_gen8.exe referenceRVQ\F1.sml referenceRVQ\F1.ecbk referenceRVQ\F1.dcbk 3 -S1000 -i0.0005 -j0.0005']);
     
 %-------------------------------
 % POST-PROCESSING

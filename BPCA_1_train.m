@@ -60,5 +60,5 @@ function PCA = BPCA_1_train(DM2, PCA)
     
 %test training examples   
     PCA.in_2_mode           =   'trg';
-    PCA                     =   bPCA_3_test(DM2, PCA);    
+    PCA                     =   BPCA_2_test(DM2, PCA);    
     PCA.in_2_mode           =   'tst';

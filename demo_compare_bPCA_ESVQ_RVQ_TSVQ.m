@@ -140,7 +140,7 @@
     
 %testing
    
-    BPCA                    =   bPCA_3_test(DM2, BPCA);                  
+    BPCA                    =   BPCA_2_test(DM2, BPCA);                  
     RVQ                     =   RVQ__testing_grayscale      (DM2, RVQ);%here, the rule is always monotonic PSNR
     TSVQ                    =   TSVQ_3_test                 (DM2, TSVQ);
     

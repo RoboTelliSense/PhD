@@ -158,7 +158,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     elseif (strcmp(TRK.name, 'trkBPCA'))
         for i = 1:Np
             Itst            =   255*cand_snps_0t1_shxswxNp(:,:,i);
-            ALGO            =   bPCA_3_test(Itst(:), ALGO);
+            ALGO            =   BPCA_2_test(Itst(:), ALGO);
             candErrs_0t1_DxNp(:,i) ...
                             =   ALGO.tst_3_error_DxN/255;                                
         end
