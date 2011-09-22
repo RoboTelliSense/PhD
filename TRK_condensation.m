@@ -3,23 +3,23 @@
 %> 
 %> I_0t1                    :   input image, 0t1 means that the min value is 0, max value is 1
 %> f                        :   frame number
-%> cand_snps_0t1_shxswxNp   :   Np candidate snippets
+%> cand_snps_shxswxNp       :   Np candidate snippets, pixel intensity range is [0 1]
 %>
 %> ALGO                     :   structure holding learning algorithm parameters and data, like MEAN, IPCA, RVQ, TSVQ
-%>      mdl_3_U__DxP         :   basis, normally, I would write U_DxN, but
+%>      mdl_3_U__DxP        :   basis, normally, I would write U_DxN, but
 %>                              here I use mdl_3_U__DxP because B is the number of
 %>                              training examples in one batch
 %>
 %> TRK                      :   structure that holds information about the condensation algorithm.  has following members:
 %>      name                :   name of tracker, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, etc
 %>
-%>      DM2                 :   design (data) matrix, contains all best snippets for all frames
+%>      DM2                 :   design (data) matrix, contains all best snippets for all frames, pixel intensity range is [0 1]
 %>
 %>      PRF_1_tsrpxy_6xNp   :   particle filter, density x-axis (affine 6-tuple parameters)
-%>      PRF_2_densty_Npx1    :      "       "   , density y-axis (one weight for each of the Np 6-tuples above)
+%>      PRF_2_densty_Npx1   :      "       "   , density y-axis (one weight for each of the Np 6-tuples above)
 %>      PRF_3_numfr         :      "       "   , number of frames this particle filter has run
 %>
-%>      snp_0_0t1__shxsw    :   snippet stats, best snippet in image, i.e. it's best explained by my model
+%>      snp_0_pixls_shxsw   :   snippet stats, best snippet in image, i.e.it's best explained by my model, pixel intensity range is [0 1]
 %>      snp_1_tsrpxy_1x6    :      "       " , best affine parameters  
 %>      snp_2_error_shxsw   :      "       " , besr error
 %>      snp_3_recon_shxsw   :      "       " , best recond (my model's reconstruction of this best snippet)
@@ -49,7 +49,7 @@
 %>      fpt_3_refzc_2xG     :        "      " , reference for a zero centered target
 %>
 %> for every algo, compute
-%>      candErrs_0t1_DxNp  :   errors for all particle filter candidates
+%>      candErrs_DxNp       :   errors for all particle filter candidates
 %>
 %> Copyright (c) Salman Aslam.  All rights reserved.  (IPCA part and computing weights comes from Jongwoo Lim and David Ross with permission)
 %> Date created             :   April 25, 2011
@@ -60,7 +60,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
-    candErrs_0t1_DxNp     = 	[];
+    candErrs_DxNp     = 	[];
     
 %----------------------------
 %PRE-PROCESSING
@@ -83,11 +83,11 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 %----------------------------
 %PROCESSING
 %   compute 
-%   1. cand_snps_0t1_shxswxNp
-%   2. candErrs_0t1_DxNp
+%   1. cand_snps_shxswxNp
+%   2. candErrs_DxNp
 %   3. weights, maxidx
 %----------------------------
-%1. get cand_snps_0t1_shxswxNp (candidate snippets, using resampling)   %although here it's done at the beginning, it's really being done at the end.
+%1. get cand_snps_shxswxNp (candidate snippets, using resampling)   %although here it's done at the beginning, it's really being done at the end.
                                                 %the reason is that in the first run, initialization is done, but not resampling.
                                                 %then motion model is applied after resampling.  so after the initialization)
 
@@ -111,24 +111,23 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     %d. get candidate snippets
     for np=1:Np
         Ha_2x3              =   UTIL_2D_affine_tsrpxy_to_Ha_2x3(TRK.PRF_1_tsrpxy_6xNp(:,np));
-        [X_hxw, Y_hxw, cand_snps_0t1_shxswxNp(:,:,np)]   ...
+        [X_hxw, Y_hxw, cand_snps_shxswxNp(:,:,np)]   ...
                             =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I_0t1, Ha_2x3, sw, sh);
     end
-    cand_snps_0t1_DxNp      =   reshape(cand_snps_0t1_shxswxNp,[D,Np]);
+    cand_snps_DxNp          =   reshape(cand_snps_shxswxNp,[D,Np]);
    
 %2. compute candidate errors, i.e., find how well the algorithm model explains each snippet)
 
     %IPCA, BPCA
-    if     (strcmp(TRK.name, 'trkMEAN'))                                ALGO = MEAN_2_test            (cand_snps_0t1_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkIPCA') || strcmp(TRK.name, 'trkBPCA')) ALGO = BPCA_2_test            (cand_snps_0t1_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkRVQ'))                                 ALGO = RVQ__2_test  (cand_snps_0t1_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkTSVQ'))                                ALGO = TSVQ_2_test            (cand_snps_0t1_DxNp, ALGO);
+    if     (strcmp(TRK.name, 'trkMEAN'))                                ALGO = MEAN_2_test (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkIPCA') || strcmp(TRK.name, 'trkBPCA')) ALGO = PCA__2_test (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkRVQ'))                                 ALGO = RVQ__2_test (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkTSVQ'))                                ALGO = TSVQ_2_test (cand_snps_DxNp, ALGO);
     end
-    candErrs_0t1_DxNp       =   ALGO.tst_3_error_DxN;
+    candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
     if (strcmp(TRK.name, 'trkRVQ'))
-        candErrs_0t1_DxNp(:,i) ...
-                            =   (abs(candErrs_0t1_DxNp) + RVQ.in_11_lgrn*(ALGO.maxP-ALGO.P))/255;
+        candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + RVQ.in_11_lgrn*(ALGO.maxP-ALGO.P));
     end
 
        
@@ -140,11 +139,11 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     %    DIFS               =   candErrs_featr_PxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
     %end
     %TRK.candErrs_featr_PxNp=   candErrs_featr_PxNp;
-    DFFS                    =   candErrs_0t1_DxNp;
+    DFFS                    =   candErrs_DxNp;
     switch (PARAM.con_errfunc)
         case 'robust'; temp_weights  =   exp(-  sum(DFFS.^2./(DFFS.^2 + PARAM.rsig.^2))./stddev)';%PARAM.rsig never defined
-        case 'ppca';   temp_weights  =   exp(-( sum(DFFS.^2)+ sum(DIFS.^2)        )./stddev)';
-        otherwise;     temp_weights  =   exp(-  sum(DFFS.^2                       )./stddev)';
+        case 'ppca';   temp_weights  =   exp(-( sum(DFFS.^2)+ sum(DIFS.^2)            )./stddev)';
+        otherwise;     temp_weights  =   exp(-  sum(DFFS.^2                           )./stddev)';
     end
     weights                 =   temp_weights ./ sum(temp_weights);          %normalize weights
     [maxprob,maxidx]        =   max(weights);                               %MAP estimate: pick best index
@@ -153,17 +152,17 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 %POST-PROCESSING
 %----------------------------
 %seven best-snippet (this frame only) stats
-	TRK.snp_0_0t1__shxsw    =   cand_snps_0t1_shxswxNp      (:,:,maxidx);             %0. best snippet 
-    TRK.snp_1_tsrpxy_1x6    =   TRK.PRF_1_tsrpxy_6xNp       (:  ,maxidx);             %1. best affine parameters
-    TRK.snp_2_error_shxsw   =   reshape(candErrs_0t1_DxNp   (:  ,maxidx), [sh sw]);   %2. best error                                             
-    TRK.snp_3_recon_shxsw   =   TRK.snp_0_0t1__shxsw - TRK.snp_2_error_shxsw;         %3. best recon        
-    TRK.snp_4_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB  (TRK.snp_0_0t1__shxsw(:), TRK.snp_2_error_shxsw(:)    );  %4.
-    TRK.snp_5_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms    (                         TRK.snp_2_error_shxsw(:)*255);  %5.
+	TRK.snp_0_pixls_shxsw   =   cand_snps_shxswxNp          (:,:,maxidx);               %0. best snippet 
+    TRK.snp_1_tsrpxy_1x6    =   TRK.PRF_1_tsrpxy_6xNp       (:  ,maxidx);               %1. best affine parameters
+    TRK.snp_2_error_shxsw   =   reshape(candErrs_DxNp       (:  ,maxidx), [sh sw]);     %2. best error                                             
+    TRK.snp_3_recon_shxsw   =   TRK.snp_0_pixls_shxsw - TRK.snp_2_error_shxsw;          %3. best recon        
+    TRK.snp_4_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB  (TRK.snp_0_pixls_shxsw(:), TRK.snp_2_error_shxsw(:)    );  %4.
+    TRK.snp_5_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms    (                          TRK.snp_2_error_shxsw(:)*255);  %5.
     TRK.snp_6_armse_Fx1(f)  =   UTIL_compute_avg            (TRK.snp_5_rmse__Fx1(1:f));                                                %6.
     
     
 %save all snippets
-    TRK.DM2                 =   [DM2      TRK.snp_0_0t1__shxsw(:)];          %update snippet library
+    TRK.DM2                 =   [DM2      TRK.snp_0_pixls_shxsw(:)];          %update snippet library
     if 	   (strcmp(TRK.name, 'trkBPCA') || strcmp(TRK.name, 'trkRVQ') || strcmp(TRK.name, 'trkTSVQ')) %not needed for IPCA since it has its own forgetting factor
         TRK.DM2             =   DATAMATRIX_pick_last_Nw_values_and_weight_in_DM2(TRK.DM2, Nw, bWeighting); 
     end

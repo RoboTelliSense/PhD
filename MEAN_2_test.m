@@ -8,13 +8,15 @@ function MEAN = MEAN_2_test(DM2, MEAN)
 %--------------------------------------------
 % 1. PRE-PROCESSING
 %-------------------------------------------- 
-    [D, N]                  =   size(DM2);                      
+    [D, N]                  =   size(DM2);    
+    mu_Dx1                  =   MEAN.mdl_2_mu_Dx1; 
+    
     DM2z                    =   DM2 - repmat(mu_Dx1, 1, N);     %zero centered, i.e., mean removed
     
 %--------------------------------------------
 % 2. PROCESSING
 %--------------------------------------------     
-    recon_DxN               =   repmat(mu_Dx1, 1, N)    
+    recon_DxN               =   repmat(mu_Dx1, 1, N);    
     error_DxN               =   DM2z;
     
     

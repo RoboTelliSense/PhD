@@ -219,10 +219,10 @@ datasetCode                 =   1;
  
 %step 5. 1 training
     PARAM.trg_frame_idxs          =   [PARAM.trg_frame_idxs, f];
-    if (PARAM.in_bUseIPCA) aIPCA  =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f),  aIPCA);  end		
-    if (PARAM.in_bUseBPCA) aBPCA  =   BPCA_1_train  (trkBPCA.DM2 * PARAM.max_intensity, aBPCA);  end
-    if (PARAM.in_bUseRVQ)  aRVQ   =   RVQ__1_train  (trkRVQ.DM2  * PARAM.max_intensity, aRVQ);   UTIL_copyFile([aRVQ.in_8_odir 'rvq__trg_verbose.txt'], [aRVQ.in_8_odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
-    if (PARAM.in_bUseTSVQ) aTSVQ  =   TSVQ_1_train  (trkTSVQ.DM2 * PARAM.max_intensity, aTSVQ);  end  
+    if (PARAM.in_bUseIPCA) aIPCA  =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);  end		
+    if (PARAM.in_bUseBPCA) aBPCA  =   PCA__1_train  (trkBPCA.DM2                     , aBPCA);  end
+    if (PARAM.in_bUseRVQ)  aRVQ   =   RVQ__1_train  (trkRVQ.DM2                      , aRVQ);   UTIL_copyFile([aRVQ.in_8_odir 'rvq__trg_verbose.txt'], [aRVQ.in_8_odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
+    if (PARAM.in_bUseTSVQ) aTSVQ  =   TSVQ_1_train  (trkTSVQ.DM2                     , aTSVQ);  end  
 
     disp('initialization complete');
     
@@ -252,7 +252,7 @@ datasetCode                 =   1;
         if (mod(f,PARAM.trg_B)==0) %i.e.train every batchsize images
 			PARAM.trg_frame_idxs = [PARAM.trg_frame_idxs, f];
 			if (PARAM.in_bUseIPCA) aIPCA =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);	end		
-            if (PARAM.in_bUseBPCA) aBPCA =   BPCA_1_train  (trkBPCA.DM2,                      aBPCA);   end
+            if (PARAM.in_bUseBPCA) aBPCA =   PCA__1_train  (trkBPCA.DM2,                      aBPCA);   end
             if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__1_train  (trkRVQ.DM2 ,                      aRVQ );   UTIL_copyFile([dir_out 'rvq__trg_verbose.txt'], [dir_out 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
             if (PARAM.in_bUseTSVQ) aTSVQ =   TSVQ_1_train  (trkTSVQ.DM2,                      aTSVQ);   end  
         end

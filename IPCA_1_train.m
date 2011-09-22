@@ -37,5 +37,5 @@ function IPCA = IPCA_1_train(DM2, IPCA)
 
 %test training examples   
     IPCA.in_2_mode           =   'trg';
-    IPCA                     =   BPCA_2_test(DM2, IPCA);    
+    IPCA                     =   PCA__2_test(DM2, IPCA);    
     IPCA.in_2_mode           =   'tst';    

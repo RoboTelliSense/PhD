@@ -2,7 +2,7 @@
 %D is number of pixels, i.e. dimensions
 %N is number of images
 
-function PCA = BPCA_2_test(DM2, PCA)
+function PCA = PCA__2_test(DM2, PCA)
 
 %--------------------------------------------
 % PRE-PROCESSING

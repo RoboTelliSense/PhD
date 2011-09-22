@@ -131,13 +131,13 @@
 % PROCESSING
 %-----------------------------
 %training    
-    BPCA                    =    BPCA_1_train     (DM2, BPCA); 
+    BPCA                    =    PCA__1_train     (DM2, BPCA); 
     RVQ                     =    RVQ__1_train    (DM2, RVQ);           %!caution!: in this new version, decoding rule here is changed to 'full_stage' to mimic gen.exe -l functionality   
     TSVQ                    =    TSVQ_1_train     (DM2, TSVQ); 
     
 %testing
    
-    BPCA                    =   BPCA_2_test(DM2, BPCA);                  
+    BPCA                    =   PCA__2_test(DM2, BPCA);                  
     RVQ                     =   RVQ__2_test      (DM2, RVQ);%here, the rule is always monotonic PSNR
     TSVQ                    =   TSVQ_2_test                 (DM2, TSVQ);
     
