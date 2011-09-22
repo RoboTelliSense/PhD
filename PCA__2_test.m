@@ -26,13 +26,13 @@ function PCA = PCA__2_test(DM2, PCA)
 %--------------------------------------------
 % POST-PROCESSING
 %--------------------------------------------      
-    if (strcmp(PCA.in_2_mode, 'trg'))
+    if (strcmp(PCA.in_2__mode, 'trg'))
         PCA.trg_1_featr_PxN =   featr_PxN;                                                          %1. feature vectors (projection scalars)
         PCA.trg_2_recon_DxN =   recon_DxN;                                                          %2. reconstructed signal  
         PCA.trg_3_error_DxN =   error_DxN;                                                          %3. error vector
         PCA.trg_4_SNRdB_1x1 =   UTIL_METRICS_compute_SNRdB       (DM2(:), PCA.trg_3_error_DxN(:));  %4. SNRdB
         PCA.trg_5_rmse__1x1 =   UTIL_METRICS_compute_rms         (        PCA.trg_3_error_DxN(:));  %5. rmse    
-    elseif (strcmp(PCA.in_2_mode, 'tst'))  
+    elseif (strcmp(PCA.in_2__mode, 'tst'))  
         PCA.tst_1_featr_PxN =   featr_PxN;                                                          %1. feature vectors (projection scalars)
         PCA.tst_2_recon_DxN =   recon_DxN;                                                          %2. reconstructed signal  
         PCA.tst_3_error_DxN =   error_DxN;                                                          %3. error vector

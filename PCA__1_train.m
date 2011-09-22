@@ -59,6 +59,6 @@ function PCA = PCA__1_train(DM2, PCA)
 	PCA.mdl_5_V__PxP        =	V(keep,keep);               %5. eigenvectors of A^TA
     
 %test training examples   
-    PCA.in_2_mode           =   'trg';
+    PCA.in_2__mode           =   'trg';
     PCA                     =   PCA__2_test(DM2, PCA);    
-    PCA.in_2_mode           =   'tst';
+    PCA.in_2__mode           =   'tst';

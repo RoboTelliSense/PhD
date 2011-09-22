@@ -45,8 +45,8 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
 %------------------------------
 % PRE-PROCESSING
 %------------------------------
-    M                       =   TSVQ.in_4_M___;
-    maxP                    =   TSVQ.in_3_maxP;
+    M                       =   TSVQ.in_4__M___;
+    maxP                    =   TSVQ.in_3__maxP;
     
     [M, K]                  =   TSVQ_find_Ks_and_K(M, maxP);
 	partitionedData{1}      =   DM2;
@@ -73,8 +73,8 @@ function TSVQ = TSVQ_1_train(DM2, TSVQ)
     TSVQ.mdl_6_Kt_1x1       =   Kt;
     
 %test training examples   
-    TSVQ.in_2_mode          =   'trg';
+    TSVQ.in_2__mode          =   'trg';
     TSVQ                    =   TSVQ_2_test(DM2, TSVQ);    
-    TSVQ.in_2_mode          =   'tst';
+    TSVQ.in_2__mode          =   'tst';
     
 

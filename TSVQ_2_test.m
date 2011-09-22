@@ -31,29 +31,29 @@ function TSVQ = TSVQ_2_test(DM2, TSVQ)
         SNRdB               =   UTIL_METRICS_compute_SNRdB(x_Dx1, error_Dx1);
         rmse                =   UTIL_METRICS_compute_rms(error_Dx1);
 
-        %------------------------------
-        % POST-PROCESSING
-        %------------------------------         
-        %save        
-        if (strcmp(TSVQ.in_2_mode, 'trg'))
+        
+        %save stats: 1, 2, 3
+        if (strcmp(TSVQ.in_2__mode, 'trg'))
             TSVQ.trg_1_featr_PxN(:,n)   =   featr_Px1;
             TSVQ.trg_2_recon_DxN(:,n)   =   recon_Dx1;
             TSVQ.trg_3_error_DxN(:,n)   =   error_Dx1;
-        elseif (strcmp(TSVQ.in_2_mode, 'tst'))
+        elseif (strcmp(TSVQ.in_2__mode, 'tst'))
             TSVQ.tst_1_featr_PxN(:,n)   =   featr_Px1;
             TSVQ.tst_2_recon_DxN(:,n)   =   recon_Dx1;
             TSVQ.tst_3_error_DxN(:,n)   =   error_Dx1;
-        end
-        
-        
+        end        
     end
     %end looping over input data points
-    
-    if (strcmp(TSVQ.in_2_mode, 'trg'))
-        TSVQ.trg_4_SNRdB_1x1=   UTIL_METRICS_compute_SNRdB       (DM2(:),  TSVQ.trg_3_error_DxN(:));  
-        TSVQ.trg_5_rmse__1x1=   UTIL_METRICS_compute_rms   (         TSVQ.trg_3_error_DxN(:));  
-    elseif (strcmp(TSVQ.in_2_mode, 'tst'))
-        TSVQ.tst_4_SNRdB_1x1=   UTIL_METRICS_compute_SNRdB       (DM2(:),  TSVQ.tst_3_error_DxN(:));  
-        TSVQ.tst_5_rmse__1x1=   UTIL_METRICS_compute_rms   (         TSVQ.tst_3_error_DxN(:));  
+
+%------------------------------
+% POST-PROCESSING
+%------------------------------     
+%save stats: 4, 5
+    if (strcmp(TSVQ.in_2__mode, 'trg'))
+        TSVQ.trg_4_SNRdB_1x1=   UTIL_METRICS_compute_SNRdB      (DM2(:),  TSVQ.trg_3_error_DxN(:));  
+        TSVQ.trg_5_rmse__1x1=   UTIL_METRICS_compute_rms        (         TSVQ.trg_3_error_DxN(:));  
+    elseif (strcmp(TSVQ.in_2__mode, 'tst'))
+        TSVQ.tst_4_SNRdB_1x1=   UTIL_METRICS_compute_SNRdB      (DM2(:),  TSVQ.tst_3_error_DxN(:));  
+        TSVQ.tst_5_rmse__1x1=   UTIL_METRICS_compute_rms        (         TSVQ.tst_3_error_DxN(:));  
     end    
     

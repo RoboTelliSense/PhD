@@ -23,9 +23,9 @@ function algo = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo)
 	algo.trg_1_featr_PxN         	=   zeros(algo.mdl_1_P__1x1,N);
 	for n=1:N
 		x_Dx1                           =   DM2(:,n);                                %test vector
-        if      (strcmp(algo.in_1_name, 'RVQ'))
+        if      (strcmp(algo.in_1__name, 'RVQ'))
             algo                        =   RVQ__2_test(x_Dx1, algo);     %test
-        elseif (strcmp(algo.in_1_name, 'TSVQ'))
+        elseif (strcmp(algo.in_1__name, 'TSVQ'))
             algo                        =   TSVQ_2_test(x_Dx1, algo);     
         end
 		algo.trg_1_featr_PxN(:,n)	=   algo.tst_1_featr_PxN;                                         %trg1.

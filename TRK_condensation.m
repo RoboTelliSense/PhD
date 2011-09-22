@@ -17,7 +17,7 @@
 %>
 %>      PRF_1_tsrpxy_6xNp   :   particle filter, density x-axis (affine 6-tuple parameters)
 %>      PRF_2_densty_Npx1   :      "       "   , density y-axis (one weight for each of the Np 6-tuples above)
-%>      PRF_3_numfr         :      "       "   , number of frames this particle filter has run
+%>      numF         :      "       "   , number of frames this particle filter has run
 %>
 %>      snp_0_pixls_shxsw   :   snippet stats, best snippet in image, i.e.it's best explained by my model, pixel intensity range is [0 1]
 %>      snp_1_tsrpxy_1x6    :      "       " , best affine parameters  
@@ -92,7 +92,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
                                                 %then motion model is applied after resampling.  so after the initialization)
 
     %a. candidate affine tllpxy parameters
-    if (TRK.PRF_3_numfr==1)  %first time? initialize affine geometric (tllpxy) parameters, one for each of the Np candidate snippets
+    if (TRK.numF==1)  %first time? initialize affine geometric (tllpxy) parameters, one for each of the Np candidate snippets
         TRK.PRF_1_tsrpxy_6xNp=   repmat(PARAM.ds_7_tsrpxy_1x6'  , [1,Np]  );         %initialized candidates with hand labeled parameters (one time)
                                     
     else                         %not first time? resample distribution in tsrpxy space (read details of these steps in my article on resampling)       
@@ -127,7 +127,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
     %if (strcmp(TRK.name, 'trkRVQ'))
-    %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lambda*(ALGO.in_3_maxP-ALGO.P));
+    %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lmbd*(ALGO.in_3__maxP-ALGO.P));
     %end
 
        
@@ -170,7 +170,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     
 %two particle filter variables (state and density)
     TRK.PRF_2_densty_Npx1   =   weights;                                %overwrite 2nd particle filter variable
-    TRK.PRF_3_numfr         =   TRK.PRF_3_numfr + 1;                %overwrite 3rd particle filter variable
+    TRK.numF         =   TRK.numF + 1;                %overwrite 3rd particle filter variable
     
 %three feature point metrics
     TRK.fpt_1_truth_2xG     =   GT.fpt_1_truth_2xGxF(:,:,f);

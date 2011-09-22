@@ -36,28 +36,28 @@ function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 %-------------------------------
     D                       =   length(x_Dx1);
     
-    M                       =   RVQ.in_4_M___;          %number of codevectors/stage
-    sw                      =   RVQ.in_6_sw__;          %snippet width
-    sh                      =   RVQ.in_7_sh__;          %snippet height
+    M                       =   RVQ.in_4__M___;          %number of codevectors/stage
+    sw                      =   RVQ.in_6__sw__;          %snippet width
+    sh                      =   RVQ.in_7__sh__;          %snippet height
     
     CB_DxMP                 =   RVQ.mdl_3_CB_DxMP;      %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.mdl_1_P__1x1;       %actual number of stages in the codebook
 
-    if (strcmp(RVQ.in_2_mode, 'trg'))                   %if we're doing training snippets, use maxP
-        rule_stop_decoding = RVQ.in_9_trgrule;          %if 'maxP', then same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
+    if (strcmp(RVQ.in_2__mode, 'trg'))                   %if we're doing training snippets, use maxP
+        rule_stop_decoding = RVQ.in_9__trgR;          %if 'maxP', then same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
                                                         %such as dataset 4 created by DATAMATRIX_create_random_DM2, probably
                                                         %because the max value there is >255,actually crashes when when this is not true
                                                         %discussed with Dr Barnes as well.  This version in matlab is very stable
                                                         
-    elseif (strcmp(RVQ.in_2_mode, 'tst'))
-        rule_stop_decoding = RVQ.in_10_tstrule;             %otherwise use the other rule
+    elseif (strcmp(RVQ.in_2__mode, 'tst'))
+        rule_stop_decoding = RVQ.in_10_tstR;             %otherwise use the other rule
     end
 %-------------------------------
 %1. PRE-PROCESSING
 %-------------------------------    
     recon_prev_Dx1          =   zeros(D,1);             %state variable
     rmse_prev               =   1E15;                   %state variable
-    featr_Px1               =   (P+1) * ones(P,1);      %i initialize with P+1, the code for early termination
+    featr_Px1               =   zeros(P,1);             %i initialize with 0, my code for early termination (Dr Barnes' code was P+1)
     temp2_XDR_parPx1        =   [];                     %contains a partial featr_Px1, i.e., all indeces up to p-th stage
     partialP                =   0;
 
@@ -121,26 +121,18 @@ function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 %-------------------------------
 %3. POST-PROCESSING
 %-------------------------------
-    %save
-    if (strcmp(RVQ.in_2_mode, 'trg'))
-        RVQ.trg_1_featr_PxN     =   [];                                                
-        RVQ.trg_2_recon_DxN     =   [];                                             
-        RVQ.trg_3_error_DxN     =   [];                                             
-         
+%save stats: 1, 2, 3
+    if (strcmp(RVQ.in_2__mode, 'trg'))         
         RVQ.trg_1_featr_PxN(:,n)=   featr_Px1;                                                
         RVQ.trg_2_recon_DxN(:,n)=   recon_Dx1;                                             
         RVQ.trg_3_error_DxN(:,n)=   error_Dx1;                                             
         
-        RVQ.trg_6_partP_1x1     =   partialP;     
+        RVQ.trg_6_partP_1x1(1,n)=   partialP;     
         
-    elseif (strcmp(RVQ.in_2_mode, 'tst'))
-        RVQ.tst_1_featr_PxN     =   [];                                             
-        RVQ.tst_2_recon_DxN     =   [];                                             
-        RVQ.tst_3_error_DxN     =   [];                                             
-        
+    elseif (strcmp(RVQ.in_2__mode, 'tst'))        
         RVQ.tst_1_featr_PxN(:,n)=   featr_Px1;                                             
         RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                                             
         RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                                      
         
-        RVQ.tst_6_partP_1x1     =   partialP;                                              
+        RVQ.tst_6_partP_1x1(1,n)=   partialP;                                              
     end

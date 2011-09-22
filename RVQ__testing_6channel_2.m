@@ -10,8 +10,8 @@ function RVQ = RVQ__2_test(tst_Dx1, RVQ)
     CBn_b                              =   RVQ.CBn_b;
     T                                   =   RVQ.T;
     S                                   =   RVQ.S;
-    sw                                  =   RVQ.in_6_sw__;
-    sh                                  =   RVQ.in_7_sh__;
+    sw                                  =   RVQ.in_6__sw__;
+    sh                                  =   RVQ.in_7__sh__;
     D                                   =   sw*sh;
     
     SoC                                 =   T + ones(T,1);  %i initialize with T+1 because T+1 is the code for early termination
