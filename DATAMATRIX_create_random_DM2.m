@@ -22,7 +22,7 @@ function [DM2,sw,sh] = DATAMATRIX_create_random_DM2()
 
 
     for i=1:5
-        X1          		=   X1+50*i;     
+        X1          		=   X1+10*i;     
         X2          		=   X1+0.1*randn(1,D);       %row vector
         X3          		=   X1+0.2*randn(1,D);
         X4          		=   X1+0.3*randn(1,D);

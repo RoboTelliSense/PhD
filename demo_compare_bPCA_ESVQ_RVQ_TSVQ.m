@@ -77,7 +77,7 @@
     format compact;
 
 %data input (5 different datasets, pick one of them)
-    dataset                 =   3;                                          %change this to 1, 2, 3, 4 or 5
+    dataset                 =   5;                                          %change this to 1, 2, 3, 4 or 5
     
     %deterministic, simple scalar examples
     if     (dataset==1) DM2 =   [4 6 8 10 20 22 24 26];       sw=1; sh=1;   %simplest possible, i've worked this out by hand in a pdf
@@ -86,9 +86,10 @@
     %deterministic, vector (image) example
     elseif (dataset==3)         load testS_DM2_small;         sw=41;sh=27;  %i created this movie in Blender3D.  it has an S written on a moving box          
         
-    %random data
+    %random data  (simple)
     elseif (dataset==4) [DM2,sw,sh] ...                                     
-                            =   DATAMATRIX_create_random_DM2;               
+                            =   DATAMATRIX_create_random_DM2;       %RVQ error is large because apparently codebooks are clamped to 255            
+    %random data  (complex)
     elseif (dataset==5) a   =   rand(1089,2);...
                         DM2 =   [a a a a];                    sw=33;sh=33;  %this is a bizarre example, i.e., has repeated data points
     end
@@ -116,7 +117,8 @@
     RVQ.in_6_sw__           =   sw;                                         %snippet width
     RVQ.in_7_sh__           =   sh;                                         %snippet height
     RVQ.in_8_odir           =   '';
-    RVQ.in_9_rule           =   'monRMSE';
+    RVQ.in_9_trgrule        =   'maxP';                                     %can't have RoE because RoE only happens after training!
+    RVQ.in_10_tstrule       =   'maxP';
 
     %tsvq
     TSVQ.in_1_name          =   'TSVQ';
@@ -139,7 +141,7 @@
 %testing
    
     BPCA                    =   bPCA_3_test(DM2, BPCA);                  
-    RVQ                     =   RVQ__testing_grayscale      (DM2(:,24), RVQ);%here, the rule is always monotonic PSNR
+    RVQ                     =   RVQ__testing_grayscale      (DM2, RVQ);%here, the rule is always monotonic PSNR
     TSVQ                    =   TSVQ_3_test                 (DM2, TSVQ);
     
 %-----------------------------

@@ -160,7 +160,7 @@ datasetCode                 =   1;
     aRVQ.in_6_sw__          =   PARAM.in_sw;            %snippet width
     aRVQ.in_7_sh__          =   PARAM.in_sh;
     aRVQ.in_8_odir          =   PARAM.dir_out;          %output directory
-    aRVQ.in_9_rule          =   'monSNR';               %rule to stop decoding in RVQ testing function
+    aRVQ.in_10_tstrule          =   'monSNR';               %rule to stop decoding in RVQ testing function
     aRVQ.in_10_lgrn         =   0.5;                    %acts like a lagrange multiplier
 
     %aTSVQ
