@@ -119,10 +119,10 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
 %2. compute candidate errors, i.e., find how well the algorithm model explains each snippet)
 
     %IPCA, BPCA
-    if     (strcmp(TRK.name, 'trkMEAN'))                                ALGO = MEAN_2_test (cand_snps_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkIPCA') || strcmp(TRK.name, 'trkBPCA')) ALGO = PCA__2_test (cand_snps_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkRVQ'))                                 ALGO = RVQ__2_test (cand_snps_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkTSVQ'))                                ALGO = TSVQ_2_test (cand_snps_DxNp, ALGO);
+    if     (strcmp(TRK.name, 'trkMEAN'))                                ALGO = MEAN_2_test (cand_snps_DxNp    , ALGO);
+    elseif (strcmp(TRK.name, 'trkIPCA') || strcmp(TRK.name, 'trkBPCA')) ALGO = PCA__2_test (cand_snps_DxNp    , ALGO);
+    elseif (strcmp(TRK.name, 'trkRVQ'))                                 ALGO = RVQ__2_test (cand_snps_DxNp    , ALGO);
+    elseif (strcmp(TRK.name, 'trkTSVQ'))                                ALGO = TSVQ_2_test (cand_snps_DxNp    , ALGO);
     end
     candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
@@ -139,7 +139,8 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     %    DIFS               =   candErrs_featr_PxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
     %end
     %TRK.candErrs_featr_PxNp=   candErrs_featr_PxNp;
-    DFFS                    =   candErrs_DxNp;
+    DFFS                    =   candErrs_DxNp/256;  %DFFS                    =   reshape(UTIL_scale2(candErrs_DxNp(:), 0, 1), D, Np);
+    
     switch (PARAM.con_errfunc)
         case 'robust'; temp_weights  =   exp(-  sum(DFFS.^2./(DFFS.^2 + PARAM.rsig.^2))./stddev)';%PARAM.rsig never defined
         case 'ppca';   temp_weights  =   exp(-( sum(DFFS.^2)+ sum(DIFS.^2)            )./stddev)';
