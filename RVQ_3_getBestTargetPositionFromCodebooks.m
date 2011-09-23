@@ -29,7 +29,7 @@ function [cix_best, ciy_best] = RVQ_3_getBestTargetPositionFromCodebooks(odir, f
 %                                                         disp(str);
 %                                                         disp('               ----')
                                                         
-                UTIL_copyFile       (cfn_sed, cfn_sed_temp);
+                UTIL_FILE_copy       (cfn_sed, cfn_sed_temp);
                 
                                 
 %                                                         disp('               ----')

@@ -51,40 +51,36 @@
 %> Date last modified       :   Sep 19, 2011
 
 
-clear;
-clc;
-close all;
-Np                          =   600;
-Nw                          =   4;
-bWeighting                  =   0;
-pca_P                       =   16;
-rvq_maxP                    =   8;
-rvq_M                       =   2;
-rvq_targetSNR               =   1000;
-tsvq_P                      =   3;
-tsvq_M                      =   2;
-bUseIPCA                    =   1;
-bUseBPCA                    =   1;   
-bUseRVQ                     =   1;
-bUseTSVQ                    =   1;
-datasetCode                 =   1;
+% clear;
+% clc;
+% close all;
+% Np                          =   600;
+% Nw                          =   4;
+% bWeighting                  =   0;
+% pca_P                       =   16;
+% rvq_maxP                    =   8;
+% rvq_M                       =   2;
+% rvq_targetSNR               =   1000;
+% tsvq_P                      =   3;
+% tsvq_M                      =   2;
+% bUseIPCA                    =   1;
+% bUseBPCA                    =   1;   
+% bUseRVQ                     =   1;
+% bUseTSVQ                    =   1;
+% datasetCode                 =   1;
 
 %#######################################################################
-% function main(  Np, Nw, bWeighting,                     ...
-%                         pca_P,                               ...
-%                         rvq_maxP, rvq_M, rvq_targetSNR,         ...
-%                         tsvq_P, tsvq_M,                         ...
-%                         bUseIPCA , bUseBPCA , bUseRVQ, bUseTSVQ,  ...
-%                         datasetCode)
+function main(   pca_P,                                     ...
+                 rvq_maxP, rvq_M, rvq_targetSNR,            ...
+                 tsvq_P, tsvq_M,                            ...
+                 bUseIPCA , bUseBPCA , bUseRVQ, bUseTSVQ,   ...
+                 datasetCode)
 
 %>-----------------------------------------
 %PRE-PROCESSING
 %>-----------------------------------------
 %1. PARAMETERS
     %variable parameters (from command line)
-    PARAM.in_Np             =   Np;             %1. number of particles
-    PARAM.in_Nw             =   Nw;             %2. number of images for training, (training window)
-    PARAM.in_bWeighting     =   bWeighting;     %3. weighting of input data points 
     PARAM.in_pca_P          =   pca_P;          %4. PCA: number of eigenvectors to retain for PCA
     PARAM.in_rvq_maxP       =   rvq_maxP;       %5. aRVQ: max stages
     PARAM.in_rvq_M          =   rvq_M;          %6. aRVQ: templates per stage
@@ -100,8 +96,12 @@ datasetCode                 =   1;
     %clear all 14 parameters passed in to reduce clutter
     clear Np Nw bWeighting pca_P rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode    
     
-    %fixed parameters    
-    PARAM.con_errfunc       =   'L2';               %condensation related              
+    %fixed parameters  
+    PARAM.in_Nw             =   10000;              %2. number of images for training, (training window)
+    PARAM.in_bWeighting     =   false;              %3. weighting of input data points 
+
+    PARAM.con_Np            =   600;                %condensation, number of particles
+    PARAM.con_errfunc       =   'L2';               % 
     PARAM.con_reseig        =   0;
 	PARAM.aff_scale         =   32;                 %target affine scaling, note 1 less than sw and sh which I had to increase by 1 for aRVQ
     PARAM.in_sw             =   33;
@@ -203,12 +203,14 @@ datasetCode                 =   1;
         str_summary         =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f))        
                                 fprintf(PARAM.out_fid, [str_summary '\n']);  
         %display
-        imshow(uint8(I));
-        hold on;
-        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkMEAN.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, PARAM.plot_alpha, 'y');
-        hold off;
-        title(str_summary);
-        drawnow;
+        if (ispc)
+            imshow(uint8(I));
+            hold on;
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkMEAN.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, PARAM.plot_alpha, 'y');
+            hold off;
+            title(str_summary);
+            drawnow;
+        end
     end	   
 
 %step 2. save structures	
@@ -263,17 +265,19 @@ datasetCode                 =   1;
                                 trkTSVQ.trk_3_armse_Fx1(f))
                                 fprintf(PARAM.out_fid, [str_summary '\n']); 
         %display
-        imshow(uint8(I));
-        %colormap(gray)
-        hold on;
-        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkIPCA.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'b');
-        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkBPCA.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'c');
-        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkTSVQ.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'g');
-        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkRVQ.snp_1_tsrpxy_1x6),  PARAM.in_sh, PARAM.in_sw, PARAM.plot_alpha, 'r');
-        title(str_summary);
-        drawnow
-        hold off;
-        %UTIL_FILE_save2pdf([PARAM.str_f '.png'], gcf, 300);
+        if (ispc)
+            imshow(uint8(I));
+            %colormap(gray)
+            hold on;
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkIPCA.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'b');
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkBPCA.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'c');
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkTSVQ.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'g');
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkRVQ.snp_1_tsrpxy_1x6),  PARAM.in_sh, PARAM.in_sw, PARAM.plot_alpha, 'r');
+            title(str_summary);
+            drawnow
+            hold off;
+            %UTIL_FILE_save2pdf([PARAM.str_f '.png'], gcf, 300);
+        end
     end
 
 %>-----------------------------------------

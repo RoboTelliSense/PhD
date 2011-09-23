@@ -130,7 +130,7 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
 %>                 'batchsize',5, 'aff_tsrpxy_stddev_1x6',[6,5,.05,.05,0,0], ...
 %>                'errfunc','');
 
-%case 'toycan';    aff_abcdxy_1x6=[137 113 30 62 0];      PARAM.in_Np',Np,'PF_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[7,7,.01,.01,.002,.001]);  PARAM.ds_3_longName='1';txt2='Dudek';
-%case 'mushiake';  aff_abcdxy_1x6=[172 145 60 60 0];      PARAM.in_Np',Np,'PF_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[10,10,.01,.01,.002,.001]);PARAM.ds_3_longName='1';txt2='Dudek';
+%case 'toycan';    aff_abcdxy_1x6=[137 113 30 62 0];      PARAM.con_Np',Np,'PF_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[7,7,.01,.01,.002,.001]);  PARAM.ds_3_longName='1';txt2='Dudek';
+%case 'mushiake';  aff_abcdxy_1x6=[172 145 60 60 0];      PARAM.con_Np',Np,'PF_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[10,10,.01,.01,.002,.001]);PARAM.ds_3_longName='1';txt2='Dudek';
     
     

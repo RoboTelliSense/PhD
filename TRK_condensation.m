@@ -65,7 +65,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %----------------------------
 %PRE-PROCESSING
 %----------------------------
-    Np                      =   PARAM.in_Np;                    %particle filter: # of particles (samples) from density)    
+    Np                      =   PARAM.con_Np;                    %particle filter: # of particles (samples) from density)    
     sw                      =   PARAM.in_sw;                    %snippet width
     sh                      =   PARAM.in_sh;                    %snippet height
     Nw                      =   PARAM.in_Nw;                    %number of training images in training window

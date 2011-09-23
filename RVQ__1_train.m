@@ -56,11 +56,16 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     jFlag                   =   0.0005;
 
 %filenames (original names in brackets in comments)
-    cfn_1_posEg             =   [odir num2str(f) '_posEg_' num2str(sw) 'x' num2str(sh) '.raw'];  %file 1: vectorized positive examples, (F1.sml)
-    cfn_2_ecbk              =   [odir num2str(f) '_codebook.ecbk'];         %file 2: encoder codebooks,            (F1.ecbk)
-    cfn_3_dcbk              =   [odir num2str(f) '_codebook.dcbk'];         %file 3, decoder codebooks,            (F1.dcbk)
-    cfn_gentxt              =   [odir num2str(f) '_verbose.txt'];           %file 4, verbose output of gen.exe,    (F1.stat_gen.txt)
-    
+%     cfn_1_posEg             =   'posEg.raw';              %file 1: vectorized positive examples, (formerly, F1.sml)
+%     cfn_2_ecbk              =   'codebook.ecbk';          %file 2: encoder codebooks,            (formerly, F1.ecbk)
+%     cfn_3_dcbk              =   'codebook.dcbk';          %file 3, decoder codebooks,            (formerly, F1.dcbk)
+%     cfn_gentxt              =   'verbose.txt';            %file 4, verbose output of gen.exe,    (formerly, F1.stat_gen.txt)
+
+    cfn_1_posEg         =   [odir num2str(f) '_posEg_' num2str(sw) 'x' num2str(sh) '.raw'];  %file 1: vectorized positive examples, (F1.sml)
+    cfn_2_ecbk          =   [odir num2str(f) '_codebook.ecbk'];         %file 2: encoder codebooks,            (F1.ecbk)
+    cfn_3_dcbk          =   [odir num2str(f) '_codebook.dcbk'];         %file 3, decoder codebooks,            (F1.dcbk)
+    cfn_gentxt          =   [odir num2str(f) '_verbose.txt'];           %file 4, verbose output of gen.exe,    (F1.stat_gen.txt)
+
 %delete existing training files
                                 UTIL_FILE_delete(cfn_1_posEg);        %file 1
                                 UTIL_FILE_delete(cfn_2_ecbk);         %file 2
@@ -98,6 +103,17 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %-------------------
 %POST-PROCESSING
 %-------------------
+% %copy files
+%     cfn_1_posEg_out         =   [odir num2str(f) '_posEg_' num2str(sw) 'x' num2str(sh) '.raw'];  %file 1: vectorized positive examples, (F1.sml)
+%     cfn_2_ecbk_out          =   [odir num2str(f) '_codebook.ecbk'];         %file 2: encoder codebooks,            (F1.ecbk)
+%     cfn_3_dcbk_out          =   [odir num2str(f) '_codebook.dcbk'];         %file 3, decoder codebooks,            (F1.dcbk)
+%     cfn_gentxt_out          =   [odir num2str(f) '_verbose.txt'];           %file 4, verbose output of gen.exe,    (F1.stat_gen.txt)
+% 
+%     UTIL_FILE_copy(cfn_1_posEg, cfn_1_posEg_out);
+%     UTIL_FILE_copy(cfn_2_ecbk,  cfn_2_ecbk_out);
+%     UTIL_FILE_copy(cfn_3_dcbk,  cfn_3_dcbk_out);
+%     UTIL_FILE_copy(cfn_gentxt,  cfn_gentxt_out);
+    
 %save model
     %decoder codebook to get actual stages, codebooks
     [RVQ.mdl_1_P__1x1, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  ...

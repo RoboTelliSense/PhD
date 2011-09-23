@@ -9,5 +9,5 @@
     clc;
     close all;
 
-                 %Np  Nw weighting   PCA     RVQ           TSVQ      iPCA,bPCA,RVQ,TSVQ     datasetIndex
-    TRK_subspace(600, 4, 0,          16,     8,2,1000,     3,2,      1,   1,   1,  1,         1)
+         %PCA     RVQ          TSVQ      iPCA,bPCA,RVQ,TSVQ     datasetIndex
+    main(16,     8,2,1000,     3,2,      1,   1,   1,  1,         1)

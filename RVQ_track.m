@@ -83,8 +83,8 @@ bSave                   =   true;
         %bootsrap
         %--------
                                         UTIL_FILE_delete                                 ('test_out\positiveExamples.csv');
-            if (ispc)                   UTIL_copyFile                                   (cfn_gt, 'test_out\positiveExamples.csv');
-            elseif (isunix)             UTIL_copyFile                                   (cfn_gt, 'test_out/positiveExamples.csv');
+            if (ispc)                   UTIL_FILE_copy                                   (cfn_gt, 'test_out\positiveExamples.csv');
+            elseif (isunix)             UTIL_FILE_copy                                   (cfn_gt, 'test_out/positiveExamples.csv');
             end
             CB_trg                 =   RVQ_1_Train                                     (odir, fn_poscsv, M, T, sw, sh);   
             [cix, ciy]              =   UTIL_ROI_convert_outer_to_inner_coordinates     (cx,cy, sw, sh);
