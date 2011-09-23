@@ -13,7 +13,7 @@
                 cfn_nsr      ...
                 cfn_stg      ...
                 cfn_soc      ...
-                cfn_lhood]                      =   RVQ_3_createFileNames(dir_out, dir_I, ext_I, f);
+                cfn_lhood]                      =   RVQ_3_createFileNames(odir, dir_I, ext_I, f);
                 
             %thresholds
             %----------
@@ -340,9 +340,9 @@ end
         %-----------------------------------------------------------------
                 if (bSave)                
                     %UTIL_FILE_save2pdf(['Exp_PETS2001_results_RVQ_FN-'         titlestr_f '.pdf'],      h,     600) ; 
-                    %saveas(h, [dir_out 'trkRVQ_PETS2001_' UTIL_GetZeroPrefixedFileNumber(f_idx) '.jpg']) ; 
+                    %saveas(h, [odir 'trkRVQ_PETS2001_' UTIL_GetZeroPrefixedFileNumber(f_idx) '.jpg']) ; 
 
-                    %print('-djpeg', '-r300', [dir_out 'trkRVQ_PETS2001_' UTIL_GetZeroPrefixedFileNumber(f_idx) '.jpg']) ; 
+                    %print('-djpeg', '-r300', [odir 'trkRVQ_PETS2001_' UTIL_GetZeroPrefixedFileNumber(f_idx) '.jpg']) ; 
                     print('-djpeg', '-r200', cfn_out) ;         %default is 72, -r250 produces 2000x1500 images
                                                                 %-r225 produces 1800x1350, i.e scaling is 8x6                                        
                                                                 %-r220 produces 1760x1320, 

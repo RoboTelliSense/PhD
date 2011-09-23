@@ -36,9 +36,9 @@ for datasetCode = 1:7
             rvq_targetSNR   =   config(c,4);
             tsvq_T          =   config(c,5);
             j               =   j+1
-            [txt_overall_config dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+            [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
             myname          =   ['results_'   PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np)]
-            cfn             =   [dir_out 'FPerr_3_' char(algo) '.csv'];
+            cfn             =   [odir 'FPerr_3_' char(algo) '.csv'];
             if (exist(cfn,'file'))
                 a               =   csvread(cfn);
                 f               =   size(a,1);  %last frame number
@@ -77,9 +77,9 @@ end
 %             rvq_targetSNR   =   config(c,4);
 %             tsvq_T          =   config(c,5);
 %             j               =   j+1;
-%             [txt_overall_config dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
 %             myname          =   ['results_'   PARAM.ds_3_longName '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_RVQ'];   
-%             cfn             =   [dir_out 'FPerr_3_rvq.csv'];
+%             cfn             =   [odir 'FPerr_3_rvq.csv'];
 %             if (exist(cfn,'file'))
 %                 a               =   csvread(cfn);
 %                 f               =   size(a,1);  %last frame number
@@ -122,9 +122,9 @@ end
 %             rvq_targetSNR   =   config(c,4);
 %             tsvq_T          =   config(c,5);
 %             j               =   j+1;
-%             [txt_overall_config dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
 %             myname          =   ['results_'   PARAM.ds_3_longName '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_TSVQ'];   
-%             cfn             =   [dir_out 'FPerr_3_tsvq.csv'];
+%             cfn             =   [odir 'FPerr_3_tsvq.csv'];
 %             if (exist(cfn,'file'))
 %                 a               =   csvread(cfn);
 %                 f               =   size(a,1);  %last frame number
@@ -165,9 +165,9 @@ end
 %             rvq_targetSNR   =   config(c,4);
 %             tsvq_T          =   config(c,5);
 %             j               =   j+1;
-%             [txt_overall_config dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
 %             myname          =   ['results_'   PARAM.ds_3_longName '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_bPCA'];   
-%             cfn             =   [dir_out 'FPerr_3_bpca.csv'];
+%             cfn             =   [odir 'FPerr_3_bpca.csv'];
 %             if (exist(cfn,'file'))
 %                 a               =   csvread(cfn);
 %                 f               =   size(a,1);  %last frame number
@@ -207,9 +207,9 @@ end
 %             rvq_targetSNR   =   config(c,4);
 %             tsvq_T          =   config(c,5);
 %             j               =   j+1;
-%             [txt_overall_config dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
 %             myname          =   ['results_'   PARAM.ds_3_longName '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_iPCA'];   
-%             cfn             =   [dir_out 'FPerr_3_ipca.csv'];
+%             cfn             =   [odir 'FPerr_3_ipca.csv'];
 %             if (exist(cfn,'file'))
 %                 a               =   csvread(cfn);
 %                 f               =   size(a,1);  %last frame number

@@ -3,7 +3,7 @@ function hh=TRK_draw_1_I(f, data, CONFIG, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, ...
 
             if (PARAM.in_bUseBPCA  || PARAM.in_bUseRVQ || PARAM.in_bUseTSVQ)
                 figure(2);
-                                    UTIL_suptitle(PARAM.dir_out_wo_slash, 8);
+                                    UTIL_suptitle(PARAM.config_name, 8);
                 colormap('gray');
                 I               =   uint8(data(:,:,f));
                                     subplot(PARAM.plot_num_rows, PARAM.plot_num_cols,1);

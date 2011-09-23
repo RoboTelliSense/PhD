@@ -2,11 +2,11 @@ clear;
 clc;
 close all;
 
-dir_out = 'results_1_maxT_8_M_4_Np_600_Nict_-1_PCA_16_Dudek\';
+odir = 'results_1_maxT_8_M_4_Np_600_Nict_-1_PCA_16_Dudek\';
 dir_img = 'img\Dudek\720x480\';
 ext_I   =   '.png';
-cfn_poscsv = [dir_out 'positiveExamples2.csv'];
-cfn_posraw = [dir_out 'positiveExamples2.raw'];
+cfn_poscsv = [odir 'positiveExamples2.csv'];
+cfn_posraw = [odir 'positiveExamples2.raw'];
 [cfn_I, SX, SY, SW, SH]   = textread(cfn_poscsv, '%s   %d %d %d %d', 'delimiter', ',');
 
 Ntrgsnp = length(cfn_I);

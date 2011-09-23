@@ -53,7 +53,7 @@ bSave                   =   true;
             end
 
             if (bTrialRuns)
-                dir_out_prefix  =       'test_out'; %dir_out_prefix is set in the config files, but this ovewwrites it
+                odir_prefix  =       'test_out'; %odir_prefix is set in the config files, but this ovewwrites it
             end
 
         %timing parameters
@@ -64,17 +64,17 @@ bSave                   =   true;
         %full name of output directory
         %-----------------------------
             if (ispc)   
-                dir_out = [dir_out_prefix '\'];
+                odir = [odir_prefix '\'];
             elseif (isunix) 
-                dir_out = [dir_out_prefix '/'];
+                odir = [odir_prefix '/'];
             end
 
         %filenames
         %---------
             fn_poscsv               =   'positiveExamples.csv';
-            cfn_poscsv              =   [dir_out fn_poscsv];      %file 1, this is the only file which maintains temporal info
-            cfn_poscsv_temp         =   [dir_out 'temp_positiveExamples.csv'];      
-            cfn_out                 =   [dir_out 'tracks.csv'];
+            cfn_poscsv              =   [odir fn_poscsv];      %file 1, this is the only file which maintains temporal info
+            cfn_poscsv_temp         =   [odir 'temp_positiveExamples.csv'];      
+            cfn_out                 =   [odir 'tracks.csv'];
 
         %dimensions
         %----------
@@ -86,7 +86,7 @@ bSave                   =   true;
             if (ispc)                   UTIL_copyFile                                   (cfn_gt, 'test_out\positiveExamples.csv');
             elseif (isunix)             UTIL_copyFile                                   (cfn_gt, 'test_out/positiveExamples.csv');
             end
-            CB_trg                 =   RVQ_1_Train                                     (dir_out, fn_poscsv, M, T, sw, sh);   
+            CB_trg                 =   RVQ_1_Train                                     (odir, fn_poscsv, M, T, sw, sh);   
             [cix, ciy]              =   UTIL_ROI_convert_outer_to_inner_coordinates     (cx,cy, sw, sh);
             f_idx                   =   1;
 
@@ -102,7 +102,7 @@ bSave                   =   true;
 
             if (bProcessFullImage)
                                         tic;
-                [SNR, STG]          =   RVQ_2_test                                      (dir_out, cfn_Iraw, f, iw, ih, sw, sh, M, T, bVisualize, bVerbose);    %system('UTIL_binaryFileCompare.exe   reference_9_00472_640x480.cor   00472.cor  ');                    
+                [SNR, STG]          =   RVQ_2_test                                      (odir, cfn_Iraw, f, iw, ih, sw, sh, M, T, bVisualize, bVerbose);    %system('UTIL_binaryFileCompare.exe   reference_9_00472_640x480.cor   00472.cor  ');                    
                  t_temp             =   toc;
                  T_tst              =   [T_tst t_temp];                                           
 
@@ -120,7 +120,7 @@ bSave                   =   true;
                 cfn_Rraw            =   [dir_I   str_f   '_' num2str(rw) 'x' num2str(rh) '.raw'];     
                                         RVQ_FILES_create_posnegImage                           (R, cfn_Rraw, false);
                                         tic
-                [SNR, STG]          =   RVQ_2_test                                      (dir_out, cfn_Rraw, f, rw, rh, sw, sh, M, T, bVisualize, bVerbose);    %system('UTIL_binaryFileCompare.exe   reference_9_00472_640x480.cor   00472.cor  ');                    
+                [SNR, STG]          =   RVQ_2_test                                      (odir, cfn_Rraw, f, rw, rh, sw, sh, M, T, bVisualize, bVerbose);    %system('UTIL_binaryFileCompare.exe   reference_9_00472_640x480.cor   00472.cor  ');                    
                 tst_time            =   toc
                 T_tst               =   [T_tst tst_time];
             end                
@@ -149,10 +149,10 @@ bSave                   =   true;
             %training
                                         RVQ_0_create_positiveExamples_csv               (cfn_Iraw, cfn_poscsv, Trect, Nsx, Nsy, iw, ih, true);
                                         tic
-            CB                     =   RVQ_1_Train                                     (dir_out, fn_poscsv, M, T, sw, sh);                 
+            CB                     =   RVQ_1_Train                                     (odir, fn_poscsv, M, T, sw, sh);                 
             trg_time                =   toc
             T_trg                   =   [T_trg trg_time];
-                                        RVQ_3_backupTrainingFiles                       (dir_out, str_f);               
+                                        RVQ_3_backupTrainingFiles                       (odir, str_f);               
             str                     =   sprintf('############################\n f = %d, target= (%d, %d)\n############################\n', f, cx, cy);
                                         disp(str);
                                                         
@@ -172,7 +172,7 @@ bSave                   =   true;
             %title(txt);
             title(str_f);
             str_fidx    =   UTIL_GetZeroPrefixedFileNumber(f_idx);
-            cfn_out     =   [dir_out str_fidx '.jpg'];
+            cfn_out     =   [odir str_fidx '.jpg'];
             if (bSave)
                 %tic
                 %print('-djpeg', '-r200', cfn_out)
@@ -202,7 +202,7 @@ bSave                   =   true;
         
         
         
-                     %A                   =   RVQ_FILES_read_idx_file         ([dir_out 'positiveExamples.idx'],         iw, ih, sw, sh, T, M, true);
+                     %A                   =   RVQ_FILES_read_idx_file         ([odir 'positiveExamples.idx'],         iw, ih, sw, sh, T, M, true);
                     %[p1,   pn]          =   RVQ_3_createCCD             (A, M, lambda);
        
         
@@ -258,12 +258,12 @@ bSave                   =   true;
             
             
 %                   if (mod(f_tst,Nict)==0)
-%                     if      (ispc)      system(['del ' dir_out 'positiveExamples.csv']);
-%                     elseif  (isunix)    unix(['rm ' dir_out 'positiveExamples.csv']);
+%                     if      (ispc)      system(['del ' odir 'positiveExamples.csv']);
+%                     elseif  (isunix)    unix(['rm ' odir 'positiveExamples.csv']);
 %                     end
-%                     RVQ_0_create_positiveExamples_csv(dir_out, tgtID, cx, cy, Nsx, Nsy, cfn_Iraw, iw, ih, false);
+%                     RVQ_0_create_positiveExamples_csv(odir, tgtID, cx, cy, Nsx, Nsy, cfn_Iraw, iw, ih, false);
 %                 else
-%                     RVQ_0_create_positiveExamples_csv(dir_out, tgtID, cx, cy, Nsx, Nsy, cfn_Iraw, iw, ih, true);
+%                     RVQ_0_create_positiveExamples_csv(odir, tgtID, cx, cy, Nsx, Nsy, cfn_Iraw, iw, ih, true);
 %                   end
                 
                   
@@ -294,7 +294,7 @@ bSave                   =   true;
 % end
 
 
-%B_ll                =      RVQ_3_getLogLikelihoods(p1, pn, B, M, T, Iih,Iiw, dir_out, str_f);
+%B_ll                =      RVQ_3_getLogLikelihoods(p1, pn, B, M, T, Iih,Iiw, odir, str_f);
 % if (bGetTargetPositionFromGT) %if (bGTisComplete)
 %                     for i=1:length(GT) %if you have ground truth, use it to create snippet extraction details file, if not, you should have one created manually by now
 %                         f1                          =   f-f1I+1;      
@@ -303,7 +303,7 @@ bSave                   =   true;
 %                     end
 % 
 % else
-%                         [cix, ciy]                  =   RVQ_3_getBestTargetPositionFromCodebooks        (dir_out, cfn_Iraw, cfn_poscsv, M, T, tgtID, cx, cy, Nsx, Nsy, sw, sh, iw, ih, CB_trg, Ww, Wh, Nict);
+%                         [cix, ciy]                  =   RVQ_3_getBestTargetPositionFromCodebooks        (odir, cfn_Iraw, cfn_poscsv, M, T, tgtID, cx, cy, Nsx, Nsy, sw, sh, iw, ih, CB_trg, Ww, Wh, Nict);
 % end
 
 
@@ -324,17 +324,17 @@ bSave                   =   true;
                  
                                                              %system('UTIL_binaryFileCompare.exe   reference_5_gen.txt 
                                             %                 %CBimg_trg          =   RVQ_3_display_codebooks                     (CB_trg,          M, T, sw, sh, bViewAllCodevectorsWithSameScale);
-                                            %                                         RVQ_3_backupTrainingFiles                   (dir_out, str_f);
-                                            %                 A                   =   RVQ_FILES_read_idx_file                         ([dir_out 'snippets.idx'],         iw, ih, sw, sh, T, M, true);
+                                            %                                         RVQ_3_backupTrainingFiles                   (odir, str_f);
+                                            %                 A                   =   RVQ_FILES_read_idx_file                         ([odir 'snippets.idx'],         iw, ih, sw, sh, T, M, true);
                                             %                 [p1,   pn]          =   RVQ_3_createCCD                             (A, M, lambda);
                                             % 
                                             %             
                                             %             %2. testing
                                             %             %----------
                                             % if (bCompute_SNR_STG_SoC)
-                                            %                                        RVQ_2_test               (cfn_Iraw, dir_out, str_f, iw, ih, sw, sh, M);     %system('UTIL_binaryFileCompare.exe   reference_9_00472_640x480.cor   00472.cor  ');
-                                            %                [SNR, STG, B]       =   RVQ_3_readTestingFiles   (dir_out, str_f, iw, ih, sw, sh, T, M);
-                                            %                B_ll                =   RVQ_3_getLogLikelihoods  (p1, pn, B, M, T, Iih, Iiw, dir_out, str_f);
+                                            %                                        RVQ_2_test               (cfn_Iraw, odir, str_f, iw, ih, sw, sh, M);     %system('UTIL_binaryFileCompare.exe   reference_9_00472_640x480.cor   00472.cor  ');
+                                            %                [SNR, STG, B]       =   RVQ_3_readTestingFiles   (odir, str_f, iw, ih, sw, sh, T, M);
+                                            %                B_ll                =   RVQ_3_getLogLikelihoods  (p1, pn, B, M, T, Iih, Iiw, odir, str_f);
                                             % end
                 
                                             

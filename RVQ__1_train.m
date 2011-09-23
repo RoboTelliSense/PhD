@@ -39,26 +39,26 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %---------------
 %INITIALIZATIONS
 %---------------
-    DM2_u8                  =   uint8(DM2);     %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
-    M                       =   RVQ.in_4__M___;          %number of templates per stage
-    maxP                    =   RVQ.in_3__maxP;       %max number of stages
-    sw                      =   RVQ.in_6__sw__;         %snippet width
-    sh                      =   RVQ.in_7__sh__;         %snippet height
-    targetSNR               =   RVQ.in_5__tSNR;  %desired SNR
-    dir_out                 =   RVQ.in_8__odir;    %directory to store results in
+    DM2_u8                  =   uint8(DM2);         %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
+    maxP                    =   RVQ.in_3__maxP;     %max number of stages
+    M                       =   RVQ.in_4__M___;     %number of templates per stage
+    targetSNR               =   RVQ.in_5__tSNR;     %desired SNR
+    sw                      =   RVQ.in_6__sw__;     %snippet width
+    sh                      =   RVQ.in_7__sh__;     %snippet height
+    odir                    =   RVQ.in_8__odir;     %directory to store results in
 
 %!! attention: these should be parameters but I'm fixing them !!  
     iFlag                   =   0.0005;
     jFlag                   =   0.0005;
 
 %filenames (original names in brackets in comments)
-    cfn_trgvec              =   [dir_out 'positiveExamples.raw']; %file 1: vectorized positive examples, (F1.sml)
-    cfn_ecbk                =   [dir_out 'codebook.ecbk'];        %file 2: encoder codebooks,            (F1.ecbk)
-    cfn_dcbk                =   [dir_out 'codebook.dcbk'];        %file 3, decoder codebooks,            (F1.dcbk)
-    cfn_nodes               =   [dir_out 'codebook.nodes'];       %file 4, linked list of training paths,(F1.nodes)
-    cfn_gentxt              =   [dir_out 'rvq__trg_verbose.txt']; %file 5, verbose output of gen.exe,    (F1.stat_gen.txt)
-    cfn_bndintxt            =   [dir_out 'bnd_in.txt'];           %file 6, verbose output of bnd_in.exe  (F1.stat_bnd_in.txt)
-    cfn_trgsoc              =   [dir_out 'positiveExamples.idx']; %file 7, XDRs for training examples,   (F1.idx)
+    cfn_trgvec              =   [odir 'positiveExamples.raw']; %file 1: vectorized positive examples, (F1.sml)
+    cfn_ecbk                =   [odir 'codebook.ecbk'];        %file 2: encoder codebooks,            (F1.ecbk)
+    cfn_dcbk                =   [odir 'codebook.dcbk'];        %file 3, decoder codebooks,            (F1.dcbk)
+    cfn_nodes               =   [odir 'codebook.nodes'];       %file 4, linked list of training paths,(F1.nodes)
+    cfn_gentxt              =   [odir 'rvq__trg_verbose.txt']; %file 5, verbose output of gen.exe,    (F1.stat_gen.txt)
+    cfn_bndintxt            =   [odir 'bnd_in.txt'];           %file 6, verbose output of bnd_in.exe  (F1.stat_bnd_in.txt)
+    cfn_trgsoc              =   [odir 'positiveExamples.idx']; %file 7, XDRs for training examples,   (F1.idx)
 
 %delete existing training files
                                 UTIL_FILE_delete(cfn_trgvec);       %file 1

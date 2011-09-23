@@ -1,8 +1,8 @@
-function bSame = UTIL_file_compare(dir_out, cfn_1, cfn_2)
+function bSame = UTIL_file_compare(odir, cfn_1, cfn_2)
     
     %filenames
-        cfn_cmp         =   [dir_out 'fileCompareResults.txt'];
-        cfn_py          =   [dir_out 'fileCompareScript.py'];    
+        cfn_cmp         =   [odir 'fileCompareResults.txt'];
+        cfn_py          =   [odir 'fileCompareScript.py'];    
                             UTIL_FILE_delete(cfn_cmp);
 
     %write script to file

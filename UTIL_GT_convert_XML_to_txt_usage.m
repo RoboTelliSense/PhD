@@ -14,7 +14,7 @@ path(path, 'C:\salman\portable\xml_toolbox');
     %-----------------------------            
     %INITIALIZATIONS
     %-----------------------------
-            %dir_out             =   'img\PETS2001_640x480\'                 %image dir_outectory
+            %odir             =   'img\PETS2001_640x480\'                 %image odirectory
             cfn_xml             =   'GTBB_PETS2001_ObjectXML0.xml'
             cfn_txt             =   'GTBB_PETS2001_640x480_redCoatFemale.txt'
             tgtID               =    1;
@@ -32,7 +32,7 @@ path(path, 'C:\salman\portable\xml_toolbox');
     %-----------------------------
             %i=1;
             %for f=fI:fF
-            %    inp_img  =   imread([dir_out UTIL_GetZeroPrefixedFileNumber(f) '.jpg']);
+            %    inp_img  =   imread([odir UTIL_GetZeroPrefixedFileNumber(f) '.jpg']);
                 %imshow(inp_img);
                 %hold on;
                 %rectangle('Position', GT(i,:));

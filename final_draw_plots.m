@@ -36,29 +36,29 @@ for datasetCode=1:1
                 rvq_targetSNR   =   config(c,4);
                 tsvq_T          =   config(c,5);
                 j               =   j+1
-                [dir_out_wo_slash dir_out]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseRVQ, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
-                cfn             =   [dir_out 'FPerr_3_ipca.csv'];
+                [config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseRVQ, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+                cfn             =   [odir 'FPerr_3_ipca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
                     f               =   size(a,1);  %last frame number
                     avg_trk_err(c,1)=   [avg_trk_err a(f,3)];
                     k=k+1;
                 end
-                cfn             =   [dir_out 'FPerr_3_bpca.csv'];
+                cfn             =   [odir 'FPerr_3_bpca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
                     f               =   size(a,1);  %last frame number
                     avg_trk_err(c,2)=   [avg_trk_err a(f,3)];
                     k=k+1;
                 end
-                cfn             =   [dir_out 'FPerr_3_rvq.csv'];
+                cfn             =   [odir 'FPerr_3_rvq.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
                     f               =   size(a,1);  %last frame number
                     avg_trk_err(c,3)=   [avg_trk_err a(f,3)];
                     k=k+1;
                 end
-                cfn             =   [dir_out 'FPerr_3_tsvq.csv'];
+                cfn             =   [odir 'FPerr_3_tsvq.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
                     f               =   size(a,1);  %last frame number

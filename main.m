@@ -28,7 +28,7 @@
 %> tmplsize                 :   snippet size, the resolution at which the tracking window is sampled, in this case 
 %>                              sw pixels by sh pixels.  If your initial window (given by aff_abcdxy_1x6) is very large you may need to increase this.
 %> maxbasis                 :   The number of basis vectors to keep in the learned apperance model.
-%> I_0t1                    :   Input image scaled between 0 and 1
+%> I                    :   Input image scaled between 0 and 1
 %> B                        :   training update interval
 %>
 %> abbreviations
@@ -70,7 +70,7 @@ bUseTSVQ                    =   1;
 datasetCode                 =   1;
 
 %#######################################################################
-% function TRK_subspace(  Np, Nw, bWeighting,                     ...
+% function main(  Np, Nw, bWeighting,                     ...
 %                         pca_P,                               ...
 %                         rvq_maxP, rvq_M, rvq_targetSNR,         ...
 %                         tsvq_P, tsvq_M,                         ...
@@ -115,6 +115,7 @@ datasetCode                 =   1;
 	PARAM.plot_num_rows  	=   5;                  %"
 	PARAM.plot_num_cols  	=   4;                  %"
 	PARAM.plot_title_fontsz =   8;                  %", fontsize
+	PARAM.plot_alpha =   0.2;                   %", transparency for target bounding regions
 
     PARAM.out_cfn           =   'out.txt';          %cfn: complete filename
     PARAM.out_fid           =   fopen(PARAM.out_cfn, 'w');
@@ -125,12 +126,12 @@ datasetCode                 =   1;
     
 %2. INPUT
     [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM); 
-    first_I_0t1             =   double(I_HxWxF(:,:,1));     %read first image, 0t1 means the image intensities are between 0 and 1       
-    [a b first_mean_shxsw]  =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I_0t1, UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6), PARAM.in_sw, PARAM.in_sh);
-    clear a b first_I_0t1;
+    first_I             =   double(I_HxWxF(:,:,1));     %read first image, 0t1 means the image intensities are between 0 and 1       
+    [a b first_mean_shxsw]  =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I, UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6), PARAM.in_sw, PARAM.in_sh);
+    clear a b first_I;
     
     %back to PARAM based on input
-    PARAM                   =   TRK_fileManagement(PARAM);  %filenames
+    PARAM                   =   UTIL_TRK_create_config_string(PARAM);  %filenames
     PARAM.trg_T             =	round(PARAM.ds_4_F/PARAM.trg_B); %number of times training occurs
     
 %3. LEARNING ALGORITHMS
@@ -144,7 +145,8 @@ datasetCode                 =   1;
     aIPCA.in_6__sw__        =   PARAM.in_sw;
     aIPCA.in_7__sh__        =   PARAM.in_sh;
     aIPCA.in_Np             =   0;
-    aIPCA.in_ff             =   PARAM.ds_5_ff;
+    aIPCA.in_ff             =   PARAM.ds_5_ff; 
+    aIPCA.con_reseig        =   PARAM.con_reseig;
 
     aIPCA.mdl_1_P__1x1      =   PARAM.in_pca_P;      %number of eigenvectors to retain    
     aIPCA.mdl_2_mu_Dx1      =   first_mean_shxsw(:);
@@ -165,7 +167,7 @@ datasetCode                 =   1;
     aRVQ.in_5__tSNR         =   PARAM.in_rvq_targetSNR;
     aRVQ.in_6__sw__         =   PARAM.in_sw;                %snippet width
     aRVQ.in_7__sh__         =   PARAM.in_sh;
-    aRVQ.in_8__odir         =   PARAM.dir_out;              %output directory
+    aRVQ.in_8__odir         =   PARAM.odir;              %output directory
     aRVQ.in_9__trgR         =   'maxP';
     aRVQ.in_10_tstR         =   'monRMSE';                  %rule to stop decoding in RVQ testing function
     aRVQ.in_11_lmbd     	=   0;                          %lambda, acts like a lagrange multiplier
@@ -184,19 +186,27 @@ datasetCode                 =   1;
 %>-----------------------------------------
 %PRE-PROCESSING (training): generic particle filter for B frames for bootstrapping
 %>-----------------------------------------
-%step 1.
+%clear;clc;close all;load
     for f = 1:PARAM.trg_B
         tic
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
-        cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
-        I_0t1               =   double(I_HxWxF(:,:,f)); %input
-        trkMEAN             =   TRK_condensation(f, I_0t1, GT, RAND, PARAM, aMEAN, trkMEAN); %frame num, image, ground truth, random data, parameters, learning algo, tracking structure
-
+        cfn_Ioverlaid       =   [PARAM.odir 'out_' PARAM.str_f '.png'];
+        I                   =   double(I_HxWxF(:,:,f)); %input
+        trkMEAN             =   TRK_condensation(f, I, GT, RAND, PARAM, aMEAN, trkMEAN); %frame num, image, ground truth, random data, parameters, learning algo, tracking structure
+        
+        %stats
         PARAM.t_sec(f)      =   toc;                                %time for this frame
         PARAM.T_sec         =   PARAM.T_sec + PARAM.t_sec(f);       %total time for all frames
         PARAM.fps           =   f/PARAM.T_sec;                      %frames per sec
-                                fprintf(PARAM.out_fid, '%4d  %3.2f %3.2f       %5.2f\n', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f)); 
-                                sprintf(               '%4d  %3.2f %3.2f       %5.2f\n', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f))
+        str_summary         =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f))        
+                                fprintf(PARAM.out_fid, [str_summary '\n']);  
+        %display
+        imshow(uint8(I));
+        hold on;
+        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkMEAN.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, PARAM.plot_alpha, 'y');
+        hold off;
+        title(str_summary);
+        drawnow;
     end	   
 
 %step 2. save structures	
@@ -214,26 +224,23 @@ datasetCode                 =   1;
 
     disp('initialization complete');
     
-% clear;
-% clc;
-% close all;
-% load  
 
-%-----------------------------------------
+%============================================
 %PROCESSING
-%-----------------------------------------
+%============================================
+%clear;clc;close all;load  
 
     for f = PARAM.trg_B+1 : PARAM.ds_4_F
         tic
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
-        cfn_Ioverlaid       =   [PARAM.dir_out 'out_' PARAM.str_f '.png'];
-        I_0t1               =   double(I_HxWxF(:,:,f));
+        cfn_Ioverlaid       =   [PARAM.odir 'out_' PARAM.str_f '.png'];
+        I                   =   double(I_HxWxF(:,:,f));
         
 		%testing: condensation
-		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(f, I_0t1, GT, RAND, PARAM, aIPCA, trkIPCA); end %estwarp_grad    (I_0t1, aIPCA, trkIPCA, PARAM);
-		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(f, I_0t1, GT, RAND, PARAM, aBPCA, trkBPCA); end
-		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(f, I_0t1, GT, RAND, PARAM, aRVQ , trkRVQ);  end
-		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(f, I_0t1, GT, RAND, PARAM, aTSVQ, trkTSVQ); end
+		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(f, I, GT, RAND, PARAM, aIPCA, trkIPCA); end %estwarp_grad    (I, aIPCA, trkIPCA, PARAM);
+		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(f, I, GT, RAND, PARAM, aBPCA, trkBPCA); end
+		if (PARAM.in_bUseRVQ)  trkRVQ  = TRK_condensation(f, I, GT, RAND, PARAM, aRVQ , trkRVQ);  end
+		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(f, I, GT, RAND, PARAM, aTSVQ, trkTSVQ); end
 	
 		%training (update model) every few frames
         if (mod(f,PARAM.trg_B)==0) %i.e.train every batchsize images
@@ -243,11 +250,29 @@ datasetCode                 =   1;
             if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__1_train  (trkRVQ.DM2 ,                      aRVQ );   UTIL_copyFile([aRVQ.in_8__odir 'rvq__trg_verbose.txt'], [aRVQ.in_8__odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
             if (PARAM.in_bUseTSVQ) aTSVQ =   TSVQ_1_train  (trkTSVQ.DM2,                      aTSVQ);   end  
         end
+        
+        %stats
         PARAM.t_sec(f)      =   toc;                                %time for this frame
         PARAM.T_sec         =   PARAM.T_sec + PARAM.t_sec(f);       %total time for all frames
         PARAM.fps           =   f/PARAM.T_sec;                      %frames per sec
-                                fprintf(PARAM.out_fid, '%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f\n', f, PARAM.t_sec(f), PARAM.fps, trkIPCA.trk_2_rmse__Fx1(f), trkBPCA.trk_2_rmse__Fx1(f), trkRVQ.trk_2_rmse__Fx1(f), trkTSVQ.trk_2_rmse__Fx1(f)); 
-                                sprintf(               '%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f\n', f, PARAM.t_sec(f), PARAM.fps, trkIPCA.trk_2_rmse__Fx1(f), trkBPCA.trk_2_rmse__Fx1(f), trkRVQ.trk_2_rmse__Fx1(f), trkTSVQ.trk_2_rmse__Fx1(f))
+        str_summary         =   sprintf('%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f', f, PARAM.t_sec(f), PARAM.fps, ...
+                                trkIPCA.trk_3_armse_Fx1(f), ...
+                                trkBPCA.trk_3_armse_Fx1(f), ...
+                                trkRVQ.trk_3_armse_Fx1(f), ...
+                                trkTSVQ.trk_3_armse_Fx1(f))
+                                fprintf(PARAM.out_fid, [str_summary '\n']); 
+        %display
+        imshow(uint8(I));
+        %colormap(gray)
+        hold on;
+        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkIPCA.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'b');
+        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkBPCA.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'c');
+        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkTSVQ.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'g');
+        UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkRVQ.snp_1_tsrpxy_1x6),  PARAM.in_sh, PARAM.in_sw, PARAM.plot_alpha, 'r');
+        title(str_summary);
+        drawnow
+        hold off;
+        %UTIL_FILE_save2pdf([PARAM.str_f '.png'], gcf, 300);
     end
 
 %>-----------------------------------------

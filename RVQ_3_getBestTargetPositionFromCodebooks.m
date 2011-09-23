@@ -1,11 +1,11 @@
-function [cix_best, ciy_best] = RVQ_3_getBestTargetPositionFromCodebooks(dir_out, fn_rawimg, cfn_sed, M, T, tgtID, cx, cy, Nsx, Nsy, sw, sh, Iw, Ih, CB_ref, Ww, Wh, Uf)
+function [cix_best, ciy_best] = RVQ_3_getBestTargetPositionFromCodebooks(odir, fn_rawimg, cfn_sed, M, T, tgtID, cx, cy, Nsx, Nsy, sw, sh, Iw, Ih, CB_ref, Ww, Wh, Uf)
 
     %dimensions
         [IiN, Iiw, Iih]             =   RVQ_UTIL_computeInnerPixels(Iw, Ih, sw, sh);            %inner image dimensions
         [Wxl, Wxr, Wyt, Wyb]        =   UTIL_ROI_centerOnPointAndComputeCornerCoordinates(cx, cy, Ww, Wh);
         
     %filenames
-        cfn_sed_temp                =   [dir_out 'temp_snippetExtractionDetails.csv'];
+        cfn_sed_temp                =   [odir 'temp_snippetExtractionDetails.csv'];
         
     %buffers
         Iphi                        =   zeros(Iih, Iiw);
@@ -63,7 +63,7 @@ function [cix_best, ciy_best] = RVQ_3_getBestTargetPositionFromCodebooks(dir_out
                                                         
                                                         
     
-                [CB, CBimg]       =   RVQ_1_Train                                     (dir_out, cfn_sed_temp, M, T, sw, sh);                 %system('UTIL_binaryFileCompare.exe   reference_5_gen.txt 
+                [CB, CBimg]       =   RVQ_1_Train                                     (odir, cfn_sed_temp, M, T, sw, sh);                 %system('UTIL_binaryFileCompare.exe   reference_5_gen.txt 
                 
                                         
     

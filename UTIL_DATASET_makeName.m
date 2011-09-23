@@ -2,8 +2,8 @@
 %w=1 : weighting
 
 function [  txt_overall_config ...
-            dir_out_wo_slash ...
-            dir_out] = UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T)
+            config_name ...
+            odir] = UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQ1, bUseRVQ2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T)
 
     %overall configuration
         txt_overall_config              =   ['results_'   PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np)];   
@@ -17,10 +17,10 @@ function [  txt_overall_config ...
         if  (bUseTSVQ)  txt_algo_config =   [txt_algo_config '__TSVQ_'  UTIL_GetZeroPrefixedFileNumber_2(tsvq_T)];                                                                                                      end
 
     %final directory name
-        dir_out_wo_slash                =   [txt_overall_config txt_algo_config];
-        dir_out                         =   UTIL_addSlash(dir_out_wo_slash);
+        config_name                =   [txt_overall_config txt_algo_config];
+        odir                         =   UTIL_addSlash(config_name);
     
     %make directory
-        if (~exist(dir_out,'dir'))
-            mkdir(dir_out)
+        if (~exist(odir,'dir'))
+            mkdir(odir)
         end

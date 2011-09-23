@@ -59,9 +59,9 @@ Np                      =   600;
     %r                   =   R(ridx)
     txt1                =   num2str(ridx);
     txt2                =   R_names{ridx}; 
-    dir_out             =   ['results_summary_' txt2];
-    dir_out = UTIL_addSlash(dir_out);
-                            mkdir(dir_out);
+    odir             =   ['results_summary_' txt2];
+    odir = UTIL_addSlash(odir);
+                            mkdir(odir);
                             load(txt2);
                             
                             
@@ -123,9 +123,9 @@ Np                      =   600;
                                         '\color{red}'           'PCA: N_{eig}='         num2str(pca_maxBasis)   ...
                                       ], 9);
                                   %pause
-                        cfn_out_pdf     =   [dir_out str_f '.pdf'];
-                        cfn_out_jpg     =   [dir_out str_f '.jpg'];
-                        cfn_out_png     =   [dir_out str_f '.png'];
+                        cfn_out_pdf     =   [odir str_f '.pdf'];
+                        cfn_out_jpg     =   [odir str_f '.jpg'];
+                        cfn_out_png     =   [odir str_f '.png'];
 
                         if (ispc)
                             %print('-djpeg', '-r150', cfn_out_jpg);
@@ -144,16 +144,16 @@ Np                      =   600;
     
     
     if (ispc)
-        system(['c:\salman_programs\ffmpeg -r 5 -i '  dir_out '%05d.jpg -vcodec mpeg4 -qscale 1 -y ' dir_out  'results_' num2str(ridx) '_' txt2 '.mp4']);
+        system(['c:\salman_programs\ffmpeg -r 5 -i '  odir '%05d.jpg -vcodec mpeg4 -qscale 1 -y ' odir  'results_' num2str(ridx) '_' txt2 '.mp4']);
     elseif (isunix)
         %unix('setenv LD_LIBRARY_PATH "/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libavformat;/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libavdevice;/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libavcodec;/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libswscale;/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libavutil"');
         %setenv('LD_LIBRARY_PATH', '/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libavformat;/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libavdevice;/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libavcodec;/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libswscale;/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/libavutil');    
         
-        %unix(['/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/ffmpeg -r 5 -i '  dir_out '%05d.jpg -vcodec libxvid -qscale 1 -y ' dir_out  'out.mp4']);  %original: compatible with Quicktime and jpg, but not with png images
+        %unix(['/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/ffmpeg -r 5 -i '  odir '%05d.jpg -vcodec libxvid -qscale 1 -y ' odir  'out.mp4']);  %original: compatible with Quicktime and jpg, but not with png images
         %unix(['/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpe
-        %g/ffmpeg-0.6.2/ffmpeg -r 5 -i '  dir_out '%05d.png -vcodec mpeg4 -vtag libxvid -qscale 1 -y ' dir_out  'out.mp4']); %not compatible with Quicktime but compatible with jpg and png
-        %unix(['/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/ffmpeg -r 5 -i '  dir_out '%05d.png -vcodec mpeg4 -qscale 1 -y ' dir_out  'out.mp4']);
-        unix(['ffmpeg -r 5 -i '  dir_out '%05d.jpg -vcodec mpeg4 -qscale 1 -y ' dir_out  'results_' num2str(ridx) '_' txt2 '.mp4'])
+        %g/ffmpeg-0.6.2/ffmpeg -r 5 -i '  odir '%05d.png -vcodec mpeg4 -vtag libxvid -qscale 1 -y ' odir  'out.mp4']); %not compatible with Quicktime but compatible with jpg and png
+        %unix(['/cluster/users/gtg629v/salman/portable/RVQ_xplatform1/ffmpeg/ffmpeg-0.6.2/ffmpeg -r 5 -i '  odir '%05d.png -vcodec mpeg4 -qscale 1 -y ' odir  'out.mp4']);
+        unix(['ffmpeg -r 5 -i '  odir '%05d.jpg -vcodec mpeg4 -qscale 1 -y ' odir  'results_' num2str(ridx) '_' txt2 '.mp4'])
     end
 %end
 

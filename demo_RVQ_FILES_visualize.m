@@ -29,10 +29,10 @@
                 dir_I           =   'img/Dudek/';%'img/PETS2001_640x480/';
                 ext_I           =   '.png';%'.jpg'
                 prefix          =   ['test_out']; %['trkRVQ_PETS2001_' num2str(N_ict)];
-                dir_out         =   [prefix '/']; %[prefix '/results_from_GT/'];
+                odir         =   [prefix '/']; %[prefix '/results_from_GT/'];
                 fn_out_prefix   =   [prefix '_'];
                 N_ict           =   'all previous';
-                cfn_trk         =   [dir_out 'tracks.csv'];
+                cfn_trk         =   [odir 'tracks.csv'];
                 [F, CIX, CIY, CX, CY]   =   textread(cfn_trk, '%d   %d %d   %d %d', 'delimiter', ',');
                 fI              =   F(1);
                 Nf              =   length(F);
@@ -71,7 +71,7 @@
                 str_fm1     =   UTIL_GetZeroPrefixedFileNumber(f-1);
                 str_fidx    =   UTIL_GetZeroPrefixedFileNumber(f_idx);
                 
-                cfn_out     =   [dir_out fn_out_prefix str_fidx '.jpg'];
+                cfn_out     =   [odir fn_out_prefix str_fidx '.jpg'];
 
                                 RVQ_FILES_visualize
 
@@ -82,5 +82,5 @@
             end
             
             if (bCreateVideo)
-                system(['c:\salman_programs\ffmpeg -r 5 -i '  dir_out fn_out_prefix '%05d.jpg -vcodec libxvid -qscale 1 -y ' dir_out prefix '.mp4']);
+                system(['c:\salman_programs\ffmpeg -r 5 -i '  odir fn_out_prefix '%05d.jpg -vcodec libxvid -qscale 1 -y ' odir prefix '.mp4']);
             end

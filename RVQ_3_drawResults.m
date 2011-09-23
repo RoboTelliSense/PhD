@@ -18,24 +18,24 @@ load car4
 
 
 %dir_I               =   'img/Dudek/720x480/'
-dir_out                 ='test_out/'
+odir                 ='test_out/'
 ext_I               =   '.png';
 sw                  =   33;
 sh                  =   33;
 
 
 %file names
-    cfn_truepts         =   [dir_out 'GT.csv'];
+    cfn_truepts         =   [odir 'GT.csv'];
 
-    cfn_RVQtrackpts     =   [dir_out 'RVQtrackpts.csv'];
-    cfn_PCAtrackpts     =   [dir_out 'PCAtrackpts.csv'];
-    cfn_myPCAtrackpts   =   [dir_out 'myPCAtrackpts.csv'];
-    cfn_TSVQtrackpts    =   [dir_out 'TSVQtrackpts.csv'];
+    cfn_RVQtrackpts     =   [odir 'RVQtrackpts.csv'];
+    cfn_PCAtrackpts     =   [odir 'PCAtrackpts.csv'];
+    cfn_myPCAtrackpts   =   [odir 'myPCAtrackpts.csv'];
+    cfn_TSVQtrackpts    =   [odir 'TSVQtrackpts.csv'];
 
-    cfn_RVQaffine_1x6     =   [dir_out 'RVQaffine.csv'];
-    cfn_PCAaffine_1x6     =   [dir_out 'PCAaffine.csv'];
-    cfn_myPCAaffine_1x6   =   [dir_out 'myPCAaffine.csv'];
-    cfn_TSVQaffine_1x6    =   [dir_out 'TSVQaffine.csv'];
+    cfn_RVQaffine_1x6     =   [odir 'RVQaffine.csv'];
+    cfn_PCAaffine_1x6     =   [odir 'PCAaffine.csv'];
+    cfn_myPCAaffine_1x6   =   [odir 'myPCAaffine.csv'];
+    cfn_TSVQaffine_1x6    =   [odir 'TSVQaffine.csv'];
 
 %ground truth    
 %     if exist(cfn_truepts,'file')

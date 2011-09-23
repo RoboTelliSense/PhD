@@ -2,7 +2,7 @@ clear;
 clc;
 close all;
 
-dir_out     =   'test_out/';
+odir     =   'test_out/';
 dir_I       =   'img/Dudek/120x80/';
 ext_I       =   '.png';
 %iw          =   45;%240;
@@ -45,7 +45,7 @@ for cx=3:3
 
 
             %tic
-            [NSR, STG]              =   RVQ_2_test           (dir_out, cfn_Rraw, f, rw, rh, sw, sh, M, T, bVisualize, bVerbose);
+            [NSR, STG]              =   RVQ_2_test           (odir, cfn_Rraw, f, rw, rh, sw, sh, M, T, bVisualize, bVerbose);
             %kk(cx) = SNR;
             %toc
             %f          

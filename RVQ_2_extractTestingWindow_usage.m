@@ -1,4 +1,4 @@
-    dir_out     =   'test_out/'
+    odir     =   'test_out/'
     dir_I       =   'img/Dudek/';
     ext_I       =   '.png';
 
@@ -14,6 +14,6 @@
     sh          =   33;
     
     
-Iroi = RVQ_2_extractTestingWindow(dir_out, dir_I, ext_I, f, cx, cy, ww, wh, sw, sh);
+Iroi = RVQ_2_extractTestingWindow(odir, dir_I, ext_I, f, cx, cy, ww, wh, sw, sh);
 imshow(Iroi)
 

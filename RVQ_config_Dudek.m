@@ -1,5 +1,5 @@
 GT=[];
-dir_out_prefix          =   ['test_out' num2str(Nict)];
+odir_prefix          =   ['test_out' num2str(Nict)];
 %GT{1}               =   csvread('GTBB_AVSS2007_360x288_redCar.txt'); %ground truth data
 %GT{2}               =   csvread('GTBB_AVSS2007_360x288_blueCar.txt'); %ground truth data
 %bGTisComplete       =   false;      %there is complete ground truth information

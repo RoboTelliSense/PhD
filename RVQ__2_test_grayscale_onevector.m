@@ -36,13 +36,15 @@ function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 %-------------------------------
     D                       =   length(x_Dx1);
     
+    maxP                    =   RVQ.in_3__maxP;
     M                       =   RVQ.in_4__M___;          %number of codevectors/stage
     sw                      =   RVQ.in_6__sw__;          %snippet width
     sh                      =   RVQ.in_7__sh__;          %snippet height
     
     CB_DxMP                 =   RVQ.mdl_3_CB_DxMP;      %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.mdl_1_P__1x1;       %actual number of stages in the codebook
-
+    
+    
     if (strcmp(RVQ.in_2__mode, 'trg'))                   %if we're doing training snippets, use maxP
         rule_stop_decoding = RVQ.in_9__trgR;          %if 'maxP', then same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
                                                         %such as dataset 4 created by DATAMATRIX_create_random_DM2, probably
@@ -57,7 +59,7 @@ function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 %-------------------------------    
     recon_prev_Dx1          =   zeros(D,1);             %state variable
     rmse_prev               =   1E15;                   %state variable
-    featr_Px1               =   zeros(P,1);             %i initialize with 0, my code for early termination (Dr Barnes' code was P+1)
+    featr_Px1               =   zeros(maxP,1);          %i initialize with 0, my code for early termination (Dr Barnes' code was P+1)
     temp2_XDR_parPx1        =   [];                     %contains a partial featr_Px1, i.e., all indeces up to p-th stage
     partialP                =   0;
 

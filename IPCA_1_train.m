@@ -2,19 +2,26 @@
 %
 %-------------------------------------------------------------------------
 function IPCA = IPCA_1_train(DM2, IPCA)
-
+    
+    U_DxP   =   IPCA.mdl_3_U__DxP;
     
     if (isfield(IPCA,'trg_featr_PxN'))
+        sh                  =   IPCA.in_7__sh__;
+        sw                  =   IPCA.in_6__sw__;
         N                   =   size(IPCA.trg_featr_PxN,2);
-        recon               =   IPCA.mdl_3_U__DxP * IPCA.trg_featr_PxN + repmat(IPCA.mdl_2_mu_Dx1,1, N);
-        mu_shxsw = reshape(IPCA.mdl_2_mu_Dx1, IPCA.in_7__sh__, IPCA.in_6__sw__);
+        recon               =   U_DxP * IPCA.trg_featr_PxN + repmat(IPCA.mdl_2_mu_Dx1,1, N);    %2. recon
+        
+        %train
+        mu_shxsw = reshape(IPCA.mdl_2_mu_Dx1, sh, sw); 
+        
         
         [IPCA.mdl_3_U__DxP, IPCA.mdl_4_S_Bx1, out_mu, IPCA.Np] ...
-                            =   sklm(DM2, IPCA.mdl_3_U__DxP, IPCA.mdl_4_S_Bx1, mu_shxsw, IPCA.Np, IPCA.ff);
+                            =   sklm(DM2, IPCA.mdl_3_U__DxP, IPCA.mdl_4_S_Bx1, mu_shxsw, IPCA.Np, IPCA.in_ff);
         IPCA.mdl_2_mu_Dx1 = out_mu(:);
-        %update projection scalars (only place where an assignment to projScalars takes place)
+        %update features (projection scalars, only place where an assignment to features takes place)
         IPCA.trg_featr_PxN =   IPCA.mdl_3_U__DxP'*(recon - repmat(IPCA.mdl_2_mu_Dx1,1,N));
     else
+        %just train
         mu_shxsw = reshape(IPCA.mdl_2_mu_Dx1, IPCA.in_7__sh__, IPCA.in_6__sw__);
         [IPCA.mdl_3_U__DxP, IPCA.mdl_4_S_Bx1, out_mu, IPCA.Np] ...
                             =   sklm(DM2, IPCA.mdl_3_U__DxP, IPCA.mdl_4_S_Bx1, mu_shxsw, IPCA.in_Np, IPCA.in_ff);
@@ -24,13 +31,13 @@ function IPCA = IPCA_1_train(DM2, IPCA)
 %------------------------------------------------------
 % POST-PROCESSING
 %------------------------------------------------------
-%limit to P
+%just pick P eigenvectors
     if (size(IPCA.mdl_3_U__DxP,2) > IPCA.mdl_1_P__1x1)
-        %IPCA.reseig        = IPCA.ff^2 *IPCA.reseig + sum(IPCA.mdl_4_S_Bx1(IPCA.maxbasis+1:end).^2);
-        IPCA.reseig         =   IPCA.ff * IPCA.reseig + sum(IPCA.mdl_4_S_Bx1(IPCA.mdl_1_P__1x1+1:end));
-        IPCA.mdl_3_U__DxP    =   IPCA.mdl_3_U__DxP(:,1:IPCA.mdl_1_P__1x1);
+        %IPCA.reseig        = IPCA.in_ff^2 *IPCA.reseig + sum(IPCA.mdl_4_S_Bx1(IPCA.maxbasis+1:end).^2);
+        IPCA.con_reseig     =   IPCA.in_ff * IPCA.con_reseig + sum(IPCA.mdl_4_S_Bx1(IPCA.mdl_1_P__1x1+1:end));
+        IPCA.mdl_3_U__DxP   =   IPCA.mdl_3_U__DxP(:,1:IPCA.mdl_1_P__1x1);
         IPCA.mdl_4_S_Bx1    =   IPCA.mdl_4_S_Bx1(1:IPCA.mdl_1_P__1x1);
-        if (isfield(IPCA,'projScalars'))
+        if (isfield(IPCA,'trg_featr_PxN'))
             IPCA.trg_featr_PxN    =   IPCA.trg_featr_PxN(1:IPCA.mdl_1_P__1x1,:);
         end
     end

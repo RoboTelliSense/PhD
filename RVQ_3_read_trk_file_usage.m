@@ -2,10 +2,10 @@ clear;
 clc;
 close all;
 
-dir_out                 =   'test_out/'
+odir                 =   'test_out/'
 dir_I                   =   'img/Dudek/';
 ext_I                   =   '.png';
-cfn_trk                 =   [dir_out 'tracks.csv'];
+cfn_trk                 =   [odir 'tracks.csv'];
 sw                      =   33;
 sh                      =   33;
 [F, CIX, CIY, CX, CY]   =   textread(cfn_trk, '%d   %d %d   %d %d', 'delimiter', ',');

@@ -1,7 +1,7 @@
 %> @file TRK_condensation.m
 %> @brief This function implements the particle filter (condensation algorithm).
 %> 
-%> I_0t1                    :   input image, 0t1 means that the min value is 0, max value is 1
+%> I                    :   input image, 0t1 means that the min value is 0, max value is 1
 %> f                        :   frame number
 %> cand_snps_shxswxNp       :   Np candidate snippets, pixel intensity range is [0 1]
 %>
@@ -56,7 +56,7 @@
 %> Date last modified       :   September 18, 2011
 
 
-function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
+function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
@@ -112,7 +112,7 @@ function TRK = TRK_condensation(f, I_0t1, GT, RAND, PARAM, ALGO, TRK)
     for np=1:Np
         Ha_2x3              =   UTIL_2D_affine_tsrpxy_to_Ha_2x3(TRK.PRF_1_tsrpxy_6xNp(:,np));
         [X_hxw, Y_hxw, cand_snps_shxswxNp(:,:,np)]   ...
-                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I_0t1, Ha_2x3, sw, sh);
+                            =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(I, Ha_2x3, sw, sh);
     end
     cand_snps_DxNp          =   reshape(cand_snps_shxswxNp,[D,Np]);
    

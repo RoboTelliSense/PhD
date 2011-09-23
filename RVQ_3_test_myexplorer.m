@@ -1,6 +1,6 @@
 %this uses my modifications of Explorer.
 %the newer version is written entirely in Matlab.
-function [NSR, STG] = RVQ_2_test_old(dir_out, cfn_Iraw, f, iw, ih, sw, sh, M, T, bVisualize, bVerbose)
+function [NSR, STG] = RVQ_2_test_old(odir, cfn_Iraw, f, iw, ih, sw, sh, M, T, bVisualize, bVerbose)
 
             str_f                   =   UTIL_GetZeroPrefixedFileNumber(f);
                            
@@ -9,10 +9,10 @@ function [NSR, STG] = RVQ_2_test_old(dir_out, cfn_Iraw, f, iw, ih, sw, sh, M, T,
     %INITIALIZATIONS
     %---------------
         %filenames
-            cfn_ecbk                =   [dir_out 'codebook.ecbk'];                    %file 3
-            cfn_dcbk                =   [dir_out 'codebook.dcbk'];                    %file 4
-            cfn_nodes               =   [dir_out 'codebook.nodes'];                   %file 5
-            cfn_output_prefix       =   [dir_out str_f];
+            cfn_ecbk                =   [odir 'codebook.ecbk'];                    %file 3
+            cfn_dcbk                =   [odir 'codebook.dcbk'];                    %file 4
+            cfn_nodes               =   [odir 'codebook.nodes'];                   %file 5
+            cfn_output_prefix       =   [odir str_f];
            
             
     %---------------
@@ -28,11 +28,11 @@ function [NSR, STG] = RVQ_2_test_old(dir_out, cfn_Iraw, f, iw, ih, sw, sh, M, T,
     %RESULTS
     %---------------
                 str_f               =   UTIL_GetZeroPrefixedFileNumber   (f);
-                cfn_nsr             =   [dir_out str_f '_9.nsr'];
-                cfn_stg             =   [dir_out str_f '_10.stg'];
-                %cfn_soc             =   [dir_out str_f '_11.soc'];
+                cfn_nsr             =   [odir str_f '_9.nsr'];
+                cfn_stg             =   [odir str_f '_10.stg'];
+                %cfn_soc             =   [odir str_f '_11.soc'];
 
                 NSR                 =   RVQ_FILES_read_cor_file         (cfn_nsr, iw, ih, sw, sh);                         
                 STG                 =   RVQ_FILES_read_stg_file         (cfn_stg, iw, ih, sw, sh, T); 
     
-    %        [NSR, STG, SOC] = RVQ_3_readTestingFiles(dir_out, f, iw, ih, sw, sh, M, T, bVisualize);
+    %        [NSR, STG, SOC] = RVQ_3_readTestingFiles(odir, f, iw, ih, sw, sh, M, T, bVisualize);

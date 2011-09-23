@@ -1,5 +1,5 @@
 GT=[];
-dir_out_prefix      =  ['trkRVQ_PETS2001_' num2str(Nict)];
+odir_prefix      =  ['trkRVQ_PETS2001_' num2str(Nict)];
 GT{1}               =   csvread('GTBB_PETS2001_640x480_redCoatFemale.txt'); %ground truth data
 
 bGTisComplete       =   true;      %there is complete ground truth information
