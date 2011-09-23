@@ -39,6 +39,10 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %---------------
 %INITIALIZATIONS
 %---------------
+%!!!caution!!!
+    [temp, f]               =   size(DM2);          %i'm assuming that 
+%!!!end caution!!!
+
     DM2_u8                  =   uint8(DM2);         %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
     maxP                    =   RVQ.in_3__maxP;     %max number of stages
     M                       =   RVQ.in_4__M___;     %number of templates per stage
@@ -52,26 +56,21 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     jFlag                   =   0.0005;
 
 %filenames (original names in brackets in comments)
-    cfn_trgvec              =   [odir 'positiveExamples.raw']; %file 1: vectorized positive examples, (F1.sml)
-    cfn_ecbk                =   [odir 'codebook.ecbk'];        %file 2: encoder codebooks,            (F1.ecbk)
-    cfn_dcbk                =   [odir 'codebook.dcbk'];        %file 3, decoder codebooks,            (F1.dcbk)
-    cfn_nodes               =   [odir 'codebook.nodes'];       %file 4, linked list of training paths,(F1.nodes)
-    cfn_gentxt              =   [odir 'rvq__trg_verbose.txt']; %file 5, verbose output of gen.exe,    (F1.stat_gen.txt)
-    cfn_bndintxt            =   [odir 'bnd_in.txt'];           %file 6, verbose output of bnd_in.exe  (F1.stat_bnd_in.txt)
-    cfn_trgsoc              =   [odir 'positiveExamples.idx']; %file 7, XDRs for training examples,   (F1.idx)
-
+    cfn_1_posEg             =   [odir num2str(f) '_posEg_' num2str(sw) 'x' num2str(sh) '.raw'];  %file 1: vectorized positive examples, (F1.sml)
+    cfn_2_ecbk              =   [odir num2str(f) '_codebook.ecbk'];         %file 2: encoder codebooks,            (F1.ecbk)
+    cfn_3_dcbk              =   [odir num2str(f) '_codebook.dcbk'];         %file 3, decoder codebooks,            (F1.dcbk)
+    cfn_gentxt              =   [odir num2str(f) '_verbose.txt'];           %file 4, verbose output of gen.exe,    (F1.stat_gen.txt)
+    
 %delete existing training files
-                                UTIL_FILE_delete(cfn_trgvec);       %file 1
-                                UTIL_FILE_delete(cfn_ecbk);         %file 2
-                                UTIL_FILE_delete(cfn_dcbk);         %file 3
-                                UTIL_FILE_delete(cfn_nodes);        %file 4
-                                UTIL_FILE_delete(cfn_gentxt);       %file 5
-                                UTIL_FILE_delete(cfn_bndintxt);     %file 6
-                                UTIL_FILE_delete(cfn_trgsoc);       %file 7
+                                UTIL_FILE_delete(cfn_1_posEg);        %file 1
+                                UTIL_FILE_delete(cfn_2_ecbk);         %file 2
+                                UTIL_FILE_delete(cfn_3_dcbk);         %file 3
+                                UTIL_FILE_delete(cfn_gentxt);         %file 5
+
 %-------------------
 %PRE-PROCESSING
 %-------------------
-    DATAMATRIX_saveInFormat_rvq    (DM2_u8, cfn_trgvec, sw, sh);  %takes DM2 as input and writes it to a file
+    DATAMATRIX_saveInFormat_rvq    (DM2_u8, cfn_1_posEg, sw, sh);  %takes DM2 as input and writes it to a file
 
     
 %-------------------
@@ -81,17 +80,17 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     if (ispc)
 
         if (maxP==8)
-            system(['RVQ__training_gen8.exe    ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
+            system(['RVQ__training_gen8.exe   ' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
         elseif (maxP==16)
-            system(['RVQ__1_train_gen16.exe   ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
+            system(['RVQ__1_train_gen16.exe   ' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
         end
 
     elseif (isunix)
 
         if (maxP==8)
-            system(['./RVQ__training_gen8.linux ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);            
+            system(['./RVQ__training_gen8.linux ' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);            
         elseif (maxP == 16)
-            system(['./RVQ__1_train_gen16.linux' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
+            system(['./RVQ__1_train_gen16.linux' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
         end
     end
 
@@ -102,7 +101,7 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %save model
     %decoder codebook to get actual stages, codebooks
     [RVQ.mdl_1_P__1x1, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  ...
-                            =  RVQ_FILES_read_dcbk_file        (cfn_dcbk); 
+                            =  RVQ_FILES_read_dcbk_file        (cfn_3_dcbk); 
                         
                         
     RVQ.mdl_3_CB_DxMP       =   CBr_DxMP;     %CB: single channel codebook
@@ -125,6 +124,12 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     
     
     
+    %cfn_trgXDR              =   [odir 'positiveExamples.idx']; %file 7, XDRs for training examples,   (F1.idx) i.e., features
+    %cfn_nodes             =   [odir 'codebook.nodes'];       %file 4, linked list of training paths,(F1.nodes)
+    %cfn_bndintxt            =   [odir 'bnd_in.txt'];               %file 6, verbose output of bnd_in.exe  (F1.stat_bnd_in.txt)
+    %                            UTIL_FILE_delete(cfn_nodes);        %file 4
+    %                            UTIL_FILE_delete(cfn_bndintxt);     %file 6
+    %                           UTIL_FILE_delete(cfn_trgXDR);       %file 7
     
 
     %RVQ.trg_SNRdB_file                 =   RVQ_FILES_read_dSNR_from_genstat_file(cfn_gentxt);  %use this line if you want to see what training 
@@ -139,17 +144,17 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %     if (ispc)
 % 
 %         if (maxP==8)
-%             system(['RVQ__training_gen8.exe    ' cfn_trgvec  ' ' cfn_ecbk ' ' cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
+%             system(['RVQ__training_gen8.exe    ' cfn_1_posEg  ' ' cfn_2_ecbk ' ' cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
 %         elseif (maxP==16)
-%             system(['RVQ__1_train_gen16.exe   ' cfn_trgvec  ' ' cfn_ecbk ' ' cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
+%             system(['RVQ__1_train_gen16.exe   ' cfn_1_posEg  ' ' cfn_2_ecbk ' ' cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
 %         end
 % 
 %     elseif (isunix)
 % 
 %         if (maxP==8)
-%             system(['./RVQ__training_gen8.linux ' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
+%             system(['./RVQ__training_gen8.linux ' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
 %         elseif (maxP == 16)
-%             system(['./RVQ__1_train_gen16.linux' cfn_trgvec  ' ' cfn_ecbk ' '  cfn_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);        
+%             system(['./RVQ__1_train_gen16.linux' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);        
 %         end
 %     end
 %     RVQ.trg_1_featr_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxP, M, true);    %notice that I do not use actualP but maxP
@@ -164,13 +169,13 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     %bnd_in.exe displays the information produced by gen.exe -l, i.e. XDRs of training vectors as a linked list in the F1.nodes file.  
     %I'm not using it since I get my training XDRs from my Matlab code above or gen.exe -l.  No need for this added complexity.
     
-    %system(['RVQ_1b_train_bndin8.exe           '     cfn_trgvec   ' ' cfn_ecbk     ' '  cfn_dcbk     ' ' num2str(M+1)  ' '   '-S' num2str(targetSNR)    ' -i' num2str(iFlag)    ' -j' num2str(jFlag)    ' > ' cfn_bndintxt]);    
-    %system(['./RVQ_1b_train_bndin8.linux       '     cfn_trgvec  ' ' cfn_ecbk      ' '  cfn_dcbk     ' ' num2str(M+1)  ' '   '-S' num2str(targetSNR)    ' -i' num2str(iFlag)    ' -j' num2str(jFlag)    ' > ' cfn_bndintxt]);    
+    %system(['RVQ_1b_train_bndin8.exe           '     cfn_1_posEg   ' ' cfn_2_ecbk     ' '  cfn_3_dcbk     ' ' num2str(M+1)  ' '   '-S' num2str(targetSNR)    ' -i' num2str(iFlag)    ' -j' num2str(jFlag)    ' > ' cfn_bndintxt]);    
+    %system(['./RVQ_1b_train_bndin8.linux       '     cfn_1_posEg  ' ' cfn_2_ecbk      ' '  cfn_3_dcbk     ' ' num2str(M+1)  ' '   '-S' num2str(targetSNR)    ' -i' num2str(iFlag)    ' -j' num2str(jFlag)    ' > ' cfn_bndintxt]);    
 
 %input training file
     %RVQ needs training snippets (vectors) in a certain format in a file.  Currently I call it positiveExamples.raw
     %Initially, I was creating it with my C++ file called RVQ_0_create_posraw.exe.  Now, I do it with Matlab using the function
     %DATAMATRIX_saveInFormat_rvq
 
-    %system(['RVQ_0_create_posraw.exe           '     cfn_poscsv   ' ' num2str(sw)  ' '  num2str(sh)  ' ' cfn_trgvec]);
-    %system(['./RVQ_0_create_posraw.linux       '     cfn_poscsv  ' ' num2str(sw)   ' '  num2str(sh)  ' ' cfn_trgvec]);    
+    %system(['RVQ_0_create_posraw.exe           '     cfn_poscsv   ' ' num2str(sw)  ' '  num2str(sh)  ' ' cfn_1_posEg]);
+    %system(['./RVQ_0_create_posraw.linux       '     cfn_poscsv  ' ' num2str(sw)   ' '  num2str(sh)  ' ' cfn_1_posEg]);    

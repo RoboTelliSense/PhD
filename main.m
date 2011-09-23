@@ -115,28 +115,30 @@ datasetCode                 =   1;
 	PARAM.plot_num_rows  	=   5;                  %"
 	PARAM.plot_num_cols  	=   4;                  %"
 	PARAM.plot_title_fontsz =   8;                  %", fontsize
-	PARAM.plot_alpha =   0.2;                   %", transparency for target bounding regions
-
-    PARAM.out_cfn           =   'out.txt';          %cfn: complete filename
-    PARAM.out_fid           =   fopen(PARAM.out_cfn, 'w');
-                                UTIL_FILE_checkFileOpen(PARAM.out_fid, PARAM.out_cfn);
+	PARAM.plot_alpha        =   0.2;                %", transparency for target bounding regions
     
     PARAM.T_sec             =   0;                      %total running time in sec              
 
     
 %2. INPUT
     [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM); 
-    first_I             =   double(I_HxWxF(:,:,1));     %read first image, 0t1 means the image intensities are between 0 and 1       
+    first_I                 =   double(I_HxWxF(:,:,1));     %read first image, 0t1 means the image intensities are between 0 and 1       
     [a b first_mean_shxsw]  =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I, UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6), PARAM.in_sw, PARAM.in_sh);
     clear a b first_I;
+
+%3. strings, directories, files
+    PARAM.config_name       =   UTIL_TRK_create_config_string(PARAM);   %filenames
+    PARAM.odir              =   UTIL_addSlash(PARAM.config_name);       %make directory name in case you want to store intermediate files (make from algo parameters, i.e., add slash)
+    mkdir(PARAM.odir);                                                  %create directory
     
-    %back to PARAM based on input
-    PARAM                   =   UTIL_TRK_create_config_string(PARAM);  %filenames
-    PARAM.trg_T             =	round(PARAM.ds_4_F/PARAM.trg_B); %number of times training occurs
+    PARAM.out_cfn           =   [PARAM.config_name '.txt'];             %make output filename, will be in current directory
+    PARAM.out_fid           =   fopen(PARAM.out_cfn, 'w');              %create file
+                                UTIL_FILE_checkFileOpen(PARAM.out_fid, PARAM.out_cfn);
     
-%3. LEARNING ALGORITHMS
+    
+%4. LEARNING ALGORITHMS
     %aMEAN
-    aMEAN.in_1__name         =   'aMEAN';
+    aMEAN.in_1__name        =   'aMEAN';
     aMEAN.mdl_2_mu_Dx1      =   first_mean_shxsw(:); 
     clear a b;
    
@@ -177,7 +179,7 @@ datasetCode                 =   1;
     aTSVQ.in_3__maxP         =   PARAM.in_tsvq_P;
     aTSVQ.in_4__M___         =   PARAM.in_tsvq_M;
 
-%4. TRACKER    
+%5. TRACKER    
     trkMEAN.name            =   'trkMEAN';                          %learning algo only uses mean of data (simplest learning algo)    
     trkMEAN.DM2             =   [];                                 %1. all "best" snippets picked by tracker (one snippet per column)
     trkMEAN.numF     		=   1;                                  %number of frames the particle filter runs
@@ -216,10 +218,9 @@ datasetCode                 =   1;
 	trkTSVQ					=	trkMEAN;  trkTSVQ.name = 'trkTSVQ';
  
 %step 5. 1 training
-    PARAM.trg_frame_idxs          =   [PARAM.trg_frame_idxs, f];
     if (PARAM.in_bUseIPCA) aIPCA  =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);  end		
     if (PARAM.in_bUseBPCA) aBPCA  =   PCA__1_train  (trkBPCA.DM2                     , aBPCA);  end
-    if (PARAM.in_bUseRVQ)  aRVQ   =   RVQ__1_train  (trkRVQ.DM2                      , aRVQ);   UTIL_copyFile([aRVQ.in_8__odir 'rvq__trg_verbose.txt'], [aRVQ.in_8__odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
+    if (PARAM.in_bUseRVQ)  aRVQ   =   RVQ__1_train  (trkRVQ.DM2                      , aRVQ);   end
     if (PARAM.in_bUseTSVQ) aTSVQ  =   TSVQ_1_train  (trkTSVQ.DM2                     , aTSVQ);  end  
 
     disp('initialization complete');
@@ -247,7 +248,7 @@ datasetCode                 =   1;
 			PARAM.trg_frame_idxs = [PARAM.trg_frame_idxs, f];
 			if (PARAM.in_bUseIPCA) aIPCA =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);	end		
             if (PARAM.in_bUseBPCA) aBPCA =   PCA__1_train  (trkBPCA.DM2,                      aBPCA);   end
-            if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__1_train  (trkRVQ.DM2 ,                      aRVQ );   UTIL_copyFile([aRVQ.in_8__odir 'rvq__trg_verbose.txt'], [aRVQ.in_8__odir 'rvq__trg_verbose_' PARAM.str_f '.txt']); end
+            if (PARAM.in_bUseRVQ)  aRVQ  =   RVQ__1_train  (trkRVQ.DM2 ,                      aRVQ );   end
             if (PARAM.in_bUseTSVQ) aTSVQ =   TSVQ_1_train  (trkTSVQ.DM2,                      aTSVQ);   end  
         end
         
