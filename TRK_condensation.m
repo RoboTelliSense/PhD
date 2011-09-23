@@ -11,7 +11,7 @@
 %>                              training examples in one batch
 %>
 %> TRK                      :   structure that holds information about the condensation algorithm.  has following members:
-%>      name                :   name of tracker, trkIPCA, trkBPCA, trkRVQ, trkTSVQ, etc
+%>      name                :   name of tracker, trkIPCA, trkBPCA, trk_RVQ, trkTSVQ, etc
 %>
 %>      DM2                 :   design (data) matrix, contains all best snippets for all frames, pixel intensity range is [0 1]
 %>
@@ -121,12 +121,12 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     %IPCA, BPCA
     if     (strcmp(TRK.name, 'trkMEAN'))                                ALGO = MEAN_2_test (cand_snps_DxNp    , ALGO);
     elseif (strcmp(TRK.name, 'trkIPCA') || strcmp(TRK.name, 'trkBPCA')) ALGO = PCA__2_test (cand_snps_DxNp    , ALGO);
-    elseif (strcmp(TRK.name, 'trkRVQ'))                                 ALGO = RVQ__2_test (cand_snps_DxNp    , ALGO);
+    elseif (strcmp(TRK.name, 'trk_RVQ'))                                 ALGO = RVQ__2_test (cand_snps_DxNp    , ALGO);
     elseif (strcmp(TRK.name, 'trkTSVQ'))                                ALGO = TSVQ_2_test (cand_snps_DxNp    , ALGO);
     end
     candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
-    %if (strcmp(TRK.name, 'trkRVQ'))
+    %if (strcmp(TRK.name, 'trk_RVQ'))
     %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lmbd*(ALGO.in_3__maxP-ALGO.P));
     %end
 
@@ -164,7 +164,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     
 %save all snippets
     TRK.DM2                 =   [DM2      TRK.snp_0_pixls_shxsw(:)];          %update snippet library
-    if 	   (strcmp(TRK.name, 'trkBPCA') || strcmp(TRK.name, 'trkRVQ') || strcmp(TRK.name, 'trkTSVQ')) %not needed for IPCA since it has its own forgetting factor
+    if 	   (strcmp(TRK.name, 'trkBPCA') || strcmp(TRK.name, 'trk_RVQ') || strcmp(TRK.name, 'trkTSVQ')) %not needed for IPCA since it has its own forgetting factor
         TRK.DM2             =   DATAMATRIX_pick_last_Nw_values_and_weight_in_DM2(TRK.DM2, Nw, bWeighting); 
     end
     

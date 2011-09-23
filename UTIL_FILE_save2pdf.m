@@ -57,7 +57,7 @@ set(handle,'PaperPosition',[0,0,position(3:4)]);
 set(handle,'PaperSize',position(3:4));
 
 % Save the pdf (this is the same method used by "saveas")
-print(handle,'-dpng',pdfFileName,sprintf('-r%d',dpi))
+print(handle,'-dpdf',pdfFileName,sprintf('-r%d',dpi))
 
 % Restore the previous settings
 set(handle,'PaperType',prePaperType);
