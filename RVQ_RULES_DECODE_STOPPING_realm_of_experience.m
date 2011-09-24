@@ -11,14 +11,14 @@
 %> Date created       : July 29, 2011.
 %> Date last modified : July 29, 2011.
 
-function continue_decoding = RVQ_RULES_DECODE_STOPPING_RoE(feature vectors_PxN, tst_XDR_parPx1)
+function continue_decoding = RVQ_RULES_DECODE_STOPPING_realm_of_experience(featr_PxN, tst_XDR_parPx1)
     
-    [P, N]                  =   size(feature vectors_PxN);
+    [P, N]                  =   size(featr_PxN);
     parP                    =   length(tst_XDR_parPx1);
     continue_decoding       =   false;
     
     for n=1:N  %go over all training XDRs
-        trg_XDR_parPx1      =   feature vectors_PxN(1:parP, n);
+        trg_XDR_parPx1      =   featr_PxN(1:parP, n);
         if (sum(tst_XDR_parPx1 - trg_XDR_parPx1)==0)
             continue_decoding   ...
                             =   true;

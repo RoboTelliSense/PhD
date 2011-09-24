@@ -171,7 +171,7 @@ function main(   pca_P,                                     ...
     a_RVQ.in_7__sh__         =   PARAM.in_sh;
     a_RVQ.in_8__odir         =   PARAM.odir;              %output directory
     a_RVQ.in_9__trgR         =   'maxP';
-    a_RVQ.in_10_tstR         =   'monRMSE';                  %rule to stop decoding in RVQ testing function
+    a_RVQ.in_10_tstR         =   'maxP';                  %rule to stop decoding in RVQ testing function
     a_RVQ.in_11_lmbd     	=   0;                          %lambda, acts like a lagrange multiplier
 
     %aTSVQ
@@ -204,8 +204,8 @@ function main(   pca_P,                                     ...
         PARAM.t_sec(f)      =   toc;                                %time for this frame
         PARAM.T_sec         =   PARAM.T_sec + PARAM.t_sec(f);       %total time for all frames
         PARAM.fps           =   f/PARAM.T_sec;                      %frames per sec
-        str_rmse            =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f))       
-        str_armse           =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_armse__Fx1(f));
+        str_rmse            =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f));       
+        str_armse           =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_3_armse_Fx1(f))
         
         %save
                                 fprintf(PARAM.log_fid, [str_rmse '\n']);    %write log file
@@ -231,7 +231,7 @@ function main(   pca_P,                                     ...
 %step 3. initialize learning algorithms for: LBTs
     if (PARAM.in_bUseIPCA) aIPCA  =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);  end		
     if (PARAM.in_bUseBPCA) aBPCA  =   PCA__1_train  (trkBPCA.DM2                     , aBPCA);  end
-    if (PARAM.in_bUseRVQ)  a_RVQ  =   RVQ__1_train  (trk_RVQ.DM2                      , a_RVQ);   end
+    if (PARAM.in_bUseRVQ)  a_RVQ  =   RVQ__1_train  (trk_RVQ.DM2                     , a_RVQ);   end
     if (PARAM.in_bUseTSVQ) aTSVQ  =   TSVQ_1_train  (trkTSVQ.DM2                     , aTSVQ);  end  
 
     disp('initialization complete');
@@ -245,6 +245,7 @@ function main(   pca_P,                                     ...
     for f = PARAM.trg_B+1 : PARAM.ds_4_F
         %starting stats
         tic
+        UTIL_dbloop
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
         
         %input
@@ -269,10 +270,10 @@ function main(   pca_P,                                     ...
         PARAM.T_sec         =   PARAM.T_sec + PARAM.t_sec(f);       %total time for all frames
         PARAM.fps           =   f/PARAM.T_sec;                      %frames per sec
         str_rmse            =   sprintf('%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f', f, PARAM.t_sec(f), PARAM.fps, ...
-                                trkIPCA.trk_3_rmse_Fx1(f), ...
-                                trkBPCA.trk_3_rmse_Fx1(f), ...
-                                trk_RVQ.trk_3_rmse_Fx1(f), ...
-                                trkTSVQ.trk_3_rmse_Fx1(f))
+                                trkIPCA.trk_2_rmse__Fx1(f), ...
+                                trkBPCA.trk_2_rmse__Fx1(f), ...
+                                trk_RVQ.trk_2_rmse__Fx1(f), ...
+                                trkTSVQ.trk_2_rmse__Fx1(f));
         str_armse           =   sprintf('%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f', f, PARAM.t_sec(f), PARAM.fps, ...
                                 trkIPCA.trk_3_armse_Fx1(f), ...
                                 trkBPCA.trk_3_armse_Fx1(f), ...
@@ -280,7 +281,8 @@ function main(   pca_P,                                     ...
                                 trkTSVQ.trk_3_armse_Fx1(f))
         
         %save to file
-                                fprintf(PARAM.log_fid, [str_rmse '\n']);                          
+                                fprintf(PARAM.log_fid, [str_rmse '\n']); 
+                                UTIL_dbloop
         %display
         if (ispc)
             imshow(uint8(I));
