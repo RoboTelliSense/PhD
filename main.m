@@ -38,8 +38,8 @@
 %> DM2 						:	Data matrix, one observation per column.  If DM, then one observation per row.
 %> structures
 %> ----------
-%> aIPCA, aBPCA, a_RVQ, aTSVQ
-%> trkMEAN, trkIPCA, trkBPCA, trk_RVQ, trkTSVQ
+%> aIPCA, aBPCA, aRVQE, aTSVQ
+%> trkMEAN, trkIPCA, trkBPCA, trkRVQE, trkTSVQ
 %>
 %> dependencies
 %> ------------
@@ -57,23 +57,23 @@
 % Np                          =   600;
 % Nw                          =   4;
 % bWeighting                  =   0;
-% pca_P                       =   16;
-% rvq_maxP                    =   8;
-% rvq_M                       =   2;
-% rvq_targetSNR               =   1000;
-% tsvq_P                      =   3;
+% pca__Q                       =   16;
+% rvq__maxQ                    =   8;
+% rvq__M                       =   2;
+% rvq__targetSNR               =   1000;
+% tsvq_maxQ                      =   3;
 % tsvq_M                      =   2;
 % bUseIPCA                    =   1;
 % bUseBPCA                    =   1;   
-% bUseRVQ                     =   1;
+% bUseRVQE                     =   1;
 % bUseTSVQ                    =   1;
 % datasetCode                 =   1;
 
 %#######################################################################
-function main(   pca_P,                                     ...
-                 rvq_maxP, rvq_M, rvq_targetSNR,            ...
-                 tsvq_P, tsvq_M,                            ...
-                 bUseIPCA , bUseBPCA , bUseRVQ, bUseTSVQ,   ...
+function main(   pca__Q,                                     ...
+                 rvq__maxQ, rvq__M, rvq__targetSNR,          ...
+                 tsvq_maxQ, tsvq_M,                         ...
+                 bUseIPCA , bUseBPCA , bUseRVQE, bUseTSVQ,  ...
                  datasetCode)
 
 %>-----------------------------------------
@@ -81,50 +81,48 @@ function main(   pca_P,                                     ...
 %>-----------------------------------------
 %1. PARAMETERS
     %variable parameters (from command line)
-    PARAM.in_pca_P          =   pca_P;          %4. PCA: number of eigenvectors to retain for PCA
-    PARAM.in_rvq_maxP       =   rvq_maxP;       %5. a_RVQ: max stages
-    PARAM.in_rvq_M          =   rvq_M;          %6. a_RVQ: templates per stage
-    PARAM.in_rvq_targetSNR  =   rvq_targetSNR;  %7. a_RVQ: target SNR
-    PARAM.in_tsvq_P         =   tsvq_P;         %8. aTSVQ: max stages
-    PARAM.in_tsvq_M         =   tsvq_M;         %9. aTSVQ: templates per stage, 2 for binary aTSVQ
-    PARAM.in_bUseIPCA       =   bUseIPCA;       %10. flag    
-    PARAM.in_bUseBPCA       =   bUseBPCA;       %11. flag
-    PARAM.in_bUseRVQ        =   bUseRVQ;        %12. flag
-    PARAM.in_bUseTSVQ       =   bUseTSVQ;       %13. flag
-    PARAM.in_datasetCode    =   datasetCode;    %14. dataset code
-  
-    %clear all 14 parameters passed in to reduce clutter
-    clear Np Nw bWeighting pca_P rvq_maxP rvq_M rvq_targetSNR tsvq_P tsvq_M bUseIPCA bUseBPCA bUseRVQ bUseTSVQ datasetCode    
-    
+    PARAM.in_pca__Q         =   pca__Q;          %PCA: number of eigenvectors to retain for PCA
+    PARAM.in_rvq__maxQ      =   rvq__maxQ;      %aRVQE: max stages
+    PARAM.in_rvq__M         =   rvq__M;         %aRVQE: templates per stage
+    PARAM.in_rvq__targetSNR =   rvq__targetSNR; %aRVQE: target SNR
+    PARAM.in_tsvq_maxQ      =   tsvq_maxQ;      %aTSVQ: max stages
+    PARAM.in_tsvq_M         =   tsvq_M;         %aTSVQ: templates per stage, 2 for binary aTSVQ
+    PARAM.in_bUseIPCA       =   bUseIPCA;       %flag    
+    PARAM.in_bUseBPCA       =   bUseBPCA;       %flag
+    PARAM.in_bUseRVQE       =   bUseRVQE;       %flag
+    PARAM.in_bUseTSVQ       =   bUseTSVQ;       %flag
+    PARAM.in_datasetCode    =   datasetCode;    %dataset code
+      
     %fixed parameters  
-    PARAM.in_Nw             =   10000;              %2. number of images for training, (training window)
-    PARAM.in_bWeighting     =   false;              %3. weighting of input data points 
+    PARAM.DM2_bWeighting    =   false;              %data: weighting of input data points 
+	
+    PARAM.trg_Nw            =   10000;              %training: number of images (training window size)
+    PARAM.trg_freq          =   5;                  %training: frequency
+        
+    PARAM.tgt_sw            =   33;                 %target: width
+    PARAM.tgt_sh            =   33;                 %target: size
+    PARAM.tgt_sz            =   [PARAM.tgt_sh PARAM.tgt_sw];  %combine two above
+	PARAM.tgt_scale         =   32;                 %target: affine scaling, note 1 less than sw and sh which I had to increase by 1 for aRVQE
 
-    PARAM.con_Np            =   600;                %condensation, number of particles
-    PARAM.con_errfunc       =   'L2';               % 
-    PARAM.con_reseig        =   0;
-	PARAM.aff_scale         =   32;                 %target affine scaling, note 1 less than sw and sh which I had to increase by 1 for a_RVQ
-    PARAM.in_sw             =   33;
-    PARAM.in_sh             =   33;    
-    PARAM.tgt_sz            =   [PARAM.in_sh PARAM.in_sw];  %combine two above
-	PARAM.trg_B             =   5;                  %training related, batch size for how many images to use for training
-	PARAM.trg_frame_idxs    =   [];                 %"
-	PARAM.plot_row2       	=   2;                  %plotting related
-	PARAM.plot_row3   		=   3;                  %"
-	PARAM.plot_row4   		=   4;                  %"
-	PARAM.plot_num_rows  	=   5;                  %"
-	PARAM.plot_num_cols  	=   4;                  %"
-	PARAM.plot_title_fontsz =   8;                  %", fontsize
-	PARAM.plot_alpha        =   0.2;                %", transparency for target bounding regions
+    PARAM.pf_Np             =   600;                %particle filter, number of particles
+    PARAM.pf_errfunc        =   'L2';               %    "       "  , options: PPCA, robust, L2
+    PARAM.pf_reseig         =   0;
     
-    PARAM.T_sec             =   0;                      %total running time in sec              
+	PARAM.plot_row2       	=   2;                  %plotting related
+	PARAM.plot_row3   		=   3;                  %    "       "
+	PARAM.plot_row4   		=   4;                  %    "       "
+	PARAM.plot_num_rows  	=   5;                  %    "       "
+	PARAM.plot_num_cols  	=   4;                  %    "       "
+	PARAM.plot_title_fontsz =   8;                  %    "       "     fontsize,
+	PARAM.plot_alpha        =   0.2;                %    "       "     transparency for target bounding regions
+    
+    PARAM.stats_T_sec       =   0;                  %stats: total running time in sec              
 
     
 %2. INPUT
     [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM); 
     first_I                 =   double(I_HxWxF(:,:,1));     %read first image, 0t1 means the image intensities are between 0 and 1       
-    [a b first_mean_shxsw]  =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I, UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6), PARAM.in_sw, PARAM.in_sh);
-    clear a b first_I;
+    [a b first_mean_shxsw]  =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(first_I, UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6), PARAM.tgt_sw, PARAM.tgt_sh);
 
 %3. strings, directories, files
     PARAM.config_name       =   UTIL_TRK_create_config_string(PARAM);   %in one string, describes the configuration of this experimental run
@@ -133,63 +131,82 @@ function main(   pca_P,                                     ...
     
     PARAM.out_cfn           =   [PARAM.config_name '.txt'];             %make output filename, will be in current directory
     PARAM.log_fid           =   fopen(PARAM.out_cfn, 'w');              %create file
-                                UTIL_FILE_checkFileOpen(PARAM.log_fid, PARAM.out_cfn);
-    
+                                UTIL_FILE_checkFileOpen(PARAM.log_fid, PARAM.out_cfn);    
     
 %4. LEARNING ALGORITHMS
     %aMEAN
     aMEAN.in_1__name        =   'aMEAN';
     aMEAN.mdl_2_mu_Dx1      =   first_mean_shxsw(:); 
-    clear a b;
-   
+    
     %aIPCA
     aIPCA.in_1__name        =   'aIPCA';
-    aIPCA.in_6__sw__        =   PARAM.in_sw;
-    aIPCA.in_7__sh__        =   PARAM.in_sh;
-    aIPCA.in_Np             =   0;
+    aIPCA.in_6__sw__        =   PARAM.tgt_sw;
+    aIPCA.in_7__sh__        =   PARAM.tgt_sh;
+    aIPCA.in_Np             =   0;                      %would like to understand the role of this better
     aIPCA.in_ff             =   PARAM.ds_5_ff; 
-    aIPCA.con_reseig        =   PARAM.con_reseig;
+    aIPCA.pf_reseig        =   PARAM.pf_reseig;       %would like to understand the role of this better
 
-    aIPCA.mdl_1_P__1x1      =   PARAM.in_pca_P;      %number of eigenvectors to retain    
+    aIPCA.mdl_1_Q__1x1      =   PARAM.in_pca__Q;         %number of eigenvectors to retain    
     aIPCA.mdl_2_mu_Dx1      =   first_mean_shxsw(:);
     aIPCA.mdl_3_U__DxP      =   [];
     aIPCA.mdl_4_S_Bx1       =   [];
-
-    clear first_mean_shxsw;
     
     %aBPCA
     aBPCA.in_1__name        =   'aBPCA';
-    aBPCA.mdl_1_P__1x1      =   PARAM.in_pca_P;    
+    aBPCA.mdl_1_Q__1x1      =   PARAM.in_pca__Q;    
      
-    %a_RVQ
-    a_RVQ.in_1__name         =   'a_RVQ';
-    a_RVQ.in_2__mode         =   'tst';
-    a_RVQ.in_3__maxP         =   PARAM.in_rvq_maxP;
-    a_RVQ.in_4__M___         =   PARAM.in_rvq_M;         
-    a_RVQ.in_5__tSNR         =   PARAM.in_rvq_targetSNR;
-    a_RVQ.in_6__sw__         =   PARAM.in_sw;                %snippet width
-    a_RVQ.in_7__sh__         =   PARAM.in_sh;
-    a_RVQ.in_8__odir         =   PARAM.odir;              %output directory
-    a_RVQ.in_9__trgR         =   'maxP';
-    a_RVQ.in_10_tstR         =   'maxP';                  %rule to stop decoding in RVQ testing function
-    a_RVQ.in_11_lmbd     	=   0;                          %lambda, acts like a lagrange multiplier
+    %RVQ template
+    tmplt.in_2__mode        =   'tst';                      %default mode
+    tmplt.in_3__maxQ        =   PARAM.in_rvq__maxQ;          %max stages
+    tmplt.in_4__M___        =   PARAM.in_rvq__M;             %number of codevectors per stage
+    tmplt.in_5__tSNR        =   PARAM.in_rvq__targetSNR;     %targeted SNR for codebook generation
+    tmplt.in_6__sw__        =   PARAM.tgt_sw;                %snippet width
+    tmplt.in_7__sh__        =   PARAM.tgt_sh;                %snippet height
+    tmplt.in_8__odir        =   PARAM.odir;                 %output directory for files that RVQ produces
+    tmplt.in_9__trgR        =   'maxQ';                     %encoding stop rule for training vectors
+    tmplt.in_11_lmbd        =   0;                          %lambda, acts like a lagrange multiplier
+
+    %RVQ based on realm of experience
+    aRVQQ                   =   tmplt;
+    aRVQQ.in_1__name        =   'aRVQQ';                    %algorithm RVQ, based on max stages, Q
+    aRVQQ.in_10_tstR        =   'maxQ';                     %rule to stop decoding in RVQ testing function    
+
+    %RVQ based on realm of experience
+    aRVQE                   =   tmplt;
+    aRVQE.in_1__name        =   'aRVQE';                    %algorithm RVQ, based on realm of experience
+    aRVQE.in_10_tstR        =   'RoE';                      %rule to stop decoding in RVQ testing function    
+    
+    %RVQ based on realm of experience
+    aRVQR                   =   tmplt;
+    aRVQR.in_1__name        =   'aRVQR';                    %algorithm RVQ, based on monotonically decreasing RMSE
+    aRVQR.in_10_tstR        =   'monRMSE';                  %rule to stop decoding in RVQ testing function    
+
+    %RVQ based on null encoding
+    aRVQN                   =   tmplt;
+    aRVQN.in_1__name        =   'aRVQN';                    %algorithm RVQ, based on null encoding
+    aRVQN.in_10_tstR        =   'nullEnc';                  %rule to stop decoding in RVQ testing function    
 
     %aTSVQ
-    aTSVQ.in_1__name         =   'aTSVQ';
-    aTSVQ.in_3__maxP         =   PARAM.in_tsvq_P;
-    aTSVQ.in_4__M___         =   PARAM.in_tsvq_M;
+    aTSVQ.in_1__name        =   'aTSVQ';
+    aTSVQ.in_3__maxQ        =   PARAM.in_tsvq_maxQ;
+    aTSVQ.in_4__M___        =   PARAM.in_tsvq_M;
 
 %5. TRACKER    
     trkMEAN.name            =   'trkMEAN';                          %learning algo only uses mean of data (simplest learning algo)    
     trkMEAN.DM2             =   [];                                 %1. all "best" snippets picked by tracker (one snippet per column)
     trkMEAN.numF     		=   1;                                  %number of frames the particle filter runs
 
+%general
+    %clean up clutter
+    clear pca__Q rvq__maxQ rvq__M rvq__targetSNR tsvq_maxQ tsvq_M bUseIPCA bUseBPCA bUseRVQE bUseTSVQ datasetCode %passed in
+    clear a b first_I;
+    clear first_mean_shxsw;
 
 %>-----------------------------------------
 %PRE-PROCESSING (bootstrapping)
 %>-----------------------------------------
-%1. run mean tracker for PARAM.trg_B frames
-    for f = 1:PARAM.trg_B
+%1. run mean tracker for PARAM.trg_freq frames
+    for f = 1:PARAM.trg_freq
         %starting stats
         tic
         PARAM.str_f         =   UTIL_GetZeroPrefixedFileNumber(f);
@@ -201,11 +218,11 @@ function main(   pca_P,                                     ...
         trkMEAN             =   TRK_condensation(f, I, GT, RAND, PARAM, aMEAN, trkMEAN); %frame num, image, ground truth, random data, parameters, learning algo, tracking structure
         
         %stats
-        PARAM.t_sec(f)      =   toc;                                %time for this frame
-        PARAM.T_sec         =   PARAM.T_sec + PARAM.t_sec(f);       %total time for all frames
-        PARAM.fps           =   f/PARAM.T_sec;                      %frames per sec
-        str_rmse            =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_2_rmse__Fx1(f));       
-        str_armse           =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.t_sec(f), PARAM.fps, trkMEAN.trk_3_armse_Fx1(f))
+        PARAM.stats_t_sec(f)=   toc;                                %time for this frame
+        PARAM.stats_T_sec   =   PARAM.stats_T_sec + PARAM.stats_t_sec(f);       %total time for all frames
+        PARAM.stats_fps           =   f/PARAM.stats_T_sec;                      %frames per sec
+        str_rmse            =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.stats_t_sec(f), PARAM.stats_fps, trkMEAN.trk_2_rmse__Fx1(f));       
+        str_armse           =   sprintf('%4d  %3.2f %3.2f       %5.2f', f, PARAM.stats_t_sec(f), PARAM.stats_fps, trkMEAN.trk_3_armse_Fx1(f))
         
         %save
                                 fprintf(PARAM.log_fid, [str_rmse '\n']);    %write log file
@@ -214,7 +231,7 @@ function main(   pca_P,                                     ...
         if (ispc)
             imshow(uint8(I));
             hold on;
-            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkMEAN.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, PARAM.plot_alpha, 'y');
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkMEAN.snp_1_tsrpxy_1x6), PARAM.tgt_sh, PARAM.tgt_sw, PARAM.plot_alpha, 'y');
             hold off;
             title(str_rmse);
             drawnow;
@@ -225,14 +242,14 @@ function main(   pca_P,                                     ...
 %step 2. initialize tracking for: learning based trackers (LBTs) based on mean tracker
 	trkIPCA					=	trkMEAN;  trkIPCA.name = 'trkIPCA';
 	trkBPCA					=	trkMEAN;  trkBPCA.name = 'trkBPCA';
-	trk_RVQ					=	trkMEAN;  trk_RVQ.name = 'trk_RVQ';
+	trkRVQE					=	trkMEAN;  trkRVQE.name = 'trkRVQE';
 	trkTSVQ					=	trkMEAN;  trkTSVQ.name = 'trkTSVQ';
  
 %step 3. initialize learning algorithms for: LBTs
-    if (PARAM.in_bUseIPCA) aIPCA  =   IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);  end		
-    if (PARAM.in_bUseBPCA) aBPCA  =   PCA__1_train  (trkBPCA.DM2                     , aBPCA);  end
-    if (PARAM.in_bUseRVQ)  a_RVQ  =   RVQ__1_train  (trk_RVQ.DM2                     , a_RVQ);   end
-    if (PARAM.in_bUseTSVQ) aTSVQ  =   TSVQ_1_train  (trkTSVQ.DM2                     , aTSVQ);  end  
+    if (PARAM.in_bUseIPCA) aIPCA = IPCA_1_train (trkIPCA.DM2(:,f-PARAM.trg_freq+1:f), aIPCA);  end		
+    if (PARAM.in_bUseBPCA) aBPCA = PCA__1_train (trkBPCA.DM2                        , aBPCA);  end
+    if (PARAM.in_bUseRVQE) aRVQE = RVQ__1_train (trkRVQE.DM2                        , aRVQE);  end
+    if (PARAM.in_bUseTSVQ) aTSVQ = TSVQ_1_train (trkTSVQ.DM2                        , aTSVQ);  end  
 
     disp('initialization complete');
     
@@ -242,7 +259,7 @@ function main(   pca_P,                                     ...
 %============================================
 %clear;clc;close all;load  
 
-    for f = PARAM.trg_B+1 : PARAM.ds_4_F
+    for f = PARAM.trg_freq+1 : PARAM.ds_4_F
         %starting stats
         tic
         UTIL_dbloop
@@ -254,30 +271,30 @@ function main(   pca_P,                                     ...
 		%testing: condensation
 		if (PARAM.in_bUseIPCA) trkIPCA = TRK_condensation(f, I, GT, RAND, PARAM, aIPCA, trkIPCA); end %estwarp_grad(I, aIPCA, trkIPCA, PARAM);
 		if (PARAM.in_bUseBPCA) trkBPCA = TRK_condensation(f, I, GT, RAND, PARAM, aBPCA, trkBPCA); end
-		if (PARAM.in_bUseRVQ)  trk_RVQ = TRK_condensation(f, I, GT, RAND, PARAM, a_RVQ, trk_RVQ); end
+		if (PARAM.in_bUseRVQE) trkRVQE = TRK_condensation(f, I, GT, RAND, PARAM, aRVQE, trkRVQE); end
 		if (PARAM.in_bUseTSVQ) trkTSVQ = TRK_condensation(f, I, GT, RAND, PARAM, aTSVQ, trkTSVQ); end
 	
-		%training (update model) every PARAM.trg_B frames
-        if (mod(f,PARAM.trg_B)==0)
-			if (PARAM.in_bUseIPCA) aIPCA = IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_B+1:f), aIPCA);	end		
+		%training (update model) every PARAM.trg_freq frames
+        if (mod(f,PARAM.trg_freq)==0)
+			if (PARAM.in_bUseIPCA) aIPCA = IPCA_1_train  (trkIPCA.DM2(:,f-PARAM.trg_freq+1:f), aIPCA);	end		
             if (PARAM.in_bUseBPCA) aBPCA = PCA__1_train  (trkBPCA.DM2,                      aBPCA); end
-            if (PARAM.in_bUseRVQ)  a_RVQ = RVQ__1_train  (trk_RVQ.DM2 ,                     a_RVQ); end
+            if (PARAM.in_bUseRVQE) aRVQE = RVQ__1_train  (trkRVQE.DM2 ,                     aRVQE); end
             if (PARAM.in_bUseTSVQ) aTSVQ = TSVQ_1_train  (trkTSVQ.DM2,                      aTSVQ); end  
         end
         
         %stats
-        PARAM.t_sec(f)      =   toc;                                %time for this frame
-        PARAM.T_sec         =   PARAM.T_sec + PARAM.t_sec(f);       %total time for all frames
-        PARAM.fps           =   f/PARAM.T_sec;                      %frames per sec
-        str_rmse            =   sprintf('%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f', f, PARAM.t_sec(f), PARAM.fps, ...
+        PARAM.stats_t_sec(f)=   toc;                                %time for this frame
+        PARAM.stats_T_sec   =   PARAM.stats_T_sec + PARAM.stats_t_sec(f);       %total time for all frames
+        PARAM.stats_fps     =   f/PARAM.stats_T_sec;                      %frames per sec
+        str_rmse            =   sprintf('%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f', f, PARAM.stats_t_sec(f), PARAM.stats_fps, ...
                                 trkIPCA.trk_2_rmse__Fx1(f), ...
                                 trkBPCA.trk_2_rmse__Fx1(f), ...
-                                trk_RVQ.trk_2_rmse__Fx1(f), ...
+                                trkRVQE.trk_2_rmse__Fx1(f), ...
                                 trkTSVQ.trk_2_rmse__Fx1(f));
-        str_armse           =   sprintf('%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f', f, PARAM.t_sec(f), PARAM.fps, ...
+        str_armse           =   sprintf('%4d  %3.2f %3.2f       %5.2f %5.2f %5.2f %5.2f', f, PARAM.stats_t_sec(f), PARAM.stats_fps, ...
                                 trkIPCA.trk_3_armse_Fx1(f), ...
                                 trkBPCA.trk_3_armse_Fx1(f), ...
-                                trk_RVQ.trk_3_armse_Fx1(f), ...
+                                trkRVQE.trk_3_armse_Fx1(f), ...
                                 trkTSVQ.trk_3_armse_Fx1(f))
         
         %save to file
@@ -288,10 +305,10 @@ function main(   pca_P,                                     ...
             imshow(uint8(I));
             %colormap(gray)
             hold on;
-            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkIPCA.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'b');
-            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkBPCA.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'c');
-            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkTSVQ.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'g');
-            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trk_RVQ.snp_1_tsrpxy_1x6), PARAM.in_sh, PARAM.in_sw, 0, 'r');
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkIPCA.snp_1_tsrpxy_1x6), PARAM.tgt_sh, PARAM.tgt_sw, 0, 'b');
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkBPCA.snp_1_tsrpxy_1x6), PARAM.tgt_sh, PARAM.tgt_sw, 0, 'c');
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkTSVQ.snp_1_tsrpxy_1x6), PARAM.tgt_sh, PARAM.tgt_sw, 0, 'g');
+            UTIL_2D_affine_drawQuadFrom_Ha_2x3(UTIL_2D_affine_tsrpxy_to_Ha_2x3(trkRVQE.snp_1_tsrpxy_1x6), PARAM.tgt_sh, PARAM.tgt_sw, 0, 'r');
             title(str_rmse);
             drawnow
             hold off;
@@ -303,5 +320,5 @@ function main(   pca_P,                                     ...
 %POST-PROCESSING
 %>-----------------------------------------
     fclose(PARAM.log_fid);
-    %TRK_draw_results(f, I_HxWxF, PARAM, trkIPCA, trkBPCA, trk_RVQ, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trk_RVQ.FP_1_gt, trkTSVQ.FP_1_gt);
+    %TRK_draw_results(f, I_HxWxF, PARAM, trkIPCA, trkBPCA, trkRVQE, trkTSVQ, trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQE.FP_1_gt, trkTSVQ.FP_1_gt);
        

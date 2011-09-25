@@ -23,7 +23,7 @@
     DM2                     =   1:256;          %input data matrix, DxN                       
     [D,N]                   =   size(DM2);      %
     
-    RVQ.in_3__maxP               =   8;              %max number of stages, RVQ.P contains actual number of stages 
+    RVQ.in_3__maxQ               =   8;              %max number of stages, RVQ.P contains actual number of stages 
     RVQ.in_4__M___                  =   2;              %number of codevectors/stage
     RVQ.in_5__tSNR          =   1000;
     RVQ.in_6__sw__                 =   1;              %snippet width

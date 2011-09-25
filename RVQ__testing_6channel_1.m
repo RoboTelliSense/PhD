@@ -19,7 +19,7 @@ function RVQ = RVQ__2_test_6D(tst_Dx1, RVQ)
     
     psnr_dB                             =   0;    
     PSNR_dB                             =   [];
-    successiveRecon_6DxT				=   zeros(6*D,T); %first column contains first reconstruction, second column contains refined reconstruction, third column still better and so on
+    successiveRepf_6DxT				=   zeros(6*D,T); %first column contains first reconstruction, second column contains refined reconstruction, third column still better and so on
     
     err_6Dx1							=   tst_6Dx1;
     numStagesUsed                       =   0;
@@ -55,7 +55,7 @@ function RVQ = RVQ__2_test_6D(tst_Dx1, RVQ)
             else
                 %keep
 				recon_6Dx1				=   temp_recon_6Dx1; 
-                successiveRecon_6DxT(:,t)=	temp_recon_6Dx1;
+                successiveRepf_6DxT(:,t)=	temp_recon_6Dx1;
                 err_6Dx1				=   temp_err_6Dx1;
 				psnr_dB					=   temp_psnr_dB;
                 PSNR_dB(t)             	=   temp_psnr_dB;

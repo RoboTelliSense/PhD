@@ -5,7 +5,7 @@ close all;
 
 Np          =   600;
 bUseBPCA     =   1;
-bUseRVQ     =   1;
+bUseRVQE     =   1;
 bUseTSVQ    =   1;
 
 config=[];
@@ -33,10 +33,10 @@ for datasetCode=1:1
                 bpca_Neig       =   ipca_Neig;
                 rvq_maxT        =   config(c,2);
                 rvq_S           =   config(c,3);
-                rvq_targetSNR   =   config(c,4);
+                rvq__targetSNR   =   config(c,4);
                 tsvq_T          =   config(c,5);
                 j               =   j+1
-                [config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseRVQ, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq_targetSNR, tsvq_T);
+                [config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseRVQE, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
                 cfn             =   [odir 'FPerr_3_ipca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);

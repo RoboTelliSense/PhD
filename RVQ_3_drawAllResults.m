@@ -1,4 +1,4 @@
-function RVQ_3_drawAllResults(bCompute, bUseMyPCA, bUseRVQ, bUseTSVQ, datasetCode)
+function RVQ_3_drawAllResults(bCompute, bUseMyPCA, bUseRVQE, bUseTSVQ, datasetCode)
  %clear;
  %clc;
  %close all;
@@ -79,7 +79,7 @@ Np                      =   600;
                             cfn_TSVQaffine_1x6                        =   [dir_in 'PCAaffine.csv'];
                             PCAaffine_1x6{tidx}{midx}                 =   csvread(cfn_PCAaffine_1x6);
                             if (bUseMyPCA) RVQaffine_1x6{tidx}{midx}  =   csvread(cfn_myPCAaffine_1x6); end
-                            if (bUseRVQ) RVQaffine_1x6{tidx}{midx}    =   csvread(cfn_RVQaffine_1x6); end
+                            if (bUseRVQE) RVQaffine_1x6{tidx}{midx}    =   csvread(cfn_RVQaffine_1x6); end
                             if (bUseTSVQ) RVQaffine_1x6{tidx}{midx}   =   csvread(cfn_TSVQaffine_1x6); end
                             [F(ridx), temp]                             =   size(PCAaffine_1x6{1}{1});
                         end

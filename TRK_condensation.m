@@ -11,7 +11,7 @@
 %>                              training examples in one batch
 %>
 %> TRK                      :   structure that holds information about the condensation algorithm.  has following members:
-%>      name                :   name of tracker, trkIPCA, trkBPCA, trk_RVQ, trkTSVQ, etc
+%>      name                :   name of tracker, trkIPCA, trkBPCA, trkRVQE, trkTSVQ, etc
 %>
 %>      DM2                 :   design (data) matrix, contains all best snippets for all frames, pixel intensity range is [0 1]
 %>
@@ -65,11 +65,11 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %----------------------------
 %PRE-PROCESSING
 %----------------------------
-    Np                      =   PARAM.con_Np;                    %particle filter: # of particles (samples) from density)    
-    sw                      =   PARAM.in_sw;                    %snippet width
-    sh                      =   PARAM.in_sh;                    %snippet height
-    Nw                      =   PARAM.in_Nw;                    %number of training images in training window
-    bWeighting              =   PARAM.in_bWeighting;
+    Np                      =   PARAM.pf_Np;                    %particle filter: # of particles (samples) from density)    
+    sw                      =   PARAM.tgt_sw;                    %snippet width
+    sh                      =   PARAM.tgt_sh;                    %snippet height
+    Nw                      =   PARAM.trg_Nw;                    %number of training images in training window
+    bWeighting              =   PARAM.DM2_bWeighting;
  
     RN1_1xNp                =   RAND.unif_cdf_maxFxNp(f,:);     %pre-stored uniform random numbers to ensure repeatability    
     RN2_6xNp(:,:)           =   RAND.gaus_maxFx6xNp(f,:,:);     %     "     gaussian  "       "    "      "        "
@@ -121,27 +121,27 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     %IPCA, BPCA
     if     (strcmp(TRK.name, 'trkMEAN'))                                ALGO = MEAN_2_test (cand_snps_DxNp    , ALGO);
     elseif (strcmp(TRK.name, 'trkIPCA') || strcmp(TRK.name, 'trkBPCA')) ALGO = PCA__2_test (cand_snps_DxNp    , ALGO);
-    elseif (strcmp(TRK.name, 'trk_RVQ'))                                 ALGO = RVQ__2_test (cand_snps_DxNp    , ALGO);
+    elseif (strcmp(TRK.name, 'trkRVQE'))                                ALGO = RVQ__2_test (cand_snps_DxNp    , ALGO);
     elseif (strcmp(TRK.name, 'trkTSVQ'))                                ALGO = TSVQ_2_test (cand_snps_DxNp    , ALGO);
     end
     candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
-    %if (strcmp(TRK.name, 'trk_RVQ'))
-    %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lmbd*(ALGO.in_3__maxP-ALGO.P));
+    %if (strcmp(TRK.name, 'trkRVQE'))
+    %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.P));
     %end
 
        
 %3. weights, maxidx (posterior)
     %%compute DIFS for use with PPCA, if not using PPCA, not required
     %if (isfield(TRK,'candErrs_featr_PxNp'))
-    %    DIFS               =   (abs(candErrs_featr_PxNp)-abs(TRK.candErrs_featr_PxNp))*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
+    %    DIFS               =   (abs(candErrs_featr_PxNp)-abs(TRK.candErrs_featr_PxNp))*PARAM.pf_reseig./repmat(S_Bx1,[1,Np]);
     %else
-    %    DIFS               =   candErrs_featr_PxNp                               .*PARAM.con_reseig./repmat(S_Bx1,[1,Np]);
+    %    DIFS               =   candErrs_featr_PxNp                               .*PARAM.pf_reseig./repmat(S_Bx1,[1,Np]);
     %end
     %TRK.candErrs_featr_PxNp=   candErrs_featr_PxNp;
     DFFS                    =   candErrs_DxNp/256;  %DFFS                    =   reshape(UTIL_scale2(candErrs_DxNp(:), 0, 1), D, Np);
     
-    switch (PARAM.con_errfunc)
+    switch (PARAM.pf_errfunc)
         case 'robust'; temp_weights  =   exp(-  sum(DFFS.^2./(DFFS.^2 + PARAM.rsig.^2))./stddev)';%PARAM.rsig never defined
         case 'ppca';   temp_weights  =   exp(-( sum(DFFS.^2)+ sum(DIFS.^2)            )./stddev)';
         otherwise;     temp_weights  =   exp(-  sum(DFFS.^2                           )./stddev)';
@@ -164,7 +164,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     
 %save all snippets
     TRK.DM2                 =   [DM2      TRK.snp_0_pixls_shxsw(:)];          %update snippet library
-    if 	   (strcmp(TRK.name, 'trkBPCA') || strcmp(TRK.name, 'trk_RVQ') || strcmp(TRK.name, 'trkTSVQ')) %not needed for IPCA since it has its own forgetting factor
+    if 	   (strcmp(TRK.name, 'trkBPCA') || strcmp(TRK.name, 'trkRVQE') || strcmp(TRK.name, 'trkTSVQ')) %not needed for IPCA since it has its own forgetting factor
         TRK.DM2             =   DATAMATRIX_pick_last_Nw_values_and_weight_in_DM2(TRK.DM2, Nw, bWeighting); 
     end
     

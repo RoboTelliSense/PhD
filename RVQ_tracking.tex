@@ -1,0 +1,211 @@
+\include{begin_article}
+\title{RVQ tracking}
+\author{Salman Aslam\\ Georgia Institute of Technology}
+\date{}
+\include{figs/inkscapeLatex}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+\newcommand{\dr}{(\mathbf{x}_i-\mathbf{\hat{x}}_i)^T(\mathbf{x}_i-\mathbf{\hat{x}}_i) + \lambda({Q_{\textrm{max}}-Q_i})}
+
+\begin{abstract}
+A learning-based tracking framework builds the target model while it tracks, thus avoiding the costly step of building target models prior to tracking.  This has been demonstrated successfully for PCA based tracking using publicly-available challenging datasets.  In this work, we use Residual Vector Quantization in a learning-based tracking framework using the same datasets and show that RVQ performs as well as PCA.  Moreover, we introduce 2 new distance metrics for relative weighting of target candidates allowing RVQ to be used as a generative model, similar to the way probabilistic PCA converts PCA into a generative framework.
+\end{abstract}
+
+%================================
+\section{Introduction}
+%================================
+Visual tracking is the task of estimating a target's state over time.  In many cases, the state represents target position and a bounding box around it, or its contour.  However, this is a challenging problem due to the following reasons:
+
+\begin{enumerate}
+\item \underline{Appearance and contour changes}:  A target of interest can undergo arbitrary change in appearance and contour.  This can be due to the following reasons:
+\begin{enumerate}
+\item \underline{Pose change}:  The target can rotate and present a different view to the camera.
+\item \underline{Warping}: The target can undergo warps, such as expression changes for humans.
+\item \underline{Self occlusion}:  The target can be occluded or unoccluded by itself or its surroundings.
+\item \underline{Blur}:  Motion blur can severely distort a target's appearance.
+\item \underline{Structured noise}:  The target can change appearance in an orderly manner, for instance, a target of interest can put on or remove glasses or a hat.
+\item \underline{Random noise}:  Random noise is added to the light rays coming from a target of interest.  On the hardware side, this is caused by atmospheric effects in the optical channel.  On the receiving side, it is caused by sensor noise, electronics noise and EMI (electromagnetic interference).  On the software side, it can be caused by compression artefacts.
+\item \underline{Non-symmetic BRDF}:  The light reflected off of an object in all directions is modeled by the BRDF (Bidirectional Radiation Transfer Function).  Since this function may not be symmetric in all directions, the amount of light reflecting off of the object may be different in different directions.  Multiple cameras viewing the same point will receive different intensity levels.
+\end{enumerate}
+\item \underline{Lighting change}: Lighting changes can be caused by turning on or off lights in indoor environments, or moving into or out of shades in outdoor environments.
+\item \underline{Sudden motion (target or camera)}:  Besides motion blur, sudden motion by the target or camera can cause the target to exit the window in which the tracker looks for the target leading to incorrect track assignment.
+\end{enumerate}
+
+								\begin{figure}
+								\centering
+								\includegraphics[width=0.45\textwidth]{figs/PRML_PCA_problem.pdf}
+								\caption{In $\mathbb{R}^2$, a reduced eigenspace means that eigenvector $u_2$ is discarded.  Vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ have the same projection error on eigenvector $u_1$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ of the training data $\mathbf{x}_i$.}
+								\label{fig:PRML_PCA_problem}
+								\end{figure}
+
+For a tracker that tries to learn the appearance and/or contour model of the target, inclusion of background pixels is an added problem that can cause drift.  If none of the problems mentioned above were present, a simple template matching stategy would suffice for robust tracking.  This has complexity $O(nm)$, where $n$ is the number of pixels in the target and $m$ is the number of locations at which the target is searched.  For most practical situations, this does not represent significant computational load and can be done in real time even while tracking several targets.
+
+In this work, we try to address single-target visual-tracking under several of the challenges mentioned above while trying to learn the appearance model of the target.  Seminal work here can be traced back to 1996 when Black and Jepson experimented with tracking using an eigenspace representation of the target appearance model~\cite{1998_JNL_Eigentracking_Black}.  The next notable work is by Moghaddam and Pentland, 1997~\cite{1997_JNL_EigenTRK_Moghaddam} in which they try to address a fundamental limitation of PCA.  In PCA, 2 vectors, $\mathbf{x}_1$ and $\mathbf{x}_2$ can have the same distance to a reduced eigenspace even if they have different distance to the mean of the data.  This is shown for a trivial case in $\mathbb{R}^2$ in Figure~\ref{fig:PRML_PCA_problem} where $\mathbf{e}_1=\mathbf{e}_2=\mathbf{e}$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ than $\mathbf{x}_2$.  They formulate the problem using DIFS (distance in feature space) and DFFS (distance from feature space) so that both projection error and distance to the mean of the data are used while trying to determine how well the subspace explains a new data-point.  The next breakthrough came with the work of Bishop and Tipping in 1999~\cite{1999_JNL_PPCA_Tipping} where they show that a probabilistic variation of PCA (PPCA) allows PCA to be used as a generative model.  The advantage in tracking is that this methodology allows an assignment of probabilities to new data-points.  This relative weighting can be used to determine best candidates.  All three works were combined into a tracking framework for the first time by Ross et. al. in 2008~\cite{2008_JNL_subspaceTRK_Ross}.  Moreover, they used incremental SVD to make their tracker run in real time.  
+
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=0.5\textwidth]{figs/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
+								\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
+								\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
+								\end{figure}
+
+Here, we extend this work using RVQ instead of PCA and introducing two new distance based measures for relative weighting of tracking candidates.  The result is a generative framework for RVQ that leads to robust tracking.  Whereas RVQ was first introduced by Juang and Gray in 1982~\cite{1982_CNF_SpeechRVQ_JuangGray}, subsequently greatly extended by the seminal work of Barnes~\cite{1991_CNF_DesignPerformanceRVQ_Frost,1992_JNL_RVQ_Barnes,1992_CNF_ImageCodingRVQ_Kossentini,1993_sigmaTrees_Barnes,1993_JNL_RVQDSC_Barnes,1995_JNL_OptimalityRVQ_Kossentini,1996_CNF_VQclassification_Barnes,1996_JNL_AdvancesRVQ_Barnes,2002_JNL_SigmaTrees_Barnes,2004_CNF_DSSAdataMining_Barnes,2007_JNL_Katrina_Barnes,2007_JNL_IDDM_Barnes} and widely known in the signal processing and information theory communities, relatively little attention has been given to this work in the computer vision and machine learning fields where a much simpler version, K-means, has been widely used.  Our goal is to remedy this situation and introduce RVQ in the context of an important and challenging problem, visual target tracking.
+
+
+%================================
+\section{Theory}
+%================================
+It has been shown by Roweis and Ghahramani~\cite{1999_JNL_Gaussian_roweis} that under the assumption of gaussian noise, factor analysis (FA), principal component analysis (PCA), mixtures of gaussian (MoG) clusters, vector quantization (VQ), independent components analysis (ICA), Kalman filters and hidden Markov models (HMMs) are instances of a single basic generative model, the linear gaussian model.  The linear gaussian model can be written as,
+
+\begin{equation}
+\begin{array}{llllllllllllll}
+\mathbf{x}_{t+1} &=  \mathbf{A}\mathbf{x}_{t} +  \mathbf{w}_t   & & & \mathbf{w}_t \sim \mathcal{N}(0, \mathbf{Q})\\
+\mathbf{y}_t 		 &=  \mathbf{C}\mathbf{x}_{t} +  \mathbf{v}_t    & & & \mathbf{v}_t \sim \mathcal{N}(0, \mathbf{R})
+\end{array}
+\label{LGM}
+\end{equation}
+
+where $\mathbf{A}$ is the state transition matrix, $\mathbf{C}$ is the observation matrix, and $\mathbf{w}_t$ and $\mathbf{v}_t$ are zero-mean gaussian random variables.  Under conditions where each data point $\mathbf{x}$ was generated independently and identically without any temporal ordering, i.e., $\mathbf{A}=\mathbf{0}$, we can write,
+
+\begin{equation}
+\begin{array}{llllllllllllll}
+\mathbf{x} &= \mathbf{w} 											& & & \mathbf{w} &\sim \mathcal{N}(0, \mathbf{Q})\\
+\mathbf{y} &=  \mathbf{C}\mathbf{x} +  \mathbf{v} 		& & & \mathbf{v} & \sim \mathcal{N}(0, \mathbf{R})
+\end{array}
+\label{LGM1}
+\end{equation}
+
+
+
+\begin{table}[t]
+\centering
+\begin{tabular}{| c | c | c | c | c |}\hline
+ 				 	&\textbf{A}	 	&	\textbf{C}  									& \textbf{Q} 	&  \textbf{R}                                                                		\\\hline
+\textbf{PCA} 	&\textbf{0}		&	principal eigenvectors of $\boldsymbol\Sigma$	& \textbf{I}  	&  $\lim\limits_{\sigma^2 \rightarrow 0} \sigma^2\mathbf{I}$ 	\\\hline
+\textbf{PPCA} &\textbf{0}		& 	scaled principal eigenvectors of $\boldsymbol\Sigma$	& \textbf{I}	&										             $\sigma^2 \mathbf{I}$	 \\\hline
+\textbf{FA}   	&\textbf{0}		&													& \textbf{I} 	&  diagonal matrix 																\\\hline
+\textbf{MoG}	&\textbf{0}		&	cluster means								& \textbf{I}	& 	-																					\\\hline
+\textbf{VQ}	 	&\textbf{0} 	&	cluster means								& \textbf{I}	& 	-																					\\\hline
+\end{tabular}
+\caption{Unifying PCA, PPCA, FA, MoG and VQ using linear gaussian models~\cite{1999_JNL_Gaussian_roweis, 1999_JNL_PPCA_Tipping}.}
+\label{table:LGM_unifying}
+\end{table}
+
+Moreover, for non-linear mappings, such as in MoG and VQ, a function $\mathbf{WTA[.]}$, \emph{winner-take-all} is introduced which returns a vector with unity in one position and all remaining zeros,
+
+\begin{equation}
+\begin{array}{llllllllllllll}
+\mathbf{x} &= \mathbf{WTA}(\mathbf{w}) 						& & & \mathbf{w} &\sim \mathcal{N}(\mathbf{\boldsymbol\mu}, \mathbf{Q})\\
+\mathbf{y} &=  \mathbf{C}\mathbf{x} +  \mathbf{v} 		& & & \mathbf{v} & \sim \mathcal{N}(0, \mathbf{R})
+\end{array}
+\label{LGM2}
+\end{equation}
+
+The values for \textbf{A}, \textbf{C}, \textbf{Q} and \textbf{R} under this elegant, unifying generative framework for various algorithms, including PCA and VQ, are given in Table~\ref{table:LGM_unifying}.  Besides being inherently satisfying, this framework allows the computation of data likelihoods in the case of PCA and VQ since they both do not define a proper density in the observation space~\cite{1999_JNL_Gaussian_roweis}.  We start with likelihoods under PCA, then move to VQ.  Our contribution is extending this work to compute likelihoods under RVQ.
+
+
+\subsection{Likelihood for PCA}
+%-----------------------------------------
+For PCA, using Equation~\ref{LGM1} and Table~\ref{table:LGM_unifying}, we have the likelihood of observing $\mathbf{y}$ given by,
+
+\begin{equation}
+p(\mathbf{y}) \sim \mathcal{N}(\boldsymbol\mu, \mathbf{C}\mathbf{C}^T + \sigma^2 \mathbf{I})
+\end{equation}
+
+Bishop and Tipping~\cite{1999_JNL_PPCA_Tipping} show that this can be done in closed form using PPCA with the following solution,
+
+\begin{equation}
+\begin{array}{lllll}
+\mathbf{\boldsymbol\mu}_{\textrm{ML}} &=\frac{1}{N}\sum\limits_{i=1}^N \mathbf{x}_i\\
+\sigma^2_{\textrm{ML}} &= \frac{1}{D-q}\sum\limits_{i=q+1}^D \lambda_i\\
+\mathbf{C}_{\textrm{ML}} &= \mathbf{U}_q(\mathbf{\Lambda}_q - \sigma^2\mathbf{I})^{1/2} \\
+\end{array}
+\label{Eqn:PPCA}
+\end{equation}
+
+where, $\boldsymbol\Sigma = \mathbf{U}\mathbf{\Lambda}\mathbf{V}^T$, $\mathbf{U}_q$ are the first $q$ eigenvectors in $\mathbf{U}$, $\mathbf{\Lambda}_q$ contains the corresponding eigenvalues, $\lambda_1, \lambda_2, \ldots \lambda_q$, $D$ is the dimensionality of the data and $N$ is the number of data points.  Note that in the above equation, we have omitted multiplication with an arbitrary rotation matrix since it can be taken to be $\mathbf{I}$ without loss of generality.  
+
+In Equation~\ref{Eqn:PPCA}, $\sigma^2_{\textrm{ML}}$ is the average variance in the discarded dimensions and $\mathbf{C}_{\textrm{ML}}$ maps $\mathbf{x}$ onto its principal components to give output $\mathbf{y}$.
+
+Before we proceed, we mention an alternate approach to compute the likelihood under PCA~\cite{1997_JNL_EigenTRK_Moghaddam}.  In a gaussian distribution, the probability of a data point $\mathbf{x}$ in $\mathbb{R}^D$ depends on the Mahalanobis distance $d$.  The output of PCA, zero-centered $\mathbf{\tilde{y}}$ is decorrelated with variances along each dimension equal to the eigenvalues $\lambda_i$ of the covariance matrix $\boldsymbol\Sigma$,
+
+
+\begin{equation}
+\begin{array}{lllllll}
+d &= (\mathbf{x}-\boldsymbol\mu)^T\boldsymbol\Sigma^{-1}(\mathbf{x}-\boldsymbol\mu)\\
+&=\mathbf{\tilde{x}}^T\boldsymbol\Sigma^{-1}\mathbf{\tilde{x}}\\
+&=\mathbf{\tilde{x}}^T(\mathbf{U}\boldsymbol\Lambda\mathbf{U}^T)^{-1}\mathbf{\tilde{x}}\\
+&=\mathbf{\tilde{x}}^T(\mathbf{U}\boldsymbol\Lambda^{-1}\mathbf{U}^{-1})\mathbf{\tilde{x}}\\
+&=(\mathbf{U}^T\mathbf{\tilde{x}})^T\boldsymbol\Lambda^{-1}(\mathbf{U}^T\mathbf{\tilde{x}})	\\
+&=\mathbf{\tilde{y}}^T\boldsymbol\Lambda^{-1}\mathbf{\tilde{y}}\\
+&=\sum\limits_{d=1}^D \frac{\tilde{y}_i}{\lambda_i}\\
+&=\sum\limits_{d=1}^Q \frac{\tilde{y}_i^2}{\lambda_i} + {\color{red}\sum\limits_{d=Q+1}^D} \frac{{\color{red}\tilde{y}_i^2}}{\lambda_i}, \ \ \  & \bigg(\textrm{DFFS = recon. error}={\color{red}\sum\limits_{i=1}^D e_i^2} = \sum\limits_{i=1}^D \tilde{x}_i^2 - \sum\limits_{i=1}^Q \tilde{y}_i^2= {\color{red}\sum\limits_{d=Q+1}^D} {\color{red}\tilde{y}_i^2}\bigg)\\
+&=\sum\limits_{d=1}^Q \frac{\tilde{y}_i^2}{\lambda_i} + \frac{1}{\rho} {\color{red}\sum\limits_{i=1}^D e_i^2} \ \ \ & \bigg(\rho^* = \frac{1}{D-q}\sum\limits_{i=q+1}^D \lambda_i\bigg)\\
+\end{array}
+\label{Eqn:MoghaddamLikelihood}
+\end{equation}
+
+The first term in the sum is the DIFS term in Figure~\ref{fig:1997_JNL_DIFSDFFS_Moghaddam} while the second term corresponds to DFFS.  With this formulation, PCA can be used in a probabilistic framework since the error of a test vector $\mathbf{x}$ now also depends on its distance from the mean of the data.
+
+
+\subsection{Likelihood for VQ}
+%---------------------------------
+
+
+\subsection{Likelihood for RVQ}
+%---------------------------------
+Given this overview, we now move to computation of the likelihood of a data point under RVQ.
+
+
+In the work of Moghaddam and Pentland~\cite{1997_JNL_EigenTRK_Moghaddam}, 2 distances are computed to determine visual similarity.  These are shown graphically in Figure~\ref{fig:1997_JNL_DIFSDFFS_Moghaddam}.
+
+\begin{equation}
+\begin{array}{lllllll}
+
+\end{array}
+\end{equation}
+
+In this work, we introduce a new distance measure $d_r$ for RVQ.  Its role is similar to the role played by the Mahalanobis distance in probabilistic PCA.  Essentially, it is used to assign a probability measure to a new data point and demonstrates how well this data point is explained by the RVQ codebook $\Phi$.  The RVQ codebook $\Phi$ is generated using training data and 3 parameters, target decoding SNR, $S$, maximum number of stages, $Q_{\textrm{max}}$ and number of codevectors per stages, $M$.  $d_r$ is given by,
+
+\begin{equation}
+d_r = \dr
+\end{equation}
+
+Here, $\mathbf{\hat{x}}_i$ is the reconstruction for $\mathbf{x}$ under the codebook $\Phi$, $Q_i$ is the number of stages required to decode it, and $\lambda$ is a regularization parameter.
+
+\begin{equation}
+p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\dr\big)}}
+\end{equation}
+
+Additionally, 
+
+%================================
+\section{Experiments}
+%================================
+
+%================================
+\section{Results}
+%================================
+
+%================================
+\section{Conclusions}
+%================================
+
+
+%-----------------------------------------------------------------
+\newpage
+\appendix
+\section{Source code}
+\label{Sec:sourceCode}
+%-----------------------------------------------------------------
+\scriptsize
+
+\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_apply\_transform.m}, 		label=lst:UTIL_2D_affine_apply_transform]		{UTIL_2D_affine_apply_transform.m}
+
+\normalsize
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}

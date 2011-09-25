@@ -28,7 +28,7 @@
                 N_sy            =   1;%3;
                 dir_I           =   'img/Dudek/';%'img/PETS2001_640x480/';
                 ext_I           =   '.png';%'.jpg'
-                prefix          =   ['test_out']; %['trk_RVQ_PETS2001_' num2str(N_ict)];
+                prefix          =   ['test_out']; %['trkRVQE_PETS2001_' num2str(N_ict)];
                 odir         =   [prefix '/']; %[prefix '/results_from_GT/'];
                 fn_out_prefix   =   [prefix '_'];
                 N_ict           =   'all previous';

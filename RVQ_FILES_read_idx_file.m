@@ -6,7 +6,7 @@
 % explorer and linker .idx files have different format
 % to read linker style, set bLinkerNotExplorerStyle_idx = true
 %
-% maxP is maximum number of stages in RVQ, currently either 8 or 16
+% maxQ is maximum number of stages in RVQ, currently either 8 or 16
 % M is number of codevectors per stage
 %
 % explorer .idx file has values from 0 to M+1. 
@@ -22,9 +22,9 @@
 % Date last modified : July 29, 2011
 %%
 
-function XDRs = RVQ_FILES_read_idx_file(cfn_idx, maxP, M, bLinkerNotExplorerStyle_idx) %notice maxP rather than P
+function XDRs = RVQ_FILES_read_idx_file(cfn_idx, maxQ, M, bLinkerNotExplorerStyle_idx) %notice maxQ rather than P
                 %this is because the idx file, whether created by Linker or
-                %Explorer has entries according to maxP
+                %Explorer has entries according to maxQ
 
 %-----------------------
 %INITIALIZATIONS
@@ -44,9 +44,9 @@ function XDRs = RVQ_FILES_read_idx_file(cfn_idx, maxP, M, bLinkerNotExplorerStyl
                                          %Barnes, we were not able to distinguish between them.  
         
     %get number of observations from file size
-    %notice that I know maxP, and so I can find N, since the number of
+    %notice that I know maxQ, and so I can find N, since the number of
     %bytes in the file is NT
-    N                       =   length(data)/maxP;  %number of training examples (observations)
+    N                       =   length(data)/maxQ;  %number of training examples (observations)
                                                                                                          
 %-----------------------
 %PROCESSING
@@ -55,19 +55,19 @@ function XDRs = RVQ_FILES_read_idx_file(cfn_idx, maxP, M, bLinkerNotExplorerStyl
     if (bLinkerNotExplorerStyle_idx) 
         
         %Linker generated idx file
-        temp                =   reshape(data,N, maxP);     %training XDRs matrix
+        temp                =   reshape(data,N, maxQ);     %training XDRs matrix
         feature vectors_PxN         =   temp';
         XDRs                =   feature vectors_PxN;            %this is what will be returned from the function
 
     
     else
         %Explorer generated idx file (replace M+2 with M+1)
-        for n =1:N*maxP
+        for n =1:N*maxQ
             if (data(n) == M+2)                                 %Dr Barnes and I could never figure out why explorer using M+2, but we agreed that it's probably some form of early termination which is indicated by M+1, so we're changing this to M+1
                 data(n)     = M+1;
             end
         end
-        tst_XDRs_PxNii      =   reshape(data,maxP, N);             %NIii: number of pixels in inner part of image that is tested           
+        tst_XDRs_PxNii      =   reshape(data,maxQ, N);             %NIii: number of pixels in inner part of image that is tested           
         XDRs                =   tst_XDRs_PxNii;                 %test XDRs matrix                  
     end       
     

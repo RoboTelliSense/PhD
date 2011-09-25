@@ -33,7 +33,7 @@ function PCA = PCA__1_train(DM2, PCA)
     [D, N]                  =   size(DM2);
     
     mu_Dx1                  =   mean(DM2, 2);
-    P                       =   PCA.mdl_1_P__1x1;
+    P                       =   PCA.mdl_1_Q__1x1;
     DM2z         			=   DM2  - repmat(mu_Dx1, 1, N); %repeat N columns because there are N data points and there's one data point per column
 
 %------------------------------------------

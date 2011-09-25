@@ -10,7 +10,7 @@ function PCA = PCA__2_test(DM2, PCA)
     [D, N]                  =   size(DM2);                  %U_DxP is DxD if N>D, otherwise it's DxN
    
     mu_Dx1                  =   PCA.mdl_2_mu_Dx1; 
-    P                       =   PCA.mdl_1_P__1x1;
+    P                       =   PCA.mdl_1_Q__1x1;
     U_DxP                   =   PCA.mdl_3_U__DxP;
     
     DM2z                    =   DM2 - repmat(mu_Dx1, 1, N);  %zero centered, i.e., mean removed

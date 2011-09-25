@@ -44,7 +44,7 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %!!!end caution!!!
 
     DM2_u8                  =   uint8(DM2);         %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
-    maxP                    =   RVQ.in_3__maxP;     %max number of stages
+    maxQ                    =   RVQ.in_3__maxQ;     %max number of stages
     M                       =   RVQ.in_4__M___;     %number of templates per stage
     targetSNR               =   RVQ.in_5__tSNR;     %desired SNR
     sw                      =   RVQ.in_6__sw__;     %snippet width
@@ -84,17 +84,17 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     
     if (ispc)
 
-        if (maxP==8)
+        if (maxQ==8)
             system(['RVQ__training_gen8.exe   ' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
-        elseif (maxP==16)
+        elseif (maxQ==16)
             system(['RVQ__1_train_gen16.exe   ' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
         end
 
     elseif (isunix)
 
-        if (maxP==8)
+        if (maxQ==8)
             system(['./RVQ__training_gen8.linux ' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);            
-        elseif (maxP == 16)
+        elseif (maxQ == 16)
             system(['./RVQ__1_train_gen16.linux' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -i' num2str(iFlag) ' -j' num2str(jFlag) ' > ' cfn_gentxt]);
         end
     end
@@ -116,7 +116,7 @@ function RVQ = RVQ__1_train(DM2, RVQ)
     
 %save model
     %decoder codebook to get actual stages, codebooks
-    [RVQ.mdl_1_P__1x1, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  ...
+    [RVQ.mdl_1_Q__1x1, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  ...
                             =  RVQ_FILES_read_dcbk_file        (cfn_3_dcbk); 
                         
                         
@@ -159,21 +159,21 @@ function RVQ = RVQ__1_train(DM2, RVQ)
 %                           main_compare_bPCA_ESVQ_RVQ_TSVQ.m for more details)
 %     if (ispc)
 % 
-%         if (maxP==8)
+%         if (maxQ==8)
 %             system(['RVQ__training_gen8.exe    ' cfn_1_posEg  ' ' cfn_2_ecbk ' ' cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
-%         elseif (maxP==16)
+%         elseif (maxQ==16)
 %             system(['RVQ__1_train_gen16.exe   ' cfn_1_posEg  ' ' cfn_2_ecbk ' ' cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
 %         end
 % 
 %     elseif (isunix)
 % 
-%         if (maxP==8)
+%         if (maxQ==8)
 %             system(['./RVQ__training_gen8.linux ' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);
-%         elseif (maxP == 16)
+%         elseif (maxQ == 16)
 %             system(['./RVQ__1_train_gen16.linux' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);        
 %         end
 %     end
-%     RVQ.trg_1_featr_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxP, M, true);    %notice that I do not use actualP but maxP
+%     RVQ.trg_1_featr_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxQ, M, true);    %notice that I do not use actualP but maxQ
 
 
 

@@ -13,7 +13,7 @@
     sh                      =   41;
     inner_image_dims        =   RVQ_UTIL_computeInnerPixels2(iw, ih, sw, sh);
     
-    RVQ.in_3__maxP               =   8;                                          %number of stages  
+    RVQ.in_3__maxQ               =   8;                                          %number of stages  
     RVQ.in_4__M___                  =   2;                                          %number of codevectors/stage
     RVQ.in_5__tSNR          =   1000;
     RVQ.in_6__sw__                 =   sw;                                         %snippet width

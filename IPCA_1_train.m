@@ -32,13 +32,13 @@ function IPCA = IPCA_1_train(DM2, IPCA)
 % POST-PROCESSING
 %------------------------------------------------------
 %just pick P eigenvectors
-    if (size(IPCA.mdl_3_U__DxP,2) > IPCA.mdl_1_P__1x1)
+    if (size(IPCA.mdl_3_U__DxP,2) > IPCA.mdl_1_Q__1x1)
         %IPCA.reseig        = IPCA.in_ff^2 *IPCA.reseig + sum(IPCA.mdl_4_S_Bx1(IPCA.maxbasis+1:end).^2);
-        IPCA.con_reseig     =   IPCA.in_ff * IPCA.con_reseig + sum(IPCA.mdl_4_S_Bx1(IPCA.mdl_1_P__1x1+1:end));
-        IPCA.mdl_3_U__DxP   =   IPCA.mdl_3_U__DxP(:,1:IPCA.mdl_1_P__1x1);
-        IPCA.mdl_4_S_Bx1    =   IPCA.mdl_4_S_Bx1(1:IPCA.mdl_1_P__1x1);
+        IPCA.pf_reseig     =   IPCA.in_ff * IPCA.pf_reseig + sum(IPCA.mdl_4_S_Bx1(IPCA.mdl_1_Q__1x1+1:end));
+        IPCA.mdl_3_U__DxP   =   IPCA.mdl_3_U__DxP(:,1:IPCA.mdl_1_Q__1x1);
+        IPCA.mdl_4_S_Bx1    =   IPCA.mdl_4_S_Bx1(1:IPCA.mdl_1_Q__1x1);
         if (isfield(IPCA,'trg_featr_PxN'))
-            IPCA.trg_featr_PxN    =   IPCA.trg_featr_PxN(1:IPCA.mdl_1_P__1x1,:);
+            IPCA.trg_featr_PxN    =   IPCA.trg_featr_PxN(1:IPCA.mdl_1_Q__1x1,:);
         end
     end
 

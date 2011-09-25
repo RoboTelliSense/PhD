@@ -1,7 +1,7 @@
 %% Reconstruct a test vector, x_Dx1, using an RVQ codebook.
 %
 % There are 4 rules to stop decoding (only the first 3 are implemented in this function):
-% (a) 'maxP'                : use all stages regardless of whether PSNR increases or not, same functionality as gen.exe -l
+% (a) 'maxQ'                : use all stages regardless of whether PSNR increases or not, same functionality as gen.exe -l
 % (b) 'monRMSE'             : monotonic PSNR, this is what I used in the first draft of my thesis
 % (c) 'RoE'                 : realm of experience, this is used by Explorer
 % (d) 'nullEnc'             : if a certain stage does not increase PSNR, skip it, i.e. null encode it
@@ -36,17 +36,17 @@ function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 %-------------------------------
     D                       =   length(x_Dx1);
     
-    maxP                    =   RVQ.in_3__maxP;
+    maxQ                    =   RVQ.in_3__maxQ;
     M                       =   RVQ.in_4__M___;          %number of codevectors/stage
     sw                      =   RVQ.in_6__sw__;          %snippet width
     sh                      =   RVQ.in_7__sh__;          %snippet height
     
     CB_DxMP                 =   RVQ.mdl_3_CB_DxMP;      %1 channel codebook, get it from the red, green or blue channel
-    P                       =   RVQ.mdl_1_P__1x1;       %actual number of stages in the codebook
+    P                       =   RVQ.mdl_1_Q__1x1;       %actual number of stages in the codebook
     
     
-    if (strcmp(RVQ.in_2__mode, 'trg'))                   %if we're doing training snippets, use maxP
-        rule_stop_decoding = RVQ.in_9__trgR;          %if 'maxP', then same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
+    if (strcmp(RVQ.in_2__mode, 'trg'))                   %if we're doing training snippets, use maxQ
+        rule_stop_decoding = RVQ.in_9__trgR;          %if 'maxQ', then same output as gen.exe -l.  was forced to do this because gen.exe -l can crash when confronted by certain datasets, 
                                                         %such as dataset 4 created by DATAMATRIX_create_random_DM2, probably
                                                         %because the max value there is >255,actually crashes when when this is not true
                                                         %discussed with Dr Barnes as well.  This version in matlab is very stable
@@ -59,14 +59,14 @@ function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 %-------------------------------    
     recon_prev_Dx1          =   zeros(D,1);             %state variable
     rmse_prev               =   1E15;                   %state variable
-    featr_Px1               =   zeros(maxP,1);          %i initialize with 0, my code for early termination (Dr Barnes' code was P+1)
+    featr_Px1               =   zeros(maxQ,1);          %i initialize with 0, my code for early termination (Dr Barnes' code was P+1)
     temp2_XDR_parPx1        =   [];                     %contains a partial featr_Px1, i.e., all indeces up to p-th stage
     partialP                =   0;
 
 %-------------------------------
 %2. PROCESSING
 %-------------------------------
-    %go over all stages (remember that P is actual stages in codebook, maxP is number of stages you wanted)
+    %go over all stages (remember that P is actual stages in codebook, maxQ is number of stages you wanted)
     for p=1:P
 
         %part 1: pick best codevector at p-th stage (note that all temporary variables here start with temp1 since this is part 1)
@@ -95,7 +95,7 @@ function RVQ = RVQ__2_test_grayscale_onevector(x_Dx1, RVQ, n)
 
 
         %part3: should we continue or exit?
-        if     (strcmp(rule_stop_decoding, 'maxP'))
+        if     (strcmp(rule_stop_decoding, 'maxQ'))
             continue_decoding   =   true;
         elseif      (strcmp(rule_stop_decoding, 'RoE'))
             continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_1_featr_PxN, temp2_XDR_parPx1);

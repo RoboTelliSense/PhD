@@ -41,6 +41,7 @@ since by definition, an orthonormal matrix $\mathbf{V}$ has to have $\mathbf{V}^
 \begin{array}{llll}
 \mathbf{A}\mathbf{A}^T&= \mathbf{U} \mathbf{S} \mathbf{V}^T \mathbf{V} \mathbf{S}^T \mathbf{U}^T\\
 &=\mathbf{U} (\mathbf{S} \mathbf{S}^T) \mathbf{U}^T\\ 
+&=\mathbf{U}\boldsymbol\Lambda \mathbf{U}^T\\ 
 \end{array}
 \label{Eq:first}
 \end{equation}
@@ -50,12 +51,13 @@ Similarly,
 \begin{equation}
 \begin{array}{llll}
 \mathbf{A}^T\mathbf{A}&=\mathbf{V} \mathbf{S}^T \mathbf{U}^T \mathbf{U} \mathbf{S} \mathbf{V}^T\\
-&=\mathbf{V} (\mathbf{S}^T \mathbf{S}) \mathbf{V}^T
+&=\mathbf{V} (\mathbf{S}^T \mathbf{S}) \mathbf{V}^T\\
+&=\mathbf{V} \boldsymbol\Lambda \mathbf{V}^T
 \end{array}
 \label{Eq:second}
 \end{equation}
 
-where $\mathbf{U}^T \mathbf{U} =\mathbf{V}^T \mathbf{V} = \mathbf{I}$ since $\mathbf{U}$ and $\mathbf{V}$ are orthonormal matrices.  Also, $\mathbf{S} \mathbf{S}^T = \mathbf{S}^T \mathbf{S}$ since $\mathbf{S}$ is a diagonal matrix.  
+where $\mathbf{U}^T \mathbf{U} =\mathbf{V}^T \mathbf{V} = \mathbf{I}$ since $\mathbf{U}$ and $\mathbf{V}$ are orthonormal matrices.  Also, $\mathbf{S} \mathbf{S}^T = \mathbf{S}^T \mathbf{S}=\boldsymbol\Lambda$ since $\mathbf{S}$ is a diagonal matrix.  
 
 So, to summarize, at this point we have 3 equations,
 
@@ -63,13 +65,13 @@ So, to summarize, at this point we have 3 equations,
 \boxed{
 \begin{array}{llll}
 \mathbf{A} &=\mathbf{U} \mathbf{S} \mathbf{V}^T\\
-\mathbf{A}\mathbf{A}^T&=\mathbf{U} (\mathbf{S} \mathbf{S}^T) \mathbf{U}^T\\
-\mathbf{A}^T\mathbf{A}&=\mathbf{V} (\mathbf{S}^T \mathbf{S}) \mathbf{V}^T\\
+\mathbf{A}\mathbf{A}^T&=\mathbf{U}\boldsymbol\Lambda \mathbf{U}^T\\
+\mathbf{A}^T\mathbf{A}&=\mathbf{V}\boldsymbol\Lambda \mathbf{V}^T\\
 \end{array}}
 \label{Eq:summary}
 \end{equation}
 
-The second and third equations above have a curious structure.  We know that $\mathbf{A}\mathbf{A}^T$ and $\mathbf{A}^T\mathbf{A}$ are symmetric matrices and therefore have an eigendecomposition of the form $\mathbf{Q}\mathbf{\Lambda}\mathbf{Q}^T$.  So, $\mathbf{U}$ contains the eigenvectors of $\mathbf{A}\mathbf{A}^T$, $\mathbf{V}$ contains the eigenvectors of $\mathbf{A}^T\mathbf{A}$ and $\mathbf{S} \mathbf{S}^T = \mathbf{S}^T \mathbf{S}$ contains the squared eigenvalues of  $\mathbf{A}$.
+The second and third equations above have a curious structure.  We know that $\mathbf{A}\mathbf{A}^T$ and $\mathbf{A}^T\mathbf{A}$ are symmetric matrices and therefore have an eigendecomposition of the form $\mathbf{Q}\mathbf{\Lambda}\mathbf{Q}^T$.  So, $\mathbf{U}$ contains the eigenvectors of $\mathbf{A}\mathbf{A}^T$, $\mathbf{V}$ contains the eigenvectors of $\mathbf{A}^T\mathbf{A}$ and $\mathbf{S} \mathbf{S}^T = \mathbf{S}^T \mathbf{S} = \boldsymbol\Lambda$ contains the squared eigenvalues of  $\mathbf{A}$.
 
 Now, how do we put all of this together.
 
