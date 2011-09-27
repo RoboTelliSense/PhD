@@ -128,7 +128,7 @@ datasetCode                 =   1;
 %2. INPUT
     [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM); 
     first_I                 =   double(I_HxWxF(:,:,1));     %read first image, 0t1 means the image intensities are between 0 and 1       
-    [a b first_mean_shxsw]  =   UTIL_2D_affine_extractROI(first_I, UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6), PARAM.tgt_sw, PARAM.tgt_sh);
+    [a b first_mean_shxsw]  =   UTIL_2D_affine_extractROI_using_Ha_2x3(first_I, UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6), PARAM.tgt_sw, PARAM.tgt_sh);
 
 %3. strings, directories, files
     PARAM.config_name       =   UTIL_TRK_create_config_string(PARAM);   %in one string, describes the configuration of this experimental run

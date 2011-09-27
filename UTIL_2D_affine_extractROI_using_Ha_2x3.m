@@ -1,4 +1,4 @@
-%> @file UTIL_2D_affine_extractROI.m
+%> @file UTIL_2D_affine_extractROI_using_Ha_2x3.m
 %> @brief extract a subimage from a larger image
 %>
 %> I have an input image from which I want to extract a subimage.  The
@@ -25,7 +25,7 @@
 %> Date created             :   Sep 13, 2011
 %> Date modified            :   Sep 14, 2011
 
-function [X_hxw, Y_hxw, I_hxw] = UTIL_2D_affine_extractROI(I_HxW, Ha_2x3, w, h)
+function [X_hxw, Y_hxw, I_hxw] = UTIL_2D_affine_extractROI_using_Ha_2x3(I_HxW, Ha_2x3, w, h)
 
 %----------------------------------------------------
 %PRE-PROCESSING

@@ -112,7 +112,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     for np=1:Np
         Ha_2x3              =   UTIL_2D_affine_tsrpxy_to_Ha_2x3(TRK.PRF_1_tsrpxy_6xNp(:,np));
         [X_hxw, Y_hxw, cand_snps_shxswxNp(:,:,np)]   ...
-                            =   UTIL_2D_affine_extractROI(I, Ha_2x3, sw, sh);
+                            =   UTIL_2D_affine_extractROI_using_Ha_2x3(I, Ha_2x3, sw, sh);
     end
     cand_snps_DxNp          =   reshape(cand_snps_shxswxNp,[D,Np]);
    
