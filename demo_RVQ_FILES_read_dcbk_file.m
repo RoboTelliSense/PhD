@@ -21,4 +21,4 @@
 %-------------------------------------
 %POST-PROCESSING
 %-------------------------------------
-    DATAMATRIX_display_DM2_as_image(mdl_3_CB_DxMP, 41, 11, actualP, M_check); %the snippets are wxh=11x41
+    DM2_display(mdl_3_CB_DxMP, 41, 11, actualP, M_check); %the snippets are wxh=11x41

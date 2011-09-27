@@ -10,7 +10,7 @@
 % Date last modified : July 7, 2011
 %%
 
-function [DM2,sw,sh] = DATAMATRIX_create_random_DM2()    
+function [DM2,sw,sh] = DM2_create_random()    
 
     D               		=   11;
     X1              		=   [1 5 3 8 15 16 17 28 29 40 45]; %D dimensional data

@@ -165,7 +165,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %save all snippets
     TRK.DM2                 =   [DM2      TRK.snp_0_pixls_shxsw(:)];          %update snippet library
     if 	   (strcmp(TRK.name, 'trkBPCA') || strcmp(TRK.name, 'trkRVQx') || strcmp(TRK.name, 'trkTSVQ')) %not needed for IPCA since it has its own forgetting factor
-        TRK.DM2             =   DATAMATRIX_pick_last_Nw_values_and_weight_in_DM2(TRK.DM2, Nw, bWeighting); 
+        TRK.DM2             =   DM2_window_and_repeat(TRK.DM2, Nw, bWeighting); 
     end
     
 %two particle filter variables (state and density)

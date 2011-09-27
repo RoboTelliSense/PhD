@@ -14,7 +14,7 @@
 % Date last modified    : July 9, 2011.
 %%
 
-function DATAMATRIX_saveInFormat_rvq(DM2, cfn_trainingFile, sw, sh)  %cfn_trainingFile is the complete filename for the ouput file
+function DM2_saveto_rvq_format(DM2, cfn_trainingFile, sw, sh)  %cfn_trainingFile is the complete filename for the ouput file
                                                                     %this file will contain a header and data in the DM2 matrix
                                                                     %sw is snippet width, sh is snippet height
                                                                     
@@ -63,7 +63,7 @@ function DATAMATRIX_saveInFormat_rvq(DM2, cfn_trainingFile, sw, sh)  %cfn_traini
 %write data
     fseek(fid, 512, 'bof');
     for i=1:N
-        I                   =   DATAMATRIX_extract_ith_image_from_DM2(DM2, i, sw, sh);%this returns an image
+        I                   =   DM2_extract_image(DM2, i, sw, sh);%this returns an image
         Iposneg             =   RVQ_FILES_create_posnegImage(I, '', false, false);     %this converts the image to posneg format
                                 fwrite(fid, Iposneg);                               %write each posneg image one after the other            
     end

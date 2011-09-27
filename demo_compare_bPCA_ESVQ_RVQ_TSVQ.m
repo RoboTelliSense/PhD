@@ -107,14 +107,14 @@
 %-----------------------------
 % 2. PROCESSING
 %-----------------------------
-datasetcode=6;
+datasetcode=1;
 %for f=1:1
 f=0;
 for  a       =   2:16
     aRVQ1.in_4__M___ = a;
     tic
     f=f+1;
-    [DM2, sw, sh]           =   DATAMATRIX_master_create(datasetcode);
+    [DM2, sw, sh]           =   DM2_create(datasetcode);
     aRVQ1.in_6__sw__        =   sw;             %snippet width
     aRVQ1.in_7__sh__        =   sh;             %snippet height
     
@@ -130,7 +130,7 @@ for  a       =   2:16
     
     %aTSVQ                   =    TSVQ_1_learn     (DM2, aTSVQ); 
       
-    [DM2_tst, sw, sh]       =   DATAMATRIX_master_create(datasetcode);
+    [DM2_tst, sw, sh]       =   DM2_create(datasetcode);
     %decoding
     %aBPCA                   =   PCA__2_encode(DM2_tst, aBPCA);                  
     aRVQ1                   =   RVQ__2_encode(DM2_tst, aRVQ1);
@@ -139,33 +139,49 @@ for  a       =   2:16
     aRVQ4                   =   RVQ__2_encode(DM2_tst, aRVQ4);
     
     %aTSVQ                   =   TSVQ_2_encode(DM2_tst, aTSVQ);
-
-    trg_rmse(f,:)           =   aRVQ1.trg_5_rmse__1x1%[aBPCA.trg_5_rmse__1x1     aRVQx.trg_5_rmse__1x1    aTSVQ.trg_5_rmse__1x1         ]
-    tst_rmse(f,:)           =   [aRVQ1.tst_5_rmse__1x1 aRVQ2.tst_5_rmse__1x1 aRVQ3.tst_5_rmse__1x1 aRVQ4.tst_5_rmse__1x1]%[aBPCA.tst_5_rmse__1x1     aRVQx.tst_5_rmse__1x1    aTSVQ.tst_5_rmse__1x1         ]
     
+    rmse(f,:)               =   [aRVQ1.trg_5_rmse__1x1 ...
+                                 aRVQ1.tst_5_rmse__1x1 ...
+                                 aRVQ2.tst_5_rmse__1x1 ...
+                                 aRVQ3.tst_5_rmse__1x1 ...
+                                 aRVQ4.tst_5_rmse__1x1] %[aBPCA.tst_5_rmse__1x1     aRVQx.tst_5_rmse__1x1    aTSVQ.tst_5_rmse__1x1         ]
+   %trg_rmse(f,:)           =   aRVQ1.trg_5_rmse__1x1%[aBPCA.trg_5_rmse__1x1     aRVQx.trg_5_rmse__1x1    aTSVQ.trg_5_rmse__1x1         ]
+   %tst_rmse(f,:)           =   [aRVQ1.tst_5_rmse__1x1 aRVQ2.tst_5_rmse__1x1 aRVQ3.tst_5_rmse__1x1 aRVQ4.tst_5_rmse__1x1]%[aBPCA.tst_5_rmse__1x1     aRVQx.tst_5_rmse__1x1    aTSVQ.tst_5_rmse__1x1         ]
+     
     toc
     temp                    =   1;
 end    
     
+    mu = mean(rmse);
+    rmse_with_mean = [rmse;mu]
 %-----------------------------
 %RESULTS
 %-----------------------------
 %view
     numDisplayRows          =   10;
     numDisplayCols          =   10;
-                                figure;DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols, 0);
-                                %figure;DATAMATRIX_display_DM2_as_image(aBPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols, 1);title('aBPCA eigenvectors');
-                                figure;DATAMATRIX_display_DM2_as_image(aRVQ1.mdl_3_CB_DxMP, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
-                                %figure;DATAMATRIX_display_DM2_as_image(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
+                                figure;DM2_display(DM2,            sh, sw, numDisplayRows, numDisplayCols, 0);
+                                %figure;DM2_display(aBPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols, 1);title('aBPCA eigenvectors');
+                                figure;DM2_display(aRVQ1.mdl_3_CB_DxMP, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
+                                %figure;DM2_display(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
     
-    figure;plot(trg_rmse(:), 'ro-')
+    figure;
     hold on
-    plot(tst_rmse(:,1), 'g+-');   
-    plot(tst_rmse(:,2), 'bd-');  
-    plot(tst_rmse(:,3), 'm*-');  
-    plot(tst_rmse(:,4), 'k*-');  
-    axis([1 15 0 1.5]);grid on; 
-    legend('trg', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR')
-    matrix2latex(tst_rmse)
-    UTIL_FILE_save2pdf('aRVQ_rnd_.pdf', gcf, 300);
+    plot(2:16, rmse(:,1), 'ro-')
+    plot(2:16, rmse(:,2), 'g+-');   
+    plot(2:16, rmse(:,3), 'bd-');  
+    plot(2:16, rmse(:,4), 'm*-');  
+    plot(2:16, rmse(:,5), 'ks-');  
+    grid on; 
+    axis([2 16 0 1.5])
+    legend('Trng', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'Northeast')
+    xlabel('number of stages, m');
+    UTIL_FILE_save2pdf('aRVQ_1_to_256.pdf', gcf, 300);
+    
+ 
+    rowLabels = {'m=2', 'm=3', 'm=4', 'm=5', 'm=6', 'm=7', 'm=8', 'm=9', 'm=10', 'm=11', 'm=12', 'm=13', 'm=14', 'm=15', 'm=16', 'mean'};
+    colLabels = {'Trng', 'maxQ', 'RofE', 'nulE', 'monR'};
+    UTIL_matrix2latex(rmse_with_mean, 'aRVQ_1_to_256.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
+
+    
     

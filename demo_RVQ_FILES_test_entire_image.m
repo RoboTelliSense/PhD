@@ -33,7 +33,7 @@
     [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_3_CB_DxMP, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
                             =   RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.dcbk'); 
     
-                                DATAMATRIX_display_DM2_as_image(RVQ.mdl_3_CB_DxMP, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
+                                DM2_display(RVQ.mdl_3_CB_DxMP, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
 
     Isnr                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);
     Istg                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);

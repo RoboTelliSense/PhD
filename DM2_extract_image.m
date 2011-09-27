@@ -6,7 +6,7 @@
 % Date last modified    : July 9, 2011.
 %%
 
-function I_h_x_w = DATAMATRIX_extract_ith_image_from_DM2(DM2, col, w, h)
+function I_h_x_w = DM2_extract_image(DM2, col, w, h)
     
     I_Dx1                   =   DM2(:,col);               %extract D-dimensional column 
     I_h_x_w                 =   reshape(I_Dx1, h, w);     %reshape as an image and return

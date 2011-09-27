@@ -1,4 +1,4 @@
-function [DM2,sw,sh] =  DATAMATRIX_extract_roi_from_Dudek()
+function [DM2,sw,sh] =  DM2_extract_roi_from_Dudek()
 
     load Dudek;
     
