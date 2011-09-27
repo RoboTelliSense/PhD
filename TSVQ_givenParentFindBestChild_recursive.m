@@ -2,7 +2,7 @@
 %- this variable corresponds to how deep you are in the tree.  this helps you
 %exit the recursion once you've hit the bottom, i.e. picked a terminal
 %codevector
-%- refer to TSVQ_1_train to see how the levels are set
+%- refer to TSVQ_1_learn to see how the levels are set
 
 function [t, bVQ] = TSVQ_givenParentFindBestChild_recursive(tst_Dx1, parent_idx, bVQ, CB_DxKt, t, exit_condition_T)
 

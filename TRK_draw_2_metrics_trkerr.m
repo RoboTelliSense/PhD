@@ -1,4 +1,4 @@
-function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_draw_2_metricstrk_rmse(CONFIG, trkIPCA, trkBPCA, trkRVQE, trkTSVQ)
+function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_draw_2_metricstrk_rmse(CONFIG, trkIPCA, trkBPCA, trkRVQx, trkTSVQ)
 
     
                                         figure(2);
@@ -100,12 +100,12 @@ function [trkIPCA.FP_2_est, BPCA.FP_2_est, RVQ.FP_2_est, TSVQ.FP_2_est] = TRK_dr
         
         
         
-        if (bUseRVQE)
-            RVQ.FP_2_est(:,:,f)      =   trkRVQE.tgt_best_aff_abcdxy_1x6([3,4,1;5,6,2])*[GT.fp_3_refzc_2xG; ones(1,GT.fp_2_G_____1x1)];
-            trkRVQE.FP_1_gt                  =   cat(3, GT.fp_3_refzc_2xG+repmat(sz'/2,[1,GT.fp_2_G_____1x1]), GT(:,:,f), RVQ.FP_2_est(:,:,f));
-            RVQidx                  =   find(trkRVQE.FP_1_gt(1,:,2) > 0);
+        if (bUseRVQx)
+            RVQ.FP_2_est(:,:,f)      =   trkRVQx.tgt_best_aff_abcdxy_1x6([3,4,1;5,6,2])*[GT.fp_3_refzc_2xG; ones(1,GT.fp_2_G_____1x1)];
+            trkRVQx.FP_1_gt                  =   cat(3, GT.fp_3_refzc_2xG+repmat(sz'/2,[1,GT.fp_2_G_____1x1]), GT(:,:,f), RVQ.FP_2_est(:,:,f));
+            RVQidx                  =   find(trkRVQx.FP_1_gt(1,:,2) > 0);
             if (length(RVQidx) > 0)
-                RVQ.FPerr(f)      =   sqrt(mean(sum((trkRVQE.FP_1_gt(:,RVQidx,2)-trkRVQE.FP_1_gt(:,RVQidx,3)).^2,1)));
+                RVQ.FPerr(f)      =   sqrt(mean(sum((trkRVQx.FP_1_gt(:,RVQidx,2)-trkRVQx.FP_1_gt(:,RVQidx,3)).^2,1)));
             else
                 RVQ.FPerr(f)      =   nan;
             end

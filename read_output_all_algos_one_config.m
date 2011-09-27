@@ -14,7 +14,7 @@ avg_trk_err = -1*zeros(4,4);
                 rvq__targetSNR   =   config(c,4);
                 tsvq_T          =   config(c,5);
                 j               =   j+1;
-                [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQE1, bUseRVQE2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
+                [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
                 cfn             =   [odir 'FPerr_3_ipca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);

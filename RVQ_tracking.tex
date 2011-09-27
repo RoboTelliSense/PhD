@@ -8,7 +8,7 @@
 \rule[0pt]{\textwidth}{1pt}
 \tableofcontents
 \rule[0pt]{\textwidth}{1pt}
-\newcommand{\dr}{(\mathbf{x}_i-\mathbf{\hat{x}}_i)^T(\mathbf{x}_i-\mathbf{\hat{x}}_i) + \lambda({Q_{\textrm{max}}-Q_i})}
+\newcommand{\dr}{(\mathbf{x}_i-\boldsymbol\mu_k)^T(\mathbf{x}_i-\boldsymbol\mu_k) + \lambda({Q_{\textrm{max}}-Q_i})}
 
 \begin{abstract}
 A learning-based tracking framework builds the target model while it tracks, thus avoiding the costly step of building target models prior to tracking.  This has been demonstrated successfully for PCA based tracking using publicly-available challenging datasets.  In this work, we use Residual Vector Quantization in a learning-based tracking framework using the same datasets and show that RVQ performs as well as PCA.  Moreover, we introduce 2 new distance metrics for relative weighting of target candidates allowing RVQ to be used as a generative model, similar to the way probabilistic PCA converts PCA into a generative framework.
@@ -85,12 +85,11 @@ where $\mathbf{A}$ is the state transition matrix, $\mathbf{C}$ is the observati
 \begin{tabular}{| c | c | c | c | c |}\hline
  				 	&\textbf{A}	 	&	\textbf{C}  									& \textbf{Q} 	&  \textbf{R}                                                                		\\\hline
 \textbf{PCA} 	&\textbf{0}		&	principal eigenvectors of $\boldsymbol\Sigma$	& \textbf{I}  	&  $\lim\limits_{\sigma^2 \rightarrow 0} \sigma^2\mathbf{I}$ 	\\\hline
-\textbf{PPCA} &\textbf{0}		& 	scaled principal eigenvectors of $\boldsymbol\Sigma$	& \textbf{I}	&										             $\sigma^2 \mathbf{I}$	 \\\hline
+\textbf{PPCA} &\textbf{0}		& 	scaled principal eigenvectors of $\boldsymbol\Sigma$	& \textbf{I}	&										      $\sigma^2 \mathbf{I}$	 \\\hline
 \textbf{FA}   	&\textbf{0}		&													& \textbf{I} 	&  diagonal matrix 																\\\hline
-\textbf{MoG}	&\textbf{0}		&	cluster means								& \textbf{I}	& 	-																					\\\hline
 \textbf{VQ}	 	&\textbf{0} 	&	cluster means								& \textbf{I}	& 	-																					\\\hline
 \end{tabular}
-\caption{Unifying PCA, PPCA, FA, MoG and VQ using linear gaussian models~\cite{1999_JNL_Gaussian_roweis, 1999_JNL_PPCA_Tipping}.}
+\caption{Unifying PCA, PPCA, FA, and VQ using linear gaussian models~\cite{1999_JNL_Gaussian_roweis, 1999_JNL_PPCA_Tipping}.}
 \label{table:LGM_unifying}
 \end{table}
 
@@ -104,10 +103,31 @@ Moreover, for non-linear mappings, such as in MoG and VQ, a function $\mathbf{WT
 \label{LGM2}
 \end{equation}
 
-The values for \textbf{A}, \textbf{C}, \textbf{Q} and \textbf{R} under this elegant, unifying generative framework for various algorithms, including PCA and VQ, are given in Table~\ref{table:LGM_unifying}.  Besides being inherently satisfying, this framework allows the computation of data likelihoods in the case of PCA and VQ since they both do not define a proper density in the observation space~\cite{1999_JNL_Gaussian_roweis}.  We start with likelihoods under PCA, then move to VQ.  Our contribution is extending this work to compute likelihoods under RVQ.
-
+The values for \textbf{A}, \textbf{C}, \textbf{Q} and \textbf{R} under this elegant, unifying generative framework for various algorithms, including PCA and VQ, are given in Table~\ref{table:LGM_unifying}.  Besides being inherently satisfying, this framework allows the computation of data likelihoods in the case of PCA and VQ since they both do not define a proper density in the observation space~\cite{1999_JNL_Gaussian_roweis}.  We start with likelihoods under PCA, PPCA and VQ.  Our contribution is extending this work to compute likelihoods under RVQ.
 
 \subsection{Likelihood for PCA}
+%-----------------------------------------
+In a gaussian distribution, the probability of a data point $\mathbf{x}$ in $\mathbb{R}^D$ depends on the Mahalanobis distance $d$.  The output of PCA, zero-centered $\mathbf{\tilde{y}}$ is decorrelated with variances along each dimension equal to the eigenvalues $\lambda_i$ of the covariance matrix $\boldsymbol\Sigma$,
+
+
+\begin{equation}
+\begin{array}{lllllll}
+d &= (\mathbf{x}-\boldsymbol\mu)^T\boldsymbol\Sigma^{-1}(\mathbf{x}-\boldsymbol\mu)\\
+&=\mathbf{\tilde{x}}^T\boldsymbol\Sigma^{-1}\mathbf{\tilde{x}}\\
+&=\mathbf{\tilde{x}}^T(\mathbf{U}\boldsymbol\Lambda\mathbf{U}^T)^{-1}\mathbf{\tilde{x}}\\
+&=\mathbf{\tilde{x}}^T(\mathbf{U}\boldsymbol\Lambda^{-1}\mathbf{U}^{-1})\mathbf{\tilde{x}}\\
+&=(\mathbf{U}^T\mathbf{\tilde{x}})^T\boldsymbol\Lambda^{-1}(\mathbf{U}^T\mathbf{\tilde{x}})	\\
+&=\mathbf{\tilde{y}}^T\boldsymbol\Lambda^{-1}\mathbf{\tilde{y}}\\
+&=\sum\limits_{d=1}^D \frac{\tilde{y}_i}{\lambda_i}\\
+&=\sum\limits_{d=1}^Q \frac{\tilde{y}_i^2}{\lambda_i} + {\color{red}\sum\limits_{d=Q+1}^D} \frac{{\color{red}\tilde{y}_i^2}}{\lambda_i}, \ \ \  & \bigg(\textrm{DFFS = recon. error}={\color{red}\sum\limits_{i=1}^D e_i^2} = \sum\limits_{i=1}^D \tilde{x}_i^2 - \sum\limits_{i=1}^Q \tilde{y}_i^2= {\color{red}\sum\limits_{d=Q+1}^D} {\color{red}\tilde{y}_i^2}\bigg)\\
+&=\sum\limits_{d=1}^Q \frac{\tilde{y}_i^2}{\lambda_i} + \frac{1}{\rho} {\color{red}\sum\limits_{i=1}^D e_i^2} \ \ \ & \bigg(\rho^* = \frac{1}{D-q}\sum\limits_{i=q+1}^D \lambda_i\bigg)\\
+\end{array}
+\label{Eqn:MoghaddamLikelihood}
+\end{equation}
+
+This formulation, first presented in~\cite{1997_JNL_EigenTRK_Moghaddam} shows that the first term in the sum is the DIFS term in Figure~\ref{fig:1997_JNL_DIFSDFFS_Moghaddam} while the second term corresponds to DFFS.  With this formulation, PCA can be used in a probabilistic framework since the error of a test vector $\mathbf{x}$ now also depends on its distance from the mean of the data.
+
+\subsection{Likelihood for PPCA}
 %-----------------------------------------
 For PCA, using Equation~\ref{LGM1} and Table~\ref{table:LGM_unifying}, we have the likelihood of observing $\mathbf{y}$ given by,
 
@@ -130,82 +150,133 @@ where, $\boldsymbol\Sigma = \mathbf{U}\mathbf{\Lambda}\mathbf{V}^T$, $\mathbf{U}
 
 In Equation~\ref{Eqn:PPCA}, $\sigma^2_{\textrm{ML}}$ is the average variance in the discarded dimensions and $\mathbf{C}_{\textrm{ML}}$ maps $\mathbf{x}$ onto its principal components to give output $\mathbf{y}$.
 
-Before we proceed, we mention an alternate approach to compute the likelihood under PCA~\cite{1997_JNL_EigenTRK_Moghaddam}.  In a gaussian distribution, the probability of a data point $\mathbf{x}$ in $\mathbb{R}^D$ depends on the Mahalanobis distance $d$.  The output of PCA, zero-centered $\mathbf{\tilde{y}}$ is decorrelated with variances along each dimension equal to the eigenvalues $\lambda_i$ of the covariance matrix $\boldsymbol\Sigma$,
+								\begin{figure}[t]
+								\centering
+								\subfigure[Codebook and decode path taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 8.  Notice that monR is the only method unable to correctly decode.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_3x2.pdf}}
+								\subfigure[Decoded outputs produced by monR.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR incorrectly decodes 6, 8, 23 and 24.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_3x2_monR.pdf}}
+								\caption{3x2 (3 stages, 2 code-vectors per stage) RVQ codebook generated with the training set, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$. }
+								\label{fig:RVQ_toy_3x2}
+								\end{figure}
 
-
-\begin{equation}
-\begin{array}{lllllll}
-d &= (\mathbf{x}-\boldsymbol\mu)^T\boldsymbol\Sigma^{-1}(\mathbf{x}-\boldsymbol\mu)\\
-&=\mathbf{\tilde{x}}^T\boldsymbol\Sigma^{-1}\mathbf{\tilde{x}}\\
-&=\mathbf{\tilde{x}}^T(\mathbf{U}\boldsymbol\Lambda\mathbf{U}^T)^{-1}\mathbf{\tilde{x}}\\
-&=\mathbf{\tilde{x}}^T(\mathbf{U}\boldsymbol\Lambda^{-1}\mathbf{U}^{-1})\mathbf{\tilde{x}}\\
-&=(\mathbf{U}^T\mathbf{\tilde{x}})^T\boldsymbol\Lambda^{-1}(\mathbf{U}^T\mathbf{\tilde{x}})	\\
-&=\mathbf{\tilde{y}}^T\boldsymbol\Lambda^{-1}\mathbf{\tilde{y}}\\
-&=\sum\limits_{d=1}^D \frac{\tilde{y}_i}{\lambda_i}\\
-&=\sum\limits_{d=1}^Q \frac{\tilde{y}_i^2}{\lambda_i} + {\color{red}\sum\limits_{d=Q+1}^D} \frac{{\color{red}\tilde{y}_i^2}}{\lambda_i}, \ \ \  & \bigg(\textrm{DFFS = recon. error}={\color{red}\sum\limits_{i=1}^D e_i^2} = \sum\limits_{i=1}^D \tilde{x}_i^2 - \sum\limits_{i=1}^Q \tilde{y}_i^2= {\color{red}\sum\limits_{d=Q+1}^D} {\color{red}\tilde{y}_i^2}\bigg)\\
-&=\sum\limits_{d=1}^Q \frac{\tilde{y}_i^2}{\lambda_i} + \frac{1}{\rho} {\color{red}\sum\limits_{i=1}^D e_i^2} \ \ \ & \bigg(\rho^* = \frac{1}{D-q}\sum\limits_{i=q+1}^D \lambda_i\bigg)\\
-\end{array}
-\label{Eqn:MoghaddamLikelihood}
-\end{equation}
-
-The first term in the sum is the DIFS term in Figure~\ref{fig:1997_JNL_DIFSDFFS_Moghaddam} while the second term corresponds to DFFS.  With this formulation, PCA can be used in a probabilistic framework since the error of a test vector $\mathbf{x}$ now also depends on its distance from the mean of the data.
 
 
 \subsection{Likelihood for VQ}
 %---------------------------------
-
+As mentioned earlier, VQ does not define a proper density in the observation space.  Moreover, in the linear gaussian model, Table~\ref{table:LGM_unifying} shows that in VQ, similar to PCA, the observation noise vanishes, $\lim\limits_{\sigma^2 \rightarrow 0} \sigma^2\mathbf{I}$.  The posterior therefore collapses to a single point, and all its mass is centered on the nearest centroid.  In this case, the likelihood of a data point $\mathbf{x}_i$ is proportional to its squared distance from the nearest centroid.
 
 \subsection{Likelihood for RVQ}
 %---------------------------------
-Given this overview, we now move to computation of the likelihood of a data point under RVQ.
-
-
-In the work of Moghaddam and Pentland~\cite{1997_JNL_EigenTRK_Moghaddam}, 2 distances are computed to determine visual similarity.  These are shown graphically in Figure~\ref{fig:1997_JNL_DIFSDFFS_Moghaddam}.
-
-\begin{equation}
-\begin{array}{lllllll}
-
-\end{array}
-\end{equation}
-
 In this work, we introduce a new distance measure $d_r$ for RVQ.  Its role is similar to the role played by the Mahalanobis distance in probabilistic PCA.  Essentially, it is used to assign a probability measure to a new data point and demonstrates how well this data point is explained by the RVQ codebook $\Phi$.  The RVQ codebook $\Phi$ is generated using training data and 3 parameters, target decoding SNR, $S$, maximum number of stages, $Q_{\textrm{max}}$ and number of codevectors per stages, $M$.  $d_r$ is given by,
+
+								\begin{figure}[t]
+								\centering
+								\subfigure[Codebook and decode path taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 13.  Notice that monR is the only method unable to correctly decode.]{\includegraphics[height=3in]{figs/RVQ_CAC_toyExample_8x2.pdf}}
+								\subfigure[Decoded outputs produced by monR.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR produces quite a few incorrect reconstructions.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_8x2_monR.pdf}}
+								\caption{8x2 (8 stages, 2 code-vectors per stage) RVQ codebook generated with the training set, S=$\{1, 2, \ldots 256\}$.}
+								\label{fig:RVQ_toy_8x2}
+								\end{figure}
 
 \begin{equation}
 d_r = \dr
 \end{equation}
 
-Here, $\mathbf{\hat{x}}_i$ is the reconstruction for $\mathbf{x}$ under the codebook $\Phi$, $Q_i$ is the number of stages required to decode it, and $\lambda$ is a regularization parameter.
+Here, $\boldsymbol\mu_k$ is closest centroid to $\mathbf{x}_i$, $Q_i$ is the number of stages required to decode $\mathbf{x}_i$, and $\lambda$ is a regularization parameter.  With this distance measure, the likelihood of a data point being generated by an RVQ codebook $\Phi$ is given by,
 
 \begin{equation}
 p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\dr\big)}}
 \end{equation}
 
-Additionally, 
-
 %================================
 \section{Experiments}
 %================================
+In this section, we experiment with 4 RVQ decode methods:
+
+\begin{enumerate}
+\item \underline{maxQ}: In this method, RVQ decoding is carried out so that maximum stages $Q$ are used.
+\item \underline{RofE}: In this method, realm of experience coding is used.  A test vector is decoded such that the decode path traversed belongs to the set of training decode paths.
+\item \underline{nulE}: In this method, null encoding is used.  Reconstruction rms error is checked at every stage.  If at any stage, rms error is not reduced, that stage is skipped until maximum stages are attained.
+\item \underline{monR}: In this method, monotonic rms error is a condition.  If this condition is not met, decoding stops.
+\end{enumerate}
+
+We start with some trivial scalar examples where the training and test sets are the same.  We then move to the other extreme end of the spectrum using random data in high dimensional spaces with several observations and where the training and test sets have the same distributions but have different data.  After these experiments, we will get to tracking examples and use the likelihood formulation we have developed for RVQ.
+
+\subsection{Scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$}
+%-------------------------------------------------------------
+In this experiment, we train 8x2, 8x4 and 8x8 RVQ codebooks on the set of scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$.  The resulting codebook for the 8x2 case is shown graphically in Figure~\ref{fig:RVQ_toy_3x2}.  In this initial experiment, the test data is the same as the training data.  Also shown in the figure is the decode path taken by the 4 methods through the RVQ trellis to to decode the number 8.  For monR, when reconstruction reaches 7 in the very first stage, rms error is 1.  However, both next stage codevectors decrease rmse which is why monR exits at this point.  All other methods are able to decode 8 correctly.  These results are shown in Table~\ref{table:results}.  
+  
+ 
+\subsection{Scalars, S=$\{1, 2, \ldots 256\}$}
+%------------------------------------------------
+In this experiment, we train 8x2, 8x4 and 8x8 RVQ codebooks on the set of scalars, S=$\{1, 2, \ldots 256\}$.  The resulting codebook for the 8x2 case is shown graphically in Figure~\ref{fig:RVQ_toy_8x2}.  In this initial experiment, the test data is the same as the training data.  Also shown in the figure is the decode path taken by the 4 methods through the RVQ trellis to to decode the number 13.  For monR, when reconstruction reaches 16.5, rms error is 3.5.  However, both next stage codevectors decrease rmse which is why monR exits at this point.  All other methods are able to decode 13 correctly.   These results are shown in Table~\ref{table:results}. 
+
+\subsection{Random variables in $\mathbb{R}^{1089}$}
+%------------------------------------------------
+In this experiment, we train an 8x2, 8x4 and 8x8 RVQ codebook on 100 realizations of a unit-variance Gaussian random variable in $\mathbb{R}^{1089}$.  Decoding is then done on a different 100 realizations of a unit-variance Gaussian random variable in $\mathbb{R}^{1089}$.  This experiment is repeated 10 times and the results are averaged and displayed in Table~\ref{table:results}.  This experiment is then repeated for a uniform random variable.
 
 %================================
 \section{Results}
 %================================
+\begin{table}
+\centering
+\begin{tabular}{|p{2.5in}|c|p{0.7in}|c|c|c|c|}\hline
+\textbf{Dataset}							&\textbf{Codebook} &\textbf{Training rmse}	&\multicolumn{4}{|c|}{\textbf{Test rmse}} \\\hline
+												& 			  			 	&								&\textbf{maxQ} 		&\textbf{RofE} 		&\textbf{nulE} 		&\textbf{monR}\\\hline
+$S_{\textrm{trg}}=\{4, 6, 8, 10, 20, 22, 24, 26\}$ \newline $S_{\textrm{tst}}=S_{\textrm{trg}}$ 
+                                                &8x2							&0								&0						&0							&{\color{red}0} 		&0.7071\\\hline
+same                                         &8x4							&0								&0						&0							&{\color{red}0} 		&0\\\hline
+same                                         &8x8							&0								&0						&0							&{\color{red}0} 		&0\\\hline\hline
+S=$\{1, 2, \ldots, 256\}$  \newline $S_{\textrm{tst}}=S_{\textrm{trg}}$  				
+												&8x2							&0                     		&0						&0							&{\color{red}0}		&5.2723\\\hline
+same                                         &8x4							&0								&0						&0							&{\color{red}0.0726} &0.8745\\\hline
+same                                         &8x8							&0								&0						&0							&{\color{red}0.0090} &0.2700\\\hline\hline
+
+$S_{\textrm{trg}} \sim \mathcal{N}(0, 1) \in \mathbb{R}^{1089}$ 	 \newline $S_{\textrm{tst}} \sim \mathcal{N}(0, 1) \in \mathbb{R}^{1089}$, $S_{\textrm{tst}} \neq S_{\textrm{trg}}$	
+		              							&8x2							&1.0420						&1.0756   	 		&1.0756    				&{\color{red}1.0708} 	&1.0723\\\hline
+same as above							&8x4							&0.9899						&1.0838	   	 		&1.0838    				&{\color{red}1.0701}   &1.0713\\\hline
+same as above							&8x8							&0.8892						&1.1072	   	 		&1.1068    				&{\color{red}1.0716}   &1.0720\\\hline\hline
+$S_{\textrm{trg}} \sim U[0, 1] \in \mathbb{R}^{1089}$ 	 \newline $S_{\textrm{tst}} \sim U[0, 1] \in \mathbb{R}^{1089}$, $S_{\textrm{tst}} \neq S_{\textrm{trg}}$	
+		              							&8x2							&0.2893						&0.3150   	 		&0.3149    				&{\color{red}0.2968}	&0.2968\\\hline
+same as above							&8x4							&0.2930						&0.3485   	 		&0.3482    				&{\color{red}0.3052}    &0.3052\\\hline
+same as above							&8x8							&0.3294						&0.3989   	 		&0.3987    				&{\color{red}0.3190}    &0.3190\\\hline
+
+
+
+\end{tabular}
+\caption{Training and test rmse results for different datasets for all 4 RVQ methods.}
+\label{table:results}
+\end{table}
+
+We carried out experiments on two opposite ends of the spectrum. 
+
+On the simplest side were deterministic data experiments where the training and test sets were the same.  maxP and RofE naturally did well.  monR nevertheless was unable to decode correctly in quite a few occasions and the reasons have been examined in earlier sections.  
+
+On the extremely difficult side of things were the random data experiments with high dimensional data with several observations.  In these experiments, nulE performed the best.  The reason is that even if a subsequent stage does not decrease rms error, nulE can rely on subsequent lower energy stages to nudge down its rms error.  For the Gaussian random variable experiments, training data rms error decreased with increasing code-vectors per stage.  However, test error for maxQ and RofE increased while test error for nulE and monR did not show a clear trend.  For uniform random variable experiments, both training and test rms errors increased with number of code-vectors per stage.  It appears that whereas the uniform distribution has a clear trend, increasing error with code-vectors per stage, finding a clear trend with the gaussian random variable is more challenging.
+
+It may be noted that the rms errors obtained were quite high for the random data sets.  The reason is quite clearly that the datasets we picked were extremely challenging.  It is expected that much better performance will be achieved with data sets in which correlations in the data can be exploited, for instance in images.
 
 %================================
 \section{Conclusions}
 %================================
+Over the spectrum of low and high dimensional deterministic or random data, nulE performs the best.
+
+In the next step, we will begin experiments with images.
 
 
-%-----------------------------------------------------------------
-\newpage
-\appendix
-\section{Source code}
-\label{Sec:sourceCode}
-%-----------------------------------------------------------------
-\scriptsize
-
-\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_apply\_transform.m}, 		label=lst:UTIL_2D_affine_apply_transform]		{UTIL_2D_affine_apply_transform.m}
+%%-----------------------------------------------------------------
+%\newpage
+%\appendix
+%\section{Source code}
+%\label{Sec:sourceCode}
+%%-----------------------------------------------------------------
+%\scriptsize
+%
+%\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_apply\_transform.m}, 		label=lst:UTIL_2D_affine_apply_transform]		{UTIL_2D_affine_apply_transform.m}
 
 \normalsize
 \bibliographystyle{ieee}
 \bibliography{MyCitations}
 \end{document}
+
+
+%Consider Figure~\ref{fig:RVQ_toy_3x2}.  In this example, an RVQ codebook with 3 stages and 2 code-vectors per stage is designed for 8 input test points in $\mathbb{R}$.  For 2 test points 25 and 27, the reconstruction rmse (root mean squared error) is the same, i.e., 1.  However, the number of stages required is 2 and 3 respectively. In this case, it is up to the application to decide if more emphasis should be placed on If maximum stages are desired, then 27 will be picked.
+%Given this overview, we now move to computation of the likelihood of a data point under RVQ. 

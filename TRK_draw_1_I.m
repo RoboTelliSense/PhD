@@ -1,7 +1,7 @@
-function hh=TRK_draw_1_I(f, data, CONFIG, trkIPCA, trkBPCA, trkRVQE, trkTSVQ, ...
-                       trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQE.FP_1_gt, trkTSVQ.FP_1_gt)
+function hh=TRK_draw_1_I(f, data, CONFIG, trkIPCA, trkBPCA, trkRVQx, trkTSVQ, ...
+                       trkIPCA.FP_1_gt, trkBPCA.FP_1_gt, trkRVQx.FP_1_gt, trkTSVQ.FP_1_gt)
 
-            if (PARAM.in_bUseBPCA  || PARAM.in_bUseRVQE || PARAM.in_bUseTSVQ)
+            if (PARAM.in_bUseBPCA  || PARAM.in_bUseRVQx || PARAM.in_bUseTSVQ)
                 figure(2);
                                     UTIL_suptitle(PARAM.config_name, 8);
                 colormap('gray');
@@ -40,11 +40,11 @@ function hh=TRK_draw_1_I(f, data, CONFIG, trkIPCA, trkBPCA, trkRVQE, trkTSVQ, ..
             end 
             
             
-            if (PARAM.in_bUseRVQE)
-                if (exist('trkRVQE.FP_1_gt'))
-                    if (size(trkRVQE.FP_1_gt,3) > 1)  plot(trkRVQE.FP_1_gt(1,:,2),trkRVQE.FP_1_gt(2,:,2),'yx','MarkerSize',10);  end;
-                    if (size(trkRVQE.FP_1_gt,3) > 2)  plot(trkRVQE.FP_1_gt(1,:,3),trkRVQE.FP_1_gt(2,:,3),'gx','MarkerSize',10);  end;
-                    UTIL_drawQuadFrom6affine_1x6(PARAM.sz, trkRVQE.tgt_best_aff_abcdxy_1x6, 'Color','g', 'LineWidth',1.0);                                            
+            if (PARAM.in_bUseRVQx)
+                if (exist('trkRVQx.FP_1_gt'))
+                    if (size(trkRVQx.FP_1_gt,3) > 1)  plot(trkRVQx.FP_1_gt(1,:,2),trkRVQx.FP_1_gt(2,:,2),'yx','MarkerSize',10);  end;
+                    if (size(trkRVQx.FP_1_gt,3) > 2)  plot(trkRVQx.FP_1_gt(1,:,3),trkRVQx.FP_1_gt(2,:,3),'gx','MarkerSize',10);  end;
+                    UTIL_drawQuadFrom6affine_1x6(PARAM.sz, trkRVQx.tgt_best_aff_abcdxy_1x6, 'Color','g', 'LineWidth',1.0);                                            
                 end
             end
           

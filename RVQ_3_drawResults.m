@@ -5,7 +5,7 @@ close all;
 
 bUsePCA=1;
 bUseMyPCA=0;
-bUseRVQE=0;
+bUseRVQx=0;
 bUseTSVQ=1;
 
 %load dudek
@@ -47,12 +47,12 @@ sh                  =   33;
 %affine parameters    
     %if exist(cfn_PCAaffine_1x6,'file')    bUsePCA=1;      end
     %if exist(cfn_myPCAaffine_1x6,'file')  bUseMyPCA=1;    end
-    %if exist(cfn_RVQaffine_1x6,'file')    bUseRVQE=1;      end
+    %if exist(cfn_RVQaffine_1x6,'file')    bUseRVQx=1;      end
     %if exist(cfn_TSVQaffine_1x6,'file')   bUseTSVQ=1;     end
     
     if (bUsePCA)    PCAaffine_1x6     =   csvread(cfn_PCAaffine_1x6); end
     if (bUseMyPCA)  myPCAaffine_1x6   =   csvread(cfn_myPCAaffine_1x6); end
-    if (bUseRVQE)    RVQaffine_1x6     =   csvread(cfn_RVQaffine_1x6); end
+    if (bUseRVQx)    RVQaffine_1x6     =   csvread(cfn_RVQaffine_1x6); end
     if (bUseTSVQ)   TSVQaffine_1x6    =   csvread(cfn_TSVQaffine_1x6); end
 
     [F, temp] = size(PCAaffine_1x6);
@@ -79,7 +79,7 @@ for f=1:F
 %     end
     if (bUsePCA)    drawbox([sh sw], PCAaffine_1x6(f, 2:7), 'Color','r', 'LineWidth',2.5);    end
     if (bUseMyPCA)  drawbox([sh sw], myPCAaffine_1x6(f, 2:7), 'Color','y', 'LineWidth',2.5);  end
-    if (bUseRVQE)    drawbox([sh sw], RVQaffine_1x6(f, 2:7), 'Color','g', 'LineWidth',2.5);   end
+    if (bUseRVQx)    drawbox([sh sw], RVQaffine_1x6(f, 2:7), 'Color','g', 'LineWidth',2.5);   end
     if (bUseTSVQ)   drawbox([sh sw], TSVQaffine_1x6(f, 2:7), 'Color','b', 'LineWidth',2.5);   end
     %pause
     hold off;

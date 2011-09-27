@@ -11,7 +11,7 @@
     PCA.mdl_1_Q__1x1        =   100;
     PCA.mode                =   'batch';
     
-    PCA                     =   PCA__1_train(DM2, PCA);  
+    PCA                     =   PCA__1_learn(DM2, PCA);  
     
     5.1414*(PCA.mdl_3_U__DxP)
        

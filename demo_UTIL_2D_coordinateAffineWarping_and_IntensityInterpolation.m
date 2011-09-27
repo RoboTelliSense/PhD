@@ -1,4 +1,4 @@
-%> @file demo_UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation.m
+%> @file demo_UTIL_2D_affine_extractROI.m
 %> @brief Demonstrates affine warping.
 %>
 % outI_shxsw lies on a grid 1:sw in x direction and 1:sh in y direction
@@ -55,7 +55,7 @@ close all;
 %PROCESSING
 %---------------------------------------------
 %process grid and intensities
-    [X_hxw, Y_hxw, outI_shxsw]   =   UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation(double(I_ui8), Ha_2x3, sw, sh);  
+    [X_hxw, Y_hxw, outI_shxsw]   =   UTIL_2D_affine_extractROI(double(I_ui8), Ha_2x3, sw, sh);  
     
 %process feature points (zero center  them)    
     temp                    =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, [fp_gt(1,:) ; fp_gt(2,:)]);

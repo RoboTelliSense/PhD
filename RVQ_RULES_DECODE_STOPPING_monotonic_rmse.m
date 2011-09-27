@@ -9,7 +9,7 @@
 
 function continue_decoding = RVQ_RULES_DECODE_STOPPING_monotonic_rmse(rmse, rmse_prev)
     
-    if (rmse < rmse_prev)
+    if (abs(rmse) < abs(rmse_prev))
         continue_decoding   =   true;
     else
         continue_decoding   =   false;
