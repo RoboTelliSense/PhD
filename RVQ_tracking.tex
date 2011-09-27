@@ -213,6 +213,15 @@ In this experiment, we train 8x2, 8x4 and 8x8 RVQ codebooks on the set of scalar
 %------------------------------------------------
 In this experiment, we train an 8x2, 8x4 and 8x8 RVQ codebook on 100 realizations of a unit-variance Gaussian random variable in $\mathbb{R}^{1089}$.  Decoding is then done on a different 100 realizations of a unit-variance Gaussian random variable in $\mathbb{R}^{1089}$.  This experiment is repeated 10 times and the results are averaged and displayed in Table~\ref{table:results}.  This experiment is then repeated for a uniform random variable.
 
+\subsection{Images}
+%------------------------------------------------
+In this experiment, we use actual images from our tracking dataset.  In tracking, a bootstrapping procedure normally involves manually segmenting a target of interest and storing its $x, y, w, h, \theta$ parameters.  These parameters are then converted to an affine 6-tuple.  This 6-tuple allows warping the segmented target onto a user defined rectangular grid.  This warping has the advantage of allowing the target to have a canonical representation with standard size.  Moreover, it will be in upright position.  This can be useful in learning a basis for PCA or generating a codebook for RVQ.  For the purposes of tracking, this initial affine 6-tuple can be used to initialize a particle filter.  The particle filter then generates $N_p$ 6-tuples, and uses the same warping procedure to create $N_p$ canonical targets.  The best one according to a user defined criterion is picked and its affine parameters are then used to generate $N_p$ affine 6-tuples in the next frame and so on.  Notice that in all cases, the target snippets are generated using affine 6-tuples.
+
+In certain cases, we may not have an affine 6-tuple, or manual segmentation may be difficult, but we may need to extract a target of interest.  In cases where running a feature detector is possible, we could extract features of interest from the target of interest.  If we can beforehand determine the position of those features in our canonical grid, then an affine mapping matrix can be computed between the feature points of interest in an image and their positions in the canonical grid.  Note that we would need to determine the positions of those features on our canonical grid only once, and then for every subsequent frame, we could run a feature detector and compute our desired  affine 6-tuple from mapping those features to the features on the canonical grid.
+
+
+
+
 %================================
 \section{Results}
 %================================

@@ -21,9 +21,10 @@ close all;
                                                          %in images, negative angle is CCW rotation
                                                          %in cartesian, positive angle is CCW rotation
                                                          %size of grid that i want
-    fp_gt                   =   [148.9306  187.2747  226.0674  169.6408  192.6433  218.8531  194.5372;
+    fp_gt_roi               =   [148.9306  187.2747  226.0674  169.6408  192.6433  218.8531  194.5372;
                                  179.0198  172.5994  174.0397  230.2172  224.5582  223.3328  243.8089]; %feature points (ground truth)
                                                          %some points that I know are on the target in important positions, like eyes, etc
+                                                         %the roi means they are on the target, not canonical
     sw                      =   33;         %desired (output) snippet width (grid)
     sh                      =   33;         %desired (output) snippet height (grid)
     scale                   =   32;         %should have been 33 but keeping this way, explained in my affine warping report
@@ -49,7 +50,7 @@ close all;
 %PRE-PROCESSING
 %---------------------------------------------
     Ha_2x3                  =   UTIL_2D_affine_xywht_to_Ha_2x3(xywht, scale);
-    [temp, G]               =   size(fp_gt);
+    [temp, G]               =   size(fp_gt_roi);
     
 %---------------------------------------------
 %PROCESSING
@@ -58,10 +59,14 @@ close all;
     [X_hxw, Y_hxw, outI_shxsw]   =   UTIL_2D_affine_extractROI(double(I_ui8), Ha_2x3, sw, sh);  
     
 %process feature points (zero center  them)    
-    temp                    =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, [fp_gt(1,:) ; fp_gt(2,:)]);
-    fp_x_1xG                =   temp(1,:) + (sw)/2;             %image starts from (1,1), so shift by half width and half height of output image
-    fp_y_1xG                =   temp(2,:) + (sh)/2;             % "
-    
+    temp                    =   UTIL_2D_affine_apply_inverse_transform(Ha_2x3, [fp_gt_roi(1,:) ; fp_gt_roi(2,:)]);
+    fp_gt_can_2xG           =   [temp(1,:); ...
+                                 temp(2,:)];                    %feature points, ground truth, canonical box centered on (0,0)
+    fp_gt_can_nzc_2xG       =   fp_gt_can_2xG + repmat([sw/2;sh/2], 1, G);
+                                                                %image starts from (1,1), so shift by half width and half height of output image
+                                                                % "
+                                                                %can means on the canonical box, not the ROI
+                                                                %nzc means not zero centered
 %---------------------------------------------
 %POST-PROCESSING
 %--------------------------------------------- 
@@ -83,7 +88,7 @@ close all;
     
     %plot feature points
     for g=1:G
-        UTIL_PLOT_filledCircle([fp_gt(1,g),fp_gt(2,g),], 5, 3000, 'b'); 
+        UTIL_PLOT_filledCircle([fp_gt_roi(1,g),fp_gt_roi(2,g),], 5, 3000, 'b'); 
     end
     
     colormap('gray');
@@ -112,7 +117,7 @@ close all;
     hold on;
 
     for g=1:G
-        UTIL_PLOT_filledCircle( [fp_x_1xG(g), fp_y_1xG(g)],   1,   3000,   'b'); 
+        UTIL_PLOT_filledCircle( [fp_gt_can_nzc_2xG(1,g), fp_gt_can_nzc_2xG(2,g)],   1,   3000,   'b'); 
     end
  
     colormap('gray');
