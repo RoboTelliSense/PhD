@@ -89,7 +89,7 @@
 	aRVQ1.in_1__name        =   'aRVQx';
     aRVQ1.in_2__data        =   'tst';          %data type: trg or tst, default is tst
     aRVQ1.in_3__maxQ        =   8;              %max number of stages  
-    aRVQ1.in_4__M___        =   8;              %number of codevectors/stage
+    aRVQ1.in_4__M___        =   16;              %number of codevectors/stage
     aRVQ1.in_5__tSNR        =   1000;           %target SNRdB during learning (creating codebooks)        
     aRVQ1.in_8__odir        =   '';
     aRVQ1.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
@@ -107,10 +107,13 @@
 %-----------------------------
 % 2. PROCESSING
 %-----------------------------
-datasetcode=2;
-for f=1:1
+datasetcode=6;
+%for f=1:1
+f=0;
+for  a       =   2:16
+    aRVQ1.in_4__M___ = a;
     tic
-    f
+    f=f+1;
     [DM2, sw, sh]           =   DATAMATRIX_master_create(datasetcode);
     aRVQ1.in_6__sw__        =   sw;             %snippet width
     aRVQ1.in_7__sh__        =   sh;             %snippet height
@@ -148,11 +151,21 @@ end
 %RESULTS
 %-----------------------------
 %view
-    numDisplayRows          =   5;
+    numDisplayRows          =   10;
     numDisplayCols          =   10;
-                                %figure;DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols);title('input');
-                                %figure;DATAMATRIX_display_DM2_as_image(aBPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols);title('aBPCA eigenvectors');
-                                %figure;DATAMATRIX_display_DM2_as_image(aRVQx.mdl_3_CB_DxMP, sh, sw, aRVQx.mdl_1_Q__1x1, aRVQx.in_4__M___);title('aRVQx codebooks');
-                                %figure;DATAMATRIX_display_DM2_as_image(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1);title('aTSVQ codebooks');
+                                figure;DATAMATRIX_display_DM2_as_image(DM2,            sh, sw, numDisplayRows, numDisplayCols, 0);
+                                %figure;DATAMATRIX_display_DM2_as_image(aBPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols, 1);title('aBPCA eigenvectors');
+                                figure;DATAMATRIX_display_DM2_as_image(aRVQ1.mdl_3_CB_DxMP, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
+                                %figure;DATAMATRIX_display_DM2_as_image(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
     
-
+    figure;plot(trg_rmse(:), 'ro-')
+    hold on
+    plot(tst_rmse(:,1), 'g+-');   
+    plot(tst_rmse(:,2), 'bd-');  
+    plot(tst_rmse(:,3), 'm*-');  
+    plot(tst_rmse(:,4), 'k*-');  
+    axis([1 15 0 1.5]);grid on; 
+    legend('trg', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR')
+    matrix2latex(tst_rmse)
+    UTIL_FILE_save2pdf('aRVQ_rnd_.pdf', gcf, 300);
+    

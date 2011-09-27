@@ -5,7 +5,7 @@
 %This file displays several images in one figure.
 %%
 
-function UTIL_PLOT_tightsubplot(numRows, numCols, idx, I_rgb)
+function UTIL_PLOT_tightsubplot(numRows, numCols, idx, I_rgb, bScale)
 
     colormap('gray');
        
@@ -20,7 +20,11 @@ function UTIL_PLOT_tightsubplot(numRows, numCols, idx, I_rgb)
     h               =   1/numRows-0.001;
                         subplot('position', [x, y, w, h]); 
   
-                        imagesc((I_rgb));
+    if (bScale)
+                        imagesc(I_rgb);
+    else
+                        imshow(uint8(I_rgb));
+    end
                         axis equal
                         axis off; 
 
