@@ -57,9 +57,11 @@
 
 
 function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
+    
 %----------------------------
 %INITIALIZATIONS
 %----------------------------
+    tic
     candErrs_DxNp     = 	[];
     
 %----------------------------
@@ -157,8 +159,8 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     TRK.snp_1_tsrpxy_1x6    =   TRK.PRF_1_tsrpxy_6xNp       (:  ,maxidx);               %1. best affine parameters
     TRK.snp_2_error_shxsw   =   reshape(candErrs_DxNp       (:  ,maxidx), [sh sw]);     %2. best error                                             
     TRK.snp_3_recon_shxsw   =   TRK.snp_0_pixls_shxsw - TRK.snp_2_error_shxsw;          %3. best recon        
-    TRK.snp_4_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB  (TRK.snp_0_pixls_shxsw(:), TRK.snp_2_error_shxsw(:)    );  %4.
-    TRK.snp_5_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms    (                          TRK.snp_2_error_shxsw(:)*255);  %5.
+    TRK.snp_4_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB  (TRK.snp_0_pixls_shxsw(:), TRK.snp_2_error_shxsw(:));  %4.
+    TRK.snp_5_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms    (                          TRK.snp_2_error_shxsw(:));  %5.
     TRK.snp_6_armse_Fx1(f)  =   UTIL_compute_avg            (TRK.snp_5_rmse__Fx1(1:f));                                                %6.
     
     
@@ -169,8 +171,8 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     end
     
 %two particle filter variables (state and density)
-    TRK.PRF_2_densty_Npx1   =   weights;                                %overwrite 2nd particle filter variable
-    TRK.numF         =   TRK.numF + 1;                %overwrite 3rd particle filter variable
+    TRK.PRF_2_densty_Npx1   =   weights;                        %overwrite 2nd particle filter variable
+    TRK.numF                =   TRK.numF + 1;                   %overwrite 3rd particle filter variable
     
 %three feature point metrics
     TRK.fpt_1_truth_2xG     =   GT.fpt_1_truth_2xGxF(:,:,f);
@@ -183,10 +185,10 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     
     TRK.fpt_3_error_2xG     =   TRK.fpt_1_truth_2xG - TRK.fpt_2_estim_2xG;
     
-%three tracking metrics
+%three (3) tracking metrics
     TRK.trk_1_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB2     (TRK.fpt_1_truth_2xG,   TRK.fpt_3_error_2xG);  
     TRK.trk_2_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms2       (                       TRK.fpt_3_error_2xG);  
-    TRK.trk_3_armse_Fx1(f)  =   UTIL_compute_avg                (                       TRK.trk_2_rmse__Fx1(1:f));              
+    TRK.trk_3_armse_Fx1(f)  =   UTIL_compute_avg                (TRK.trk_2_rmse__Fx1(1:f));              
    
 %three (3) training metrics
     TRK.trg_1_SNRdB_Fx1(f)  =   ALGO.trg_4_SNRdB_1x1;
@@ -197,3 +199,23 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     TRK.tst_1_SNRdB_Fx1(f)  =   ALGO.tst_4_SNRdB_1x1;
     TRK.tst_2_rmse__Fx1(f)  =   ALGO.tst_5_rmse__1x1;
     TRK.tst_3_armse_Fx1(f)  =   UTIL_compute_avg                (TRK.tst_2_rmse__Fx1(1:f));
+
+%three (3) timing metrics
+    TRK.tim_t_sec(f)        =   toc;                                        %time for this run
+    TRK.tim_T_sec           =   TRK.tim_T_sec + TRK.tim_t_sec(f);           %total time for all runs
+    TRK.tim_fps             =   f/TRK.tim_T_sec;                            %frames per sec for this run
+    
+%write to file
+    
+    fid                     =   fopen(TRK.cfn, 'a');
+                                UTIL_FILE_checkFileOpen(fid, TRK.cfn); 
+    str_out                 =   sprintf('%4d %6.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f', ...
+                                f                                                                     , ...
+                                TRK.tim_t_sec(f)                                                      , ...
+                                TRK.trk_1_SNRdB_Fx1(f), TRK.trk_2_rmse__Fx1(f), TRK.trk_3_armse_Fx1(f), ...
+                                TRK.snp_4_SNRdB_Fx1(f), TRK.snp_5_rmse__Fx1(f), TRK.snp_6_armse_Fx1(f), ...
+                                TRK.trg_1_SNRdB_Fx1(f), TRK.trg_2_rmse__Fx1(f), TRK.trg_3_armse_Fx1(f), ...
+                                TRK.tst_1_SNRdB_Fx1(f), TRK.tst_2_rmse__Fx1(f), TRK.tst_3_armse_Fx1(f)  ...
+                                );
+                                fprintf(fid, [str_out '\n']); 
+                                fclose(fid);

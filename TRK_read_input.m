@@ -22,20 +22,20 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
 %-----------------------------------------------
 	
 %fn: filename (convert datasetCode to datasetName)
-    if      (PARAM.in_datasetCode==0)  PARAM.ds_2_name = 'test';          PARAM.ds_3_longName='0___test___________'; %ds is for dataset
-    elseif  (PARAM.in_datasetCode==1)  PARAM.ds_2_name = 'Dudek';         PARAM.ds_3_longName='1___Dudek__________';
-    elseif  (PARAM.in_datasetCode==2)  PARAM.ds_2_name = 'davidin300';    PARAM.ds_3_longName='2___davidin300_____';
-    elseif  (PARAM.in_datasetCode==3)  PARAM.ds_2_name = 'sylv';          PARAM.ds_3_longName='3___sylv___________';
-    elseif  (PARAM.in_datasetCode==4)  PARAM.ds_2_name = 'trellis70';     PARAM.ds_3_longName='4___trellis70______';
-    elseif  (PARAM.in_datasetCode==5)  PARAM.ds_2_name = 'fish';          PARAM.ds_3_longName='5___fish___________';
-    elseif  (PARAM.in_datasetCode==6)  PARAM.ds_2_name = 'car4';          PARAM.ds_3_longName='6___car4___________';
-    elseif  (PARAM.in_datasetCode==7)  PARAM.ds_2_name = 'car11';         PARAM.ds_3_longName='7___car11__________';
-    elseif  (PARAM.in_datasetCode==8)  PARAM.ds_2_name = 'PETS2001rcf';   PARAM.ds_3_longName='8___PETS2001rcf____';
-    elseif  (PARAM.in_datasetCode==9)  PARAM.ds_2_name = 'PETS2009';      PARAM.ds_3_longName='9___PETS2009_______';
-    elseif  (PARAM.in_datasetCode==10) PARAM.ds_2_name = 'AVSS2007_1';    PARAM.ds_3_longName='10__AVSS2007_1_____';
-    elseif  (PARAM.in_datasetCode==11) PARAM.ds_2_name = 'AVSS2007_2';    PARAM.ds_3_longName='11__AVSS2007_2_____'; 
-    elseif  (PARAM.in_datasetCode==12) PARAM.ds_2_name = 'AVSS2007_3';    PARAM.ds_3_longName='12__AVSS2007_3_____'; 
-    elseif  (PARAM.in_datasetCode==13) PARAM.ds_2_name = 'motinasFast';   PARAM.ds_3_longName='13__motinasFast____';  
+    if      (PARAM.in_ds_code==0)  PARAM.ds_2_name = 'test';          PARAM.ds_3_name2='0_test___'; %ds is for dataset
+    elseif  (PARAM.in_ds_code==1)  PARAM.ds_2_name = 'Dudek';         PARAM.ds_3_name2='1_Dudek__';
+    elseif  (PARAM.in_ds_code==2)  PARAM.ds_2_name = 'davidin300';    PARAM.ds_3_name2='2_David__';
+    elseif  (PARAM.in_ds_code==3)  PARAM.ds_2_name = 'sylv';          PARAM.ds_3_name2='3_Sylvs__';
+    elseif  (PARAM.in_ds_code==4)  PARAM.ds_2_name = 'trellis70';     PARAM.ds_3_name2='4_Trels__';
+    elseif  (PARAM.in_ds_code==5)  PARAM.ds_2_name = 'fish';          PARAM.ds_3_name2='5_Fish___';
+    elseif  (PARAM.in_ds_code==6)  PARAM.ds_2_name = 'car4';          PARAM.ds_3_name2='6_Dodge__';
+    elseif  (PARAM.in_ds_code==7)  PARAM.ds_2_name = 'car11';         PARAM.ds_3_name2='7_CarNgt_';
+    elseif  (PARAM.in_ds_code==8)  PARAM.ds_2_name = 'PETS2001rcf';   PARAM.ds_3_name2='8_PETS2001rcf____';
+    elseif  (PARAM.in_ds_code==9)  PARAM.ds_2_name = 'PETS2009';      PARAM.ds_3_name2='9_PETS2009_______';
+    elseif  (PARAM.in_ds_code==10) PARAM.ds_2_name = 'AVSS2007_1';    PARAM.ds_3_name2='10_AVSS2007_1_____';
+    elseif  (PARAM.in_ds_code==11) PARAM.ds_2_name = 'AVSS2007_2';    PARAM.ds_3_name2='11_AVSS2007_2_____'; 
+    elseif  (PARAM.in_ds_code==12) PARAM.ds_2_name = 'AVSS2007_3';    PARAM.ds_3_name2='12_AVSS2007_3_____'; 
+    elseif  (PARAM.in_ds_code==13) PARAM.ds_2_name = 'motinasFast';   PARAM.ds_3_name2='13_motinasFast____';  
     end
     
     %rigid parameters 
@@ -130,7 +130,7 @@ function [PARAM, I_HxWxF, GT, RAND] = TRK_read_input(PARAM)  %parameters, images
 %>                 'batchsize',5, 'aff_tsrpxy_stddev_1x6',[6,5,.05,.05,0,0], ...
 %>                'errfunc','');
 
-%case 'toycan';    aff_abcdxy_1x6=[137 113 30 62 0];      PARAM.pf_Np',Np,'PF_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[7,7,.01,.01,.002,.001]);  PARAM.ds_3_longName='1';txt2='Dudek';
-%case 'mushiake';  aff_abcdxy_1x6=[172 145 60 60 0];      PARAM.pf_Np',Np,'PF_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[10,10,.01,.01,.002,.001]);PARAM.ds_3_longName='1';txt2='Dudek';
+%case 'toycan';    aff_abcdxy_1x6=[137 113 30 62 0];      PARAM.pf_Np',Np,'PF_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[7,7,.01,.01,.002,.001]);  PARAM.ds_3_name2='1';txt2='Dudek';
+%case 'mushiake';  aff_abcdxy_1x6=[172 145 60 60 0];      PARAM.pf_Np',Np,'PF_normalizer=0.2, 'ff',1,  'batchsize',5,'aff_tsrpxy_stddev_1x6',[10,10,.01,.01,.002,.001]);PARAM.ds_3_name2='1';txt2='Dudek';
     
     

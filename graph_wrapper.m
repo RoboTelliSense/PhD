@@ -24,7 +24,7 @@ w=0;
 Nw=2;
 j=0;
 for datasetCode = 1:7
-    [PARAM.ds_2_name, PARAM.ds_3_longName, F] = dataset_getName(datasetCode);
+    [PARAM.ds_2_name, PARAM.ds_3_name2, F] = dataset_getName(datasetCode);
     k=0;
     for algo = [{'ipca'} {'bpca'} {'rvq'} {'tsvq'}]
         k=k+1;
@@ -36,8 +36,8 @@ for datasetCode = 1:7
             rvq__targetSNR   =   config(c,4);
             tsvq_T          =   config(c,5);
             j               =   j+1
-            [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
-            myname          =   ['results_'   PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np)]
+            [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_name2, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
+            myname          =   ['results_'   PARAM.ds_3_name2 '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np)]
             cfn             =   [odir 'FPerr_3_' char(algo) '.csv'];
             if (exist(cfn,'file'))
                 a               =   csvread(cfn);
@@ -65,7 +65,7 @@ end
 % Nw=2;
 % w=0;
 % for datasetCode = 1:7
-%     [PARAM.ds_2_name, PARAM.ds_3_longName, F] = dataset_getName(datasetCode);
+%     [PARAM.ds_2_name, PARAM.ds_3_name2, F] = dataset_getName(datasetCode);
 %     k=0;
 %     for Nw = [2 4 8 16 32 64 128 10000]
 %         k=k+1;
@@ -77,8 +77,8 @@ end
 %             rvq__targetSNR   =   config(c,4);
 %             tsvq_T          =   config(c,5);
 %             j               =   j+1;
-%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
-%             myname          =   ['results_'   PARAM.ds_3_longName '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_RVQ'];   
+%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_name2, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
+%             myname          =   ['results_'   PARAM.ds_3_name2 '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_RVQ'];   
 %             cfn             =   [odir 'FPerr_3_rvq.csv'];
 %             if (exist(cfn,'file'))
 %                 a               =   csvread(cfn);
@@ -110,7 +110,7 @@ end
 % %TSVQ
 % w=0;
 % for datasetCode = 1:7
-%     [PARAM.ds_2_name, PARAM.ds_3_longName, F] = dataset_getName(datasetCode);
+%     [PARAM.ds_2_name, PARAM.ds_3_name2, F] = dataset_getName(datasetCode);
 %     k=0;
 %     for Nw = [2 4 8 16 32 64 128 10000]
 %         k=k+1;
@@ -122,8 +122,8 @@ end
 %             rvq__targetSNR   =   config(c,4);
 %             tsvq_T          =   config(c,5);
 %             j               =   j+1;
-%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
-%             myname          =   ['results_'   PARAM.ds_3_longName '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_TSVQ'];   
+%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_name2, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
+%             myname          =   ['results_'   PARAM.ds_3_name2 '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_TSVQ'];   
 %             cfn             =   [odir 'FPerr_3_tsvq.csv'];
 %             if (exist(cfn,'file'))
 %                 a               =   csvread(cfn);
@@ -153,7 +153,7 @@ end
 % %bPCA
 % w=0;
 % for datasetCode = 1:7
-%     [PARAM.ds_2_name, PARAM.ds_3_longName, F] = dataset_getName(datasetCode);
+%     [PARAM.ds_2_name, PARAM.ds_3_name2, F] = dataset_getName(datasetCode);
 %     k=0;
 %     for Nw = [2 4 8 16 32 64 128 10000]
 %         k=k+1;
@@ -165,8 +165,8 @@ end
 %             rvq__targetSNR   =   config(c,4);
 %             tsvq_T          =   config(c,5);
 %             j               =   j+1;
-%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
-%             myname          =   ['results_'   PARAM.ds_3_longName '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_bPCA'];   
+%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_name2, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
+%             myname          =   ['results_'   PARAM.ds_3_name2 '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_bPCA'];   
 %             cfn             =   [odir 'FPerr_3_bpca.csv'];
 %             if (exist(cfn,'file'))
 %                 a               =   csvread(cfn);
@@ -195,7 +195,7 @@ end
 % %iPCA
 % w=0;
 % for datasetCode = 1:7
-%     [PARAM.ds_2_name, PARAM.ds_3_longName, F] = dataset_getName(datasetCode);
+%     [PARAM.ds_2_name, PARAM.ds_3_name2, F] = dataset_getName(datasetCode);
 %     k=0;
 %     for Nw = [2 4 8 16 32 64 128 10000]
 %         k=k+1;
@@ -207,8 +207,8 @@ end
 %             rvq__targetSNR   =   config(c,4);
 %             tsvq_T          =   config(c,5);
 %             j               =   j+1;
-%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
-%             myname          =   ['results_'   PARAM.ds_3_longName '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_iPCA'];   
+%             [txt_overall_config config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_name2, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
+%             myname          =   ['results_'   PARAM.ds_3_name2 '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np) '_iPCA'];   
 %             cfn             =   [odir 'FPerr_3_ipca.csv'];
 %             if (exist(cfn,'file'))
 %                 a               =   csvread(cfn);

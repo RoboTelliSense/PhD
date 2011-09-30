@@ -32,4 +32,4 @@
                             =  RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.ecbk'); 
     
 %display codebook                        
-    DM2_display(mdl_3_CB_DxMP, 41, 11, actualP, M_check); %the snippets are wxh=11x41
+    DM2_show(mdl_3_CB_DxMP, 41, 11, actualP, M_check); %the snippets are wxh=11x41

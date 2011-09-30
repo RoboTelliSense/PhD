@@ -3,10 +3,10 @@
 
 function [  txt_overall_config ...
             config_name ...
-            odir] = UTIL_DATASET_makeName(PARAM.ds_3_longName, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T)
+            odir] = UTIL_DATASET_makeName(PARAM.ds_3_name2, bUseBPCA , bUseTSVQ, bUseRVQx1, bUseRVQx2, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T)
 
     %overall configuration
-        txt_overall_config              =   ['results_'   PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np)];   
+        txt_overall_config              =   ['results_'   PARAM.ds_3_name2 '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_' num2str(w) '_Np_' UTIL_GetZeroPrefixedFileNumber_4(Np)];   
     
     %algorithm specific configuration
         txt_algo_config                 =   [];

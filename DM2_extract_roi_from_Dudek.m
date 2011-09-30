@@ -1,4 +1,4 @@
-function [DM2,sw,sh] =  DM2_extract_roi_from_Dudek(start, stop)
+function [DM2,sw,sh] =  DM2_extract_roi_from_Dudek(start, stop, bRandomize)
 
     load Dudek;
     
@@ -10,11 +10,16 @@ function [DM2,sw,sh] =  DM2_extract_roi_from_Dudek(start, stop)
     sw                      =   33;
     sh                      =   33;
     
+    idx=0;
     for f=start:stop
-        I_ui8                   =   data(:,:,f);
-        fp_gt_roi_2xG           =   truepts(:,:,f);
-        Iroi_shxsw              =   UTIL_2D_affine_extractROI_using_fp(I_ui8, sw, sh, fp_gt_roi_2xG, fp_gt_can_2xG, false);
-        DM2(:,f)                =   Iroi_shxsw(:);
+        %input
+        I_ui8               =   data(:,:,f);
+        fp_gt_roi_2xG       =   truepts(:,:,f);
+
+        %output
+        idx                 =   idx+1;   
+        Iroi_shxsw          =   UTIL_2D_affine_extractROI_using_fp(I_ui8, sw, sh, fp_gt_roi_2xG, fp_gt_can_2xG, bRandomize);
+        DM2(:,idx)          =   Iroi_shxsw(:);
         f;
     end
 

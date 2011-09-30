@@ -19,9 +19,9 @@ close all;
 
 %given Nw, all algos
 for datasetCode = 6:6
-    [PARAM.ds_2_name, PARAM.ds_3_longName, actualF] = UTIL_DATASET_getName2(datasetCode);
+    [PARAM.ds_2_name, PARAM.ds_3_name2, actualF] = UTIL_DATASET_getName2(datasetCode);
     for Nw=[2,4,8,16,32,64,128,10000]    
-        odir             =   ['results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
+        odir             =   ['results_' PARAM.ds_3_name2 '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_016__bPCA_016__RVQ__08_02_1000__TSVQ_03/'];
         cfn1                =   [odir 'FPerr_3_ipca.csv'];
         cfn2                =   [odir 'FPerr_3_bpca.csv'];
         cfn3                =   [odir 'FPerr_3_rvq.csv'];
@@ -31,7 +31,7 @@ for datasetCode = 6:6
         avg_trk_err(3,1)    =   TRK_read_avg_error(cfn3, actualF)
         avg_trk_err(4,1)    =   TRK_read_avg_error(cfn4, actualF)
 
-        odir             =   ['results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
+        odir             =   ['results_' PARAM.ds_3_name2 '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_032__bPCA_032__RVQ__08_04_1000__TSVQ_04/'];
         cfn1                =   [odir 'FPerr_3_ipca.csv'];
         cfn2                =   [odir 'FPerr_3_bpca.csv'];
         cfn3                =   [odir 'FPerr_3_rvq.csv'];
@@ -41,7 +41,7 @@ for datasetCode = 6:6
         avg_trk_err(3,2)    =   TRK_read_avg_error(cfn3, actualF)
         avg_trk_err(4,2)    =   TRK_read_avg_error(cfn4, actualF)
 
-        odir             =   ['results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
+        odir             =   ['results_' PARAM.ds_3_name2 '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_064__bPCA_064__RVQ__08_08_1000__TSVQ_05/'];
         cfn1                =   [odir 'FPerr_3_ipca.csv'];
         cfn2                =   [odir 'FPerr_3_bpca.csv'];
         cfn3                =   [odir 'FPerr_3_rvq.csv'];
@@ -51,7 +51,7 @@ for datasetCode = 6:6
         avg_trk_err(3,3)    =   TRK_read_avg_error(cfn3, actualF)
         avg_trk_err(4,3)    =   TRK_read_avg_error(cfn4, actualF)
 
-        odir             =   ['results_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
+        odir             =   ['results_' PARAM.ds_3_name2 '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '_w_0_Np_0600__iPCA_128__bPCA_128__RVQ__08_16_1000__TSVQ_06/'];
         cfn1                =   [odir 'FPerr_3_ipca.csv'];
         cfn2                =   [odir 'FPerr_3_bpca.csv'];
         cfn3                =   [odir 'FPerr_3_rvq.csv'];
@@ -71,7 +71,7 @@ for datasetCode = 6:6
         a={'a';'b'};
         xtl = {{'iPCA';'16,32,64,128'} {'bPCA';'16,32,64,128'} {'RVQ';'8x(2,4,8,16)'} {'TSVQ';'3,4,5,6'}};
         my_xticklabels(gca,[1:4],xtl);
-        UTIL_FILE_save2pdf  (['resultstrk_rmse_' PARAM.ds_3_longName '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '.pdf'],      h,     300); 
+        UTIL_FILE_save2pdf  (['resultstrk_rmse_' PARAM.ds_3_name2 '_Nw_' UTIL_GetZeroPrefixedFileNumber_4(Nw) '.pdf'],      h,     300); 
         
         if      (Nw==2) NW2(:,:,datasetCode) = avg_trk_err;
         elseif  (Nw==4) NW4(:,:,datasetCode) = avg_trk_err;

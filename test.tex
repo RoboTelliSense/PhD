@@ -1,11 +1,133 @@
-\include{begin_article}
+%\documentclass[12pt,letterpaper,doublespaced,ETD,dvips]{gt-ece-thesis}
+\documentclass[12pt,letterpaper,doublespaced,ETD]{gt-ece-thesis} %taking dvips out enable pdf bookmark generation as well as the logo printing on the first page
+
+\title{Target Tracking Using Residual Vector Quantization}
+\author{Salman Aslam}
+\copyrightyear{2011}
+\graddate{20 June 2011}  
+\approvaldate{June 2011}  
+
+\addadvisor{Dr. Christopher F. Barnes}{Assoc. Professor, School of ECE}{Georgia Institute of Technology}
+\addchair{Dr. David V. Anderson}{Assoc. Professor, School of ECE}{Georgia Institute of Technology}
+\addreader{Dr. Aaron F. Bobick, Co-advisor}{Professor, School of Interactive Computing}{Georgia Institute of Technology}
+\addreader{Dr. Vijay Madisetti}{Professor, School of ECE}{Georgia Institute of Technology}
+\addreader{Dr. Patricio Vela}{Asst. Professor, School of ECE}{Georgia Institute of Technology}
+\addreader{Dr. Santanu Dey}{Asst. Professor, School of ISYE}{Georgia Institute of Technology}
+
+
+%\bibfiles{f:/salman/work/writing/MyCitations}
+\bibfiles{MyCitations}
+
+\titlepagetrue
+\figurespagetrue
+\tablespagetrue
+\contentspagetrue
+\symbolspagefalse
+\glossarypagefalse 
+\bibpagetrue
+\mastersthesisfalse 
+\multivolumefalse
+\singlespacednotestrue
+
+
+\usepackage{graphicx, verbatim, subfig}
+\usepackage{insfig}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage[usenames,dvipsnames]{color}
+\definecolor{light-gray}{gray}{0.95}
+\usepackage{amsmath,epsfig,verbatim,listings}
+\lstset{breaklines=true,breakindent=0pt,
+        prebreak=\mbox{\tiny$\searrow$},
+        postbreak=\mbox{{\color{blue}\tiny$\rightarrow$}},
+	tabsize=2,
+linewidth=1.1\linewidth,
+xleftmargin=-0.8in,
+basicstyle=\tiny,
+numbers=left,
+frame=single,
+captionpos=t,
+title=\lstname,
+backgroundcolor=\color{light-gray}}
+
+
+\setchaptertocdepth{2}
+\setappendixtocdepth{2}
+
+\settocstring{Table of Contents}
+\setlofstring{List of Figures}
+%\setlotstring{List of Tables}
+\setbibstring{References}
+\setindstring{Index}
+\setdedstring{Dedication}
+\setglostring{List of Terms}
+\setchpstring{Chapter}
+\setappstring{Appendix}
+\setprtstring{Volume}
+\setabsstring{Summary}
+\setlosstring{List of Symbols}
+\setackstring{Acknowledgment}
+
+\setfrontpagestyle{plain}
+\setbodypagestyle{plain}
+\setendpagestyle{plain}
+
+\pagestyle{plain}
+\bibliographystyle{ieeetr}
+\include{figs/inkscapeLatex}
+
+%\includeonly{Chapter1_Introduction}
+%\includeonly{Chapter2_RVQ}
+%\includeonly{Chapter3_RVQ_CV_recog}
+%\includeonly{Chapter4_TrackingMethods}
+\includeonly{Chapter5_RVQ_CV_tracking}
+%\includeonly{Chapter6_Conclusions}
+%\includeonly{Chapter7_appendices}
+
+%##############################################################################################################
 \begin{document}
+\begin{FrontMatter}
+\contents %generates the TOC, LOF, and LOT
+\end{FrontMatter}
+%##############################################################################################################
+
+
+%\begin{dedication}
+%To my parents, my wife, and my children
+%\end{dedication}
+
+%\begin{acknowledgement}
+%Thanks to all \newpage
+%\end{acknowledgement}
+
+%\begin{preface}
+%	hello
+%\end{preface}
+
+\begin{Body}	
+%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+\chapter{Introduction}
+%\section{Problem overview}
+
+
+								\begin{figure}
+								\centering
+								\subfloat{\input{out.tex}}
+								\subfloat{\includegraphics[width=3in]{figs/aRVQ_4_6_8_10_20_22_24_26.pdf}}
+								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of the scalars $\{4, 6, 8, 10, 20, 22, 24, 26\}$.  The test set $S_{\textrm{tst}}$ is the same as the training set.}
+								\label{fig:aRVQ_4_6_8_10_20_22_24_26}
+								\end{figure}
 
 
 
 
+\end{Body}
 
-%####################################################################################################
-
+%##############################################################################################################
+\begin{EndMatter}
+\references 				%generates the bibliography page
+\end{EndMatter}
 \end{document}
-%####################################################################################################
+%##############################################################################################################

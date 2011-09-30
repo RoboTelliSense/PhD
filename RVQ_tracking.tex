@@ -150,13 +150,7 @@ where, $\boldsymbol\Sigma = \mathbf{U}\mathbf{\Lambda}\mathbf{V}^T$, $\mathbf{U}
 
 In Equation~\ref{Eqn:PPCA}, $\sigma^2_{\textrm{ML}}$ is the average variance in the discarded dimensions and $\mathbf{C}_{\textrm{ML}}$ maps $\mathbf{x}$ onto its principal components to give output $\mathbf{y}$.
 
-								\begin{figure}[t]
-								\centering
-								\subfigure[Codebook and decode path taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 8.  Notice that monR is the only method unable to correctly decode.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_3x2.pdf}}
-								\subfigure[Decoded outputs produced by monR.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR incorrectly decodes 6, 8, 23 and 24.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_3x2_monR.pdf}}
-								\caption{3x2 (3 stages, 2 code-vectors per stage) RVQ codebook generated with the training set, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$. }
-								\label{fig:RVQ_toy_3x2}
-								\end{figure}
+
 
 
 
@@ -168,13 +162,8 @@ As mentioned earlier, VQ does not define a proper density in the observation spa
 %---------------------------------
 In this work, we introduce a new distance measure $d_r$ for RVQ.  Its role is similar to the role played by the Mahalanobis distance in probabilistic PCA.  Essentially, it is used to assign a probability measure to a new data point and demonstrates how well this data point is explained by the RVQ codebook $\Phi$.  The RVQ codebook $\Phi$ is generated using training data and 3 parameters, target decoding SNR, $S$, maximum number of stages, $Q_{\textrm{max}}$ and number of codevectors per stages, $M$.  $d_r$ is given by,
 
-								\begin{figure}[t]
-								\centering
-								\subfigure[Codebook and decode path taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 13.  Notice that monR is the only method unable to correctly decode.]{\includegraphics[height=3in]{figs/RVQ_CAC_toyExample_8x2.pdf}}
-								\subfigure[Decoded outputs produced by monR.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR produces quite a few incorrect reconstructions.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_8x2_monR.pdf}}
-								\caption{8x2 (8 stages, 2 code-vectors per stage) RVQ codebook generated with the training set, S=$\{1, 2, \ldots 256\}$.}
-								\label{fig:RVQ_toy_8x2}
-								\end{figure}
+
+
 
 \begin{equation}
 d_r = \dr
@@ -200,40 +189,34 @@ In this section, we experiment with 4 RVQ decode methods:
 
 We start with some trivial scalar examples where the training and test sets are the same.  We then move to the other extreme end of the spectrum using random data in high dimensional spaces with several observations and where the training and test sets have the same distributions but have different data.  After these experiments, we will get to tracking examples and use the likelihood formulation we have developed for RVQ.
 
+
+
 \subsection{Scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$}
 %-------------------------------------------------------------
-In this experiment, we train RVQ codebooks with $m=2, 3, \ldots, 16$ on the set of scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$.  The resulting codebook for the 8x2 case is shown graphically in Figure~\ref{fig:RVQ_toy_3x2}.  In this initial experiment, the test data is the same as the training data.  Also shown in the figure is the decode path taken by the 4 methods through the RVQ trellis to to decode the number 8.  For monR, when reconstruction reaches 7 in the very first stage, rms error is 1.  However, both next stage codevectors decrease rmse which is why monR exits at this point.  All other methods are able to decode 8 correctly.  These results are shown in Figure~\ref{fig:aRVQ_4_6_8_10_20_22_24_26}.  
+We train RVQ codebooks with $m=2, 3, \ldots, 16$ on the set of scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$.  The resulting codebook for the 8x2 case is shown graphically in Figure~\ref{fig:aRVQ_4_6_8_10_20_22_24_26}.  In this initial experiment, the test data is the same as the training data.  Also shown in the figure is the decode path taken by the 4 methods through the RVQ trellis to to decode the number 8.  For monR, when reconstruction reaches 7 in the very first stage, rms error is 1.  However, both next stage codevectors decrease rmse which is why monR exits at this point.  All other methods are able to decode 8 correctly.  These results are shown in Figure~\ref{fig:aRVQ_4_6_8_10_20_22_24_26}.  
   
  
 \subsection{Scalars, S=$\{1, 2, \ldots 256\}$}
 %------------------------------------------------
-In this experiment, we train several RVQ codebooks $m=2, 3, \ldots, 16$ on the set of scalars, S=$\{1, 2, \ldots 256\}$.  The resulting codebook for the 8x2 case is shown graphically in Figure~\ref{fig:RVQ_toy_8x2}.  In this initial experiment, the test data is the same as the training data.  Also shown in the figure is the decode path taken by the 4 methods through the RVQ trellis to to decode the number 13.  For monR, when reconstruction reaches 16.5, rms error is 3.5.  However, both next stage codevectors decrease rmse which is why monR exits at this point.  All other methods are able to decode 13 correctly.   These results are shown in Figure~\ref{fig:aRVQ_1_to_256}. 
+In this experiment, we train several RVQ codebooks $m=2, 3, \ldots, 16$ on the set of scalars, S=$\{1, 2, \ldots 256\}$.  The resulting codebook for the 8x2 case is shown graphically in Figure~\ref{fig:aRVQ_1_to_256}.  In this initial experiment, the test data is the same as the training data.  Also shown in the figure is the decode path taken by the 4 methods through the RVQ trellis to to decode the number 13.  For monR, when reconstruction reaches 16.5, rms error is 3.5.  However, both next stage codevectors decrease rmse which is why monR exits at this point.  All other methods are able to decode 13 correctly.   These results are shown in Figure~\ref{fig:aRVQ_1_to_256}. 
 
-\subsection{Random variables in $\mathbb{R}^{1089}$}
+\subsection{Gaussian random variables in $\mathbb{R}^{1089}$}
 %------------------------------------------------
-In this experiment, we train RVQ codebooks with $m=2, 3, \ldots, 16$ on 100 realizations of a unit-variance Gaussian random variable in $\mathbb{R}^{1089}$.  Decoding is then done on a different 100 realizations of a unit-variance Gaussian random variable in $\mathbb{R}^{1089}$.  This experiment is repeated 10 times and the results are averaged and displayed in Figure~\ref{fig:aRVQ_gaussian_rand}.  This experiment is then repeated for a uniform random variable.  The results for the uniform random variable are given in Figure~\ref{aRVQ_uniform_rand.pdf}.
+In this experiment, we train RVQ codebooks with $m=2, 3, \ldots, 16$ on 100 realizations of a unit-variance Gaussian random variable in $\mathbb{R}^{1089}$.  Decoding is then done on a different 100 realizations of a unit-variance Gaussian random variable in $\mathbb{R}^{1089}$.  This experiment is repeated 10 times and the results are averaged and displayed in Figure~\ref{fig:aRVQ_gaussian_rand}.  This experiment is then repeated for a uniform random variable. 
 
-								\begin{figure}[t]
-								\centering
-								\includegraphics[width=0.55\textwidth]{figs/Dudek_snippets_frames_1_to_100.pdf}
-								\caption{Training snippets, first 100 frames of Dudek sequence.}
-								\label{fig:Dudek_1_to_100}
-								\end{figure}
+\subsection{Uniform random variables in $\mathbb{R}^{1089}$}
+%------------------------------------------------
+In this experiment, all details are exactly the same as the Gaussian random variable, except that we've used a uniform random variable.  The results are given in Figure~\ref{fig:aRVQ_uniform_rand}.
+
+
+
 
 
 \subsection{Images}
 %------------------------------------------------
 In this experiment, we use actual images from our tracking dataset.  In tracking, a bootstrapping procedure normally involves manually segmenting a target of interest and storing its $x, y, w, h, \theta$ parameters.  These parameters are then converted to an affine 6-tuple.  This 6-tuple allows warping the segmented target onto a user defined rectangular grid.  This warping has the advantage of allowing the target to have a canonical representation with standard size.  Moreover, it will be in upright position.  This can be useful in learning a basis for PCA or generating a codebook for RVQ.  For the purposes of tracking, this initial affine 6-tuple can be used to initialize a particle filter.  The particle filter then generates $N_p$ 6-tuples, and uses the same warping procedure to create $N_p$ canonical targets.  The best one according to a user defined criterion is picked and its affine parameters are then used to generate $N_p$ affine 6-tuples in the next frame and so on.  Notice that in all cases, the target snippets are generated using affine 6-tuples.
 
-								\begin{figure}[t]
-								\centering
-								\subfigure[8x2.]{\fbox{\includegraphics[height=1.5in]{figs/Dudek_snippets_frames_1_to_100_8x2_RVQ.pdf}}}
-								\subfigure[8x4.]{\fbox{\includegraphics[height=1.5in]{figs/Dudek_snippets_frames_1_to_100_8x4_RVQ.pdf}}}
-								\subfigure[8x8.]{\fbox{\includegraphics[height=1.5in]{figs/Dudek_snippets_frames_1_to_100_8x8_RVQ.pdf}}}
-								\subfigure[8x16.]{\fbox{\includegraphics[height=2.5in]{figs/Dudek_snippets_frames_1_to_100_8x16_RVQ.pdf}}}
-								\caption{RVQ codebooks for the snippets in Figure~\ref{fig:Dudek_1_to_100}.  Intensities have been scaled to be able to view lower energy code-vectors.}
-								\label{fig:RVQ_Dudek_codebook}
-								\end{figure}
+
 
 In certain cases, we may not have an affine 6-tuple, or manual segmentation may be difficult, but we may need to extract a target of interest.  In cases where running a feature detector is possible, we could extract features of interest from the target of interest.  If we can beforehand determine the position of those features in our canonical grid, then an affine mapping matrix can be computed between the feature points of interest in an image and their positions in the canonical grid.  Note that we would need to determine the positions of those features on our canonical grid only once, and then for every subsequent frame, we could run a feature detector and compute our desired  affine 6-tuple from mapping those features to the features on the canonical grid.
 
@@ -242,51 +225,23 @@ In this experiment, we use the approach of extracting snippets from feature poin
 
 
 
+\subsection{Training images with noise, test one image}
+%------------------------------------------------
+Next, we pick the same snippets as in Figure~\ref{fig:Dudek_1_to_100} but assume that there is noise in the tracker decisions, and at every frame, a slightly incorrect snippet was picked.  In particular, we add gaussian noise with 0 mean and 0.1 standard deviation to the ground truth affine parameters $\theta, \lambda_1, \lambda_2, \phi, t_x, t_y$.  These training snippets are shown in Figure~\ref{fig:aRVQ_dudek_first_100rand_snippets}.  The results shown in Figure~\ref{fig:aRVQ_Dudek_first_100_rand} again show that nulE produces least reconstruction rms error.
+
+\subsection{Training images with noise, test several images}
+%------------------------------------------------
+This experiment is exactly the same as the previous one except that we test several snippets, some of which also have occlusions.
+
 %================================
 \section{Results}
 %================================
-								\begin{figure}
-								\centering
-								\subtable{\input{tables/aRVQ_4_6_8_10_20_22_24_26.tex}}
-								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_4_6_8_10_20_22_24_26.pdf}}
-								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of the scalars $\{4, 6, 8, 10, 20, 22, 24, 26\}$.  The test set $S_{\textrm{tst}}$ is the same as the training set.}
-								\label{fig:aRVQ_4_6_8_10_20_22_24_26}
-								\end{figure}
 
 
-								\begin{figure}
-								\centering
-								\subtable{\input{tables/aRVQ_1_to_256.tex}}
-								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_1_to_256.pdf}}
-								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of the scalars $\{1, 2, \ldots 256\}$.  The test set $S_{\textrm{tst}}$ is the same as the training set.}
-								\label{fig:aRVQ_1_to_256}
-								\end{figure}
-		
-
-								\begin{figure}
-								\centering
-								\subtable{\input{tables/aRVQ_gaussian_rand.tex}}
-								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_gaussian_rand.pdf}}
-								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of 100 realizations of a zero-mean unit-variance Gaussian random variable, $S_{\textrm{trg}} \sim \mathcal{N}(0, 1) \in \mathbb{R}^{1089}$.  The test set $S_{\textrm{tst}}$ consists of 100 different realizations of a zero-mean unit-variance Gaussian random variable 	 $S_{\textrm{tst}} \sim \mathcal{N}(0, 1) \in \mathbb{R}^{1089}$, $S_{\textrm{tst}} \neq S_{\textrm{trg}}$.  Notice that the error is close to the variance of the random variable. }
-								\label{fig:aRVQ_gaussian_rand}
-								\end{figure}
-
-								\begin{figure}
-								\centering
-								\subtable{\input{tables/aRVQ_uniform_rand.tex}}
-								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_uniform_rand.pdf}}
-								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of 100 realizations of a uniform random variable, $S_{\textrm{trg}} \sim U[0, 1] \in \mathbb{R}^{1089}$.  The test set $S_{\textrm{tst}}$ consists of 100 different realizations of a zero-mean uniform random variable 	 $S_{\textrm{tst}} \sim U[0, 1] \in \mathbb{R}^{1089}$, $S_{\textrm{tst}} \neq S_{\textrm{trg}}$.}
-								\label{fig:aRVQ_uniform_rand}
-								\end{figure}
 
 
-								\begin{figure}
-								\centering
-								\subtable{\input{tables/aRVQ_Dudek_first_100.tex}}
-								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_Dudek_first_100.pdf}}
-								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$ for the first 100 target snippets in the Dudek sequence.  These snippets can be seen in Figure~\ref{fig:Dudek_1_to_100}.}
-								\label{fig:aRVQ_Dudek_first_100}
-								\end{figure}
+
+
 
 We carried out experiments on two opposite ends of the spectrum. 
 
@@ -315,11 +270,147 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 %
 %\lstinputlisting[language=Matlab, caption={UTIL\_2D\_affine\_apply\_transform.m}, 		label=lst:UTIL_2D_affine_apply_transform]		{UTIL_2D_affine_apply_transform.m}
 
+\newpage
+\appendix
+\section{Non-tracking results}
+
+\clearpage
+\newpage
+\subsection{Scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$}
+%-------------------------------------------------------------
+								\begin{figure}[h]
+								\centering
+								\subfigure[Codebook for $m=2$.  Decode path taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 8 is also shown.  Notice that monR is the only method unable to correctly decode.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_3x2.pdf}}
+								\subfigure[For $m=2$, decoded outputs produced by monR.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR incorrectly decodes 6, 8, 23 and 24.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_3x2_monR.pdf}}
+								\subtable{\begin{tiny}\input{tables/aRVQ_4_6_8_10_20_22_24_26.tex}\end{tiny}}
+								\subfigure[Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$]{\includegraphics[width=0.4\textwidth]{figs/aRVQ_4_6_8_10_20_22_24_26.pdf}}
+								\caption{Training set $S_{\textrm{trg}}=\{4, 6, 8, 10, 20, 22, 24, 26\}$, the test set $S_{\textrm{tst}}$ is the same as the training set.}
+								\label{fig:aRVQ_4_6_8_10_20_22_24_26}
+								\end{figure}
+\clearpage
+\newpage
+\subsection{Scalars, S=$\{1, 2, \ldots 256\}$}
+%------------------------------------------------
+								\begin{figure}[h]
+								\centering
+								\subfigure[For $m=2$, codebook and decode path taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 13.  Notice that monR is the only method unable to correctly decode.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_8x2.pdf}}
+								\subfigure[For $m=2$, decoded outputs produced by monR.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR produces quite a few incorrect reconstructions.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_8x2_monR.pdf}}
+								\subtable{\begin{tiny}\input{tables/aRVQ_1_to_256.tex}\end{tiny}}
+								\subfigure{\includegraphics[width=0.4\textwidth]{figs/aRVQ_1_to_256.pdf}}
+								\caption{Training set  $S_{\textrm{trg}}=\{1, 2, \ldots 256\}$, , the test set $S_{\textrm{tst}}$ is the same as the training set.}
+								\label{fig:aRVQ_1_to_256}
+								\end{figure}
+
+\clearpage
+\newpage
+\subsection{Gaussian random variables in $\mathbb{R}^{1089}$}
+%------------------------------------------------
+
+								\begin{figure}[h]
+								\centering
+								\subtable{\begin{tiny}\input{tables/aRVQ_gaussian_rand.tex}\end{tiny}}
+								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_gaussian_rand.pdf}}
+								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of 100 realizations of a zero-mean unit-variance Gaussian random variable, $S_{\textrm{trg}} \sim \mathcal{N}(0, 1) \in \mathbb{R}^{1089}$.  The test set $S_{\textrm{tst}}$ consists of 100 different realizations of a zero-mean unit-variance Gaussian random variable 	 $S_{\textrm{tst}} \sim \mathcal{N}(0, 1) \in \mathbb{R}^{1089}$, $S_{\textrm{tst}} \neq S_{\textrm{trg}}$.  Notice that the error is close to the variance of the random variable. }
+								\label{fig:aRVQ_gaussian_rand}
+								\end{figure}
+
+\clearpage
+\newpage
+\subsection{Uniform random variables in $\mathbb{R}^{1089}$}
+%------------------------------------------------
+								\begin{figure}[h]
+								\centering
+								\subtable{\begin{tiny}\input{tables/aRVQ_uniform_rand.tex}\end{tiny}}
+								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_uniform_rand.pdf}}
+								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of 100 realizations of a uniform random variable, $S_{\textrm{trg}} \sim U[0, 1] \in \mathbb{R}^{1089}$.  The test set $S_{\textrm{tst}}$ consists of 100 different realizations of a zero-mean uniform random variable 	 $S_{\textrm{tst}} \sim U[0, 1] \in \mathbb{R}^{1089}$, $S_{\textrm{tst}} \neq S_{\textrm{trg}}$.}
+								\label{fig:aRVQ_uniform_rand}
+								\end{figure}
+
+\clearpage
+\newpage
+\subsection{Images}
+%------------------------------------------------
+								\begin{figure}[h]
+								\centering
+								\includegraphics[width=0.55\textwidth]{figs/Dudek_snippets_frames_1_to_100.pdf}
+								\caption{Training snippets extracted using ground truth information, first 100 frames of Dudek sequence.}
+								\label{fig:Dudek_1_to_100}
+								\end{figure}	
+
+								\begin{figure}[h]
+								\centering
+								\subfigure[8x2.]{\fbox{\includegraphics[height=1.5in]{figs/Dudek_snippets_frames_1_to_100_8x2_RVQ.pdf}}}
+								\subfigure[8x4.]{\fbox{\includegraphics[height=1.5in]{figs/Dudek_snippets_frames_1_to_100_8x4_RVQ.pdf}}}
+								\subfigure[8x8.]{\fbox{\includegraphics[height=1.5in]{figs/Dudek_snippets_frames_1_to_100_8x8_RVQ.pdf}}}
+								\subfigure[8x16.]{\fbox{\includegraphics[height=2.5in]{figs/Dudek_snippets_frames_1_to_100_8x16_RVQ.pdf}}}
+								\caption{RVQ codebooks for the snippets in Figure~\ref{fig:Dudek_1_to_100}.  Intensities have been scaled to be able to view lower energy code-vectors.}
+								\label{fig:RVQ_Dudek_codebook}
+								\end{figure}
+
+
+								\begin{figure}
+								\centering
+								\subtable{\begin{tiny}\input{tables/aRVQ_Dudek_first_100.tex}\end{tiny}}
+								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_Dudek_first_100.pdf}}
+								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$ for the first 100 target snippets in the Dudek sequence.  These snippets can be seen in Figure~\ref{fig:Dudek_1_to_100}.}
+								\label{fig:aRVQ_Dudek_first_100}
+								\end{figure}
+
+\clearpage
+\newpage
+\subsection{Training images with noise, test one image}
+%------------------------------------------------
+
+
+								\begin{figure}[h]
+								\centering
+								\subfigure[Training snippets.]{\includegraphics[width=0.55\textwidth]{figs/aRVQ_dudek_first_100rand_snippets.pdf}}
+								\subfigure[Test snippet.]{\includegraphics[width=0.15\textwidth]{figs/dataset_Dudek_snippet_00101.png}}
+								\caption{The training snippets were extracted using ground truth information from the first 100 frames of the Dudek sequence.  The affine parameters of the ground truth affine parameters $\theta, \lambda_1, \lambda_2, \phi, t_x, t_y$ were perturbed with a zero-mean gaussian random variable with 0.1 standard deviation.  This was done to simulate a condition in which the tracker does not make perfect decisions on every frame.  Compare with Figure~\ref{fig:Dudek_1_to_100} in which perfect snippets are shown.}
+								\label{fig:aRVQ_dudek_first_100rand_snippets}
+								\end{figure}
+
+								\begin{figure}
+								\centering
+								\subtable{\begin{tiny}\input{tables/aRVQ_dudek_first_100rand_101test.tex}\end{tiny}}
+								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_dudek_first_100rand_101test.pdf}}
+								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$ with first 100 target snippets in the Dudek sequence randomized with zero-mean gaussian noise with 0.1 standard deviation.  The training snippets can be seen in Figure~\ref{fig:aRVQ_dudek_first_100rand_snippets}.}
+								\label{fig:aRVQ_Dudek_first_100_rand}
+								\end{figure}
+
+
+
+\clearpage
+\newpage
+\subsection{Training images with noise, test several images}
+%------------------------------------------------
+Training snippets are similar to the ones in Figure~\ref{fig:aRVQ_dudek_first_100rand_snippets} since exactly the same noise parameters were used.
+
+
+								\begin{figure}[h]
+								\centering
+								\subfigure[Test snippets.]{\includegraphics[width=0.55\textwidth]{figs/aRVQ_dudek_first_100_to_105_snippets.pdf}}
+								\caption{Test snippts.}
+								\label{fig:aRVQ_Dudek_first_100_rand}
+								\end{figure}
+
+
+								\begin{figure}[h]
+								\centering
+								\subtable{\begin{tiny}\input{tables/aRVQ_dudek_first_100rand_5test.tex}\end{tiny}}
+								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_dudek_first_100rand_5test.pdf}}
+								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$ with first 100 target snippets in the Dudek sequence randomized with zero-mean gaussian noise with 0.1 standard deviation.  The training snippets can be seen in Figure~\ref{fig:aRVQ_dudek_first_100rand_snippets}.}
+								\label{fig:aRVQ_Dudek_first_100_rand}
+								\end{figure}
+
+
+\clearpage
+\newpage
 \normalsize
 \bibliographystyle{ieee}
 \bibliography{MyCitations}
 \end{document}
 
 
-%Consider Figure~\ref{fig:RVQ_toy_3x2}.  In this example, an RVQ codebook with 3 stages and 2 code-vectors per stage is designed for 8 input test points in $\mathbb{R}$.  For 2 test points 25 and 27, the reconstruction rmse (root mean squared error) is the same, i.e., 1.  However, the number of stages required is 2 and 3 respectively. In this case, it is up to the application to decide if more emphasis should be placed on If maximum stages are desired, then 27 will be picked.
+%Consider Figure~\ref{fig:aRVQ_4_6_8_10_20_22_24_26}.  In this example, an RVQ codebook with 3 stages and 2 code-vectors per stage is designed for 8 input test points in $\mathbb{R}$.  For 2 test points 25 and 27, the reconstruction rmse (root mean squared error) is the same, i.e., 1.  However, the number of stages required is 2 and 3 respectively. In this case, it is up to the application to decide if more emphasis should be placed on If maximum stages are desired, then 27 will be picked.
 %Given this overview, we now move to computation of the likelihood of a data point under RVQ. 

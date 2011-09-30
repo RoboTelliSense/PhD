@@ -107,22 +107,24 @@
 %-----------------------------
 % 2. PROCESSING
 %-----------------------------
-datasetcode=1;
+datasetcode=8;
 %for f=1:1
 f=0;
+[DM2_trg, sw, sh]           =   DM2_create(8);
+[DM2_tst, sw, sh]       =   DM2_create(9);
 for  a       =   2:16
     aRVQ1.in_4__M___ = a;
     tic
     f=f+1;
-    [DM2, sw, sh]           =   DM2_create(datasetcode);
+    
     aRVQ1.in_6__sw__        =   sw;             %snippet width
     aRVQ1.in_7__sh__        =   sh;             %snippet height
     
     
     %learning    
-    %aBPCA                   =    PCA__1_learn     (DM2, aBPCA); 
+    %aBPCA                  =    PCA__1_learn     (DM2, aBPCA); 
     
-    aRVQ1                   =    RVQ__1_learn     (DM2, aRVQ1);
+    aRVQ1                   =    RVQ__1_learn     (DM2_trg, aRVQ1);
     aRVQ2                   =   aRVQ1;  aRVQ2.in_10_tstD = 'RofE';
     aRVQ3                   =   aRVQ1;  aRVQ3.in_10_tstD = 'nulE';
     aRVQ4                   =   aRVQ1;  aRVQ4.in_10_tstD = 'monE';
@@ -130,7 +132,7 @@ for  a       =   2:16
     
     %aTSVQ                   =    TSVQ_1_learn     (DM2, aTSVQ); 
       
-    [DM2_tst, sw, sh]       =   DM2_create(datasetcode);
+    
     %decoding
     %aBPCA                   =   PCA__2_encode(DM2_tst, aBPCA);                  
     aRVQ1                   =   RVQ__2_encode(DM2_tst, aRVQ1);
@@ -160,10 +162,10 @@ end
 %view
     numDisplayRows          =   10;
     numDisplayCols          =   10;
-                                figure;DM2_display(DM2,            sh, sw, numDisplayRows, numDisplayCols, 0);
-                                %figure;DM2_display(aBPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols, 1);title('aBPCA eigenvectors');
-                                figure;DM2_display(aRVQ1.mdl_3_CB_DxMP, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
-                                %figure;DM2_display(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
+                                figure;DM2_show(DM2_trg,            sh, sw, numDisplayRows, numDisplayCols, 0);
+                                %figure;DM2_show(aBPCA.mdl_3_U__DxP, sh, sw, numDisplayRows, numDisplayCols, 1);title('aBPCA eigenvectors');
+                                figure;DM2_show(aRVQ1.mdl_3_CB_DxMP, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
+                                %figure;DM2_show(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
     
     figure;
     hold on
@@ -173,15 +175,17 @@ end
     plot(2:16, rmse(:,4), 'm*-');  
     plot(2:16, rmse(:,5), 'ks-');  
     grid on; 
-    axis([2 16 0 1.5])
-    legend('Trng', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'Northeast')
+    %axis([2 16 0 1.5])
+    axis equal;
+    axis tight;
+    legend('Trng', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'SouthWest')
     xlabel('number of stages, m');
-    UTIL_FILE_save2pdf('aRVQ_1_to_256.pdf', gcf, 300);
+    UTIL_FILE_save2pdf('aRVQ_dudek_first_100rand_101test.pdf', gcf, 300);
     
  
     rowLabels = {'m=2', 'm=3', 'm=4', 'm=5', 'm=6', 'm=7', 'm=8', 'm=9', 'm=10', 'm=11', 'm=12', 'm=13', 'm=14', 'm=15', 'm=16', 'mean'};
     colLabels = {'Trng', 'maxQ', 'RofE', 'nulE', 'monR'};
-    UTIL_matrix2latex(rmse_with_mean, 'aRVQ_1_to_256.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
+    UTIL_matrix2latex(rmse_with_mean, 'aRVQ_dudek_first_100rand_101test.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
 
     
     
