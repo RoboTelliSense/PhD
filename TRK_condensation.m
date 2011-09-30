@@ -121,10 +121,10 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %2. compute candidate errors, i.e., find how well the algorithm model explains each snippet)
 
     %IPCA, BPCA
-    if     (strcmp(TRK.name, 'trkMEAN'))                                ALGO = MEAN_2_test (cand_snps_DxNp    , ALGO);
-    elseif (strcmp(TRK.name, 'trkIPCA') || strcmp(TRK.name, 'trkBPCA')) ALGO = PCA__2_encode (cand_snps_DxNp    , ALGO);
-    elseif (strcmp(TRK.name, 'trkRVQx'))                                ALGO = RVQ__2_encode (cand_snps_DxNp    , ALGO);
-    elseif (strcmp(TRK.name, 'trkTSVQ'))                                ALGO = TSVQ_2_encode (cand_snps_DxNp    , ALGO);
+    if     (strcmp(TRK.name, 'trkaMEAN'))                                ALGO = MEAN_2_test (cand_snps_DxNp    , ALGO);
+    elseif (strcmp(TRK.name, 'trkaIPCA') || strcmp(TRK.name, 'trkaBPCA')) ALGO = PCA__2_encode (cand_snps_DxNp    , ALGO);
+    elseif (strcmp(TRK.name, 'trkaRVQx'))                                ALGO = RVQ__2_encode (cand_snps_DxNp    , ALGO);
+    elseif (strcmp(TRK.name, 'trkaTSVQ'))                                ALGO = TSVQ_2_encode (cand_snps_DxNp    , ALGO);
     end
     candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
@@ -209,8 +209,9 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     
     fid                     =   fopen(TRK.cfn, 'a');
                                 UTIL_FILE_checkFileOpen(fid, TRK.cfn); 
-    str_out                 =   sprintf('%4d %6.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f %4.2f', ...
+    str_out                 =   sprintf('%4d     %6.2f %6.2f     %4.2f %4.2f %4.2f     %4.2f %4.2f %4.2f     %4.2f %4.2f %4.2f     %4.2f %4.2f %4.2f', ...
                                 f                                                                     , ...
+                                ALGO.tim_t_sec                                                        , ...
                                 TRK.tim_t_sec(f)                                                      , ...
                                 TRK.trk_1_SNRdB_Fx1(f), TRK.trk_2_rmse__Fx1(f), TRK.trk_3_armse_Fx1(f), ...
                                 TRK.snp_4_SNRdB_Fx1(f), TRK.snp_5_rmse__Fx1(f), TRK.snp_6_armse_Fx1(f), ...

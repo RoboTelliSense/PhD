@@ -22,7 +22,7 @@ j=0;
 k=0;
 avg_trk_err = -1*zeros(4,4);
 for datasetCode=1:1
-    [PARAM.ds_2_name, PARAM.ds_3_name2] = dataset_getName(datasetCode);
+    [PARAM.ds_2_name, PARAM.ds_3_name] = dataset_getName(datasetCode);
     
     for Nw = 2;%[2 4 8 16 32 64 128 10000]
         
@@ -36,7 +36,7 @@ for datasetCode=1:1
                 rvq__targetSNR   =   config(c,4);
                 tsvq_T          =   config(c,5);
                 j               =   j+1
-                [config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_name2, bUseBPCA , bUseRVQx, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
+                [config_name odir]         =   UTIL_DATASET_makeName(PARAM.ds_3_name, bUseBPCA , bUseRVQx, bUseTSVQ, Np, Nw, w, ipca_Neig, bpca_Neig, rvq_maxT, rvq_S, rvq__targetSNR, tsvq_T);
                 cfn             =   [odir 'FPerr_3_ipca.csv'];
                 if (exist(cfn,'file'))
                     a               =   csvread(cfn);
