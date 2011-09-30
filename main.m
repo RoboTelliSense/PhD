@@ -71,7 +71,7 @@ ds_code                     =   1;
 % function main(   pca__Q,                                          ...
 %                  rvq__maxQ, rvq__M, rvq__targetSNRdB, rvq__tstI,  ...
 %                  tsvq_maxQ, tsvq_M,                               ...
-%                  bUseIPCA , bUseBPCA , bUseRVQx, bUseTSVQ,        ...
+%                  PARAM.in_bUseIPCA , PARAM.in_bUseBPCA , PARAM.in_bUseRVQx, PARAM.in_bUseTSVQ,        ...
 %                  ds_code)
 
 %-----------------------------------------
@@ -79,6 +79,10 @@ ds_code                     =   1;
 %-----------------------------------------
 %1. PARAMETERS    
     PARAM.ds_1_code         =   ds_code;
+    PARAM.in_bUseIPCA       =   bUseIPCA;
+    PARAM.in_bUseBPCA       =   bUseBPCA;   
+    PARAM.in_bUseRVQx       =   bUseRVQx;
+    PARAM.in_bUseTSVQ       =   bUseTSVQ;
     PARAM.DM2_bWeighting    =   false;              %data: weighting of input data points 
     PARAM.trg_Nw            =   10000;              %training: number of images (training window size)
     PARAM.trg_freq          =   5;                  %training: frequency
@@ -123,12 +127,13 @@ ds_code                     =   1;
 %============================================
 
 %1. configure learning algos
-    if (bUseIPCA) [aIPCA, trkIPCA]=  IPCA_config     (PARAM, trkMEAN, pca__Q, first_mean_shxsw);    end
-    if (bUseBPCA) [aBPCA, trkBPCA]=  BPCA_config     (PARAM, trkMEAN, pca__Q);                      end
-    if (bUseRVQx) [aRVQx, trkRVQx]=  RVQx_config     (PARAM, trkMEAN, rvq__maxQ, rvq__M, rvq__targetSNRdB, rvq__tstI); end
-    if (bUseTSVQ) [aTSVQ, trkTSVQ]=  TSVQ_config     (PARAM, trkMEAN, tsvq_maxQ, tsvq_M);           end
+    if (PARAM.in_bUseIPCA) [aIPCA, trkIPCA]=  IPCA_config     (PARAM, trkMEAN, pca__Q, first_mean_shxsw);    end
+    if (PARAM.in_bUseBPCA) [aBPCA, trkBPCA]=  BPCA_config     (PARAM, trkMEAN, pca__Q);                      end
+    if (PARAM.in_bUseRVQx) [aRVQx, trkRVQx]=  RVQx_config     (PARAM, trkMEAN, rvq__maxQ, rvq__M, rvq__targetSNRdB, rvq__tstI); end
+    if (PARAM.in_bUseTSVQ) [aTSVQ, trkTSVQ]=  TSVQ_config     (PARAM, trkMEAN, tsvq_maxQ, tsvq_M);           end
       
     %clean up clutter
+    clear bUseIPCA bUseBPCA bUseRVQx bUseTSVQ
     clear pca__Q 
     clear rvq__maxQ rvq__M rvq__targetSNRdB rvq__tstI 
     clear tsvq_maxQ tsvq_M 
@@ -137,10 +142,10 @@ ds_code                     =   1;
 
     
 %2. run learning algorithms once
-    if (bUseIPCA) aIPCA     =   IPCA_1_learn    (trkIPCA.DM2(:,f-PARAM.trg_freq+1:f), aIPCA);  end		
-    if (bUseBPCA) aBPCA     =   PCA__1_learn    (trkBPCA.DM2                        , aBPCA);  end
-    if (bUseRVQx) aRVQx     =   RVQ__1_learn    (trkRVQx.DM2                        , aRVQx);  end
-    if (bUseTSVQ) aTSVQ     =   TSVQ_1_learn    (trkTSVQ.DM2                        , aTSVQ);  end  
+    if (PARAM.in_bUseIPCA) aIPCA     =   IPCA_1_learn    (trkIPCA.DM2(:,f-PARAM.trg_freq+1:f), aIPCA);  end		
+    if (PARAM.in_bUseBPCA) aBPCA     =   PCA__1_learn    (trkBPCA.DM2                        , aBPCA);  end
+    if (PARAM.in_bUseRVQx) aRVQx     =   RVQ__1_learn    (trkRVQx.DM2                        , aRVQx);  end
+    if (PARAM.in_bUseTSVQ) aTSVQ     =   TSVQ_1_learn    (trkTSVQ.DM2                        , aTSVQ);  end  
 
     disp('initialization complete');
     
@@ -153,17 +158,17 @@ for f = PARAM.trg_freq+1 : PARAM.ds_4_F
     I                       =   double(I_HxWxF(:,:,f));
 
     %2. tracking (condensation)
-    if (bUseIPCA) trkIPCA   =   TRK_condensation(f, I, GT, RAND, PARAM, aIPCA, trkIPCA); end %estwarp_grad(I, aIPCA, trkIPCA, PARAM);
-    if (bUseBPCA) trkBPCA   =   TRK_condensation(f, I, GT, RAND, PARAM, aBPCA, trkBPCA); end
-    if (bUseRVQx) trkRVQx   =   TRK_condensation(f, I, GT, RAND, PARAM, aRVQx, trkRVQx); end
-    if (bUseTSVQ) trkTSVQ   =   TRK_condensation(f, I, GT, RAND, PARAM, aTSVQ, trkTSVQ); end
+    if (PARAM.in_bUseIPCA) trkIPCA   =   TRK_condensation(f, I, GT, RAND, PARAM, aIPCA, trkIPCA); end %estwarp_grad(I, aIPCA, trkIPCA, PARAM);
+    if (PARAM.in_bUseBPCA) trkBPCA   =   TRK_condensation(f, I, GT, RAND, PARAM, aBPCA, trkBPCA); end
+    if (PARAM.in_bUseRVQx) trkRVQx   =   TRK_condensation(f, I, GT, RAND, PARAM, aRVQx, trkRVQx); end
+    if (PARAM.in_bUseTSVQ) trkTSVQ   =   TRK_condensation(f, I, GT, RAND, PARAM, aTSVQ, trkTSVQ); end
 
     %3. training (update model) 
     if (mod(f,PARAM.trg_freq)==0)                                               %every PARAM.trg_freq frames
-        if (bUseIPCA) aIPCA = IPCA_1_learn  (trkIPCA.DM2(:,f-PARAM.trg_freq+1:f), aIPCA); end		
-        if (bUseBPCA) aBPCA = PCA__1_learn  (trkBPCA.DM2,                         aBPCA); end
-        if (bUseRVQx) aRVQx = RVQ__1_learn  (trkRVQx.DM2 ,                        aRVQx); end
-        if (bUseTSVQ) aTSVQ = TSVQ_1_learn  (trkTSVQ.DM2,                         aTSVQ); end  
+        if (PARAM.in_bUseIPCA) aIPCA = IPCA_1_learn  (trkIPCA.DM2(:,f-PARAM.trg_freq+1:f), aIPCA); end		
+        if (PARAM.in_bUseBPCA) aBPCA = PCA__1_learn  (trkBPCA.DM2,                         aBPCA); end
+        if (PARAM.in_bUseRVQx) aRVQx = RVQ__1_learn  (trkRVQx.DM2 ,                        aRVQx); end
+        if (PARAM.in_bUseTSVQ) aTSVQ = TSVQ_1_learn  (trkTSVQ.DM2,                         aTSVQ); end  
     end
 
     %4. plot and display
