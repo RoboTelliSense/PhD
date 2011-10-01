@@ -1,8 +1,11 @@
-function [aBPCA, trkBPCA]   =    BPCA_config(PARAM, trkMEAN, pca__Q)
+function [aBPCA, trkaBPCA]   =    BPCA_config(PARAM, trkMEAN, pca__Q)
 
+%ALGO
     aBPCA.in_1__name        =   'aBPCA';
     aBPCA.mdl_1_Q__1x1      =   pca__Q;    
-    aBPCA.config_str        =   BPCA_config_string(aBPCA.mdl_1_Q__1x1);
-    
-    trkBPCA                 =   TRK_derive_from_generic_tracker(PARAM, aBPCA, trkMEAN); 
+    aBPCA.config_str        =   ['aBPCA'                                 '_'  ...
+                                 UTIL_GetZeroPrefixedFileNumber_3(pca_Q) '__'];
+                            
+%TRACKER    
+    trkaBPCA                 =   TRK_derive_from_generic_tracker(PARAM, aBPCA, trkMEAN); 
   

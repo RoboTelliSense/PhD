@@ -91,7 +91,7 @@
     aRVQ1.in_3__maxQ        =   8;              %max number of stages  
     aRVQ1.in_4__M___        =   16;              %number of codevectors/stage
     aRVQ1.in_5__tSNR        =   1000;           %target SNRdB during learning (creating codebooks)        
-    aRVQ1.in_8__odir        =   '';
+    aRVQ1.odir        =   '';
     aRVQ1.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
     aRVQ1.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
     aRVQ1.config_str        =   RVQ__config_string(aRVQ1.in_3__maxQ, aRVQ1.in_4__M___, aRVQ1.in_5__tSNR, aRVQ1.in_10_tstD);

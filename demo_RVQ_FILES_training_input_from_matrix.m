@@ -28,7 +28,7 @@
     RVQ.in_5__tSNR          =   1000;
     RVQ.in_6__sw__                 =   1;              %snippet width
     RVQ.in_7__sh__                 =   1;              %snippet height
-    RVQ.in_8__odir            =   '';             %directory where output files are saved
+    RVQ.odir            =   '';             %directory where output files are saved
 
 %-------------------------------
 % PROCESSING

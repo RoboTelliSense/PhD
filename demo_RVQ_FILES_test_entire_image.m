@@ -18,7 +18,7 @@
     RVQ.in_5__tSNR          =   1000;
     RVQ.in_6__sw__                 =   sw;                                         %snippet width
     RVQ.in_7__sh__                 =   sh;                                         %snippet height
-    RVQ.in_8__odir            =   '';
+    RVQ.odir            =   '';
     RVQ.trg_1_featr_PxN =   [];
     RVQ.tst_1_featr_PxN  =   [];
 

@@ -11,7 +11,7 @@
 %>                              training examples in one batch
 %>
 %> TRK                      :   structure that holds information about the condensation algorithm.  has following members:
-%>      name                :   name of tracker, trkIPCA, trkBPCA, trkRVQx, trkTSVQ, etc
+%>      name                :   name of tracker, trkaIPCA, trkaBPCA, trkaRVQx, trkaTSVQ, etc
 %>
 %>      DM2                 :   design (data) matrix, contains all best snippets for all frames, pixel intensity range is [0 1]
 %>
@@ -128,9 +128,9 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     end
     candErrs_DxNp           =   ALGO.tst_3_error_DxN;
         
-    %if (strcmp(TRK.name, 'trkRVQx'))
-    %    candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.P));
-    %end
+    if (strcmp(TRK.name, 'trkaRVQx'))
+       candErrs_DxNp(:,i)  =   (abs(candErrs_DxNp) + ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.mdl_1_Q__1x1));
+    end
 
        
 %3. weights, maxidx (posterior)
@@ -166,7 +166,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     
 %save all snippets
     TRK.DM2                 =   [DM2      TRK.snp_0_pixls_shxsw(:)];          %update snippet library
-    if 	   (strcmp(TRK.name, 'trkBPCA') || strcmp(TRK.name, 'trkRVQx') || strcmp(TRK.name, 'trkTSVQ')) %not needed for IPCA since it has its own forgetting factor
+    if 	   (strcmp(TRK.name, 'trkaBPCA') || strcmp(TRK.name, 'trkaRVQx') || strcmp(TRK.name, 'trkaTSVQ')) %not needed for IPCA since it has its own forgetting factor
         TRK.DM2             =   DM2_window_and_repeat(TRK.DM2, Nw, bWeighting); 
     end
     

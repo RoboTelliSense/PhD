@@ -1,4 +1,4 @@
-function [aIPCA, trkIPCA]   =   IPCA_config(PARAM, trkMEAN, pca__Q, first_mean_shxsw)
+function [aIPCA, trkaIPCA]   =   IPCA_config(PARAM, trkMEAN, pca__Q, first_mean_shxsw)
 
     aIPCA.in_1__name        =   'aIPCA';
     aIPCA.in_6__sw__        =   PARAM.tgt_sw;
@@ -10,9 +10,10 @@ function [aIPCA, trkIPCA]   =   IPCA_config(PARAM, trkMEAN, pca__Q, first_mean_s
     aIPCA.mdl_2_mu_Dx1      =   first_mean_shxsw(:);
     aIPCA.mdl_3_U__DxP      =   [];
     aIPCA.mdl_4_S_Bx1       =   [];
-    aIPCA.config_str        =   IPCA_config_string(aIPCA.mdl_1_Q__1x1);
+    aIPCA.config_str        =   ['aIPCA'                                    '_'  ...
+                                 UTIL_GetZeroPrefixedFileNumber_3(pca__Q)   '__'];
     
-    trkIPCA                 =   TRK_derive_from_generic_tracker(PARAM, aIPCA, trkMEAN);
+    trkaIPCA                 =   TRK_derive_from_generic_tracker(PARAM, aIPCA, trkMEAN);
     
 
     
