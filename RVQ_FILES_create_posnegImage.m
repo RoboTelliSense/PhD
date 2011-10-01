@@ -1,6 +1,6 @@
 %% This function takes a grayscale or RGB image and creates a posneg image.
 %
-% Refer to readme.pdf for a description of posneg images.
+% Refer to readme.pdf for a config_str of posneg images.
 % 
 % Copyright (C) Salman Aslam.  All rights reserved.
 % Date created          : Feb 4, 2011

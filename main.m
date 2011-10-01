@@ -99,27 +99,40 @@ ds_code                     =   1;
 	PARAM.plot_num_rows  	=   5;                  %    "       "
 	PARAM.plot_num_cols  	=   4;                  %    "       "
 	PARAM.plot_title_fontsz =   8;                  %    "       "     fontsize,
-	PARAM.plot_alpha        =   0.2;                %    "       "     transparency for target bounding regions
+	colormap(gray)
                    
-%2. INPUT
-    [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM);     
+    
 
 
 %-----------------------------------------
 %PRE-PROCESSING (run mean tracker for a few frames
 %-----------------------------------------
-%1. initialize first target for bootstrapping
-    firstI                  =   double(I_HxWxF(:,:,1));
+%1. READ IMAGES
+    [PARAM,I_HxWxF,GT,RAND] =   TRK_read_input(PARAM);  
+    firstI                  =   double(I_HxWxF(:,:,1));  %initialize first target for bootstrapping
     [a b first_mean_shxsw]  =   UTIL_2D_affine_extractROI_using_Ha_2x3(firstI, UTIL_2D_affine_tsrpxy_to_Ha_2x3(PARAM.ds_7_tsrpxy_1x6), PARAM.tgt_sw, PARAM.tgt_sh);
     
-%2. configure tracker    
+%2. CONFIGURE TRACKER
     [aMEAN, trkMEAN]        =   MEAN_config(PARAM, first_mean_shxsw); %give it first image
 
 %3. run for few frames
     for f = 1:PARAM.trg_freq
         I                   =   double(I_HxWxF(:,:,f)); %input
         trkMEAN             =   TRK_condensation(f, I, GT, RAND, PARAM, aMEAN, trkMEAN); %%tracking: frame num, image, ground truth, random data, parameters, learning algo, tracking structure                          
-        UTIL_PLOT_display(I, f, PARAM, GT, trkMEAN, [], [], [], []);
+
+        %display
+        str_console         =   num2str(f);
+        str_plot            =   num2str(f);
+        str_plot            =   [str_plot     ' ' num2str(trkMEAN.trk_2_rmse__Fx1(f))];
+        str_console         =   [str_console  ' ' num2str(trkMEAN.trk_3_armse_Fx1(f))]
+        
+        %4. plot
+        imagesc(uint8(I));
+        hold on;
+        UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkMEAN.fpt_2_estim_2xG, trkMEAN.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'k');
+        title(str_plot); 
+        hold off;   
+        drawnow
     end	   
 
 %============================================
@@ -171,6 +184,24 @@ for f = PARAM.trg_freq+1 : PARAM.ds_4_F
         if (PARAM.in_bUseTSVQ) aTSVQ = TSVQ_1_learn  (trkTSVQ.DM2,                         aTSVQ); end  
     end
 
-    %4. plot and display
-    UTIL_PLOT_display(I, f, PARAM, GT, trkMEAN, trkIPCA, trkBPCA, trkRVQx, trkTSVQ);
-end       
+    %5. strings
+    str_console = num2str(f);
+    str_plot    = num2str(f);
+    if (PARAM.in_bUseIPCA) str_plot = [str_plot ' ' num2str(trkIPCA.trk_2_rmse__Fx1(f))]; str_console = [str_console ' ' num2str(trkIPCA.trk_3_armse_Fx1(f))]; end
+    if (PARAM.in_bUseBPCA) str_plot = [str_plot ' ' num2str(trkBPCA.trk_2_rmse__Fx1(f))]; str_console = [str_console ' ' num2str(trkBPCA.trk_3_armse_Fx1(f))]; end
+    if (PARAM.in_bUseRVQx) str_plot = [str_plot ' ' num2str(trkRVQx.trk_2_rmse__Fx1(f))]; str_console = [str_console ' ' num2str(trkRVQx.trk_3_armse_Fx1(f))]; end
+    if (PARAM.in_bUseTSVQ) str_plot = [str_plot ' ' num2str(trkTSVQ.trk_2_rmse__Fx1(f))]; str_console = [str_console ' ' num2str(trkTSVQ.trk_3_armse_Fx1(f))]; end
+
+    %output: console
+    str_console
+        
+    %output: plot
+    imagesc(uint8(I));hold on;
+    if (PARAM.in_bUseIPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkIPCA.fpt_2_estim_2xG, trkIPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'm'); end
+    if (PARAM.in_bUseBPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkBPCA.fpt_2_estim_2xG, trkBPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'r'); end
+    if (PARAM.in_bUseRVQx) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkRVQx.fpt_2_estim_2xG, trkRVQx.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'g'); end
+    if (PARAM.in_bUseTSVQ) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkTSVQ.fpt_2_estim_2xG, trkTSVQ.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'b'); end
+    title(str_plot); 
+    hold off;
+    drawnow
+end

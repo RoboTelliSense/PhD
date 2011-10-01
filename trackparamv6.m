@@ -7,7 +7,7 @@
 
 % DESCRIPTION OF OPTIONS:
 %
-% Following is a description of the options you can adjust for
+% Following is a config_str of the options you can adjust for
 % tracking, each proceeded by its default value.  For a new sequence
 % you will certainly have to change p.  To set the other options,
 % first try using the values given for one of the demonstration

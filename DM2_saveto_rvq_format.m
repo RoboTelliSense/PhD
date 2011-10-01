@@ -1,7 +1,7 @@
 %% This function writes input data (training vectors) to a file to be used for training an RVQ codebook.
 %
 % For all my algorithms, PCA, ESVQ, RVQ, TSVQ, the input data is formatted as a matrix called DM2. 
-% Refer to readme.pdf for a description of DM2.
+% Refer to readme.pdf for a config_str of DM2.
 % 
 % The training routines for PCA, ESVQ and TSVQ take the DM2 as input.
 % However, RVQ requires its input to be saved as a file before it can be used for training by RVQ_1a_train_gen8.exe or RVQ_1a_train_gen16.exe.  
