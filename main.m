@@ -56,9 +56,9 @@ clc;
 close all;
 pca__Q                      =   16;
 rvq__maxQ                   =   8;
-rvq__M                      =   2;
+rvq__M                      =   12;
 rvq__tSNR                   =   1000;   %target SNR
-rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monE
+rvq__tstI                   =   2;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monE
 rvq__lmbd                   =   0;
 tsvq_maxQ                   =   3;
 tsvq_M                      =   2;
@@ -68,11 +68,11 @@ bUseRVQx                    =   1;
 bUseTSVQ                    =   0;
 ds_code                     =   1;
 
-%#######################################################################
-% function main(   pca__Q,                                                      ...
-%                  rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd,   ...
-%                  tsvq_maxQ, tsvq_M,                                           ...
-%                  PARAM.in_bUseIPCA , PARAM.in_bUseBPCA , PARAM.in_bUseRVQx, PARAM.in_bUseTSVQ,        ...
+% %#######################################################################
+% function main(   pca__Q,                                                ...
+%                  rvq__maxQ, rvq__M, rvq__tSNR, rvq__lmbd, rvq__tstI,    ...
+%                  tsvq_maxQ, tsvq_M,                                     ...
+%                  bUseIPCA , bUseBPCA , bUseRVQx, bUseTSVQ,  ...
 %                  ds_code)
 
 %-----------------------------------------
@@ -121,22 +121,33 @@ ds_code                     =   1;
 
 %3. run for few frames
     for f = 1:PARAM.trg_freq
+        %1. input
         I                   =   double(I_HxWxF(:,:,f)); %input
+        
+        %2. track
         trkMEAN             =   TRK_condensation(f, I, GT, RAND, PARAM, aMEAN, trkMEAN); %%tracking: frame num, image, ground truth, random data, parameters, learning algo, tracking structure                          
 
-        %display
-        str_console         =   num2str(f);
-        str_plot            =   num2str(f);
-        str_plot            =   [str_plot     ' ' num2str(trkMEAN.trk_2_rmse__Fx1(f))];
-        str_console         =   [str_console  ' ' num2str(trkMEAN.trk_3_armse_Fx1(f))]
+        %3. learn
         
-        %4. plot
-        imagesc(uint8(I));
-        hold on;
-        UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkMEAN.fpt_2_estim_2xG, trkMEAN.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'k');
-        title(str_plot); 
-        hold off;   
-        drawnow
+        %4a. output: create strings
+        str_plot            =   sprintf('%3d, %4.2f, %4.2f', f, trkMEAN.tim_t_sec(f), trkMEAN.trk_2_rmse__Fx1(f));
+        str_console         =   sprintf('%3d, %4.2f, %4.2f', f, trkMEAN.tim_t_sec(f), trkMEAN.trk_3_armse_Fx1(f));
+        
+       %4b. output: console
+        str_console
+       
+        %4c. output: plot
+        if (ispc)   
+            imagesc(uint8(I));
+            hold on;
+            UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkMEAN.fpt_2_estim_2xG, trkMEAN.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'k');
+            title(str_plot); 
+            hold off;   
+            drawnow
+
+        %4d. output: save to hard disk
+            UTIL_FILE_save2png([UTIL_GetZeroPrefixedFileNumber(f) '.png'], gcf);    
+        end
     end	   
 
     
@@ -194,24 +205,27 @@ for f = PARAM.trg_freq+1 : PARAM.ds_4_F
         if (PARAM.in_bUseTSVQ) aTSVQ = TSVQ_1_learn  (trkaTSVQ.DM2,                         aTSVQ); end  
     end
 
-    %5. strings
-    str_console = num2str(f);
-    str_plot    = num2str(f);
-    if (PARAM.in_bUseIPCA) str_plot = [str_plot ' ' num2str(trkaIPCA.trk_2_rmse__Fx1(f))]; str_console = [str_console ' ' num2str(trkaIPCA.trk_3_armse_Fx1(f))]; end
-    if (PARAM.in_bUseBPCA) str_plot = [str_plot ' ' num2str(trkaBPCA.trk_2_rmse__Fx1(f))]; str_console = [str_console ' ' num2str(trkaBPCA.trk_3_armse_Fx1(f))]; end
-    if (PARAM.in_bUseRVQx) str_plot = [str_plot ' ' num2str(trkaRVQx.trk_2_rmse__Fx1(f))]; str_console = [str_console ' ' num2str(trkaRVQx.trk_3_armse_Fx1(f))]; end
-    if (PARAM.in_bUseTSVQ) str_plot = [str_plot ' ' num2str(trkaTSVQ.trk_2_rmse__Fx1(f))]; str_console = [str_console ' ' num2str(trkaTSVQ.trk_3_armse_Fx1(f))]; end
+    %4a. output: create strings
+    if (PARAM.in_bUseIPCA) str_plot = sprintf('%3d, %4.2f, %4.2f', f, trkaIPCA.tim_t_sec(f), trkaIPCA.trk_2_rmse__Fx1(f)); str_console = sprintf('%3d, %4.2f, %4.2f', f, trkaIPCA.tim_t_sec(f), trkaIPCA.trk_3_armse_Fx1(f)); end
+    if (PARAM.in_bUseBPCA) str_plot = sprintf('%3d, %4.2f, %4.2f', f, trkaBPCA.tim_t_sec(f), trkaBPCA.trk_2_rmse__Fx1(f)); str_console = sprintf('%3d, %4.2f, %4.2f', f, trkaBPCA.tim_t_sec(f), trkaBPCA.trk_3_armse_Fx1(f)); end
+    if (PARAM.in_bUseRVQx) str_plot = sprintf('%3d, %4.2f, %4.2f', f, trkaRVQx.tim_t_sec(f), trkaRVQx.trk_2_rmse__Fx1(f)); str_console = sprintf('%3d, %4.2f, %4.2f', f, trkaRVQx.tim_t_sec(f), trkaRVQx.trk_3_armse_Fx1(f)); end
+    if (PARAM.in_bUseTSVQ) str_plot = sprintf('%3d, %4.2f, %4.2f', f, trkaTSVQ.tim_t_sec(f), trkaTSVQ.trk_2_rmse__Fx1(f)); str_console = sprintf('%3d, %4.2f, %4.2f', f, trkaTSVQ.tim_t_sec(f), trkaTSVQ.trk_3_armse_Fx1(f)); end
 
-    %output: console
+    %4b. output: console
     str_console
         
-    %output: plot
-    imagesc(uint8(I));hold on;
-    if (PARAM.in_bUseIPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaIPCA.fpt_2_estim_2xG, trkaIPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'm'); end
-    if (PARAM.in_bUseBPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaBPCA.fpt_2_estim_2xG, trkaBPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'r'); end
-    if (PARAM.in_bUseRVQx) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaRVQx.fpt_2_estim_2xG, trkaRVQx.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'g'); end
-    if (PARAM.in_bUseTSVQ) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaTSVQ.fpt_2_estim_2xG, trkaTSVQ.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'b'); end
-    title(str_plot); 
-    hold off;
-    drawnow
+    %4c. output: plot
+    if (ispc)   
+        imagesc(uint8(I));hold on;
+        if (PARAM.in_bUseIPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaIPCA.fpt_2_estim_2xG, trkaIPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'm'); end
+        if (PARAM.in_bUseBPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaBPCA.fpt_2_estim_2xG, trkaBPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'r'); end
+        if (PARAM.in_bUseRVQx) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaRVQx.fpt_2_estim_2xG, trkaRVQx.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'g'); end
+        if (PARAM.in_bUseTSVQ) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaTSVQ.fpt_2_estim_2xG, trkaTSVQ.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'b'); end
+        title(str_plot); 
+        hold off;
+        drawnow
+
+        %4d. output: hard disk
+        UTIL_FILE_save2png([UTIL_GetZeroPrefixedFileNumber(f) '.png'], gcf);    
+    end
 end

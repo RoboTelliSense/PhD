@@ -56,10 +56,18 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     end
 %-------------------------------
 %1. PRE-PROCESSING
-%-------------------------------    
-    recon_prev_Dx1          =   zeros(D,1);             %state variable
-    rmse_prev               =   1E15;                   %state variable
-    featr_Px1               =   zeros(maxQ,1);          %i initialize with 0, my code for early termination (Dr Barnes' code was P+1)
+%------------------------------- 
+%previous
+    recon_prev_Dx1          =   zeros(D,1);                                 %state variable
+    rmse_prev               =   UTIL_METRICS_compute_rms (x_Dx1) ;          %assume that entire input is error, since we haven't decoded it yet
+    
+%output variables    
+    featr_Px1               =   zeros(maxQ,1);                              %1.i initialize with 0, my code for early termination (Dr Barnes' code was P+1)
+    recon_Dx1               =   recon_prev_Dx1;                             %2.
+    error_Dx1               =   x_Dx1;                                      %3.
+                                                                            %4. SNR which I don't compute here since I'm only using rmse
+    rmse                    =   rmse_prev;                                  %5.
+    
     temp2_XDR_parPx1        =   [];                     %contains a partial featr_Px1, i.e., all indeces up to p-th stage
     partialP                =   0;
 
@@ -70,15 +78,15 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     for p=1:P
 
         %part 1: pick best codevector at p-th stage (note that all temporary variables here start with temp1 since this is part 1)
-        err_norm_min        =   1E15;
+        max_rmse            =   UTIL_METRICS_compute_rms (x_Dx1);                           %max possible error for this signal
         for m=1:M                         
             CV_Dx1          =	RVQ_FILES_getCodevectorFromCodebook(m, p, M, CB_DxMP);      %get codevector 
             temp1_recon_Dx1 =   recon_prev_Dx1 + CV_Dx1;                                    %(a) reconstruction
             temp1_error_Dx1 =   x_Dx1 - temp1_recon_Dx1;                                    %(b) residual error
-            temp1_err_norm  =   norm(  temp1_error_Dx1, 2  );                               %(c) comparison metric 
+            temp1_rmse      =   UTIL_METRICS_compute_rms(  temp1_error_Dx1);                %(c) comparison metric 
 
-            if (temp1_err_norm < err_norm_min)
-                err_norm_min=   temp1_err_norm;
+            if (temp1_rmse < max_rmse)
+                max_rmse    =   temp1_rmse;
                 m_best      =   m;                                                          %save best codevector index
             end
         end
@@ -129,16 +137,16 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
 %-------------------------------
 %save stats: 1, 2, 3
     if (strcmp(RVQ.in_2__data, 'trg'))         
-        RVQ.trg_1_featr_PxN(:,n)=   featr_Px1;                                                
-        RVQ.trg_2_recon_DxN(:,n)=   recon_Dx1;                                             
-        RVQ.trg_3_error_DxN(:,n)=   error_Dx1;                                             
+        RVQ.trg_1_featr_PxN(:,n)=   featr_Px1;                              %1.                                               
+        RVQ.trg_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
+        RVQ.trg_3_error_DxN(:,n)=   error_Dx1;                              %3.               
         
         RVQ.trg_6_partP_1x1(1,n)=   partialP;     
         
     elseif (strcmp(RVQ.in_2__data, 'tst'))        
-        RVQ.tst_1_featr_PxN(:,n)=   featr_Px1;                                             
-        RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                                             
-        RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                                      
+        RVQ.tst_1_featr_PxN(:,n)=   featr_Px1;                              %1.             
+        RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
+        RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                              %3.        
         
         RVQ.tst_6_partP_1x1(1,n)=   partialP;                                              
     end

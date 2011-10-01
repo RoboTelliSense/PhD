@@ -1,6 +1,6 @@
 load dudek
 [H, W, F] = size(data);
-for f=1:F
+for f=490:490
     I = data(:,:,f);
     imshow(I);
     title(num2str(f));
