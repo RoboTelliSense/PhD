@@ -54,25 +54,30 @@
 % clear;
 % clc;
 % close all;
+% 
 % pca__Q                      =   16;
+% 
 % rvq__maxQ                   =   8;
-% rvq__M                      =   12;
+% rvq__M                      =   2;
 % rvq__tSNR                   =   1000;   %target SNR
-% rvq__tstI                   =   2;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monE
-% rvq__lmbd                   =   0;
+% rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
+% rvq__lmbd                   =   0.03;
+% 
 % tsvq_maxQ                   =   3;
 % tsvq_M                      =   2;
+% 
 % bUseIPCA                    =   0;
 % bUseBPCA                    =   0;   
 % bUseRVQx                    =   1;
 % bUseTSVQ                    =   0;
+% 
 % ds_code                     =   1;
 
-% %#######################################################################
+%#######################################################################
 function main(   pca__Q,                                                ...
                  rvq__maxQ, rvq__M, rvq__tSNR, rvq__lmbd, rvq__tstI,    ...
                  tsvq_maxQ, tsvq_M,                                     ...
-                 bUseIPCA , bUseBPCA , bUseRVQx, bUseTSVQ,  ...
+                 bUseIPCA , bUseBPCA , bUseRVQx, bUseTSVQ,              ...
                  ds_code)
 
 %-----------------------------------------
@@ -153,9 +158,7 @@ function main(   pca__Q,                                                ...
     
     
     
-    
-    
-    
+   
 %============================================
 %TRACKING AND LEARNING
 %============================================

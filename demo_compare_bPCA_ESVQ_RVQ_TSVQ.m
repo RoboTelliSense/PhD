@@ -83,7 +83,7 @@
     aBPCA.in_1__name        =   'aBPCA';
 	aBPCA.in_2__data        =	'tst';
     aBPCA.mdl_1_Q__1x1      =   16;   
-    aBPCA.config_str        =   BPCA_config_string(aBPCA.mdl_1_Q__1x1);
+    %aBPCA.config_str        =   BPCA_config_string(aBPCA.mdl_1_Q__1x1);
     
     %RVQ   
 	aRVQ1.in_1__name        =   'aRVQx';
@@ -94,14 +94,14 @@
     aRVQ1.odir        =   '';
     aRVQ1.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
     aRVQ1.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
-    aRVQ1.config_str        =   RVQ__config_string(aRVQ1.in_3__maxQ, aRVQ1.in_4__M___, aRVQ1.in_5__tSNR, aRVQ1.in_10_tstD);
+    %aRVQ1.config_str        =   RVQ__config_string(aRVQ1.in_3__maxQ, aRVQ1.in_4__M___, aRVQ1.in_5__tSNR, aRVQ1.in_10_tstD);
     
     %TSVQ
     aTSVQ.in_1__name        =   'aTSVQ';
 	aTSVQ.in_2__data        =	'tst';  
     aTSVQ.in_3__maxQ        =   4;                                          %number of stages
     aTSVQ.in_4__M___        =   4;                                          %2 is for binary aTSVQ
-    aTSVQ.config_str        =   TSVQ_config_string(aTSVQ.in_3__maxQ, aTSVQ.in_4__M___);
+    %aTSVQ.config_str        =   TSVQ_config_string(aTSVQ.in_3__maxQ, aTSVQ.in_4__M___);
     
 
 %-----------------------------
@@ -111,7 +111,7 @@ datasetcode=8;
 %for f=1:1
 f=0;
 [DM2_trg, sw, sh]           =   DM2_create(8);
-[DM2_tst, sw, sh]       =   DM2_create(9);
+[DM2_tst, sw, sh]       =   DM2_create(8);
 for  a       =   2:16
     aRVQ1.in_4__M___ = a;
     tic
@@ -127,7 +127,7 @@ for  a       =   2:16
     aRVQ1                   =    RVQ__1_learn     (DM2_trg, aRVQ1);
     aRVQ2                   =   aRVQ1;  aRVQ2.in_10_tstD = 'RofE';
     aRVQ3                   =   aRVQ1;  aRVQ3.in_10_tstD = 'nulE';
-    aRVQ4                   =   aRVQ1;  aRVQ4.in_10_tstD = 'monE';
+    aRVQ4                   =   aRVQ1;  aRVQ4.in_10_tstD = 'monR';
     
     
     %aTSVQ                   =    TSVQ_1_learn     (DM2, aTSVQ); 

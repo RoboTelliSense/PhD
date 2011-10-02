@@ -7,6 +7,6 @@ function RVQtype        =   RVQ__testing_rule_string(idx)
     elseif (idx ==3)
         RVQtype = 'nulE';   %null encoding
     elseif (idx ==4)
-        RVQtype = 'monE';   %monotonically decreasing rmse
+        RVQtype = 'monR';   %monotonically decreasing rmse
     end
  

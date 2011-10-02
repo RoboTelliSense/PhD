@@ -49,7 +49,7 @@
 %>      fpt_3_refzc_2xG     :        "      " , reference for a zero centered target
 %>
 %> for every algo, compute
-%>      candErrs_DxNp       :   errors for all particle filter candidates
+%>      ALGO.tst_3_error_DxN       :   errors for all particle filter candidates
 %>
 %> Copyright (c) Salman Aslam.  All rights reserved.  (IPCA part and computing weights comes from Jongwoo Lim and David Ross with permission)
 %> Date created             :   April 25, 2011
@@ -62,7 +62,6 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %INITIALIZATIONS
 %----------------------------
     tic
-    candErrs_DxNp     = 	[];
     
 %----------------------------
 %PRE-PROCESSING
@@ -86,7 +85,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %PROCESSING
 %   compute 
 %   1. cand_snps_shxswxNp
-%   2. candErrs_DxNp
+%   2. ALGO.tst_3_error_DxN (candidate errors)
 %   3. weights, maxidx
 %----------------------------
 %1. get cand_snps_shxswxNp (candidate snippets, using resampling)   %although here it's done at the beginning, it's really being done at the end.
@@ -121,15 +120,16 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %2. compute candidate errors, i.e., find how well the algorithm model explains each snippet)
 
     %IPCA, BPCA
-    if     (strcmp(TRK.name, 'trkaMEAN'))                                ALGO = MEAN_2_test (cand_snps_DxNp    , ALGO);
-    elseif (strcmp(TRK.name, 'trkaIPCA') || strcmp(TRK.name, 'trkaBPCA')) ALGO = PCA__2_encode (cand_snps_DxNp    , ALGO);
-    elseif (strcmp(TRK.name, 'trkaRVQx'))                                ALGO = RVQ__2_encode (cand_snps_DxNp    , ALGO);
-    elseif (strcmp(TRK.name, 'trkaTSVQ'))                                ALGO = TSVQ_2_encode (cand_snps_DxNp    , ALGO);
+    if     (strcmp(TRK.name, 'trkaMEAN'))                                 ALGO = MEAN_2_test   (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkaIPCA') || strcmp(TRK.name, 'trkaBPCA')) ALGO = PCA__2_encode (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkaRVQx'))                                 ALGO = RVQ__2_encode (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkaTSVQ'))                                 ALGO = TSVQ_2_encode (cand_snps_DxNp, ALGO);
     end
-    candErrs_DxNp           =   ALGO.tst_3_error_DxN;
+    DFFS                    =   abs(ALGO.tst_3_error_DxN/256);              %scale and make positive, PCA terminology from Moghaddam and Pentland terminology to keep things uniform
         
     if (strcmp(TRK.name, 'trkaRVQx'))
-       candErrs_DxNp        =   (abs(candErrs_DxNp) + ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.mdl_1_Q__1x1));
+        DIFS                =   repmat(ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.tst_6_partP_1xN), D, 1);
+        DFFS                =   DFFS + DIFS;
     end
 
        
@@ -141,7 +141,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     %    DIFS               =   candErrs_featr_PxNp                               .*PARAM.pf_reseig./repmat(S_Bx1,[1,Np]);
     %end
     %TRK.candErrs_featr_PxNp=   candErrs_featr_PxNp;
-    DFFS                    =   candErrs_DxNp/256;  %DFFS                    =   reshape(UTIL_scale2(candErrs_DxNp(:), 0, 1), D, Np);
+    
     
     switch (PARAM.pf_errfunc)
         case 'robust'; temp_weights  =   exp(-  sum(DFFS.^2./(DFFS.^2 + PARAM.rsig.^2))./stddev)';%PARAM.rsig never defined
@@ -157,7 +157,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %seven best-snippet (this frame only) stats
 	TRK.snp_0_pixls_shxsw   =   cand_snps_shxswxNp          (:,:,maxidx);               %0. best snippet 
     TRK.snp_1_tsrpxy_1x6    =   TRK.PRF_1_tsrpxy_6xNp       (:  ,maxidx);               %1. best affine parameters
-    TRK.snp_2_error_shxsw   =   reshape(candErrs_DxNp       (:  ,maxidx), [sh sw]);     %2. best error                                             
+    TRK.snp_2_error_shxsw   =   reshape(ALGO.tst_3_error_DxN(:  ,maxidx), [sh sw]);     %2. best error                                             
     TRK.snp_3_recon_shxsw   =   TRK.snp_0_pixls_shxsw - TRK.snp_2_error_shxsw;          %3. best recon        
     TRK.snp_4_SNRdB_Fx1(f)  =   UTIL_METRICS_compute_SNRdB  (TRK.snp_0_pixls_shxsw(:), TRK.snp_2_error_shxsw(:));  %4.
     TRK.snp_5_rmse__Fx1(f)  =   UTIL_METRICS_compute_rms    (                          TRK.snp_2_error_shxsw(:));  %5.

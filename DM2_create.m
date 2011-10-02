@@ -7,8 +7,8 @@ function [DM2, sw, sh] = DM2_create(dataset)
     elseif (dataset==5) a = rand(1089,2); DM2 =[a a a a];   sw=33;sh=33;  %random data  (complex) this is a bizarre example, i.e., has repeated data points
     elseif (dataset==6) DM2 =   rand(1089,100);            sw=33;sh=33;
     elseif (dataset==7) DM2 =   [4 6 8   20 22 24];         sw=1; sh=1;   %deterministic, scalar, simplest possible, i've worked this out by hand in a pdf
-    elseif (dataset==8) [DM2,sw,sh] =   DM2_extract_roi_from_Dudek(1,285,1);   %deterministic, scalar, simplest possible, i've worked this out by hand in a pdf
-    elseif (dataset==9) [DM2,sw,sh] =   DM2_extract_roi_from_Dudek(287,287,0);   %deterministic, scalar, simplest possible, i've worked this out by hand in a pdf
+    elseif (dataset==8) [DM2,sw,sh] =   DM2_extract_roi_from_Dudek(1,100,0);   %deterministic, scalar, simplest possible, i've worked this out by hand in a pdf
+    elseif (dataset==9) [DM2,sw,sh] =   DM2_extract_roi_from_Dudek(101,101,0);   %deterministic, scalar, simplest possible, i've worked this out by hand in a pdf
     end
 
     [D, N]                  =   size(DM2);                                  %dimensions of DM2

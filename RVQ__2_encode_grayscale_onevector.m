@@ -109,7 +109,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
             continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_1_featr_PxN, temp2_XDR_parPx1);
         elseif  (strcmp(rule_stop_decoding, 'nulE'))    %null encoding
             continue_decoding   =   RVQ_RULES_DECODE_STOPPING_monotonic_rmse        (temp2_rmse, rmse_prev);
-        elseif  (strcmp(rule_stop_decoding, 'monE'))    %monotonically decreasing rmse
+        elseif  (strcmp(rule_stop_decoding, 'monR'))    %monotonically decreasing rmse
             continue_decoding   =   RVQ_RULES_DECODE_STOPPING_monotonic_rmse        (temp2_rmse, rmse_prev);
         end
 
@@ -148,5 +148,5 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
         RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
         RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                              %3.        
         
-        RVQ.tst_6_partP_1x1(1,n)=   partialP;                                              
+        RVQ.tst_6_partP_1xN(1,n)=   partialP;                                              
     end
