@@ -61,7 +61,7 @@
 % rvq__M                      =   2;
 % rvq__tSNR                   =   1000;   %target SNR
 % rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
-% rvq__lmbd                   =   0.03;
+% rvq__lmbd                   =   0;
 % 
 % tsvq_maxQ                   =   3;
 % tsvq_M                      =   2;

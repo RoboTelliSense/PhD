@@ -59,7 +59,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
 %------------------------------- 
 %previous
     recon_prev_Dx1          =   zeros(D,1);                                 %state variable
-    rmse_prev               =   UTIL_METRICS_compute_rms (x_Dx1) ;          %assume that entire input is error, since we haven't decoded it yet
+    rmse_prev               =   1E15 ;                                      %assume that entire input is error, since we haven't decoded it yet
     
 %output variables    
     featr_Px1               =   zeros(maxQ,1);                              %1.i initialize with 0, my code for early termination (Dr Barnes' code was P+1)
@@ -78,7 +78,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     for p=1:P
 
         %part 1: pick best codevector at p-th stage (note that all temporary variables here start with temp1 since this is part 1)
-        max_rmse            =   UTIL_METRICS_compute_rms (x_Dx1);                           %max possible error for this signal
+        max_rmse            =   1E15;                                                       %max possible error for this signal
         for m=1:M                         
             CV_Dx1          =	RVQ_FILES_getCodevectorFromCodebook(m, p, M, CB_DxMP);      %get codevector 
             temp1_recon_Dx1 =   recon_prev_Dx1 + CV_Dx1;                                    %(a) reconstruction

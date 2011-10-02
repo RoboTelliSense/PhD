@@ -4,7 +4,7 @@ import math
 Q=8
 lst_M=[2,4,8,12,16]
 tSNR=1000
-lmbd=0
+lmbd=0.03
 lst_tstI=[1,2,3,4]
 lst_ds_code=[1]
 
