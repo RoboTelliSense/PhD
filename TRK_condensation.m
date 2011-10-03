@@ -206,6 +206,9 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     TRK.tim_fps             =   f/TRK.tim_T_sec;                            %frames per sec for this run
     
 %write 4 kinds of stats to file
+    if     (strcmp(TRK.name, 'trkaMEAN'))           %no need to write for trkaMEAN, reason is that name cannot be differentiated between configurations, and running on the cluster then causes problems.
+        return;
+    end
     
     fid                     =   fopen(TRK.cfn, 'a');
                                 UTIL_FILE_checkFileOpen(fid, TRK.cfn); 

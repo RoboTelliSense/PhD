@@ -9,6 +9,6 @@
     clc;
     close all;
 
-         %PCA     RVQ              TSVQ      iPCA,bPCA,RVQ,TSVQ     datasetIndex
-    main(8,     8,2,1000,0,1,   3,2,      0,   0,   1,  0,         2)
+         %PCA     RVQ           TSVQ      iPCA,bPCA,RVQ,TSVQ     datasetIndex
+    main(8,     8,2,1000,0,3,   3,2,      0,   0,   1,  0,         1)
     %main(32,     8,4,1000,     5,2,      1,   1,   1,  1,         1)

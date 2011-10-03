@@ -12,10 +12,10 @@ load Dudek;
     rvq__lmbd               =   0;
     tsvq_maxQ               =   3;
     tsvq_M                  =   2;
-    bUseIPCA                =   1;
-    bUseBPCA                =   1;   
+    bUseIPCA                =   0;
+    bUseBPCA                =   0;   
     bUseRVQx                =   1;
-    bUseTSVQ                =   1;
+    bUseTSVQ                =   0;
     ds_code                 =   1;
     [PARAM.ds_2_name, PARAM.ds_3_name] =    UTIL_DATASET_getName3(ds_code);
 
@@ -25,7 +25,7 @@ load Dudek;
                                   UTIL_GetZeroPrefixedFileNumber_2(rvq__maxQ)       '_' ...
                                   UTIL_GetZeroPrefixedFileNumber_2(rvq__M)          '_' ...
                                   UTIL_GetZeroPrefixedFileNumber_4(rvq__tSNR)       '_' ...
-                                  sprintf('%.2f', rvq__lmbd)                        '_' ...
+                                  num2str(rvq__lmbd)                                '_' ...
                                   tstD                                              '__']; 
   
 %TRACKER
@@ -34,8 +34,8 @@ load Dudek;
 %--------------------------------------------------
 % PROCESSING
 %--------------------------------------------------
-    rvq                     =   textread([trkaRVQx.config_str '.txt']);
-    rvq                     =   textread('1_Dudek__aMEAN__.txt');
+    rvq                     =   textread(['F:\Dropbox\results\' trkaRVQx.config_str '.txt']);
+    rvq                     =   textread(['F:\Dropbox\results\' '1_Dudek__aMEAN__.txt']);
     I                       =   data(:,:,1);
 %plot    
     plot(rvq(:,6))
