@@ -205,24 +205,26 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     TRK.tim_T_sec           =   TRK.tim_T_sec + TRK.tim_t_sec(f);           %total time for all runs
     TRK.tim_fps             =   f/TRK.tim_T_sec;                            %frames per sec for this run
     
-%write to file
+%write 4 kinds of stats to file
     
     fid                     =   fopen(TRK.cfn, 'a');
                                 UTIL_FILE_checkFileOpen(fid, TRK.cfn); 
-                                         %1,2,3,        4,5,6            7,8,9            10,11,12         13,14,15         16,17        18,19       20,21       22,23       24,25       26,27       28, 29 
-    str_out                 =   sprintf('%4d%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f   %8.2f%8.2f  %8.2f%8.2f  %8.2f%8.2f  %8.2f%8.2f  %8.2f%8.2f  %8.2f%8.2f',...
+                                         %1,2,3,        4,5,6            7,8,9            10,11,12         13,14,15         
+    str_stats               =   sprintf('%4d%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f',...
                                 f                       , ALGO.tim_t_sec          , TRK.tim_t_sec(f)      , ... %1,2,3                                  
                                 TRK.trk_1_SNRdB_Fx1(f)  , TRK.trk_2_rmse__Fx1(f)  , TRK.trk_3_armse_Fx1(f), ... %4,5,6
                                 TRK.snp_4_SNRdB_Fx1(f)  , TRK.snp_5_rmse__Fx1(f)  , TRK.snp_6_armse_Fx1(f), ... %7,8,9
                                 TRK.trg_1_SNRdB_Fx1(f)  , TRK.trg_2_rmse__Fx1(f)  , TRK.trg_3_armse_Fx1(f), ... %10,11,12
-                                TRK.tst_1_SNRdB_Fx1(f)  , TRK.tst_2_rmse__Fx1(f)  , TRK.tst_3_armse_Fx1(f), ... %13,14,15
-                                TRK.fpt_2_estim_2xG(1,1), TRK.fpt_2_estim_2xG(2,1),                         ... %16,17
-                                TRK.fpt_2_estim_2xG(1,2), TRK.fpt_2_estim_2xG(2,2),                         ... %18,19
-                                TRK.fpt_2_estim_2xG(1,3), TRK.fpt_2_estim_2xG(2,3),                         ... %20,21
-                                TRK.fpt_2_estim_2xG(1,4), TRK.fpt_2_estim_2xG(2,4),                         ... %22,23
-                                TRK.fpt_2_estim_2xG(1,5), TRK.fpt_2_estim_2xG(2,5),                         ... %24,25
-                                TRK.fpt_2_estim_2xG(1,6), TRK.fpt_2_estim_2xG(2,6),                         ... %26,27
-                                TRK.fpt_2_estim_2xG(1,7), TRK.fpt_2_estim_2xG(2,7)                          ... %28,29
+                                TRK.tst_1_SNRdB_Fx1(f)  , TRK.tst_2_rmse__Fx1(f)  , TRK.tst_3_armse_Fx1(f) ...  %13,14,15
                                 );
+%write ground truth to file 
+    str_gt                  =   [];
+    [temp1, G]              =   size(TRK.fpt_2_estim_2xG);  
+    for g=1:G
+        temp2               =   sprintf('%8.2f%8.2f ', TRK.fpt_2_estim_2xG(1,g), TRK.fpt_2_estim_2xG(2,g));
+        str_gt              =   [str_gt temp2];
+    end
+    str_out                 =   [str_stats ' ' str_gt];
+                            
                                 fprintf(fid, [str_out '\n']); 
                                 fclose(fid);

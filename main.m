@@ -68,8 +68,8 @@
 % 
 % bUseIPCA                    =   0;
 % bUseBPCA                    =   0;   
-% bUseRVQx                    =   1;
-% bUseTSVQ                    =   0;
+% bUseRVQx                    =   0;
+% bUseTSVQ                    =   1;
 % 
 % ds_code                     =   1;
 
