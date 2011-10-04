@@ -19,7 +19,9 @@ Dudek_F = 570;
     bUseTSVQ                =   0;
     ds_code                 =   1;
     [PARAM.ds_2_name, PARAM.ds_3_name] =    UTIL_DATASET_getName3(ds_code);
-
+    PARAM.tgt_sw            =   33;
+    PARAM.tgt_sh            =   33;
+    [aRVQx trkaRVQx]        =   RVQx_config(PARAM, [], rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd)
     
 %--------------------------------------------------
 % PROCESSING
@@ -33,10 +35,13 @@ Dudek_F = 570;
 %--------------------------------------------------
     
 %plot    
-    plot(rvq(:,6))
+    plot(rvq(:,6))  %average tracking error
+    hold on;
+    plot(rvq(:,6))  %average tracking error
     grid on
     axis([0 600 0 30])
-   f=1;
+    
+    f=1;
     figure;
     imagesc(I);colormap('gray');
     hold on
