@@ -3,6 +3,7 @@ clc;
 close all;
 load Dudek;
 
+Dudek_F = 570;
 %PARAM
     pca__Q                  =   16;
     rvq__maxQ               =   8;
@@ -19,24 +20,18 @@ load Dudek;
     ds_code                 =   1;
     [PARAM.ds_2_name, PARAM.ds_3_name] =    UTIL_DATASET_getName3(ds_code);
 
-%ALGO
-    tstD                    =   RVQ__testing_rule_string(rvq__tstI); %decode stop rule for test vectors
-    aRVQx.config_str        =   ['aRVQ'                                             '_' ...
-                                  UTIL_GetZeroPrefixedFileNumber_2(rvq__maxQ)       '_' ...
-                                  UTIL_GetZeroPrefixedFileNumber_2(rvq__M)          '_' ...
-                                  UTIL_GetZeroPrefixedFileNumber_4(rvq__tSNR)       '_' ...
-                                  num2str(rvq__lmbd)                                '_' ...
-                                  tstD                                              '__']; 
-  
-%TRACKER
-    trkaRVQx.config_str      =   [PARAM.ds_3_name    aRVQx.config_str];
     
 %--------------------------------------------------
 % PROCESSING
 %--------------------------------------------------
-    rvq                     =   textread(['F:\Dropbox\results\' trkaRVQx.config_str '.txt']);
-    rvq                     =   textread(['F:\Dropbox\results\' '1_Dudek__aMEAN__.txt']);
+    rvq                     =   textread(['F:\Dropbox\results\' trkaRVQx.config_str '.txt'])
     I                       =   data(:,:,1);
+    
+
+%--------------------------------------------------
+% POST-PROCESSING
+%--------------------------------------------------
+    
 %plot    
     plot(rvq(:,6))
     grid on
