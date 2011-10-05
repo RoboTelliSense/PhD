@@ -2,78 +2,76 @@ import subprocess
 import math
 import time
 
-lst_ds_code=[3]
+lst_ds_code=[2,3,4,5,6,7]
 str0 = 'qsub cluster.script '
-delaysecs=0;
+delaysecs=5;
+
 
 #RVQ
-Q=8
-lst_M=[2,4,8,12,16]
-tSNR=1000
-lmbd=0
-lst_tstI=[1,2,3,4]
+##rvq_Q=8
+##lst_M=[2,4,8,12,16]
+##tSNR=1000
+##lmbd=0
+##lst_tstI=[1,2,3,4]
+##i=0;
+##for M in lst_M:
+##    for tstI in lst_tstI:
+##        for ds_code in lst_ds_code:
+##            
+##            str1 = str0 + '-1    ' #PCA
+##            str1 = str1 + str(rvq_Q) + ' ' + str(M) + ' ' + str(tSNR) + ' ' + str(lmbd) + ' ' + str(tstI) + '    '  #RVrvq_Q
+##            str1 = str1 + '-1 -1    ' #TSVrvq_Q
+##            str1 = str1 + '0 0 1 0    ' #bUseIPCA, bUseBPCA, bUseRVrvq_Q, bUseTSVrvq_Q
+##            str1 = str1 + str(ds_code) #dataset code
+##            i=i+1;
+##            print ('%03d' % i) + '    ' + str1
+##            subprocess.call(str1, shell=True)
+##            time.sleep(delaysecs)
+            
 
-
+#BPCA
+lst_pca_Q=[8,16,32]
 i=0;
-for M in lst_M:
-    for tstI in lst_tstI:
-        for ds_code in lst_ds_code:
-            
-            str1 = str0 + '-1    ' #PCA
-            str1 = str1 + str(Q) + ' ' + str(M) + ' ' + str(tSNR) + ' ' + str(lmbd) + ' ' + str(tstI) + '    '  #RVQ
-            str1 = str1 + '-1 -1    ' #TSVQ
-            str1 = str1 + '0 0 1 0    ' #bUseIPCA, bUseBPCA, bUseRVQ, bUseTSVQ
-            str1 = str1 + str(ds_code) #dataset code
-            i=i+1;
-            print ('%03d' % i) + '    ' + str1
-            subprocess.call(str1, shell=True)
-            time.sleep(delaysecs)
-            
+for pca_Q in lst_pca_Q:
+    for ds_code in lst_ds_code:
+        
+        str1 = str0 + str(pca_Q) + '    ' #PCA
+        str1 = str1 + '-1 -1 -1 -1 -1'  + '    '  #RVQ
+        str1 = str1 + '-1 -1    ' #TSVQ
+        str1 = str1 + '0 1 0 0    ' #bUseIPCA, bUseBPCA, bUseRVQ, bUseTSVQ
+        str1 = str1 + str(ds_code) #dataset code
+        i=i+1;
+        print ('%03d' % i) + '    ' + str1
+        subprocess.call(str1, shell=True)
+        time.sleep(delaysecs)
 
-###BPCA
-###----
-##print ('%03d' % 21) + '    ' + str0 + ' 4    -1,-1,-1,-1,-1,     -1,-1,   0,1,0,0   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
-##
-##print ('%03d' % 22) + '    ' + str0 + ' 8    -1,-1,-1,-1,-1,     -1,-1,   0,1,0,0   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
-##
-##print ('%03d' % 23) + '    ' + str0 + ' 16    -1,-1,-1,-1,-1,     -1,-1,   0,1,0,0   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
-##
-##
-##      
-##
-##
-###TSVQ
-###----
-##print ('%03d' % 24) + '    ' + str0 + ' -1    -1,-1,-1,-1,-1,     3,2,   0,0,0,1   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
-##
-##print ('%03d' % 25) + '    ' + str0 + ' -1    -1,-1,-1,-1,-1,     4,2,   0,0,0,1   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
-##
-##print ('%03d' % 26) + '    ' + str0 + ' -1    -1,-1,-1,-1,-1,     5,2,   0,0,0,1   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
-##
-##
-##
-###IPCA
-###----
-##print ('%03d' % 27) + '    ' + str0 + ' 4    -1,-1,-1,-1,-1,     -1,-1,   1,0,0,0   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
-##
-##print ('%03d' % 28) + '    ' + str0 + ' 8    -1,-1,-1,-1,-1,     -1,-1,   1,0,0,0   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
-##
-##print ('%03d' % 29) + '    ' + str0 + ' 16    -1,-1,-1,-1,-1,     -1,-1,   1,0,0,0   ' + str(ds_code)
-##subprocess.call(str1, shell=True)
-##time.sleep(delaysecs)
+#IPCA
+i=0;
+for pca_Q in lst_pca_Q:
+    for ds_code in lst_ds_code:
+        
+        str1 = str0 + str(pca_Q) + '    ' #PCA
+        str1 = str1 + '-1 -1 -1 -1 -1'  + '    '  #RVQ
+        str1 = str1 + '-1 -1    ' #TSVQ
+        str1 = str1 + '1 0 0 0    ' #bUseIPCA, bUseBPCA, bUseRVQ, bUseTSVQ
+        str1 = str1 + str(ds_code) #dataset code
+        i=i+1;
+        print ('%03d' % i) + '    ' + str1
+        subprocess.call(str1, shell=True)
+        time.sleep(delaysecs)
+        
+#TSVQ
+lst_tsvq_Q=[3,4,5]
+i=0;
+for tsvq_Q in lst_tsvq_Q:
+    for ds_code in lst_ds_code:
+        
+        str1 = str0 + '-1    ' #PCA
+        str1 = str1 + '-1 -1 -1 -1 -1'  + '    '  #RVQ
+        str1 = str1 + str(tsvq_Q) + ' 2      '    #TSVQ
+        str1 = str1 + '0 0 0 1    ' #bUseIPCA, bUseBPCA, bUseRVQ, bUseTSVQ
+        str1 = str1 + str(ds_code) #dataset code
+        i=i+1;
+        print ('%03d' % i) + '    ' + str1
+        subprocess.call(str1, shell=True)
+        time.sleep(delaysecs)

@@ -191,12 +191,12 @@ We start with some trivial scalar examples where the training and test sets are 
 
 
 
-\subsection{Scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$}
+\subsection{Integers, Z=$\{4, 6, 8, 10, 20, 22, 24, 26\}$}
 %-------------------------------------------------------------
 We train RVQ codebooks with $m=2, 3, \ldots, 16$ on the set of scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$.  The resulting codebook for the 8x2 case is shown graphically in Figure~\ref{fig:aRVQ_4_6_8_10_20_22_24_26}.  In this initial experiment, the test data is the same as the training data.  Also shown in the figure is the decode path taken by the 4 methods through the RVQ trellis to to decode the number 8.  For monR, when reconstruction reaches 7 in the very first stage, rms error is 1.  However, both next stage codevectors decrease rmse which is why monR exits at this point.  All other methods are able to decode 8 correctly.  These results are shown in Figure~\ref{fig:aRVQ_4_6_8_10_20_22_24_26}.  
   
  
-\subsection{Scalars, S=$\{1, 2, \ldots 256\}$}
+\subsection{Integers, Z=$\{1, 2, \ldots 256\}$}
 %------------------------------------------------
 In this experiment, we train several RVQ codebooks $m=2, 3, \ldots, 16$ on the set of scalars, S=$\{1, 2, \ldots 256\}$.  The resulting codebook for the 8x2 case is shown graphically in Figure~\ref{fig:aRVQ_1_to_256}.  In this initial experiment, the test data is the same as the training data.  Also shown in the figure is the decode path taken by the 4 methods through the RVQ trellis to to decode the number 13.  For monR, when reconstruction reaches 16.5, rms error is 3.5.  However, both next stage codevectors decrease rmse which is why monR exits at this point.  All other methods are able to decode 13 correctly.   These results are shown in Figure~\ref{fig:aRVQ_1_to_256}. 
 
@@ -276,27 +276,39 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 
 \clearpage
 \newpage
-\subsection{Scalars, S=$\{4, 6, 8, 10, 20, 22, 24, 26\}$}
+\subsection{Integers, Z=$\{4, 6, 8, 10, 20, 22, 24, 26\}$}
 %-------------------------------------------------------------
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[width=0.65\textwidth]{figs/RVQ_CAC_toyExample_3x2.pdf}
+								\caption{Codebook for code-vectors per stage $m=2$.  The Decode path, shown by shaded code-vectors taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 8 is also shown.  Notice that monR is the only method unable to correctly decode the number 8 and produces a 7 instead.}
+								\end{figure}
+															
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[width=0.65\textwidth]{figs/RVQ_CAC_toyExample_3x2_monR.pdf}
+								\caption{For for code-vectors per stage $m=2$, decoded outputs produced by monR in comparison with inputs.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR incorrectly decodes 6, 8, 23 and 24.}
+								\end{figure}
+
+
 								\begin{figure}[h]
 								\centering
-								\subfigure[Codebook for $m=2$.  Decode path taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 8 is also shown.  Notice that monR is the only method unable to correctly decode.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_3x2.pdf}}
-								\subfigure[For $m=2$, decoded outputs produced by monR.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR incorrectly decodes 6, 8, 23 and 24.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_3x2_monR.pdf}}
-								\subtable{\begin{tiny}\input{tables/aRVQ_4_6_8_10_20_22_24_26.tex}\end{tiny}}
-								\subfigure[Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$]{\includegraphics[width=0.4\textwidth]{figs/aRVQ_4_6_8_10_20_22_24_26.pdf}}
-								\caption{Training set $S_{\textrm{trg}}=\{4, 6, 8, 10, 20, 22, 24, 26\}$, the test set $S_{\textrm{tst}}$ is the same as the training set.}
+								\input{tables/aRVQ_4_6_8_10_20_22_24_26.tex}
+								\includegraphics[width=0.85\textwidth]{figs/aRVQ_4_6_8_10_20_22_24_26.pdf}
+								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set is $S_{\textrm{trg}}=\{4, 6, 8, 10, 20, 22, 24, 26\}$, and the test set $S_{\textrm{tst}}$ is the same as the training set.}
 								\label{fig:aRVQ_4_6_8_10_20_22_24_26}
 								\end{figure}
 \clearpage
 \newpage
-\subsection{Scalars, S=$\{1, 2, \ldots 256\}$}
+\subsection{Integers, Z=$\{1, 2, \ldots 256\}$}
 %------------------------------------------------
 								\begin{figure}[h]
 								\centering
 								\subfigure[For $m=2$, codebook and decode path taken through the RVQ~$\sigma$-tree by all 4 methods to decode the number 13.  Notice that monR is the only method unable to correctly decode.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_8x2.pdf}}
 								\subfigure[For $m=2$, decoded outputs produced by monR.  Whereas maxP, RofE, nulE produce perfect reconstructions, monR produces quite a few incorrect reconstructions.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_8x2_monR.pdf}}
 								\subtable{\begin{tiny}\input{tables/aRVQ_1_to_256.tex}\end{tiny}}
-								\subfigure{\includegraphics[width=0.4\textwidth]{figs/aRVQ_1_to_256.pdf}}
+								\subfigure{\includegraphics[width=0.5\textwidth]{figs/aRVQ_1_to_256.pdf}}
 								\caption{Training set  $S_{\textrm{trg}}=\{1, 2, \ldots 256\}$, , the test set $S_{\textrm{tst}}$ is the same as the training set.}
 								\label{fig:aRVQ_1_to_256}
 								\end{figure}
@@ -387,9 +399,9 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 Training snippets are similar to the ones in Figure~\ref{fig:aRVQ_dudek_first_100rand_snippets} since exactly the same noise parameters were used.
 
 
-								\begin{figure}[h]
+								\begin{figure}[h!]
 								\centering
-								\subfigure[Test snippets.]{\includegraphics[width=0.55\textwidth]{figs/aRVQ_dudek_first_100_to_105_snippets.pdf}}
+								\includegraphics[width=0.55\textwidth]{figs/aRVQ_dudek_first_100_to_105_snippets.pdf}
 								\caption{Test snippts.}
 								\label{fig:aRVQ_Dudek_first_100_rand}
 								\end{figure}
@@ -403,6 +415,250 @@ Training snippets are similar to the ones in Figure~\ref{fig:aRVQ_dudek_first_10
 								\label{fig:aRVQ_Dudek_first_100_rand}
 								\end{figure}
 
+
+%===============================
+\clearpage
+\newpage
+\section{Tracking: Dudek dataset} 
+%===============================
+								\begin{figure}[h]
+								\centering
+								\includegraphics[width=1.0\textwidth]{figs/seq_1_Dudek.png}
+								\caption{Dudek dataset.}
+								\label{fig:seq_1_Dudek}
+								\end{figure}
+
+
+
+\begin{table}[h]
+\centering
+\input{tables/1_Dudek.tex}
+\caption{Tracking errors for various RVQ configurations.  -1 means that track was lost.  These results show that RVQ is able to track the object of interest very closely.}
+\end{table}
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Tracking error}
+%------------------------------------
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.38\textheight]{figs/1_Dudek_8_4_1000_trk_rmse.pdf}
+								\caption{8x4 RVQ, tracking error (rmse).}
+								\label{fig:1_Dudek_8_4_1000_trk_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.38\textheight]{figs/1_Dudek_8_4_1000_trk_armse.pdf}
+								\caption{8x4 RVQ, tracking error (average rmse).}
+								\label{fig:1_Dudek_8_4_1000_trk_avg_rmse}
+								\end{figure}
+
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Target reconstruction}
+%------------------------------------
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_snp_SNRdB.pdf}
+								\caption{8x4 RVQ, snippet reconstruction SNR in dB.}
+								\label{fig:1_Dudek_8_4_1000_snp_SNRdB}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_snp_rmse.pdf}
+								\caption{8x4 RVQ, snippet reconstruction error (rmse).}
+								\label{fig:1_Dudek_8_4_1000_snp_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_snp_armse.pdf}
+								\caption{8x4 RVQ, snippet reconstruction error (avg. rmse).}
+								\label{fig:1_Dudek_8_4_1000_snp_armse}
+								\end{figure}
+
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Learning}
+%------------------------------------
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_trg_SNRdB.pdf}
+								\caption{8x4 RVQ, training SNR in dB.}
+								\label{fig:1_Dudek_8_4_1000_trg_SNRdB}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_trg_rmse.pdf}
+								\caption{8x4 RVQ, training error (rmse).}
+								\label{fig:1_Dudek_8_4_1000_trg_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_trg_armse.pdf}
+								\caption{8x4 RVQ, training error (avg. rmse).}
+								\label{fig:1_Dudek_8_4_1000_trg_armse}
+								\end{figure}
+
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Testing}
+%------------------------------------
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_tst_SNRdB.pdf}
+								\caption{8x4 RVQ,testing SNR in dB.}
+								\label{fig:1_Dudek_8_4_1000_tst_SNRdB}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_tst_rmse.pdf}
+								\caption{8x4 RVQ, testing error (rmse).}
+								\label{fig:1_Dudek_8_4_1000_tst_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_Dudek_8_4_1000_tst_armse.pdf}
+								\caption{8x4 RVQ, testing error (avg. rmse).}
+								\label{fig:1_Dudek_8_4_1000_tst_armse}
+								\end{figure}
+
+%===============================
+\clearpage
+\newpage
+\section{Tracking: David dataset} 
+%===============================
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[width=1.0\textwidth]{figs/seq_2_davidin300.png}
+								\caption{David dataset.}
+								\label{fig:seq_1_David}
+								\end{figure}
+
+
+
+\begin{table}[h]
+\centering
+\input{tables/2_David.tex}
+\caption{Tracking errors for various RVQ configurations.  -1 means that track was lost.  These results show that RVQ is able to track the object of interest very closely.}
+\end{table}
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Tracking error}
+%------------------------------------
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.38\textheight]{figs/1_David_8_4_1000_trk_rmse.pdf}
+								\caption{8x4 RVQ, tracking error (rmse).}
+								\label{fig:1_David_8_4_1000_trk_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.38\textheight]{figs/1_David_8_4_1000_trk_armse.pdf}
+								\caption{8x4 RVQ, tracking error (average rmse).}
+								\label{fig:1_David_8_4_1000_trk_avg_rmse}
+								\end{figure}
+
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Target reconstruction}
+%------------------------------------
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_snp_SNRdB.pdf}
+								\caption{8x4 RVQ, snippet reconstruction SNR in dB.}
+								\label{fig:1_David_8_4_1000_snp_SNRdB}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_snp_rmse.pdf}
+								\caption{8x4 RVQ, snippet reconstruction error (rmse).}
+								\label{fig:1_David_8_4_1000_snp_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_snp_armse.pdf}
+								\caption{8x4 RVQ, snippet reconstruction error (avg. rmse).}
+								\label{fig:1_David_8_4_1000_snp_armse}
+								\end{figure}
+
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Learning}
+%------------------------------------
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_trg_SNRdB.pdf}
+								\caption{8x4 RVQ, training SNR in dB.}
+								\label{fig:1_David_8_4_1000_trg_SNRdB}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_trg_rmse.pdf}
+								\caption{8x4 RVQ, training error (rmse).}
+								\label{fig:1_David_8_4_1000_trg_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_trg_armse.pdf}
+								\caption{8x4 RVQ, training error (avg. rmse).}
+								\label{fig:1_David_8_4_1000_trg_armse}
+								\end{figure}
+
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Testing}
+%------------------------------------
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_tst_SNRdB.pdf}
+								\caption{8x4 RVQ,testing SNR in dB.}
+								\label{fig:1_David_8_4_1000_tst_SNRdB}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_tst_rmse.pdf}
+								\caption{8x4 RVQ, testing error (rmse).}
+								\label{fig:1_David_8_4_1000_tst_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/1_David_8_4_1000_tst_armse.pdf}
+								\caption{8x4 RVQ, testing error (avg. rmse).}
+								\label{fig:1_David_8_4_1000_tst_armse}
+								\end{figure}
 
 \clearpage
 \newpage
