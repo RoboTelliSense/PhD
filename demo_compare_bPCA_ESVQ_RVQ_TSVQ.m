@@ -114,8 +114,8 @@ aRVQ1.in_7__sh__            =   sh;             %snippet height
 % 2. PROCESSING
 %-----------------------------
 midx                        =   0;
-M                           =   [2:16]
-for  m = M
+lst_M                       =   [2:16];
+for  m = lst_M
     
     tic
     midx                    =   midx+1;
@@ -160,28 +160,31 @@ rmse_tst_with_mean          =   [rmse_tst;mu_tst]
                                 figure;DM2_show(aRVQ1.mdl_3_CB_DxMP, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
                                 %figure;DM2_show(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
     
+%training
     figure;
     hold on
-    %plot(lst_M, rmse_trg, 'ro-')
+    grid on; 
+    plot(lst_M, rmse_trg, 'ro-')
+    xlabel('number of code-vectors per stage, m');
+    UTIL_FILE_save2pdf('aRVQ_dudek_trg_1_to_95.pdf', gcf, 300);                                
+%testing                                
+    figure;
+    hold on
+    grid on; 
     plot(lst_M, rmse_tst(:,1), 'g+-');   
     plot(lst_M, rmse_tst(:,2), 'bd-');  
     plot(lst_M, rmse_tst(:,3), 'm*-');  
-    plot(lst_M, rmse(:,4), 'ks-');  
-    
-    grid on; 
-    %axis([2 16 0 1.5])
-    axis equal;
-    axis tight;
-    %legend('Trng', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'SouthWest')
-    legend('tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'Best')
+    plot(lst_M, rmse_tst(:,4), 'ks-');      
+    legend('tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'Best'); %
     xlabel('number of code-vectors per stage, m');
     UTIL_FILE_save2pdf('aRVQ_dudek_trg_1_to_95_tst_96_to_100.pdf', gcf, 300);
-    
+
+        
+
  
-    rowLabels = {'m=2', 'm=3', 'm=4', 'm=5', 'm=6', 'm=7', 'm=8', 'm=9', 'm=10', 'm=11', 'm=12', 'm=13', 'm=14', 'm=15', 'm=16', 'mean'};
-    colLabels = {'Trng', 'maxQ', 'RofE', 'nulE', 'monR'};
-    colLabels = {'maxQ', 'RofE', 'nulE', 'monR'};
-    UTIL_matrix2latex(rmse_tst_with_mean, 'aRVQ_dudek_trg_1_to_95_tst_96_to_100.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
+     rowLabels = {'m=2', 'm=3', 'm=4', 'm=5', 'm=6', 'm=7', 'm=8', 'm=9', 'm=10', 'm=11', 'm=12', 'm=13', 'm=14', 'm=15', 'm=16', 'mean'};
+     colLabels = {'maxQ', 'RofE', 'nulE', 'monR'};
+     UTIL_matrix2latex(rmse_tst_with_mean, 'aRVQ_dudek_trg_1_to_95_tst_96_to_100.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
 
     
     

@@ -9,6 +9,7 @@ function [DM2, sw, sh] = DM2_create(dataset)
     elseif (dataset==7) DM2 =   [4 6 8   20 22 24];         sw=1; sh=1;   %deterministic, scalar, simplest possible, i've worked this out by hand in a pdf
     elseif (dataset==8) [DM2,sw,sh] =   DM2_extract_roi_from_Dudek(1,95,0);   %last 0 means no randomness
     elseif (dataset==9) [DM2,sw,sh] =   DM2_extract_roi_from_Dudek(96,100,0); %last 0 means no randomness
+    elseif (dataset==10) DM2 =   DM2_create_gaussMarkov(1089,100,0.9); sw=33;sh=33;%last 0 means no randomness
     end
 
     [D, N]                  =   size(DM2);                                  %dimensions of DM2
