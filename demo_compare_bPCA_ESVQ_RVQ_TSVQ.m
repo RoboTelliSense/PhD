@@ -75,9 +75,6 @@
     close all;
     format compact;
     
-%-----------------------------
-% 1. PRE-PROCESSING
-%-----------------------------
 %algorithm parameters    
     %BPCA
     aBPCA.in_1__name        =   'aBPCA';
@@ -100,59 +97,58 @@
     aTSVQ.in_3__maxQ        =   4;                                          %number of stages
     aTSVQ.in_4__M___        =   4;                                          %2 is for binary aTSVQ
     
+%-----------------------------
+% PRE-PROCESSING
+%-----------------------------
+
+[DM2_trg, sw, sh]           =   DM2_create(8);
+[DM2_tst, sw, sh]           =   DM2_create(9);
+[D,F]                       =   size(DM2_trg);   
+cfn_gentxt                  =   [num2str(F) '_verbose.txt'];           %file 4, verbose output of gen.exe,    (F1.stat_gen.txt)
+
+aRVQ1.in_6__sw__            =   sw;             %snippet width
+aRVQ1.in_7__sh__            =   sh;             %snippet height
+
 
 %-----------------------------
 % 2. PROCESSING
 %-----------------------------
-datasetcode=8;
-%for f=1:1
-f=0;
-[DM2_trg, sw, sh]           =   DM2_create(8);
-[DM2_tst, sw, sh]       =   DM2_create(8);
-for  a       =   2:16
-    aRVQ1.in_4__M___ = a;
+midx                        =   0;
+M                           =   [2:16]
+for  m = M
+    
     tic
-    f=f+1;
+    midx                    =   midx+1;
     
-    aRVQ1.in_6__sw__        =   sw;             %snippet width
-    aRVQ1.in_7__sh__        =   sh;             %snippet height
-    
+    %parameters
+    aRVQ1.in_4__M___        =   m;
     
     %learning    
-    %aBPCA                  =    PCA__1_learn     (DM2, aBPCA); 
-    
-    aRVQ1                   =    RVQ__1_learn     (DM2_trg, aRVQ1);
+    aRVQ1                   =   RVQ__1_learn     (DM2_trg, aRVQ1);
     aRVQ2                   =   aRVQ1;  aRVQ2.in_10_tstD = 'RofE';
     aRVQ3                   =   aRVQ1;  aRVQ3.in_10_tstD = 'nulE';
     aRVQ4                   =   aRVQ1;  aRVQ4.in_10_tstD = 'monR';
     
-    
-    %aTSVQ                   =    TSVQ_1_learn     (DM2, aTSVQ); 
-      
-    
-    %decoding
-    %aBPCA                   =   PCA__2_encode(DM2_tst, aBPCA);                  
+    %encoding
     aRVQ1                   =   RVQ__2_encode(DM2_tst, aRVQ1);
     aRVQ2                   =   RVQ__2_encode(DM2_tst, aRVQ2);
     aRVQ3                   =   RVQ__2_encode(DM2_tst, aRVQ3);
     aRVQ4                   =   RVQ__2_encode(DM2_tst, aRVQ4);
     
-    %aTSVQ                   =   TSVQ_2_encode(DM2_tst, aTSVQ);
-    
-    rmse(f,:)               =   [aRVQ1.trg_5_rmse__1x1 ...
-                                 aRVQ1.tst_5_rmse__1x1 ...
-                                 aRVQ2.tst_5_rmse__1x1 ...
-                                 aRVQ3.tst_5_rmse__1x1 ...
-                                 aRVQ4.tst_5_rmse__1x1] %[aBPCA.tst_5_rmse__1x1     aRVQx.tst_5_rmse__1x1    aTSVQ.tst_5_rmse__1x1         ]
-   %trg_rmse(f,:)           =   aRVQ1.trg_5_rmse__1x1%[aBPCA.trg_5_rmse__1x1     aRVQx.trg_5_rmse__1x1    aTSVQ.trg_5_rmse__1x1         ]
-   %tst_rmse(f,:)           =   [aRVQ1.tst_5_rmse__1x1 aRVQ2.tst_5_rmse__1x1 aRVQ3.tst_5_rmse__1x1 aRVQ4.tst_5_rmse__1x1]%[aBPCA.tst_5_rmse__1x1     aRVQx.tst_5_rmse__1x1    aTSVQ.tst_5_rmse__1x1         ]
-     
+    %stats
+    rmse_trg(midx)          =   aRVQ1.trg_5_rmse__1x1;
+    rmse_tst(midx,:)        =   [ aRVQ1.tst_5_rmse__1x1 ...
+                                  aRVQ2.tst_5_rmse__1x1 ...
+                                  aRVQ3.tst_5_rmse__1x1 ...
+                                  aRVQ4.tst_5_rmse__1x1] 
+
+    UTIL_FILE_copy(cfn_gentxt, [num2str(m) '_' cfn_gentxt]);
     toc
-    temp                    =   1;
 end    
     
-    mu = mean(rmse);
-    rmse_with_mean = [rmse;mu]
+mu_tst                      =   mean(rmse_tst);
+rmse_tst_with_mean          =   [rmse_tst;mu_tst]
+
 %-----------------------------
 %RESULTS
 %-----------------------------
@@ -166,23 +162,26 @@ end
     
     figure;
     hold on
-    plot(2:16, rmse(:,1), 'ro-')
-    plot(2:16, rmse(:,2), 'g+-');   
-    plot(2:16, rmse(:,3), 'bd-');  
-    plot(2:16, rmse(:,4), 'm*-');  
-    plot(2:16, rmse(:,5), 'ks-');  
+    %plot(lst_M, rmse_trg, 'ro-')
+    plot(lst_M, rmse_tst(:,1), 'g+-');   
+    plot(lst_M, rmse_tst(:,2), 'bd-');  
+    plot(lst_M, rmse_tst(:,3), 'm*-');  
+    plot(lst_M, rmse(:,4), 'ks-');  
+    
     grid on; 
     %axis([2 16 0 1.5])
     axis equal;
     axis tight;
-    legend('Trng', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'SouthWest')
-    xlabel('number of stages, m');
-    UTIL_FILE_save2pdf('aRVQ_dudek_first_100rand_101test.pdf', gcf, 300);
+    %legend('Trng', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'SouthWest')
+    legend('tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'Best')
+    xlabel('number of code-vectors per stage, m');
+    UTIL_FILE_save2pdf('aRVQ_dudek_trg_1_to_95_tst_96_to_100.pdf', gcf, 300);
     
  
     rowLabels = {'m=2', 'm=3', 'm=4', 'm=5', 'm=6', 'm=7', 'm=8', 'm=9', 'm=10', 'm=11', 'm=12', 'm=13', 'm=14', 'm=15', 'm=16', 'mean'};
     colLabels = {'Trng', 'maxQ', 'RofE', 'nulE', 'monR'};
-    UTIL_matrix2latex(rmse_with_mean, 'aRVQ_dudek_first_100rand_101test.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
+    colLabels = {'maxQ', 'RofE', 'nulE', 'monR'};
+    UTIL_matrix2latex(rmse_tst_with_mean, 'aRVQ_dudek_trg_1_to_95_tst_96_to_100.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
 
     
     
