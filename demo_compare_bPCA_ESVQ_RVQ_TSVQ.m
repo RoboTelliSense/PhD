@@ -83,7 +83,6 @@
     aBPCA.in_1__name        =   'aBPCA';
 	aBPCA.in_2__data        =	'tst';
     aBPCA.mdl_1_Q__1x1      =   16;   
-    %aBPCA.config_str        =   BPCA_config_string(aBPCA.mdl_1_Q__1x1);
     
     %RVQ   
 	aRVQ1.in_1__name        =   'aRVQx';
@@ -91,17 +90,15 @@
     aRVQ1.in_3__maxQ        =   8;              %max number of stages  
     aRVQ1.in_4__M___        =   16;              %number of codevectors/stage
     aRVQ1.in_5__tSNR        =   1000;           %target SNRdB during learning (creating codebooks)        
-    aRVQ1.odir        =   '';
+    aRVQ1.odir              =   '';
     aRVQ1.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
     aRVQ1.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
-    %aRVQ1.config_str        =   RVQ__config_string(aRVQ1.in_3__maxQ, aRVQ1.in_4__M___, aRVQ1.in_5__tSNR, aRVQ1.in_10_tstD);
     
     %TSVQ
     aTSVQ.in_1__name        =   'aTSVQ';
 	aTSVQ.in_2__data        =	'tst';  
     aTSVQ.in_3__maxQ        =   4;                                          %number of stages
     aTSVQ.in_4__M___        =   4;                                          %2 is for binary aTSVQ
-    %aTSVQ.config_str        =   TSVQ_config_string(aTSVQ.in_3__maxQ, aTSVQ.in_4__M___);
     
 
 %-----------------------------
