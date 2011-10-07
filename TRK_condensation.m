@@ -127,10 +127,10 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     end
     DFFS                    =   abs(ALGO.tst_3_error_DxN/256);              %scale and make positive, PCA terminology from Moghaddam and Pentland terminology to keep things uniform
         
-    if (strcmp(TRK.name, 'trkaRVQx'))
-        DIFS                =   repmat(ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.tst_6_partQ_1xN), D, 1);
-        DFFS                =   DFFS + DIFS;
-    end
+    %if (strcmp(TRK.name, 'trkaRVQx'))
+    %    DIFS                =   repmat(ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.tst_6_partQ_1xN), D, 1);
+    %    DFFS                =   DFFS + DIFS;
+    %end
 
        
 %3. weights, maxidx (posterior)
@@ -205,7 +205,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     TRK.tim_T_sec           =   TRK.tim_T_sec + TRK.tim_t_sec(f);           %total time for all runs
     TRK.tim_fps             =   f/TRK.tim_T_sec;                            %frames per sec for this run
     
-%write 4 kinds of stats to file
+%write 4 kinds of stats to string
     if     (strcmp(TRK.name, 'trkaMEAN'))           %no need to write for trkaMEAN, reason is that name cannot be differentiated between configurations, and running on the cluster then causes problems.
         return;
     end
@@ -220,7 +220,8 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
                                 TRK.trg_1_SNRdB_Fx1(f)  , TRK.trg_2_rmse__Fx1(f)  , TRK.trg_3_armse_Fx1(f), ... %10,11,12
                                 TRK.tst_1_SNRdB_Fx1(f)  , TRK.tst_2_rmse__Fx1(f)  , TRK.tst_3_armse_Fx1(f) ...  %13,14,15
                                 );
-%write ground truth to file 
+                            
+%write ground truth data to string
     str_gt                  =   [];
     [temp1, G]              =   size(TRK.fpt_2_estim_2xG);  
     for g=1:G
@@ -228,6 +229,24 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
         str_gt              =   [str_gt temp2];
     end
     str_out                 =   [str_stats ' ' str_gt];
-                            
+  
+%write RVQ stats, if RVQ, to string
+    if (strcmp(TRK.name, 'trkaRVQx'))
+        str_rvq             =   sprintf('%8.0f%8.0f ', ALGO.mdl_1_Q__1x1, ALGO.tst_6_nStgs_1xN(maxidx));
+        for q =1:ALGO.mdl_1_Q__1x1
+            temp2           =   sprintf('%8.0f', ALGO.tst_1_featr_QxN(q,maxidx));
+            str_rvq         =   [str_rvq ' ' temp2];            
+        end
+        for q =1:ALGO.mdl_1_Q__1x1
+            temp2           =   sprintf('%8.2f', ALGO.tst_7_rmses_QxN(q,maxidx));
+            str_rvq         =   [str_rvq ' ' temp2];            
+        end
+        for q =1:ALGO.mdl_1_Q__1x1
+            temp2           =   sprintf('%8.0f', ALGO.tst_8_stgid_QxN(q,maxidx));
+            str_rvq         =   [str_rvq ' ' temp2];            
+        end        
+        str_out             =   [str_out ' ' str_rvq];
+    end
+%write to file           
                                 fprintf(fid, [str_out '\n']); 
                                 fclose(fid);

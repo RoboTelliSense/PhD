@@ -162,7 +162,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
         RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
         RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                              %3.        
         
-        RVQ.tst_6_nStg__1xN(1,n)=   nStgs;  
+        RVQ.tst_6_nStgs_1xN(1,n)=   nStgs;  
         RVQ.tst_7_rmses_QxN(:,n)=   rmses_Qx1;
         RVQ.tst_8_stgid_QxN(:,n)=   stgid_Qx1;          
     end
