@@ -38,4 +38,4 @@
                                                                     %codebooks, then runs gen.exe -l to test training vectors and 
                                                                     %saves results in positiveExamples.idx
 
-                                RVQ.mdl_3_CB_DxMP                           %display the codebook
+                                RVQ.mdl_3_CB_DxMQ                           %display the codebook

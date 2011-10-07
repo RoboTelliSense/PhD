@@ -20,7 +20,7 @@ function algo = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo)
 
 	[D, N]                              =   size(DM2);
 	algo.trg_3_error_DxN                 	=   zeros(D,N);
-	algo.trg_1_featr_PxN         	=   zeros(algo.mdl_1_Q__1x1,N);
+	algo.trg_1_featr_QxN         	=   zeros(algo.mdl_1_Q__1x1,N);
 	for n=1:N
 		x_Dx1                           =   DM2(:,n);                                %test vector
         if      (strcmp(algo.in_1__name, 'RVQ'))
@@ -28,11 +28,11 @@ function algo = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo)
         elseif (strcmp(algo.in_1__name, 'TSVQ'))
             algo                        =   TSVQ_2_encode(x_Dx1, algo);     
         end
-		algo.trg_1_featr_PxN(:,n)	=   algo.tst_1_featr_PxN;                                         %trg1.
+		algo.trg_1_featr_QxN(:,n)	=   algo.tst_1_featr_QxN;                                         %trg1.
 		algo.trg_2_recon_DxN(:,n)     	=   algo.tst_2_recon_DxN;                                              %trg2.
 		algo.trg_3_error_DxN(:,n)       =   algo.tst_3_error_DxN;                                                %trg3.
         algo.trg_4_SNRdB_1x1(n,1)       =   UTIL_METRICS_compute_SNRdB       (DM2(:), algo.trg_3_error_DxN(:));  %trg4.
         algo.trg_5_rmse__1x1(n,1)        =   UTIL_METRICS_compute_rms   (algo.trg_3_error_DxN(:));          %trg5.
 	end
     
-    algo.tst_1_featr_PxN           =   [];
+    algo.tst_1_featr_QxN           =   [];

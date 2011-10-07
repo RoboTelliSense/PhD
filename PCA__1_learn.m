@@ -56,13 +56,13 @@ function PCA = PCA__1_learn(DM2, PCA)
 %------------------------------------------
 %clear out old model
     PCA.mdl_2_mu_Dx1        =	[];                         %1. mean
-    PCA.mdl_3_U__DxP        =	[];                         %2. eigenvectors of AA^T
+    PCA.mdl_3_U__DxQ        =	[];                         %2. eigenvectors of AA^T
 	PCA.mdl_4_L__PxP        =	[];                         %4. squared eigenvalues
 	PCA.mdl_5_V__PxP        =	[];                         %5. eigenvectors of A^TA
     
 %save new model    
     PCA.mdl_2_mu_Dx1        =	mu_Dx1;                     %1. mean
-    PCA.mdl_3_U__DxP        =	U(:,keep);                  %2. eigenvectors of AA^T
+    PCA.mdl_3_U__DxQ        =	U(:,keep);                  %2. eigenvectors of AA^T
 	PCA.mdl_4_L__PxP        =	S(keep,keep);               %4. eigenvalues of AA^T and A^TA, squared eigenvalues of A
 	PCA.mdl_5_V__PxP        =	V(keep,keep);               %5. eigenvectors of A^TA
     

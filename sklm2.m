@@ -60,7 +60,7 @@ function BPCAnew = sklm2(BPCAold, B_DxM2, ff)
 %old
     P                       =   BPCAold.mdl_1_Q__1x1;           %number of eigenvectors to keep
     muA_Dx1                 =   BPCAold.mdl_2_mu_Dx1;    
-    Ua_DxM1                 =   BPCAold.mdl_3_U__DxP;    
+    Ua_DxM1                 =   BPCAold.mdl_3_U__DxQ;    
     Sa_Nx1                  =   diag(BPCAold.mdl_4_L__PxP);     
     
 %new          
@@ -113,6 +113,6 @@ function BPCAnew = sklm2(BPCAold, B_DxM2, ff)
 %POST-PROCESSING
 %-----------------------------------------------
     BPCAnew.mdl_2_mu_Dx1    =   muC_Dx1;
-    BPCAnew.mdl_3_U__DxP    =   Utilde_DxN;
+    BPCAnew.mdl_3_U__DxQ    =   Utilde_DxN;
     BPCAnew.mdl_4_L__PxP    =   Stilde_NxN;
     

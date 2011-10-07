@@ -19,8 +19,8 @@
     RVQ.in_6__sw__                 =   sw;                                         %snippet width
     RVQ.in_7__sh__                 =   sh;                                         %snippet height
     RVQ.odir            =   '';
-    RVQ.trg_1_featr_PxN =   [];
-    RVQ.tst_1_featr_PxN  =   [];
+    RVQ.trg_1_featr_QxN =   [];
+    RVQ.tst_1_featr_QxN  =   [];
 
     %test image
     I                       =   imread('referenceRVQ/00472.jpg');
@@ -30,10 +30,10 @@
 %PRE-PROCESSING
 %-----------------------------------
         
-    [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_3_CB_DxMP, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
+    [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_3_CB_DxMQ, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
                             =   RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.dcbk'); 
     
-                                DM2_show(RVQ.mdl_3_CB_DxMP, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
+                                DM2_show(RVQ.mdl_3_CB_DxMQ, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
 
     Isnr                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);
     Istg                    =   zeros(inner_image_dims.inner_height, inner_image_dims.inner_width);

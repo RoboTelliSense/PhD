@@ -2,7 +2,7 @@ function RVQ = RVQ__2_encode(tst_Dx1, RVQ)
 
     tst_6Dx1                            =   RVQ_FILES_create_posnegImage(tst_Dx1, '', 0, 0);
 
-    mdl_3_CB_DxMP                               =   RVQ.mdl_3_CB_DxMP;
+    mdl_3_CB_DxMQ                               =   RVQ.mdl_3_CB_DxMQ;
     mdl_CBg_DxMP                               =   RVQ.mdl_CBg_DxMP;
     mdl_CBb_DxMP                               =   RVQ.mdl_CBb_DxMP;
     CBn_r                              =   RVQ.CBn_r;
@@ -31,7 +31,7 @@ function RVQ = RVQ__2_encode(tst_Dx1, RVQ)
             %for this stage: go over all codevectors
             for s=1:S 
                 idx                     =   UTIL_xy_to_idx(s, t, S);
-                CB_6Dx1                =   [mdl_3_CB_DxMP(:,idx);mdl_CBg_DxMP(:,idx);mdl_CBb_DxMP(:,idx);CBn_r(:,idx);CBn_g(:,idx);CBn_b(:,idx)];
+                CB_6Dx1                =   [mdl_3_CB_DxMQ(:,idx);mdl_CBg_DxMP(:,idx);mdl_CBb_DxMP(:,idx);CBn_r(:,idx);CBn_g(:,idx);CBn_b(:,idx)];
                 e                       =   err_6Dx1-CB_6Dx1;                    
                 d                       =   norm(  e, 2  ); %if e is a matrix, this is largest eigenvalue, if it's a vector, it's L2 norm              
                 if (d<dmin)
@@ -71,7 +71,7 @@ function RVQ = RVQ__2_encode(tst_Dx1, RVQ)
     %pass out
         RVQ.tst_2_recon_DxN    =   recon_6Dx1;
         RVQ.tst_3_error_DxN      =   err_6Dx1;
-        RVQ.tst_1_featr_PxN   =   SoC;
+        RVQ.tst_1_featr_QxN   =   SoC;
         
         RVQ.tst_6_partP_Nx1 =   numStagesUsed;
                 

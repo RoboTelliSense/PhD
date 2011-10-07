@@ -1,6 +1,6 @@
 %CB: codebook
 %mu: codevector
-%P: number of stages
+%Q: number of stages
 %x_Dx1: test vector
 function TSVQ = TSVQ_2_encode(DM2, TSVQ)
 
@@ -13,20 +13,20 @@ function TSVQ = TSVQ_2_encode(DM2, TSVQ)
         %------------------------------ 
         x_Dx1                       =   DM2(:,n);
         CB_DxKt                     =   TSVQ.mdl_3_CB_DxKt;
-        P                           =   TSVQ.mdl_1_Q__1x1;
+        Q                           =   TSVQ.mdl_1_Q__1x1;
 
-        featr_Px1                   =   [];     %TSVQ feature vector, similar to XDR in RVQ
+        featr_Qx1                   =   [];     %TSVQ feature vector, similar to XDR in RVQ
         K                           =   2;      %binary TSVQ, hence K=2
 
         parent_idx                  =   1;      %we start at: parent_idx = 1, see TSVQ_1_learn for a nice graphic showing this
-        p                           =   0;      %we start at: level (stage)      = 0
+        q                           =   0;      %we start at: level (stage)      = 0
 
 
         %------------------------------
         % PROCESSING (compute 5 things)
         %------------------------------ 
-        [p, featr_Px1]      =   TSVQ_givenParentFindBestChild_recursive(x_Dx1, parent_idx, featr_Px1, CB_DxKt, p, P); %featr_Px1 is binary VQ featr_Px1
-        recon_Dx1           =   CB_DxKt(:, featr_Px1(P));
+        [q, featr_Qx1]      =   TSVQ_givenParentFindBestChild_recursive(x_Dx1, parent_idx, featr_Qx1, CB_DxKt, q, Q); %featr_Qx1 is binary VQ featr_Qx1
+        recon_Dx1           =   CB_DxKt(:, featr_Qx1(Q));
         error_Dx1           =   x_Dx1-recon_Dx1;
         SNRdB               =   UTIL_METRICS_compute_SNRdB(x_Dx1, error_Dx1);
         rmse                =   UTIL_METRICS_compute_rms(error_Dx1);
@@ -34,11 +34,11 @@ function TSVQ = TSVQ_2_encode(DM2, TSVQ)
         
         %save stats: 1, 2, 3
         if (strcmp(TSVQ.in_2__data, 'trg'))
-            TSVQ.trg_1_featr_PxN(:,n)   =   featr_Px1;
+            TSVQ.trg_1_featr_QxN(:,n)   =   featr_Qx1;
             TSVQ.trg_2_recon_DxN(:,n)   =   recon_Dx1;
             TSVQ.trg_3_error_DxN(:,n)   =   error_Dx1;
         elseif (strcmp(TSVQ.in_2__data, 'tst'))
-            TSVQ.tst_1_featr_PxN(:,n)   =   featr_Px1;
+            TSVQ.tst_1_featr_QxN(:,n)   =   featr_Qx1;
             TSVQ.tst_2_recon_DxN(:,n)   =   recon_Dx1;
             TSVQ.tst_3_error_DxN(:,n)   =   error_Dx1;
         end        

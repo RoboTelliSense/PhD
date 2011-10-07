@@ -13,5 +13,5 @@
     
     PCA                     =   PCA__1_learn(DM2, PCA);  
     
-    5.1414*(PCA.mdl_3_U__DxP)
+    5.1414*(PCA.mdl_3_U__DxQ)
        

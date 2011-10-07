@@ -24,13 +24,13 @@ function MEAN = MEAN_2_test(DM2, MEAN)
 % 3. POST-PROCESSING
 %--------------------------------------------     
 
-        MEAN.trg_1_featr_PxN=   [];                                                                 %1. feature vectors (projection scalars)
+        MEAN.trg_1_featr_QxN=   [];                                                                 %1. feature vectors (projection scalars)
         MEAN.trg_2_recon_DxN=   recon_DxN;                                                          %2. reconstructed signal  
         MEAN.trg_3_error_DxN=   error_DxN;                                                          %3. error vector
         MEAN.trg_4_SNRdB_1x1=   UTIL_METRICS_compute_SNRdB      (DM2(:), MEAN.trg_3_error_DxN(:));  %4. SNRdB
         MEAN.trg_5_rmse__1x1=   UTIL_METRICS_compute_rms        (        MEAN.trg_3_error_DxN(:));  %5. rmse    
 
-        MEAN.tst_1_featr_PxN=   [];                                                                 %1. feature vectors (projection scalars)
+        MEAN.tst_1_featr_QxN=   [];                                                                 %1. feature vectors (projection scalars)
         MEAN.tst_2_recon_DxN=   recon_DxN;                                                          %2. reconstructed signal  
         MEAN.tst_3_error_DxN=   error_DxN;                                                          %3. error vector
         MEAN.tst_4_SNRdB_1x1=   UTIL_METRICS_compute_SNRdB      (DM2(:), MEAN.tst_3_error_DxN(:));  %4. SNRdB

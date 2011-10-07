@@ -114,11 +114,11 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
 %-------------------
 %clear out old model
     RVQ.mdl_1_Q__1x1        =   -1;
-    RVQ.mdl_3_CB_DxMP       =   [];
+    RVQ.mdl_3_CB_DxMQ       =   [];
 
 %save new model    
     RVQ.mdl_1_Q__1x1        =   Q;
-    RVQ.mdl_3_CB_DxMP       =   CBr_DxMP;     %CB: single channel codebook
+    RVQ.mdl_3_CB_DxMQ       =   CBr_DxMP;     %CB: single channel codebook
     
 %decode training examples
     RVQ.in_2__data          =   'trg';
@@ -178,7 +178,7 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
 %             system(['./RVQ__1_learn_gen16.linux' cfn_1_posEg  ' ' cfn_2_ecbk ' '  cfn_3_dcbk ' ' num2str(M+1) ' -S' num2str(targetSNR) ' -l']);        
 %         end
 %     end
-%     RVQ.trg_1_featr_PxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxQ, M, true);    %notice that I do not use actualP but maxQ
+%     RVQ.trg_1_featr_QxN     =   RVQ_FILES_read_idx_file('positiveExamples.idx', maxQ, M, true);    %notice that I do not use actualP but maxQ
 
 
 

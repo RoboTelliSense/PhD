@@ -10,12 +10,12 @@ function RVQ = RVQ__2_encode(DM2, RVQ)
 %-------------------------------
 %PRE-PROCESSING
 %-------------------------------    
-    RVQ.tst_1_featr_PxN     =   [];
+    RVQ.tst_1_featr_QxN     =   [];
     RVQ.tst_2_recon_DxN     =   [];                                             
     RVQ.tst_3_error_DxN     =   [];                                      
     RVQ.tst_4_SNRdB_1x1     =   [];
     RVQ.tst_5_rmse__1x1     =   [];
-    RVQ.tst_6_partP_1xN     =   -1; 
+    RVQ.tst_6_partQ_1xN     =   -1; 
         
     for n=1:N
         x_Dx1               =   DM2(:,n);

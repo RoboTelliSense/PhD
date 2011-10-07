@@ -6,8 +6,8 @@
 %> cand_snps_shxswxNp       :   Np candidate snippets, pixel intensity range is [0 1]
 %>
 %> ALGO                     :   structure holding learning algorithm parameters and data, like MEAN, IPCA, RVQ, TSVQ
-%>      mdl_3_U__DxP        :   basis, normally, I would write U_DxN, but
-%>                              here I use mdl_3_U__DxP because B is the number of
+%>      mdl_3_U__DxQ        :   basis, normally, I would write U_DxN, but
+%>                              here I use mdl_3_U__DxQ because B is the number of
 %>                              training examples in one batch
 %>
 %> TRK                      :   structure that holds information about the condensation algorithm.  has following members:
@@ -128,19 +128,19 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     DFFS                    =   abs(ALGO.tst_3_error_DxN/256);              %scale and make positive, PCA terminology from Moghaddam and Pentland terminology to keep things uniform
         
     if (strcmp(TRK.name, 'trkaRVQx'))
-        DIFS                =   repmat(ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.tst_6_partP_1xN), D, 1);
+        DIFS                =   repmat(ALGO.in_11_lmbd*(ALGO.in_3__maxQ-ALGO.tst_6_partQ_1xN), D, 1);
         DFFS                =   DFFS + DIFS;
     end
 
        
 %3. weights, maxidx (posterior)
     %%compute DIFS for use with PPCA, if not using PPCA, not required
-    %if (isfield(TRK,'candErrs_featr_PxNp'))
-    %    DIFS               =   (abs(candErrs_featr_PxNp)-abs(TRK.candErrs_featr_PxNp))*PARAM.pf_reseig./repmat(S_Bx1,[1,Np]);
+    %if (isfield(TRK,'candErrs_featr_QxNp'))
+    %    DIFS               =   (abs(candErrs_featr_QxNp)-abs(TRK.candErrs_featr_QxNp))*PARAM.pf_reseig./repmat(S_Bx1,[1,Np]);
     %else
-    %    DIFS               =   candErrs_featr_PxNp                               .*PARAM.pf_reseig./repmat(S_Bx1,[1,Np]);
+    %    DIFS               =   candErrs_featr_QxNp                               .*PARAM.pf_reseig./repmat(S_Bx1,[1,Np]);
     %end
-    %TRK.candErrs_featr_PxNp=   candErrs_featr_PxNp;
+    %TRK.candErrs_featr_QxNp=   candErrs_featr_QxNp;
     
     
     switch (PARAM.pf_errfunc)

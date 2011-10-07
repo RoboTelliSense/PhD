@@ -12,7 +12,7 @@
     [U_DxD,L_NxN,V_NxN] =   svd(DM2z);          %U_DxD has eigenvectors of S=DM2*DM2'
                                                 %L_NxN has eigenvalues of DM2
                                                 %V_NxN has eigenvectors of DM2'*DM2
-    U_DxP               =   U_DxD(:,1:P);       %first P eigenvectors of S                                            
+    U_DxQ               =   U_DxD(:,1:P);       %first P eigenvectors of S                                            
     L_PxP               =   L_NxN(1:P, 1:P).^2; %PxP subset of eigenvalues of S (remember eigenvalues of
                                                 %S are equal to squared eigenvalues of DM2
     
@@ -25,4 +25,4 @@
     
     R_PxP               =   orth(randn(P,P));   %arbitrary orthonormal matrix
     
-    W_DxP               =   U_DxP*sqrt(L_PxP - sigma2*eye(P,P))*R_PxP; %
+    W_DxP               =   U_DxQ*sqrt(L_PxP - sigma2*eye(P,P))*R_PxP; %

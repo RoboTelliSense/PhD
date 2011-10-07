@@ -72,7 +72,7 @@
     BPCA_A                  =   PCA__1_learn(A_DxM1, BPCA_A);        %reference SVD
     
     muA_Dx1                 =   BPCA_A.mdl_2_mu_Dx1;
-    Ua_DxM1                 =   BPCA_A.mdl_3_U__DxP;
+    Ua_DxM1                 =   BPCA_A.mdl_3_U__DxQ;
     Sa_M1xM1                =   BPCA_A.mdl_4_L__PxP;
     
     
@@ -88,7 +88,7 @@
 %reference    
     
     
-     %err1_DxN               =   BPCA_C.mdl_3_U__DxP  - Usklm_DxN; %sklm is original code by David Ross
+     %err1_DxN               =   BPCA_C.mdl_3_U__DxQ  - Usklm_DxN; %sklm is original code by David Ross
      %norm(err1_DxN(:))
 %     err2_DxN               =   U_DxN2 - U_DxN; %my code with cosmetic changes to make more readable
 %     rmse1                   =   UTIL_METRICS_compute_rms(err1_DxN(:))

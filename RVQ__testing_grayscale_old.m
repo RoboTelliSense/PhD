@@ -26,7 +26,7 @@ function RVQ = RVQ__2_encode_old(x_Dx1, RVQ)
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   RVQ.mdl_3_CB_DxMP;   %1 channel codebook, get it from the red, green or blue channel
+    CB_DxMP                 =   RVQ.mdl_3_CB_DxMQ;   %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.P;      %actual number of stages in the codebook
     M                       =   RVQ.in_4__M___;      %number of codevectors/stage
     sw                      =   RVQ.in_6__sw__;     %snippet width
@@ -95,7 +95,7 @@ function RVQ = RVQ__2_encode_old(x_Dx1, RVQ)
 %pass out
     RVQ.tst_2_recon_DxN    =   xhat_Dx1;
     RVQ.tst_3_error_DxN     =   R_Dx1;
-    RVQ.tst_1_featr_PxN  =   XDR;
+    RVQ.tst_1_featr_QxN  =   XDR;
         
     RVQ.tst_6_partP_Nx1=   partialP;
 
