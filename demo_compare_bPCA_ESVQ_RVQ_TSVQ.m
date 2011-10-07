@@ -144,6 +144,7 @@ for  m = lst_M
 
     UTIL_FILE_copy(cfn_gentxt, [num2str(m) '_' cfn_gentxt]);
     toc
+    save(['aRVQ_dudek_trg_1_to_95_m_' num2str(m)]);
 end    
     
 mu_tst                      =   mean(rmse_tst);
