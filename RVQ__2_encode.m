@@ -9,13 +9,28 @@ function RVQ = RVQ__2_encode(DM2, RVQ)
         
 %-------------------------------
 %PRE-PROCESSING
-%-------------------------------    
-    RVQ.tst_1_featr_QxN     =   [];
-    RVQ.tst_2_recon_DxN     =   [];                                             
-    RVQ.tst_3_error_DxN     =   [];                                      
-    RVQ.tst_4_SNRdB_1x1     =   [];
-    RVQ.tst_5_rmse__1x1     =   [];
-    RVQ.tst_6_partQ_1xN     =   -1; 
+%------------------------------- 
+    if (strcmp(RVQ.in_2__data, 'trg'))
+        RVQ.trg_1_featr_QxN     =   [];
+        RVQ.trg_2_recon_DxN     =   [];                                             
+        RVQ.trg_3_error_DxN     =   [];                                      
+        RVQ.trg_4_SNRdB_1x1     =   -999;
+        RVQ.trg_5_rmse__1x1     =   -999;
+        RVQ.trg_6_nStg__1xN     =   [];  
+        RVQ.trg_7_rmses_QxN     =   [];
+        RVQ.trg_8_stgid_QxN     =   [];        
+    elseif (strcmp(RVQ.in_2__data, 'tst'))
+        RVQ.tst_1_featr_QxN     =   [];
+        RVQ.tst_2_recon_DxN     =   [];                                             
+        RVQ.tst_3_error_DxN     =   [];                                      
+        RVQ.tst_4_SNRdB_1x1     =   -999;
+        RVQ.tst_5_rmse__1x1     =   -999;
+        RVQ.tst_6_nStg__1xN     =   [];  
+        RVQ.tst_7_rmses_QxN     =   [];
+        RVQ.tst_8_stgid_QxN     =   [];
+    end
+
+        
         
     for n=1:N
         x_Dx1               =   DM2(:,n);

@@ -62,21 +62,24 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     rmse_prev               =   1E15 ;                                      %assume that entire input is error, since we haven't decoded it yet
     
 %output variables    
-    featr_Qx1               =   zeros(maxQ,1);                              %1.i initialize with 0, my code for early termination (Dr Barnes' code was Q+1)
-    rmseQ_Px1               =   zeros(maxQ,1);
+    featr_Qx1               =   -9999*ones(maxQ,1);                              %1.i initialize with 0, my code for early termination (Dr Barnes' code was Q+1)
+    rmses_Qx1               =   -9999*ones(maxQ,1);
+    stgid_Qx1               =   -9999*ones(maxQ,1);
+    
     recon_Dx1               =   recon_prev_Dx1;                             %2.
     error_Dx1               =   x_Dx1;                                      %3.
                                                                             %4. SNR which I don't compute here since I'm only using rmse
     rmse                    =   rmse_prev;                                  %5.
     
     temp2_XDR_parQx1        =   [];                     %contains a partial featr_Qx1, i.e., all indeces up to q-th stage
-    partQ                   =   0;
+    nStgs                   =   0;
 
 %-------------------------------
 %2. PROCESSING
 %-------------------------------
     %go over all stages (remember that Q is actual stages in codebook, maxQ
     %is number of stages you wanted)
+    qnum=0;
     for q=1:Q
 
         %part 1: pick best codevector at q-th stage (note that all temporary variables here start with temp1 since this is part 1)
@@ -106,24 +109,31 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
 
         %part3: should we continue or exit?
         if      (strcmp(rule_stop_decoding, 'maxQ'))    %max stages
-            continue_decoding   =   true;
+            this_stage_acceptable   =   true;
         elseif  (strcmp(rule_stop_decoding, 'RofE'))    %realm of experience
-            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_1_featr_QxN, temp2_XDR_parQx1);
+            this_stage_acceptable   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_1_featr_QxN, temp2_XDR_parQx1);
         elseif  (strcmp(rule_stop_decoding, 'nulE'))    %null encoding
-            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_monotonic_rmse        (temp2_rmse, rmse_prev);
+            this_stage_acceptable   =   RVQ_RULES_DECODE_STOPPING_monotonic_rmse        (temp2_rmse, rmse_prev);
         elseif  (strcmp(rule_stop_decoding, 'monR'))    %monotonically decreasing rmse
-            continue_decoding   =   RVQ_RULES_DECODE_STOPPING_monotonic_rmse        (temp2_rmse, rmse_prev);
+            this_stage_acceptable   =   RVQ_RULES_DECODE_STOPPING_monotonic_rmse        (temp2_rmse, rmse_prev);
         end
 
-        if (continue_decoding ==true)
+        if (this_stage_acceptable ==true)
+            qnum            =   qnum + 1;
+            
             featr_Qx1(q)    =   m_best;                                 %1. feature vector
+            rmses_Qx1(q)    =   temp2_rmse;
+            stgid_Qx1(q)    =   q;
+    
             recon_Dx1       =   temp2_recon_Dx1;                        %2. reconstructed signal
             error_Dx1       =   temp2_error_Dx1;                        %3. error vector
             rmse            =   temp2_rmse;                             %4. rmse
-            partQ           =   q;                                      %(e) number of stages
-        elseif (continue_decoding ==false && strcmp(rule_stop_decoding, 'nulE')==1)
+            nStgs           =   qnum;                                   %(e) number of stages
+            
+            
+        elseif (this_stage_acceptable ==false && strcmp(rule_stop_decoding, 'nulE')==1)
             %do not update anything
-        elseif (continue_decoding==false && strcmp(rule_stop_decoding, 'nulE')==0)
+        elseif (this_stage_acceptable==false && strcmp(rule_stop_decoding, 'nulE')==0)
             break;
         end
 
@@ -143,12 +153,16 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
         RVQ.trg_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
         RVQ.trg_3_error_DxN(:,n)=   error_Dx1;                              %3.               
         
-        RVQ.trg_6_partQ_1x1(1,n)=   partQ;     
+        RVQ.trg_6_nStgs_1xN(1,n)=   nStgs;                                  %num of stages
+        RVQ.trg_7_rmses_QxN(:,n)=   rmses_Qx1;                              %rmse at every stage
+        RVQ.trg_8_stgid_QxN(:,n)=   stgid_Qx1;                              %stage index at every stage
         
     elseif (strcmp(RVQ.in_2__data, 'tst'))        
         RVQ.tst_1_featr_QxN(:,n)=   featr_Qx1;                              %1.             
         RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
         RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                              %3.        
         
-        RVQ.tst_6_partQ_1xN(1,n)=   partQ;                                              
+        RVQ.tst_6_nStg__1xN(1,n)=   nStgs;  
+        RVQ.tst_7_rmses_QxN(:,n)=   rmses_Qx1;
+        RVQ.tst_8_stgid_QxN(:,n)=   stgid_Qx1;          
     end
