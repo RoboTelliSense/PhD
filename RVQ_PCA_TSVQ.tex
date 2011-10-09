@@ -10,28 +10,12 @@
 \rule[0pt]{\textwidth}{1pt}
 
 
-\begin{abstract}
-A learning-based tracking framework builds the target model while it tracks, thus avoiding the costly step of building target models prior to tracking.  This has been demonstrated successfully for PCA based tracking using publicly-available challenging datasets.  In this work, we use Residual Vector Quantization in a learning-based tracking framework using the same datasets and show that RVQ performs as well as PCA.  Moreover, we introduce 2 new distance metrics for relative weighting of target candidates allowing RVQ to be used as a generative model, similar to the way probabilistic PCA converts PCA into a generative framework.
-\end{abstract}
-
-%================================
-\section{Introduction}
-%================================
-
-
-
-
 %================================
 \section{Experiments}
 %================================
 In this section, we experiment with 4 RVQ decode methods:
 
-\begin{enumerate}
-\item \underline{maxQ}: In this method, RVQ decoding is carried out so that maximum stages $Q$ are used.
-\item \underline{RofE}: In this method, realm of experience coding is used.  A test vector is decoded such that the decode path traversed belongs to the set of training decode paths.
-\item \underline{nulE}: In this method, null encoding is used.  Reconstruction rms error is checked at every stage.  If at any stage, rms error is not reduced, that stage is skipped until maximum stages are attained.
-\item \underline{monR}: In this method, monotonic rms error is a condition.  If this condition is not met, decoding stops.
-\end{enumerate}
+
 
 We start with some trivial scalar examples where the training and test sets are the same.  We then move to the other extreme end of the spectrum using random data in high dimensional spaces with several observations and where the training and test sets have the same distributions but have different data.  After these experiments, we will get to tracking examples and use the likelihood formulation we have developed for RVQ.
 
@@ -262,13 +246,6 @@ Training snippets are similar to the ones in Figure~\ref{fig:aRVQ_dudek_first_10
 								\end{figure}
 
 
-\input{tables/results_1_Dudek_rvq.tex}
-\input{tables/results_2_davidin300_rvq.tex}
-\input{tables/results_3_sylv_rvq.tex}
-%\input{tables/results_4_trellis70_rvq.tex}
-\input{tables/results_5_fish_rvq.tex}
-\input{tables/results_6_car4_rvq.tex}
-\input{tables/results_7_car11_rvq.tex}
 
 
 \clearpage

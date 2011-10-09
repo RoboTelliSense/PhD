@@ -3,6 +3,8 @@
 \label{chap_RVQ_TRK}	
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+A learning-based tracking framework builds the target model while it tracks, thus avoiding the costly step of building target models prior to tracking.  This has been demonstrated successfully for PCA based tracking using publicly-available challenging datasets.  In this work, we use Residual Vector Quantization in a learning-based tracking framework using the same datasets and show that RVQ performs as well as PCA.  Moreover, we introduce 2 new distance metrics for relative weighting of target candidates allowing RVQ to be used as a generative model, similar to the way probabilistic PCA converts PCA into a generative framework.
+
 %===================
 \section{Introduction}
 %===================
@@ -399,6 +401,14 @@ Here, $\boldsymbol\mu_k$ is closest centroid to $\mathbf{x}_i$, $Q_i$ is the num
 \begin{equation}
 p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\dr\big)}}
 \end{equation}
+
+\begin{enumerate}
+\item \underline{maxQ}: In this method, RVQ decoding is carried out so that maximum stages $Q$ are used.
+\item \underline{RofE}: In this method, realm of experience coding is used.  A test vector is decoded such that the decode path traversed belongs to the set of training decode paths.
+\item \underline{nulE}: In this method, null encoding is used.  Reconstruction rms error is checked at every stage.  If at any stage, rms error is not reduced, that stage is skipped until maximum stages are attained.
+\item \underline{monR}: In this method, monotonic rms error is a condition.  If this condition is not met, decoding stops.
+\end{enumerate}
+
 
 %=======================		
 \section{Inference model}
