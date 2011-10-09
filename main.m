@@ -51,44 +51,44 @@
 %> Date last modified       :   Sep 19, 2011
 
 
-% clear;
-% clc;
-% close all;
-% 
-% pca__Q                      =   16;
-% 
-% rvq__maxQ                   =   8;
-% rvq__M                      =   2;
-% rvq__tSNR                   =   1000;   %target SNR
-% rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
-% rvq__lmbd                   =   0;
-% 
-% tsvq_maxQ                   =   3;
-% tsvq_M                      =   2;
-% 
-% bUseIPCA                    =   0;
-% bUseBPCA                    =   0;   
-% bUseRVQx                    =   1;
-% bUseTSVQ                    =   0;
-% 
-% ds_code                     =   1;
+clear;
+clc;
+close all;
+
+pca__Q                      =   16;
+
+rvq__maxQ                   =   8;
+rvq__M                      =   2;
+rvq__tSNR                   =   1000;   %target SNR
+rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
+rvq__lmbd                   =   0;
+
+tsvq_maxQ                   =   3;
+tsvq_M                      =   2;
+
+bUseIPCA                    =   0;
+bUseBPCA                    =   0;   
+bUseRVQx                    =   1;
+bUseTSVQ                    =   0;
+
+ds_code                     =   1;
 
 %#######################################################################
-function main(   pca__Q,                                                ...
-                 rvq__maxQ, rvq__M, rvq__tSNR, rvq__lmbd, rvq__tstI,    ...
-                 tsvq_maxQ, tsvq_M,                                     ...
-                 bUseIPCA , bUseBPCA , bUseRVQx, bUseTSVQ,              ...
-                 ds_code)
+% function main(   pca__Q,                                                ...
+%                  rvq__maxQ, rvq__M, rvq__tSNR, rvq__lmbd, rvq__tstI,    ...
+%                  tsvq_maxQ, tsvq_M,                                     ...
+%                  bUseIPCA , bUseBPCA , bUseRVQx, bUseTSVQ,              ...
+%                  ds_code)
 
 %-----------------------------------------
 %INITIALIZATION
 %-----------------------------------------
 %1. PARAMETERS    
-    PARAM.ds_1_code         =   ds_code;
-    PARAM.in_bUseIPCA       =   bUseIPCA;
-    PARAM.in_bUseBPCA       =   bUseBPCA;   
-    PARAM.in_bUseRVQx       =   bUseRVQx;
-    PARAM.in_bUseTSVQ       =   bUseTSVQ;
+    PARAM.ds_1_code         =   ds_code;            %dataset code
+    PARAM.in_bUseIPCA       =   bUseIPCA;           %flag
+    PARAM.in_bUseBPCA       =   bUseBPCA;           % "
+    PARAM.in_bUseRVQx       =   bUseRVQx;           % "
+    PARAM.in_bUseTSVQ       =   bUseTSVQ;           % "
     PARAM.DM2_bWeighting    =   false;              %data: weighting of input data points 
     PARAM.trg_Nw            =   10000;              %training: number of images (training window size)
     PARAM.trg_freq          =   5;                  %training: frequency
@@ -99,12 +99,6 @@ function main(   pca__Q,                                                ...
     PARAM.pf_Np             =   600;                %particle filter, number of particles
     PARAM.pf_errfunc        =   'L2';               %    "       "  , options: PPCA, robust, L2
     PARAM.pf_reseig         =   0;    
-	PARAM.plot_row2       	=   2;                  %plotting related
-	PARAM.plot_row3   		=   3;                  %    "       "
-	PARAM.plot_row4   		=   4;                  %    "       "
-	PARAM.plot_num_rows  	=   5;                  %    "       "
-	PARAM.plot_num_cols  	=   4;                  %    "       "
-	PARAM.plot_title_fontsz =   8;                  %    "       "     fontsize,
 	colormap(gray)
                    
     

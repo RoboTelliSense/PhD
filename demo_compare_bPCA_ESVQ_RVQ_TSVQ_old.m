@@ -104,7 +104,7 @@
     %TSVQ
     aTSVQ.in_1__name        =   'aTSVQ';
 	aTSVQ.in_2__data        =	'tst';  
-    aTSVQ.in_3__maxQ        =   4;                                          %number of stages
+    aTSVQ.in_3__maxQ        =   3;                                          %number of stages
     aTSVQ.in_4__M___        =   2;                                          %2 is for binary aTSVQ
 
 

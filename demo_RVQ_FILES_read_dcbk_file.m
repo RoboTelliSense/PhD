@@ -16,9 +16,18 @@
 %-------------------------------------
 %PROCESSING
 %-------------------------------------
-    [actualP, M_check, sw_check, sh_check, mdl_3_CB_DxMQ, mdl_CBg_DxMP, mdl_CBb_DxMP, CBn_r, CBn_g, CBn_b]  ...
-                            =  RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.dcbk'); 
+    figure;
+    [Q, M, sw, sh, mdl_CB_DxMQ, temp1, temp2]  ...   %temp1 and temp2 have green and blue channels (not needed for single channel)
+                            =  RVQ_FILES_read_dcbk_file  ('256_codebook.ecbk'); 
+    DM2_show(mdl_CB_DxMQ, sh, sw, Q, M, 1);
+    
+    
+    figure;
+    [Q, M, sw, sh, mdl_CB_DxMQ, temp1, temp2]  ...   %temp1 and temp2 have green and blue channels (not needed for single channel)
+                            =  RVQ_FILES_read_dcbk_file  ('256_codebook.dcbk'); 
+    DM2_show(mdl_CB_DxMQ, sh, sw, Q, M, 1);
+    
 %-------------------------------------
 %POST-PROCESSING
 %-------------------------------------
-    DM2_show(mdl_3_CB_DxMQ, 41, 11, actualP, M_check); %the snippets are wxh=11x41
+    

@@ -6,7 +6,7 @@
 % Date last modified : July 20, 2011
 %%
 
-function [T, S, sw, sh, mdl_3_CB_DxMQ, mdl_CBg_DxMP, mdl_CBb_DxMP] = RVQ_FILES_read_dcbk_file(cfn_dcbk)
+function [Q, S, sw, sh, mdl_CBr_DxMQ, mdl_CBg_DxMQ, mdl_CBb_DxMQ] = RVQ_FILES_read_dcbk_file(cfn_dcbk)
 
     %parameters that i've decided to fix
         sc                      =   6;      %number of channels   
@@ -24,7 +24,7 @@ function [T, S, sw, sh, mdl_3_CB_DxMQ, mdl_CBg_DxMP, mdl_CBb_DxMP] = RVQ_FILES_r
             temp_data           =   fread(fid, top_level_header_size, 'uchar'); 
                                     fclose(fid);
                                     
-            T                   =   temp_data(37);      
+            Q                   =   temp_data(37);      
             S                   =   temp_data(813)-1;   %S+1 is stored
             sw                  =   temp_data(825);
             sh                  =   temp_data(829)/sc;  %total height is stored, for all channels
@@ -118,14 +118,14 @@ function [T, S, sw, sh, mdl_3_CB_DxMQ, mdl_CBg_DxMP, mdl_CBb_DxMP] = RVQ_FILES_r
             end_byte(16)         =   start_byte(16) + total_bytes - 1;  
             
         %extract codebook data from the file
-            for t=1:T
+            for t=1:Q
                 first_idx(t)        =   (start_byte(t)/dblbytes + 1);                %we add 1 because matlab is 1 one based
                 last_idx(t)         =   ((end_byte(t)-(dblbytes-1))/dblbytes + 1);   %we subtract (dblbytes-1) so that we get to the index of the first byte in this double value
                 level{t}            =   data(first_idx(t):last_idx(t));            
             end
 
         %extract channels from codebook data
-            for t=1:T
+            for t=1:Q
                 i=0;
                 for m=1:S
                     R{t}{m}             =   reshape(level{t}(sw*sh*i + 1   :   sw*sh*(i+1)),   sw, sh);
@@ -144,7 +144,7 @@ function [T, S, sw, sh, mdl_3_CB_DxMQ, mdl_CBg_DxMP, mdl_CBb_DxMP] = RVQ_FILES_r
             end
         
             for m=1:S
-                for t=1:T
+                for t=1:Q
                     R{t}{m} = R{t}{m}';
                     G{t}{m} = G{t}{m}';
                     B{t}{m} = B{t}{m}';
@@ -154,12 +154,12 @@ function [T, S, sw, sh, mdl_3_CB_DxMQ, mdl_CBg_DxMP, mdl_CBb_DxMP] = RVQ_FILES_r
                 end
             end
                     
-            mdl_3_CB_DxMQ=[];
-            mdl_CBg_DxMP=[];
-            mdl_CBb_DxMP=[];
+            mdl_CBr_DxMQ=[];
+            mdl_CBg_DxMQ=[];
+            mdl_CBb_DxMQ=[];
         %create 3 channel codebooks (CB)
         %--------------------------------
-            for t=1:T
+            for t=1:Q
                 for m=1:S
 %                     CB{t}{m}(:,:,1)    =   R{t}{m};
 %                     CB{t}{m}(:,:,2)    =   G{t}{m};
@@ -170,9 +170,9 @@ function [T, S, sw, sh, mdl_3_CB_DxMQ, mdl_CBg_DxMP, mdl_CBb_DxMP] = RVQ_FILES_r
 %                     CBn{t}{m}(:,:,3)    =   Bn{t}{m};
                     
                     idx                 =   UTIL_xy_to_idx(m, t, S);
-                    mdl_3_CB_DxMQ(:,idx)        =   R{t}{m}(:);
-                    mdl_CBg_DxMP(:,idx)        =   G{t}{m}(:);
-                    mdl_CBb_DxMP(:,idx)        =   B{t}{m}(:);
+                    mdl_CBr_DxMQ(:,idx)        =   R{t}{m}(:);
+                    mdl_CBg_DxMQ(:,idx)        =   G{t}{m}(:);
+                    mdl_CBb_DxMQ(:,idx)        =   B{t}{m}(:);
                     CBn_r(:,idx)       =   Rn{t}{m}(:);
                     CBn_g(:,idx)       =   Gn{t}{m}(:);
                     CBn_b(:,idx)       =   Bn{t}{m}(:);                    

@@ -67,14 +67,7 @@ function TSVQ = TSVQ_1_learn(DM2, TSVQ)
 %------------------------------
 % POST-PROCESSING
 %------------------------------
-%clear out old model
-    TSVQ.mdl_1_Q__1x1       =	-1;   	%in this code, i force P to be equal to maxQ    
-    TSVQ.mdl_3_CB_DxKt      =   [];  %terminal and non-terminal codevectors
-	TSVQ.mdl_4_CB_DxK     	=   [];
-    TSVQ.mdl_5_K__1x1       =   -1;
-    TSVQ.mdl_6_Kt_1x1       =   -1;
-    
-%save new model
+%save model
     TSVQ.mdl_1_Q__1x1       =	maxQ;   	%in this code, i force P to be equal to maxQ    
     TSVQ.mdl_3_CB_DxKt      =   CB_DxKt;  %terminal and non-terminal codevectors
 	TSVQ.mdl_4_CB_DxK     	=   CB_DxKt(:, M+1:M+K);
