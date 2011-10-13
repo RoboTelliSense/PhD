@@ -6,7 +6,7 @@
 % Date last modified : July 20, 2011
 %%
 
-function [Q, S, sw, sh, mdl_CBr_DxMQ, mdl_CBg_DxMQ, mdl_CBb_DxMQ] = RVQ_FILES_read_dcbk_file(cfn_dcbk)
+function [Q, S, sw, sh, mdl_CBr_DxMQ, mdl_CBg_DxMQ, mdl_CBb_DxMQ] = RVQ_FILES_read_codebook_file(cfn_dcbk)
 
     %parameters that i've decided to fix
         sc                      =   6;      %number of channels   

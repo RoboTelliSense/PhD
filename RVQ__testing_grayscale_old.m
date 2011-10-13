@@ -9,11 +9,11 @@
 % channel by replicating the grayscale channel to all 3 channels.  RVQ then
 % processes the 3 channel image as if it were RGB.  However, the
 % codevectors for the red, green and blue channels are exactly the same.
-% This is why I use CB_DxMP (i.e., the red channel of the codebook).  I could
+% This is why I use EC_DxMQ (i.e., the red channel of the codebook).  I could
 % just as well have used mdl_CBg_DxMP or mdl_CBb_DxMP since they are all exactly the same
-% as CB_DxMP.
+% as EC_DxMQ.
 %
-% In CB_DxMP, 1st col is the (p,m)=(1,1) codevector, second col is the
+% In EC_DxMQ, 1st col is the (p,m)=(1,1) codevector, second col is the
 % (p,m)=(1,2) codevector, and so on.
 %
 % Copyright (C) Salman Aslam.  All rights reserved.
@@ -26,7 +26,7 @@ function RVQ = RVQ__2_encode_old(x_Dx1, RVQ)
 %-------------------------------
 %INITIALIZATION
 %-------------------------------
-    CB_DxMP                 =   RVQ.mdl_3_EC_DxMQ;   %1 channel codebook, get it from the red, green or blue channel
+    EC_DxMQ                 =   RVQ.mdl_3_EC_DxMQ;   %1 channel codebook, get it from the red, green or blue channel
     P                       =   RVQ.P;      %actual number of stages in the codebook
     M                       =   RVQ.in_4__M___;      %number of codevectors/stage
     sw                      =   RVQ.in_6__sw__;     %snippet width
@@ -52,8 +52,8 @@ function RVQ = RVQ__2_encode_old(x_Dx1, RVQ)
         for m=1:M 
             %get codevector
             %idx            =   UTIL_xy_to_idx(m, p, M); 
-            %CV_Dx1			=	CB_DxMP(:,idx);                     
-            CV_Dx1			=	RVQ_FILES_getCodevectorFromCodebook(m, p, M, CB_DxMP);    %    get codevector 
+            %CV_Dx1			=	EC_DxMQ(:,idx);                     
+            CV_Dx1			=	RVQ_FILES_getCodevectorFromCodebook(m, p, M, EC_DxMQ);    %    get codevector 
             R_norm          =   norm(  R_Dx1-CV_Dx1, 2  ); %if diff is a matrix, this is largest eigenvalue, if it'm a vector, it's L2 norm              
             if (R_norm<R_norm_min)
                 R_norm_min  =   R_norm;
@@ -61,8 +61,8 @@ function RVQ = RVQ__2_encode_old(x_Dx1, RVQ)
             end
         end
         %best_idx           =   UTIL_xy_to_idx(m_best, p, M);
-        %CV_Dx1_best        =	CB_DxMP(:,best_idx);
-        CV_Dx1_best         =   RVQ_FILES_getCodevectorFromCodebook(m_best, p, M, CB_DxMP); %  save best codevector for p-th stage
+        %CV_Dx1_best        =	EC_DxMQ(:,best_idx);
+        CV_Dx1_best         =   RVQ_FILES_getCodevectorFromCodebook(m_best, p, M, EC_DxMQ); %  save best codevector for p-th stage
 
         
         %part 2: for this stage, use best codevector to compute some metrics

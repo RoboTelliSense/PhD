@@ -13,7 +13,7 @@
 % file, gen.exe.  Additionally, I do not have access to the source code of
 % that file.
 %
-% Codebooks are denoted by CB.
+% Codebooks are denoted by DC.
 %
 % In the original RVQ, and my code, the actual training is done by gen.exe.  This software and 
 % Dr Barnes' Linker are wrappers around gen.exe.  
@@ -102,9 +102,18 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
         end
     end
 
-    %read model, i.e. codebook (since it's a file to make sure all ok, and get Q)
-    [Q, M_check, sw_check, sh_check, CBr_DxMP, CBg_DxMP, CBb_DxMP]  ...
-                            =  RVQ_FILES_read_dcbk_file        (cfn_3_dcbk); 
+    %read model, i.e. encoder codebook (since it's a file to make sure all ok, and get Q)
+    [Q, M_check, sw_check, sh_check, ECr_DxMP, ECg_DxMP, ECb_DxMP]  ...
+                            =  RVQ_FILES_read_codebook_file        (cfn_3_ecbk); 
+    %error checking
+    if (M ~= M_check || sw ~= sw_check || sh ~= sh_check)
+        disp('ERROR: M, sw, or sh not correct')
+    end   
+
+    %read model, i.e. decoder codebook (since it's a file to make sure all ok, and get Q)
+    [Q, M_check, sw_check, sh_check, DCr_DxMP, DCg_DxMP, DCb_DxMP]  ...
+                            =  RVQ_FILES_read_codebook_file        (cfn_3_dcbk); 
+                        
     %error checking
     if (M ~= M_check || sw ~= sw_check || sh ~= sh_check)
         disp('ERROR: M, sw, or sh not correct')
@@ -114,7 +123,8 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
 %-------------------
 %save model    
     RVQ.mdl_1_Q__1x1        =   Q;
-    RVQ.mdl_3_EC_DxMQ       =   CBr_DxMP;     %CB: single channel codebook
+    RVQ.mdl_3_EC_DxMQ       =   ECr_DxMP;     %encoder single channel codebook
+    RVQ.mdl_4_DC_DxMQ       =   DCr_DxMP;     %decoder single channel codebook
     
 %decode training examples
     RVQ.in_2__data          =   'trg';

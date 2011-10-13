@@ -17,11 +17,11 @@
 % codevectors for the red, green and blue channels are exactly the same.
 % This is why I use mdl_3_EC_DxMQ, the red channel of the codebook.  I could
 % just as well have used mdl_CBg_DxMP or mdl_CBb_DxMP since they are all exactly the same
-% as mdl_3_EC_DxMQ.  I go on to call this single channel codebook CB_DxMP, since it
+% as mdl_3_EC_DxMQ.  I go on to call this single channel codebook EC_DxMQ, since it
 % has D rows and MP codevectors.  The D-dimensional MP codevectors are
 % stacked column wise next to each other.
 %
-% In CB_DxMP, 1st col is the (q,m)=(1,1) codevector, second col is the
+% In EC_DxMQ, 1st col is the (q,m)=(1,1) codevector, second col is the
 % (q,m)=(1,2) codevector, and so on.  So, MxP codevectors in column format
 % are placed side by side one after the other. 
 %
@@ -41,7 +41,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     sw                      =   RVQ.in_6__sw__;          %snippet width
     sh                      =   RVQ.in_7__sh__;          %snippet height
     
-    CB_DxMP                 =   RVQ.mdl_3_EC_DxMQ;      %1 channel codebook, get it from the red, green or blue channel
+    EC_DxMQ                 =   RVQ.mdl_3_EC_DxMQ;      %1 channel codebook, get it from the red, green or blue channel
     Q                       =   RVQ.mdl_1_Q__1x1;       %actual number of stages in the codebook
     
     %rule_stop_decoding
@@ -85,7 +85,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
         %part 1: pick best codevector at q-th stage (note that all temporary variables here start with temp1 since this is part 1)
         max_rmse            =   1E15;                                                       %max possible error for this signal
         for m=1:M                         
-            CV_Dx1          =	RVQ_FILES_getCodevectorFromCodebook(m, q, M, CB_DxMP);      %get codevector 
+            CV_Dx1          =	RVQ_FILES_getCodevectorFromCodebook(m, q, M, EC_DxMQ);      %get codevector 
             temp1_recon_Dx1 =   recon_prev_Dx1 + CV_Dx1;                                    %(a) reconstruction
             temp1_error_Dx1 =   x_Dx1 - temp1_recon_Dx1;                                    %(b) residual error
             temp1_rmse      =   UTIL_METRICS_compute_rms(  temp1_error_Dx1);                %(c) comparison metric 
@@ -95,7 +95,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
                 m_best      =   m;                                                          %save best codevector index
             end
         end
-        CV_Dx1_best         =   RVQ_FILES_getCodevectorFromCodebook(m_best, q, M, CB_DxMP); %save best codevector for q-th stage
+        CV_Dx1_best         =   RVQ_FILES_getCodevectorFromCodebook(m_best, q, M, EC_DxMQ); %save best codevector for q-th stage
 
 
 

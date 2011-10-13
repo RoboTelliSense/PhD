@@ -31,7 +31,7 @@
 %-----------------------------------
         
     [RVQ.P, M_check, sw_check, sh_check, RVQ.mdl_3_EC_DxMQ, RVQ.mdl_CBg_DxMP, RVQ.mdl_CBb_DxMP, RVQ.CBn_r, RVQ.CBn_g, RVQ.CBn_b]  ...
-                            =   RVQ_FILES_read_dcbk_file  ('referenceRVQ\F1.dcbk'); 
+                            =   RVQ_FILES_read_codebook_file  ('referenceRVQ\F1.dcbk'); 
     
                                 DM2_show(RVQ.mdl_3_EC_DxMQ, sh, sw, RVQ.P, M_check); %the snippets are wxh=11x41    
 

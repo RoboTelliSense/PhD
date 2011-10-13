@@ -58,7 +58,7 @@
             %read
             %----
             if exist(cfn_dcbk_fm1,'file')  %if codebook at fm1 exists
-                CB_fm1                     =   RVQ_FILES_read_dcbk_file                (cfn_dcbk_fm1, M, T, sw, sh);
+                CB_fm1                     =   RVQ_FILES_read_codebook_file                (cfn_dcbk_fm1, M, T, sw, sh);
                 CB_fm1                     =   RVQ_FILES_scaleCodebooks                (CB_fm1, scalingType);
                 CBimg_fm1                  =   RVQ_3_create_image_from_codebooks   (CB_fm1,     M, T, sw, sh);                    
                                      
