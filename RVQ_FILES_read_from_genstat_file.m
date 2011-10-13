@@ -5,7 +5,7 @@
 % Date last modified : Oct 6, 2011
 %%
 
-function out = RVQ_FILES_read_from_genstat_file(cfn_gen_txt, val)
+function [out out2] = RVQ_FILES_read_from_genstat_file(cfn_gen_txt, val)
 
     out=[];
     
@@ -13,10 +13,13 @@ function out = RVQ_FILES_read_from_genstat_file(cfn_gen_txt, val)
     match_stg = 'Seeding Stage #(\d+)';  %stage number
     
     %match string
-    if      (val==1) match_str = 'Decoder:RelChg=\+\d+.\d+:dSNR=(\d+.\d+):dRMSE=  \d+.+\d+';  %read dSNR
-    elseif  (val==2) match_str = 'Decoder:RelChg=\+\d+.\d+:dSNR=\d+.\d+:dRMSE=  (\d+.+\d+)';  %read dRMSE
-    elseif  (val==3) match_str = 'Encoder:RelChg=\+\d+.\d+:eSNR=(\d+.\d+):eRMSE=  \d+.+\d+:sws=\d+'; %read eSNR (not tested) 
-    elseif  (val==4) match_str = 'Encoder:RelChg=\+\d+.\d+:eSNR=\d+.\d+:eRMSE=  (\d+.+\d+):sws=\d+'; %read eRMSE
+    
+    if      (val==1) match_str = 'Encoder:RelChg=\+\d+.\d+:eSNR=\d+.\d+:eRMSE=\s+(\d+.+\d+):sws=\d+'; %1. read eRMSE
+    elseif  (val==2) match_str = 'Encoder:RelChg=\+\d+.\d+:eSNR=(\d+.\d+):eRMSE=\s+\d+.+\d+:sws=\d+'; %2. read eSNR (not tested)    
+    
+    elseif  (val==3) match_str = 'Decoder:RelChg=\+\d+.\d+:dSNR=\d+.\d+:dRMSE=\s+(\d+.+\d+)';        %3. read dRMSE
+    elseif  (val==4) match_str = 'Decoder:RelChg=\+\d+.\d+:dSNR=(\d+.\d+):dRMSE=\s+\d+.+\d+';        %4. read dSNR 
+        
     elseif  (val==5) match_str = 'dSNR=(\d+.\d+)';
     end
     
@@ -27,7 +30,7 @@ function out = RVQ_FILES_read_from_genstat_file(cfn_gen_txt, val)
     while ischar(tline)
         tline = fgets(fid);
         if (isstr(tline))
-            if (regexp(tline, match_stg));
+            if (regexp(tline, match_stg));              %get stage number
                 a=regexp(tline, match_stg, 'tokens');
                 stg=str2num(a{1}{1});
             end            
@@ -41,6 +44,18 @@ function out = RVQ_FILES_read_from_genstat_file(cfn_gen_txt, val)
     end
     fclose(fid);
 
- 
+    [R, C]= size(out);
+    idx=0;
+    for r=2:R
+        first = out(r-1,1);
+        second = out(r,1);
+        if (first ~= second)
+            idx=idx+1;
+            out2(idx,:) = out(r-1,:);
+        end
+    end
+    
+    idx=idx+1;
+    out2(idx,:) = out(end,:)
 
 

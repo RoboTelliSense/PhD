@@ -15,24 +15,17 @@
 %-------------------------------------
 %PROCESSING
 %-------------------------------------
-    out1          =   RVQ_FILES_read_from_genstat_file('temp/4_95_verbose.txt', 2);
-    out2          =   RVQ_FILES_read_from_genstat_file('temp/4_95_verbose.txt', 4);
-    out3          =   RVQ_FILES_read_from_genstat_file('temp/14_95_verbose.txt', 2);
-    out4          =   RVQ_FILES_read_from_genstat_file('temp/14_95_verbose.txt', 4);
-    plot(out1(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(out1(:,1))));
+    [out1_allvals out1]          =   RVQ_FILES_read_from_genstat_file('4_95_verbose.txt', 1); %2 is for eRMSE
+    [out2_allvals out2]          =   RVQ_FILES_read_from_genstat_file('4_95_verbose.txt', 3); %4 is for dRMSE
+    plot(out1(:,1), out1(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(out1_allvals(:,1))));
     hold on;
-    plot(out2(:,2), 'bo-');
-    plot(out3(:,2), 'mo-');
-    plot(out4(:,2), 'ko-');
-    
-    load Exp1
-    plot(22,rmse_tst(3,2), 'rx')    %q=4 (4th stage, i write 3 since m starts with 2), and the 2 means use RofE
-    plot(22,rmse_tst(13,2), 'mo')    %q=4 (4th stage, i write 13 since m starts with 2), and the 2 means use RofE
-
-    legend('m=4, dRMSE', 'm=4, eRMSE', 'm=14, dRMSE', 'm=14, eRMSE', 'Location', 'Southwest', 'm=4, dRMSE', 'm=14, dRMSE');
+    plot(out2(:,1), out2(:,2), 'b*-');
     grid on;
-    grid on;axis([1 25 0 7]);
-    
+    legend('trg (eRMSE)', 'trg (dRMSE)', 'Location', 'Best');
+    xlabel('stage #');
+    ylabel('rms error');
+   
+
     
     
     

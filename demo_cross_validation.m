@@ -18,37 +18,41 @@
     aRVQx.in_2__data        =   'tst';          %data type: trg or tst, default is tst
     aRVQx.in_3__maxQ        =   8;              %max number of stages  
     aRVQx.in_4__M___        =   16;              %number of codevectors/stage
-    aRVQx.in_5__tSNR        =   1000;           %target SNRdB during learning (creating codebooks)        
+    aRVQx.in_5__tSNR        =   1000;           %target SNRdB during learning (creating codebooks)   
     aRVQx.odir              =   '';
     aRVQx.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
-    aRVQx.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
+
     
-    
+    %TSVQ
     aTSVQ.in_1__name        =   'aTSVQ';
 	aTSVQ.in_2__data        =	'tst';  
     aTSVQ.in_3__maxQ        =   4;                                          %number of stages
     aTSVQ.in_4__M___        =   2;                                          %2 is for binary aTSVQ
         
-    
+%cross validation
+    numTrials                   =   10;
+    percentage_tst              =   0.2;
+
 %-----------------------------
 % PRE-PROCESSING
 %-----------------------------
 
-[DM2, sw, sh]               =   DM2_create(11);
+[DM2, sw, sh]               =   DM2_create(8);
+aRVQx.in_6__sw__            =   sw;
+aRVQx.in_7__sh__            =   sh;
 [D,F]                       =   size(DM2);   
-numTrials                   =   10;
-percentage_tst              =   0.2;
 %-----------------------------
 % 2. PROCESSING
 %-----------------------------
 qidx                        =   0;
+aRVQx.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
 %lst_Q                       =   [1:8];
 %lst_Q                       =   [4:4:256];
 lst_M                       =   4;
 %for  q = lst_Q
     for m=lst_M
     tic
-    qidx                    =   qidx+1;
+    qidx                    =   qidx+1
     %aBPCA.mdl_1_Q__1x1      =   q;
     %aTSVQ.in_3__maxQ        =   q;
     aRVQx.in_4__M___         =  m;
@@ -62,16 +66,17 @@ end
 rmse_trg
 rmse_tst
 
-figure;
-plot(lst_Q, rmse_trg, 'ro-')
-hold on;
-plot(lst_Q, rmse_tst, 'bd-')
-xlabel('Q (number of PCA eigenvectors)');
-%xlabel('Q (number of TSVQ stages)');
-ylabel('reconstruction rms error');
-axis([0 100 0 1.5])
-%axis([1 8 0 20]) 
-grid on;
-legend('trg', 'tst');
-%UTIL_FILE_save2pdf('randn_PCA.pdf')
-UTIL_FILE_save2pdf('PCA_GaussMarkov.pdf')
+% figure;
+% plot(lst_Q, rmse_trg, 'ro-')
+% hold on;
+% plot(lst_Q, rmse_tst, 'bd-')
+% %xlabel('Q (number of PCA eigenvectors)');
+% %xlabel('Q (number of TSVQ stages)');
+% %xlabel('Q (number of TSVQ stages)');
+% ylabel('reconstruction rms error');
+% axis([0 100 0 1.5])
+% %axis([1 8 0 20]) 
+% grid on;
+% legend('trg', 'tst');
+% %UTIL_FILE_save2pdf('randn_PCA.pdf')
+% UTIL_FILE_save2pdf('PCA_GaussMarkov.pdf')
