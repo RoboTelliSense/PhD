@@ -101,8 +101,8 @@
 % PRE-PROCESSING
 %-----------------------------
 
-[DM2_trg, sw, sh]           =   DM2_create(8);
-[DM2_tst, sw, sh]           =   DM2_create(9);
+[DM2_trg, sw, sh]           =   DM2_create(2);
+[DM2_tst, sw, sh]           =   DM2_create(2);
 [D,F]                       =   size(DM2_trg);   
 cfn_gentxt                  =   [num2str(F) '_verbose.txt'];           %file 4, verbose output of gen.exe,    (F1.stat_gen.txt)
 
@@ -115,7 +115,7 @@ aRVQ1.in_7__sh__            =   sh;             %snippet height
 %-----------------------------
 midx                        =   0;
 lst_M                       =   [2:16];
-for  m = lst_M
+for  m = 8
     
     tic
     midx                    =   midx+1;
@@ -134,6 +134,8 @@ for  m = lst_M
     aRVQ2                   =   RVQ__2_encode(DM2_tst, aRVQ2);
     aRVQ3                   =   RVQ__2_encode(DM2_tst, aRVQ3);
     aRVQ4                   =   RVQ__2_encode(DM2_tst, aRVQ4);
+    
+    str_rvq             =   RVQx_stats_str(aRVQ1,1);
     
     %stats
     rmse_trg(midx)          =   aRVQ1.trg_5_rmse__1x1;

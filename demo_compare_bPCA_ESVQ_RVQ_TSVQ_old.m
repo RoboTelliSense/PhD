@@ -85,7 +85,7 @@
     %BPCA
     aBPCA.in_1__name        =   'aBPCA';
 	aBPCA.in_2__data        =	'tst';
-    aBPCA.mdl_1_Q__1x1      =   16;   
+    aBPCA.mdl_1_Q__1x1      =   9;   
     
     
     %RVQ   

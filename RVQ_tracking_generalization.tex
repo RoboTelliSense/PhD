@@ -1,0 +1,157 @@
+\include{begin_article}
+\title{VC Dimension of RVQ}
+\author{Salman Aslam\\ Georgia Institute of Technology}
+\date{}
+\include{figs/inkscapeLatex}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+
+%================================
+\section{Introduction}
+%================================
+The concept of VC dimension was introduced by Vapnik~\cite{1999_BOOK_PRML_Vapnik} as a means of specifying the generalization ability of classifiers.  In this work, we look at some definitions leading up to the VC dimension.  It has been shown that the VC dimension of a nearest neighbor classifier is equal to the number of reference points in the training set~\cite{2003_JNL_PRML_Karacali}.  We extend this to show that the VC dimension of an RVQ classifier depends on both its number of stages $Q$ and the number of code-vectors per stage $M$.
+
+%================================
+\section{Theory}
+%================================
+In pattern recognition, a \emph{classifier} $g(x)$ is a function that maps $x_i \in \mathbb{R}^D$ to a set of $M$ discrete \emph{class} labels, $\theta  \in \{1, 2, \ldots M\}$, i.e., $g(x):~\mathbb{R}^D~\rightarrow~\{1, 2, \ldots M\}$.  The classifier errs if $g(x) \neq \theta$~\cite{1996_BOOK_PR_DevroyeGyorfiLugosi}.  Since it is not possible to create a classifier that always achieves perfect mapping, we create a probabilistic setting and let $\mathbf{X} \times \mathbf{\Theta}$ be an $\mathbb{R}^D \times \{1, 2, \ldots M\}$-valued random pair.  
+
+\begin{enumerate}
+\item \underline{Risk}.  The probability of error for estimator $g(x)$, the {\color{blue}\emph{risk}} is
+
+\begin{equation}
+\boxed{
+{\color{blue}R(g)} = \mathbf{P}(g(\mathbf{X}) \neq \mathbf{\Theta})}
+\label{Eqn:loss}
+\end{equation}
+
+\item \underline{Bayes Risk}. In Equation~\ref{Eqn:loss}, the minimal probability of error $\mathbf{P}^*$ is called the \emph{Bayes error} or the \emph{Bayes risk}.  
+
+\item \underline{Bayes Classifier}.  In Equation~\ref{Eqn:loss}, the best classifier $g^*$ is called the \emph{Bayes classifier} or the \emph{Bayes rule}, and is given by
+
+\begin{equation}
+g^* = \arg\min_{\tiny g:~\mathbb{R}^D~\rightarrow~\{1, 2, \ldots M\}} {\color{blue}R(g)}
+\end{equation}
+
+\item \underline{Empirical risk}. In practical situations, $\mathbf{P}(g(\mathbf{X}) \neq \mathbf{\Theta})$ is generally unknown, and therefore so is $g^*$.  However, we assume that we have $N$ i.i.d. random pairs of training data, $\{(x_1, \theta_1), (x_2, \theta_2), \ldots, (x_N, \theta_N)\}$ with the same distribution as $p(\mathbf{X},\mathbf{\Theta})$.  The empirical risk function for this data is $R_N$, or $R(g_N)$~\footnote{The quantity $\mathbb{E}\left[R_N\right]$ is marginally useful since it is the quality of an average data sequence and not the data sequence at hand.  A \emph{consistent} classifier is one for which $\lim\limits_{N \rightarrow \infty}\mathbb{E}\left[R_N\right] = R^*$~\cite{1996_BOOK_PR_DevroyeGyorfiLugosi}.}.
+  
+\item \underline{Empirical risk minimization}.
+Since we cannot find $g^*$, we change the setting and define $R$ as being the risk of the best classifier in class $\mathcal{C}$, for instance, all $k$-nearest neighbor classifiers with all possible values of $k$.  Then,
+
+\begin{equation}
+R \triangleq \inf\limits_{g_N \in \mathcal{C}} \mathbf{P}(g_N(\mathbf{X}) \neq \mathbf{\Theta})
+\end{equation}
+
+Using \emph{empirical risk minimization}~\cite{1999_BOOK_PRML_Vapnik}, we select a classifier $g_N$ from a class $\mathcal{C}$ by minimizing, 
+
+\begin{equation}
+\frac{1}{N} \sum\limits_{n=1}^N I_{g_N(x_n \neq \theta_n)}
+\end{equation}
+
+then the corresponding risk $R_N$ satisfies the following inequality for all $\epsilon > 0$
+
+\begin{equation}
+\mathbf{P}(R_N > R + \epsilon) \leq 8(N^V + 1) e^{-N\epsilon^2/128}
+\end{equation}
+
+where $V$ is the Vapnik Chervonenkis (VC) dimension.  The concept of VC dimension is related to \emph{shattering}.
+
+\item \underline{Shattering}.  In the two-class classification problem, a given set of $h$ points can be labeled in $2^h$ ways.  If, for all possible labelings, a classifier $g(x)$ from the class $\mathcal{C}$ can be found which correctly assigns those labels, then we say that the set of $h$ points is shattered by the class $\mathcal{C}$~\cite{1998_JNL_SVM_Burges}.  An example of shattering in $\mathbb{R}^2$ is given in Figure~\ref{fig:shattering}.
+
+\item \underline{VC dimension}.  If a classifier class $\mathcal{C}$, such as the class of linear classifiers, or the class of $k$-nearest neighbors with different values of $k$, has VC dimension $h$, then there exists at least one set of $h$ points that can be shattered by it, but in general, not every set of $h$ points can be shattered by the class~\cite{1998_JNL_SVM_Burges}.  For instance, in Figure~\ref{fig:shattering}, three collinear points cannot be shattered by a line.
+
+\item \underline{Nearest neighbor classifier}.  The most popular nonparametric classifier is the nearest neighbor classifier that assigns the class label of the nearest neighbor in the training set to unknown data~\cite{2003_JNL_PRML_Karacali}.  For the nearest neighbor rule, for all distributions, the risk $R_{1NN}$ is bounded above by twice the Bayes risk,
+
+\begin{equation}
+\lim\limits_{N \rightarrow \infty} \sup\mathbb{E}\left[R_{1NN}\right] \leq 2R^*  
+\end{equation}
+
+In this sense, half of the available information in an infinite collection of classified samples is contained in the nearest neighbor~\cite{1967_JNL_PRML_Cover, 1996_BOOK_PR_DevroyeGyorfiLugosi}. 
+
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=1.0\textwidth]{figs/theory_PRML_shattering.pdf}
+								\caption{A linear classifier in $\mathbb{R}^D$ can shatter $D+1$ points.  Here, in the first 3 examples, a line in $\mathbb{R}^2$ is able to shatter 3 points.  However, in the fourth example, it is unable to shatter 4 points.}
+								\label{fig:shattering}
+								\end{figure}
+
+\item \underline{VC dimension of NN classifier}.   It has been shown by Kara\c{c}ali and Krim~\cite{2003_JNL_PRML_Karacali} that the VC dimension of the NN classifier is given by the number of reference points in the training set~\cite{2005_CNF_ML_Angiulli}.
+
+\end{enumerate}
+
+%================================
+\section{VC dimension of RVQ classifier}
+%================================
+The reference points in the training set for a NN classifier mentioned in~\cite{2005_CNF_ML_Angiulli} c
+
+In~\cite{2005_CNF_ML_Angiulli}, the reference points in the training set for a NN classifier corresponds to the 
+
+
+In RVQ, the reference points in the training set mentioned in~\cite{2005_CNF_ML_Angiulli} correspond to the equivalent code-vectors at the end of stage $q$.  For instance, in an RVQ codebook with $Q$ stages, and $M$ code-vectors per stage, there are $M^Q$ equivalent code-vectors.  Moreover, if we wish to examine the direct-sum code-vectors at the end of say the third stage, then there are $M^3$ of them.   The number of direct-sum code-vectors, i.e. reference points in the training set mentioned in~\cite{2003_JNL_PRML_Karacali},  increases at the end of every stage.  Using the argument in, this means that the VC dimension of an RVQ nearest neighbor classifier in a variable-rate framework depends on how many stages are used.  
+
+
+%================================
+\section{Experiments}
+%================================
+In this section, we experiment with 4 RVQ decode methods:
+
+
+
+We start with some trivial scalar examples where the training and test sets are the same.  We then move to the other extreme end of the spectrum using random data in high dimensional spaces with several observations and where the training and test sets have the same distributions but have different data.  After these experiments, we will get to tracking examples and use the likelihood formulation we have developed for RVQ.
+
+\subsection{$S_{trg}=\{1,2,3,4,5,6,7\}$}
+%-------------------------------------------------------------
+
+\begin{table}
+\centering
+\subtable[3x{\color{red}\textbf 2}]{\begin{tabular}{|c|c|}\hline 
+2.5  & 6\\
+-1  & 1\\
+-0.5  & 0.5\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 3}]{\begin{tabular}{|c|c|c|}\hline
+-1 & 6 & 4\\
+-1 & 1 & 0\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 4}]{\begin{tabular}{|c|c|c|c|}\hline
+1 & 6.5 & 4 & 2\\
+-1 & 1 & -0.5 & 0.5\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 5}]{\begin{tabular}{|c|c|c|c|c|}\hline
+1 & 6.5 & 4.5 & 2 & 3\\
+-0.5 & 0.5 & 0 & 0 &0\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 6}]{\begin{tabular}{|c|c|c|c|c|c|}\hline
+1 & 6.5 & 4 & 2 & 3 &5\\
+-0.5 & 0.5 & 0 & 0 &0 &0\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[1x{\color{red}\textbf 7}]{\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+1 & 7 & 4 & 2 & 3 &5 &6\\\hline
+\end{tabular}}
+\hspace{0.2in}
+\subtable[1x{\color{red}\textbf 8}]{\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+1 & 7 & 4 & 2 & 3 &5 &6&0\\\hline
+\end{tabular}}
+\caption{Designing RVQ codebooks with increasing code-vectors per stage, $m$ = {\color{red}\textbf {2, 3, 4, 5, 6, 7, 8}}.  The training set is $S_{trg}=\{1,2,3,4,5,6,7\}$}
+\label{table:1_to_7}
+\end{table}
+
+Table~\ref{table:1_to_7} gives an example of designing RVQ codebooks for a trivial  training set in $\mathbb{R}$ that contains only 7 training points, $S_{trg}=\{1,2,3,4,5,6,7\}$.
+
+For $m={\color{red}\textbf 2}$, case, 
+For the 3x{\color{red}\textbf 2} case, 
+
+
+
+
+
+
+\clearpage
+\newpage
+\normalsize
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}

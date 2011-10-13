@@ -232,19 +232,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
   
 %write RVQ stats, if RVQ, to string
     if (strcmp(TRK.name, 'trkaRVQx'))
-        str_rvq             =   sprintf('%8.0f%8.0f ', ALGO.mdl_1_Q__1x1, ALGO.tst_6_nStgs_1xN(maxidx));
-        for q =1:ALGO.mdl_1_Q__1x1
-            temp2           =   sprintf('%8.0f', ALGO.tst_1_featr_QxN(q,maxidx));
-            str_rvq         =   [str_rvq ' ' temp2];            
-        end
-        for q =1:ALGO.mdl_1_Q__1x1
-            temp2           =   sprintf('%8.2f', ALGO.tst_7_rmses_QxN(q,maxidx));
-            str_rvq         =   [str_rvq ' ' temp2];            
-        end
-        for q =1:ALGO.mdl_1_Q__1x1
-            temp2           =   sprintf('%8.0f', ALGO.tst_8_stgid_QxN(q,maxidx));
-            str_rvq         =   [str_rvq ' ' temp2];            
-        end        
+        str_rvq             =   RVQx_stats_str(ALGO,maxidx);
         str_out             =   [str_out ' ' str_rvq];
     end
 %write to file           
