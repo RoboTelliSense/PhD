@@ -130,10 +130,10 @@ for  m = 8
     aRVQ4                   =   aRVQ1;  aRVQ4.in_10_tstD = 'monR';
     
     %encoding
-    aRVQ1                   =   RVQ__2_encode(DM2_tst, aRVQ1);
-    aRVQ2                   =   RVQ__2_encode(DM2_tst, aRVQ2);
-    aRVQ3                   =   RVQ__2_encode(DM2_tst, aRVQ3);
-    aRVQ4                   =   RVQ__2_encode(DM2_tst, aRVQ4);
+    aRVQ1                   =   RVQ__2_encode_decode(DM2_tst, aRVQ1);
+    aRVQ2                   =   RVQ__2_encode_decode(DM2_tst, aRVQ2);
+    aRVQ3                   =   RVQ__2_encode_decode(DM2_tst, aRVQ3);
+    aRVQ4                   =   RVQ__2_encode_decode(DM2_tst, aRVQ4);
     
     str_rvq             =   RVQx_stats_str(aRVQ1,1);
     

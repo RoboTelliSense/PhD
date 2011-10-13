@@ -1,4 +1,4 @@
-function RVQ = RVQ__2_encode(tst_Dx1, RVQ)
+function RVQ = RVQ__2_encode_decode(tst_Dx1, RVQ)
 
     tst_6Dx1                            =   RVQ_FILES_create_posnegImage(tst_Dx1, '', 0, 0);
 

@@ -123,9 +123,9 @@
     
 %testing
    
-    aBPCA                   =   PCA__2_encode   (DM2, aBPCA);                  
-    aRVQx                   =   RVQ__2_encode   (DM2, aRVQx);
-    aTSVQ                   =   TSVQ_2_encode   (DM2, aTSVQ);
+    aBPCA                   =   PCA__2_encode_decode   (DM2, aBPCA);                  
+    aRVQx                   =   RVQ__2_encode_decode   (DM2, aRVQx);
+    aTSVQ                   =   TSVQ_2_encode_decode   (DM2, aTSVQ);
     
 %-----------------------------
 %RESULTS

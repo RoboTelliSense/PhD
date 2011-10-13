@@ -2,7 +2,7 @@
 %mu: codevector
 %Q: number of stages
 %x_Dx1: test vector
-function TSVQ = TSVQ_2_encode(DM2, TSVQ)
+function TSVQ = TSVQ_2_encode_decode(DM2, TSVQ)
 
     [D,N]                           =   size(DM2);
 

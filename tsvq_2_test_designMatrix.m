@@ -1,6 +1,6 @@
 %each signal row vector is concatenated to make one large signal vector
 %same is done for error
-function reconSNR_dB = TSVQ_2_encode_designMatrix(DM, CB, T)
+function reconSNR_dB = TSVQ_2_encode_decode_designMatrix(DM, CB, T)
 
     [Ntrg, D]  = size(DM);
     
@@ -9,7 +9,7 @@ function reconSNR_dB = TSVQ_2_encode_designMatrix(DM, CB, T)
     for i=1:Ntrg
         Itst_rowvec                             =   DM(i,:);
         S_rowvec                                =   [S_rowvec Itst_rowvec];
-        [recon, residual_rowvec, bVQ, snr_dB]   =   TSVQ_2_encode(CB, T, Itst_rowvec);
+        [recon, residual_rowvec, bVQ, snr_dB]   =   TSVQ_2_encode_decode(CB, T, Itst_rowvec);
         E_rowvec                                =   [E_rowvec residual_rowvec];
     end
     

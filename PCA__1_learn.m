@@ -62,7 +62,7 @@ function PCA = PCA__1_learn(DM2, PCA)
     
 %decode training examples   
     PCA.in_2__data          =   'trg';                      %data type: training
-    PCA                     =   PCA__2_encode(DM2, PCA);    
+    PCA                     =   PCA__2_encode_decode(DM2, PCA);    
     PCA.in_2__data          =   'tst';                      %data type: testing (default mode)
     
     PCA.tim_t_sec           =   toc;

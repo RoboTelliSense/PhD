@@ -76,7 +76,7 @@ function TSVQ = TSVQ_1_learn(DM2, TSVQ)
     
 %decode training examples   
     TSVQ.in_2__data         =   'trg';
-    TSVQ                    =   TSVQ_2_encode(DM2, TSVQ);    
+    TSVQ                    =   TSVQ_2_encode_decode(DM2, TSVQ);    
     TSVQ.in_2__data         =   'tst';
     
     TSVQ.tim_t_sec          =   toc;

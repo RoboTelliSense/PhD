@@ -128,7 +128,7 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
     
 %decode training examples
     RVQ.in_2__data          =   'trg';
-    RVQ                     =   RVQ__2_encode(DM2, RVQ); %my matlab code for gen.exe -l
+    RVQ                     =   RVQ__2_encode_decode(DM2, RVQ); %my matlab code for gen.exe -l
     RVQ.in_2__data          =   'tst';
     
     RVQ.tim_t_sec          =   toc;

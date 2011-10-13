@@ -121,9 +121,9 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 
     %IPCA, BPCA
     if     (strcmp(TRK.name, 'trkaMEAN'))                                 ALGO = MEAN_2_test   (cand_snps_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkaIPCA') || strcmp(TRK.name, 'trkaBPCA')) ALGO = PCA__2_encode (cand_snps_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkaRVQx'))                                 ALGO = RVQ__2_encode (cand_snps_DxNp, ALGO);
-    elseif (strcmp(TRK.name, 'trkaTSVQ'))                                 ALGO = TSVQ_2_encode (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkaIPCA') || strcmp(TRK.name, 'trkaBPCA')) ALGO = PCA__2_encode_decode (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkaRVQx'))                                 ALGO = RVQ__2_encode_decode (cand_snps_DxNp, ALGO);
+    elseif (strcmp(TRK.name, 'trkaTSVQ'))                                 ALGO = TSVQ_2_encode_decode (cand_snps_DxNp, ALGO);
     end
     DFFS                    =   abs(ALGO.tst_3_error_DxN/256);              %scale and make positive, PCA terminology from Moghaddam and Pentland terminology to keep things uniform
         

@@ -14,14 +14,14 @@
     aBPCA.mdl_1_Q__1x1      =   16;  
 
     %RVQ   
-	aRVQ1.in_1__name        =   'aRVQx';
-    aRVQ1.in_2__data        =   'tst';          %data type: trg or tst, default is tst
-    aRVQ1.in_3__maxQ        =   8;              %max number of stages  
-    aRVQ1.in_4__M___        =   16;              %number of codevectors/stage
-    aRVQ1.in_5__tSNR        =   1000;           %target SNRdB during learning (creating codebooks)        
-    aRVQ1.odir              =   '';
-    aRVQ1.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
-    aRVQ1.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
+	aRVQx.in_1__name        =   'aRVQx';
+    aRVQx.in_2__data        =   'tst';          %data type: trg or tst, default is tst
+    aRVQx.in_3__maxQ        =   8;              %max number of stages  
+    aRVQx.in_4__M___        =   16;              %number of codevectors/stage
+    aRVQx.in_5__tSNR        =   1000;           %target SNRdB during learning (creating codebooks)        
+    aRVQx.odir              =   '';
+    aRVQx.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
+    aRVQx.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
     
     
     aTSVQ.in_1__name        =   'aTSVQ';
@@ -34,7 +34,7 @@
 % PRE-PROCESSING
 %-----------------------------
 
-[DM2, sw, sh]               =   DM2_create(6);
+[DM2, sw, sh]               =   DM2_create(11);
 [D,F]                       =   size(DM2);   
 numTrials                   =   10;
 percentage_tst              =   0.2;
@@ -51,7 +51,7 @@ lst_M                       =   4;
     qidx                    =   qidx+1;
     %aBPCA.mdl_1_Q__1x1      =   q;
     %aTSVQ.in_3__maxQ        =   q;
-    aRVQ1.in_4__M___         =  m;
+    aRVQx.in_4__M___         =  m;
     [rmse_trg(qidx), rmse_tst(qidx)]  ... 
                             =   UTIL_DATA_crossvalidation(DM2, aRVQx, numTrials, percentage_tst)
                             %=   UTIL_DATA_crossvalidation(DM2, aTSVQ, numTrials, percentage_tst)

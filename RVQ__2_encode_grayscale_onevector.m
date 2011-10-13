@@ -6,7 +6,7 @@
 % (c) 'RoE'                 : realm of experience, this is used by Explorer
 % (d) 'nullEnc'             : if a certain stage does not increase PSNR, skip it, i.e. null encode it
 %
-% Also refer to RVQ__2_encode_old.m which produces the same output as 
+% Also refer to RVQ__2_encode_decode_old.m which produces the same output as 
 % this function, but is a little less intuitive.  Moreover, that function
 % only has one decoding rule, 'monRMSE', whereas this function adds
 % 2 more rules, 'RoE' and 'full_stage'.
@@ -29,7 +29,7 @@
 % Date created       : April 17, 2011.
 % Date last modified : July 30, 2011.
 %%
-function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
+function RVQ = RVQ__2_encode_decode_grayscale_onevector(x_Dx1, RVQ, n)
 
 %-------------------------------
 %INITIALIZATION

@@ -1,5 +1,5 @@
 
-function RVQ = RVQ__2_encode(DM2, RVQ)
+function RVQ = RVQ__2_encode_decode(DM2, RVQ)
 
 %-------------------------------
 %INITIALIZATION
@@ -34,7 +34,7 @@ function RVQ = RVQ__2_encode(DM2, RVQ)
         
     for n=1:N
         x_Dx1               =   DM2(:,n);
-        RVQ                 =   RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n);
+        RVQ                 =   RVQ__2_encode_decode_grayscale_onevector(x_Dx1, RVQ, n);
         RVQ                 =   RVQ__3_decode_grayscale_onevector(x_Dx1, RVQ, n)
     end        
 

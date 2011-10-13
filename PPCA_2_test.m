@@ -24,7 +24,7 @@ load conden
                                                                             %   this is DFFS
         candErrs_0t1_DxNp                                                                    
         myDM2 = reshape(cand_snps_0t1_shxswxNp,[D,Np]);                                                                   
-        ALGO = PCA__2_encode(myDM2, ALGO);
+        ALGO = PCA__2_encode_decode(myDM2, ALGO);
         
         %compute DIFS for use with ALGO, if not using ALGO, not required
         if (isfield(TRK,'candErrs_featr_QxNp'))

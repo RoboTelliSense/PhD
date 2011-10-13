@@ -45,7 +45,7 @@ function IPCA = IPCA_1_learn(DM2, IPCA)
 
 %test training examples   
     IPCA.in_2__data         =   'trg';
-    IPCA                    =   PCA__2_encode(DM2, IPCA);    
+    IPCA                    =   PCA__2_encode_decode(DM2, IPCA);    
     IPCA.in_2__data         =   'tst';    
     
     IPCA.tim_t_sec          =   toc;
