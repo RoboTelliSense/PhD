@@ -42,7 +42,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     sh                      =   RVQ.in_7__sh__;          %snippet height
     
     EC_DxMQ                 =   RVQ.mdl_3_EC_DxMQ;      %1 channel codebook, get it from the red, green or blue channel
-    Q                       =   RVQ.mdl_1_Q__1x1;       %actual number of stages in the codebook
+    cdbkQ                   =   RVQ.mdl_1_Q__1x1;       %actual number of stages in the codebook
     
     %rule_stop_decoding
     if (strcmp(RVQ.in_2__data, 'trg'))                  %if we're doing training snippets, use maxQ
@@ -62,9 +62,9 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     rmse_prev               =   1E15 ;                                      %assume that entire input is error, since we haven't decoded it yet
     
 %output variables    
-    featr_Qx1               =   -9999*ones(maxQ,1);                              %1.i initialize with 0, my code for early termination (Dr Barnes' code was Q+1)
+    featr_Qx1               =   -9999*ones(maxQ,1);                              %1.i initialize with 0, my code for early termination (Dr Barnes' code was cdbkQ+1)
     rmses_Qx1               =   -9999*ones(maxQ,1);
-    stgid_Qx1               =   -9999*ones(maxQ,1);
+    qidx__Qx1               =   -9999*ones(maxQ,1);
     
     recon_Dx1               =   recon_prev_Dx1;                             %2.
     error_Dx1               =   x_Dx1;                                      %3.
@@ -72,15 +72,15 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     rmse                    =   rmse_prev;                                  %5.
     
     temp2_XDR_parQx1        =   [];                     %contains a partial featr_Qx1, i.e., all indeces up to q-th stage
-    nStgs                   =   0;
+    stopQ                   =   0;
 
 %-------------------------------
 %2. PROCESSING
 %-------------------------------
-    %go over all stages (remember that Q is actual stages in codebook, maxQ
+    %go over all stages (remember that cdbkQ is actual stages in codebook, maxQ
     %is number of stages you wanted)
     qnum=0;
-    for q=1:Q
+    for q=1:cdbkQ
 
         %part 1: pick best codevector at q-th stage (note that all temporary variables here start with temp1 since this is part 1)
         max_rmse            =   1E15;                                                       %max possible error for this signal
@@ -123,12 +123,12 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
             
             featr_Qx1(q)    =   m_best;                                 %1. feature vector
             rmses_Qx1(q)    =   temp2_rmse;
-            stgid_Qx1(q)    =   q;
+            qidx__Qx1(q)    =   q;
     
             recon_Dx1       =   temp2_recon_Dx1;                        %2. reconstructed signal
             error_Dx1       =   temp2_error_Dx1;                        %3. error vector
             rmse            =   temp2_rmse;                             %4. rmse
-            nStgs           =   qnum;                                   %(e) number of stages
+            stopQ           =   qnum;                                   %(e) number of stages
             
             
         elseif (this_stage_acceptable ==false && strcmp(rule_stop_decoding, 'nulE')==1)
@@ -150,19 +150,21 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
 %save stats: 1, 2, 3
     if (strcmp(RVQ.in_2__data, 'trg'))         
         RVQ.trg_1_featr_QxN(:,n)=   featr_Qx1;                              %1.                                               
-        RVQ.trg_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
-        RVQ.trg_3_error_DxN(:,n)=   error_Dx1;                              %3.               
-        
-        RVQ.trg_6_nStgs_1xN(1,n)=   nStgs;                                  %num of stages
-        RVQ.trg_7_rmses_QxN(:,n)=   rmses_Qx1;                              %rmse at every stage
-        RVQ.trg_8_stgid_QxN(:,n)=   stgid_Qx1;                              %stage index at every stage
+%         RVQ.trg_2_recon_DxN(:,n)=   recon_Dx1;                            %2. will come from decoder codebook              
+%         RVQ.trg_3_error_DxN(:,n)=   error_Dx1;                            %3.   "   "     "     "       "
+%         
+         RVQ.trg_6_stopQ_1xN(1,n)=   stopQ;                                 %num of stages
+         RVQ.trg_7_qidx__QxN(:,n)=   qidx__Qx1;                             %stage index at every stage
+         RVQ.trg_8_encrmses_QxN(:,n)=   rmses_Qx1;                          %encoder rmse at every stage
+
         
     elseif (strcmp(RVQ.in_2__data, 'tst'))        
         RVQ.tst_1_featr_QxN(:,n)=   featr_Qx1;                              %1.             
-        RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
-        RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                              %3.        
+%         RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                            %2. will come from decoder codebook                             
+%         RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                            %3.   "   "     "     "       "        
+%         
+         RVQ.tst_6_stopQ_1xN(1,n)=   stopQ;  
+         RVQ.tst_7_qidx__QxN(:,n)=   qidx__Qx1;  
+         RVQ.tst_8_encrmses_QxN(:,n)=   rmses_Qx1;
         
-        RVQ.tst_6_nStgs_1xN(1,n)=   nStgs;  
-        RVQ.tst_7_rmses_QxN(:,n)=   rmses_Qx1;
-        RVQ.tst_8_stgid_QxN(:,n)=   stgid_Qx1;          
     end
