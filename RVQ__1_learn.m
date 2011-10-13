@@ -114,7 +114,7 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
 %-------------------
 %save model    
     RVQ.mdl_1_Q__1x1        =   Q;
-    RVQ.mdl_3_CB_DxMQ       =   CBr_DxMP;     %CB: single channel codebook
+    RVQ.mdl_3_EC_DxMQ       =   CBr_DxMP;     %CB: single channel codebook
     
 %decode training examples
     RVQ.in_2__data          =   'trg';

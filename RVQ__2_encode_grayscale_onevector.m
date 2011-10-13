@@ -15,9 +15,9 @@
 % channel by replicating the grayscale channel to all 3 channels.  RVQ then
 % processes the 3 channel image as if it were RGB.  However, the
 % codevectors for the red, green and blue channels are exactly the same.
-% This is why I use mdl_3_CB_DxMQ, the red channel of the codebook.  I could
+% This is why I use mdl_3_EC_DxMQ, the red channel of the codebook.  I could
 % just as well have used mdl_CBg_DxMP or mdl_CBb_DxMP since they are all exactly the same
-% as mdl_3_CB_DxMQ.  I go on to call this single channel codebook CB_DxMP, since it
+% as mdl_3_EC_DxMQ.  I go on to call this single channel codebook CB_DxMP, since it
 % has D rows and MP codevectors.  The D-dimensional MP codevectors are
 % stacked column wise next to each other.
 %
@@ -41,7 +41,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     sw                      =   RVQ.in_6__sw__;          %snippet width
     sh                      =   RVQ.in_7__sh__;          %snippet height
     
-    CB_DxMP                 =   RVQ.mdl_3_CB_DxMQ;      %1 channel codebook, get it from the red, green or blue channel
+    CB_DxMP                 =   RVQ.mdl_3_EC_DxMQ;      %1 channel codebook, get it from the red, green or blue channel
     Q                       =   RVQ.mdl_1_Q__1x1;       %actual number of stages in the codebook
     
     %rule_stop_decoding
