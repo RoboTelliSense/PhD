@@ -15,6 +15,12 @@ function [trg_armse, tst_armse] = UTIL_DATA_crossvalidation(DM2, ALGO, numTrials
         elseif (strcmp(ALGO.in_1__name, 'aRVQx'))
             ALGO            =   RVQ__1_learn            (DM2_trg, ALGO);
             ALGO            =   RVQ__2_encode_decode    (DM2_tst, ALGO);
+            
+            str_rvq         =   RVQx_stats_str(ALGO,maxidx);
+            fid             =   fopen([ALGO.config_str '_' num2str(i)], 'w');
+                                fprintf(fid, [str_rvq '\n']); 
+                                fclose(fid);
+
         
         elseif (strcmp(ALGO.in_1__name, 'aTSVQ'))
             ALGO            =   TSVQ_1_learn            (DM2_trg, ALGO);

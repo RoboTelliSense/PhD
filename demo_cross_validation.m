@@ -38,31 +38,39 @@
 %-----------------------------
 
 [DM2, sw, sh]               =   DM2_create(8);
-aRVQx.in_6__sw__            =   sw;
-aRVQx.in_7__sh__            =   sh;
+PARAM.ds_1_code             =   1;  %Dudek
+PARAM.tgt_sw                =   sw;
+PARAM.tgt_sh                =   sh;
+[PARAM.ds_2_name, PARAM.ds_3_name] =    UTIL_DATASET_getName3(PARAM.ds_1_code);
 [D,F]                       =   size(DM2);   
 %-----------------------------
 % 2. PROCESSING
 %-----------------------------
-qidx                        =   0;
-aRVQx.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
 %lst_Q                       =   [1:8];
 %lst_Q                       =   [4:4:256];
 lst_M                       =   4;
+lst_I                       =   1:4;
+
+
+
+qidx                        =   0;
 %for  q = lst_Q
+for tstI=lst_I
     for m=lst_M
     tic
     qidx                    =   qidx+1
-    %aBPCA.mdl_1_Q__1x1      =   q;
-    %aTSVQ.in_3__maxQ        =   q;
-    aRVQx.in_4__M___         =  m;
+    %aBPCA.mdl_1_Q__1x1     =   q;
+    %aTSVQ.in_3__maxQ       =   q;
+    aRVQx.in_4__M___        =   m;
+    [aRVQx temp]            =   RVQx_config(PARAM, [], aRVQx.in_3__maxQ, m, aRVQx.in_5__tSNR, tstI, 0); %0 is lambda
     [rmse_trg(qidx), rmse_tst(qidx)]  ... 
                             =   UTIL_DATA_crossvalidation(DM2, aRVQx, numTrials, percentage_tst)
                             %=   UTIL_DATA_crossvalidation(DM2, aTSVQ, numTrials, percentage_tst)
                             %=   UTIL_DATA_crossvalidation(DM2, aBPCA, numTrials, percentage_tst)
     toc
     %
-end    
+    end    
+end
 rmse_trg
 rmse_tst
 

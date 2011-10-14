@@ -101,8 +101,19 @@
 % PRE-PROCESSING
 %-----------------------------
 
-[DM2_trg, sw, sh]           =   DM2_create(8);
-[DM2_tst, sw, sh]           =   DM2_create(9);
+%Dudek
+[DM2_trg, sw, sh]           =   DM2_create(11);
+%[DM2_tst, sw, sh]           =   DM2_create(2);
+DM2_tst=6;
+%Gauss Markov
+%[temp, sw, sh]              =   DM2_create(10);
+%DM2_trg                     =   temp(:,1:100);
+%DM2_tst                     =   temp(:,101);
+
+%Uniform and Gaussian
+%DM2_trg = rand(1089,100);            sw=33;sh=33;
+%DM2_tst = rand(1089,1);
+
 [D,F]                       =   size(DM2_trg);   
 cfn_gentxt                  =   [num2str(F) '_verbose.txt'];           %file 4, verbose output of gen.exe,    (F1.stat_gen.txt)
 
@@ -114,8 +125,8 @@ aRVQ1.in_7__sh__            =   sh;             %snippet height
 % 2. PROCESSING
 %-----------------------------
 midx                        =   0;
-lst_M                       =   [2:16];
-for  m = 4
+lst_M                       =   3;
+for  m = lst_M
     
     tic
     midx                    =   midx+1;
@@ -144,13 +155,41 @@ for  m = 4
                                   aRVQ3.tst_5_rmse__1x1 ...
                                   aRVQ4.tst_5_rmse__1x1] 
 
-    UTIL_FILE_copy(cfn_gentxt, [num2str(m) '_' cfn_gentxt]);
+    %UTIL_FILE_copy(cfn_gentxt, [num2str(m) '_' cfn_gentxt]);
     toc
     save(['aRVQ_dudek_trg_1_to_95_m_' num2str(m)]);
 end    
     
-mu_tst                      =   mean(rmse_tst);
-rmse_tst_with_mean          =   [rmse_tst;mu_tst]
+close all;
+    [out1_allvals out1]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 1); %1 is for eRMSE
+    [out2_allvals out2]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 3); %3 is for dRMSE
+    plot(out1(:,1), out1(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(out1_allvals(:,1))));
+    hold on;
+    plot(out2(:,1), out2(:,2), 'c^-');
+    grid on;
+    legend('trg (eRMSE)', 'trg (dRMSE)', 'Location', 'Best');
+    xlabel('stage #');
+    ylabel('reconstruction rms error');
+    hold on;
+    
+    
+plot(1:aRVQ1.mdl_1_Q__1x1,                     aRVQ1.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1) , 'g+-');
+plot(1:aRVQ1.mdl_1_Q__1x1,                     aRVQ2.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1) , 'bd-');
+plot(1:aRVQ1.mdl_1_Q__1x1, UTIL_RVQ_repeat_SNR(aRVQ3.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1)), 'm*-');
+plot(1:aRVQ1.mdl_1_Q__1x1, UTIL_RVQ_repeat_SNR(aRVQ4.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1)), 'ks-');
+%axis([1 8 0 1.5])
+%axis([1 8 0 20])
+xlabel('q (stage index)')
+set(gca, 'XTick', 1:aRVQ1.mdl_1_Q__1x1)
+legend('trg (eRMSE)', 'trg (dRMSE)', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR');
+%UTIL_FILE_save2pdf('RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf', gcf, 300);
+UTIL_FILE_save2pdf('RVQ_8x4_GaussMarkov_trg_100_tst_1.pdf', gcf, 300);
+
+
+%title('Dudek sequence, training: first 100 33x33 snippets, test: 101st 33x33 snippet, 8x4 RVQ');
+
+% mu_tst                      =   mean(rmse_tst);
+% rmse_tst_with_mean          =   [rmse_tst;mu_tst]
 
 %-----------------------------
 %RESULTS
@@ -158,36 +197,37 @@ rmse_tst_with_mean          =   [rmse_tst;mu_tst]
 %view
     numDisplayRows          =   10;
     numDisplayCols          =   10;
-                                figure;DM2_show(DM2_trg,            sh, sw, numDisplayRows, numDisplayCols, 0);
+                                %figure;DM2_show(DM2_trg,            sh, sw, numDisplayRows, numDisplayCols, 0);
                                 %figure;DM2_show(aBPCA.mdl_3_U__DxQ, sh, sw, numDisplayRows, numDisplayCols, 1);title('aBPCA eigenvectors');
-                                figure;DM2_show(aRVQ1.mdl_3_EC_DxMQ, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
+                                %figure;DM2_show(aRVQ1.mdl_3_EC_DxMQ, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
                                 %figure;DM2_show(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
     
 %training
-    figure;
-    hold on
-    grid on; 
-    plot(lst_M, rmse_trg, 'ro-')
-    xlabel('number of code-vectors per stage, m');
-    UTIL_FILE_save2pdf('aRVQ_dudek_trg_1_to_95.pdf', gcf, 300);                                
-%testing                                
-    figure;
-    hold on
-    grid on; 
-    plot(lst_M, rmse_tst(:,1), 'g+-');   
-    plot(lst_M, rmse_tst(:,2), 'bd-');  
-    plot(lst_M, rmse_tst(:,3), 'm*-');  
-    plot(lst_M, rmse_tst(:,4), 'ks-');      
-    legend('tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'Best'); %
-    xlabel('number of code-vectors per stage, m');
-    UTIL_FILE_save2pdf('aRVQ_dudek_trg_1_to_95_tst_96_to_100.pdf', gcf, 300);
-
-        
-
- 
-     rowLabels = {'m=2', 'm=3', 'm=4', 'm=5', 'm=6', 'm=7', 'm=8', 'm=9', 'm=10', 'm=11', 'm=12', 'm=13', 'm=14', 'm=15', 'm=16', 'mean'};
-     colLabels = {'maxQ', 'RofE', 'nulE', 'monR'};
-     UTIL_matrix2latex(rmse_tst_with_mean, 'aRVQ_dudek_trg_1_to_95_tst_96_to_100.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
-
+%     figure;
+%     hold on
+%     grid on; 
+%     plot(lst_M, rmse_trg, 'ro-')
+%     xlabel('number of code-vectors per stage, m');
+%     UTIL_FILE_save2pdf('aRVQ_dudek_trg_1_to_95.pdf', gcf, 300);   
     
+%testing                                
+%     figure;
+%     hold on
+%     grid on; 
+%     plot(lst_M, rmse_tst(:,1), 'g+-');   
+%     plot(lst_M, rmse_tst(:,2), 'bd-');  
+%     plot(lst_M, rmse_tst(:,3), 'm*-');  
+%     plot(lst_M, rmse_tst(:,4), 'ks-');      
+%     legend('tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR', 'Location', 'Best'); %
+%     xlabel('number of code-vectors per stage, m');
+%     UTIL_FILE_save2pdf('aRVQ_dudek_trg_1_to_95_tst_96_to_100.pdf', gcf, 300);
+% 
+%         
+% 
+%  
+%      rowLabels = {'m=2', 'm=3', 'm=4', 'm=5', 'm=6', 'm=7', 'm=8', 'm=9', 'm=10', 'm=11', 'm=12', 'm=13', 'm=14', 'm=15', 'm=16', 'mean'};
+%      colLabels = {'maxQ', 'RofE', 'nulE', 'monR'};
+%      UTIL_matrix2latex(rmse_tst_with_mean, 'aRVQ_dudek_trg_1_to_95_tst_96_to_100.tex', 'rowLabels', rowLabels, 'columnLabels', colLabels, 'alignment', 'c', 'format', '%-6.4f');
+% 
+%     
     
