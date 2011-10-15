@@ -22,30 +22,15 @@ function RVQ = RVQ__3_decode_grayscale_onevector(x_Dx1, RVQ, n)
     rmses_Qx1               =   -9999*ones(maxQ,1);
     for q=1:maxQ                      
         if (qidx_Qx1(q) ~= -9999)
-            CV_Dx1          =	RVQ_FILES_getCodevectorFromCodebook(featr_Qx1(q), q, M, DC_DxMQ);   %get codevector 
+            CV_Dx1          = RVQ_FILES_getCodevectorFromCodebook(featr_Qx1(q), q, M, DC_DxMQ);   %get codevector 
             recon_Dx1       =   recon_Dx1 + CV_Dx1;                                             %(a) reconstruction
             error_Dx1       =   x_Dx1 - recon_Dx1;                                        %(b) residual error
             rmses_Qx1(q,1)  =   UTIL_METRICS_compute_rms (error_Dx1);                           %(c) comparison metric
         end
     end
     
-    if (strcmp(RVQ.in_2__data, 'trg'))         
-        %RVQ.trg_1_featr_QxN(:,n)=   featr_Qx1;                             %1.                                               
-        RVQ.trg_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
-        RVQ.trg_3_error_DxN(:,n)=   error_Dx1;                              %3.               
-        
-        %RVQ.trg_6_stopQ__1xN(1,n)=   fQ;                                    %num of stages in feature vector
-        %RVQ.trg_7_qidx_QxN(:,n)=   qidx_Qx1; 
-        RVQ.trg_9_decrmses_QxN(:,n)= rmses_Qx1;                             %rmse at every stage
-        
-        
-    elseif (strcmp(RVQ.in_2__data, 'tst'))        
-        %RVQ.tst_1_featr_QxN(:,n)=  featr_Qx1;                              %1.             
-        RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
-        RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                              %3.        
-        
-        %RVQ.tst_6_stopQ__1xN(1,n)=  fQ;  
-        %RVQ.tst_7_qidx_QxN(:,n)=   qidx_Qx1;     
-        RVQ.tst_9_decrmses_QxN(:,n)=   rmses_Qx1;
-             
+    RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
+    RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                              %3.        
+    RVQ.tst_9_decrmses_QxN(:,n)=   rmses_Qx1;
+
     end

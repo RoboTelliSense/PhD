@@ -11,7 +11,9 @@ function [DM2, sw, sh] = DM2_create(dataset)
     elseif (dataset==9) [DM2,sw,sh] =   DM2_extract_roi_from_Dudek(101,101,0); %last 0 means no randomness
     elseif (dataset==10) DM2 =   DM2_create_gaussMarkov(1089,101,0.9); sw=33;sh=33;%last 0 means no randomness
     elseif (dataset==11) DM2 =   1:7;     sw=1; sh=1;
-    elseif (dataset==12) DM2 =   1:1000;                      sw=1; sh=1;   %deterministic, scalar, example mentioned in IDDM
+    elseif (dataset==12) DM2 =   1:1000;                    sw=1; sh=1;   %deterministic, scalar, example mentioned in IDDM
+    elseif (dataset==13) DM2 =   [1:7;22:2:34];               sw=2; sh=1;   %deterministic, scalar, example mentioned in IDDM
     end
 
     [D, N]                  =   size(DM2);                                  %dimensions of DM2
+

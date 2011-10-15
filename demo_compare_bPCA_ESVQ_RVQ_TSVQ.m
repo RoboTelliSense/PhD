@@ -78,11 +78,11 @@
 %algorithm parameters    
     %BPCA
     aBPCA.in_1__name        =   'aBPCA';
-	aBPCA.in_2__data        =	'tst';
+aBPCA.in_2__data        = 'tst';
     aBPCA.mdl_1_Q__1x1      =   16;   
     
     %RVQ   
-	aRVQ1.in_1__name        =   'aRVQx';
+aRVQ1.in_1__name        =   'aRVQx';
     aRVQ1.in_2__data        =   'tst';          %data type: trg or tst, default is tst
     aRVQ1.in_3__maxQ        =   8;              %max number of stages  
     aRVQ1.in_4__M___        =   16;              %number of codevectors/stage
@@ -93,7 +93,7 @@
     
     %TSVQ
     aTSVQ.in_1__name        =   'aTSVQ';
-	aTSVQ.in_2__data        =	'tst';  
+aTSVQ.in_2__data        = 'tst';  
     aTSVQ.in_3__maxQ        =   4;                                          %number of stages
     aTSVQ.in_4__M___        =   4;                                          %2 is for binary aTSVQ
     
@@ -103,8 +103,8 @@
 
 %Dudek
 [DM2_trg, sw, sh]           =   DM2_create(11);
-%[DM2_tst, sw, sh]           =   DM2_create(2);
-DM2_tst=6;
+[DM2_tst, sw, sh]           =   DM2_create(11);
+%DM2_tst=6;
 %Gauss Markov
 %[temp, sw, sh]              =   DM2_create(10);
 %DM2_trg                     =   temp(:,1:100);
@@ -161,11 +161,11 @@ for  m = lst_M
 end    
     
 close all;
-    [out1_allvals out1]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 1); %1 is for eRMSE
-    [out2_allvals out2]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 3); %3 is for dRMSE
-    plot(out1(:,1), out1(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(out1_allvals(:,1))));
+    [eRMSE_allvals eRMSE]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 1); %1 is for eRMSE
+    [dRMSE_allvals dRMSE]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 3); %3 is for dRMSE
+    plot(eRMSE(:,1), eRMSE(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(eRMSE_allvals(:,1))));
     hold on;
-    plot(out2(:,1), out2(:,2), 'c^-');
+    plot(dRMSE(:,1), dRMSE(:,2), 'c^-');
     grid on;
     legend('trg (eRMSE)', 'trg (dRMSE)', 'Location', 'Best');
     xlabel('stage #');
@@ -177,7 +177,7 @@ plot(1:aRVQ1.mdl_1_Q__1x1,                     aRVQ1.tst_9_decrmses_QxN(1:aRVQ1.
 plot(1:aRVQ1.mdl_1_Q__1x1,                     aRVQ2.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1) , 'bd-');
 plot(1:aRVQ1.mdl_1_Q__1x1, UTIL_RVQ_repeat_SNR(aRVQ3.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1)), 'm*-');
 plot(1:aRVQ1.mdl_1_Q__1x1, UTIL_RVQ_repeat_SNR(aRVQ4.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1)), 'ks-');
-%axis([1 8 0 1.5])
+axis([1 8 0 1.5])
 %axis([1 8 0 20])
 xlabel('q (stage index)')
 set(gca, 'XTick', 1:aRVQ1.mdl_1_Q__1x1)
@@ -231,3 +231,4 @@ UTIL_FILE_save2pdf('RVQ_8x4_GaussMarkov_trg_100_tst_1.pdf', gcf, 300);
 % 
 %     
     
+
