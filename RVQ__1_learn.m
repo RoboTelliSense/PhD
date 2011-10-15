@@ -49,13 +49,15 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
     [temp, f]               =   size(DM2);          %i'm assuming that 
 %!!!end caution!!!
 
-    DM2_u8                  =   uint8(DM2);         %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
+    DM2_u8                  =   DM2;                %design matrix, one D dimensional vector (snippet) per column, N total snippets, D=sw*sh
     maxQ                    =   RVQ.in_3__maxQ;     %max number of stages
     M                       =   RVQ.in_4__M___;     %number of templates per stage
     targetSNR               =   RVQ.in_5__tSNR;     %desired SNR
     sw                      =   RVQ.in_6__sw__;     %snippet width
     sh                      =   RVQ.in_7__sh__;     %snippet height
-    odir                    =   RVQ.odir;     %directory to store results in
+    dataType                =   RVQ.in_8__type;     %can be 'uint8', 'float', 'double'
+    odir                    =   RVQ.odir;           %directory to store results in
+    
 
 %!! attention: these should be parameters but I'm fixing them !!  
     iFlag                   =   0.0005;
@@ -81,7 +83,7 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
 %-------------------
 %PRE-PROCESSING
 %-------------------
-    DM2_saveto_rvq_format    (DM2_u8, cfn_1_posEg, sw, sh);  %takes DM2 as input and writes it to a file
+    DM2_saveto_rvq_format    (DM2_u8, cfn_1_posEg, sw, sh, dataType);  %takes DM2 as input and writes it to a file
 
     
 %-------------------

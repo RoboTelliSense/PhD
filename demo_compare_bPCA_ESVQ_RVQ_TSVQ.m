@@ -87,6 +87,7 @@
     aRVQ1.in_3__maxQ        =   8;              %max number of stages  
     aRVQ1.in_4__M___        =   16;              %number of codevectors/stage
     aRVQ1.in_5__tSNR        =   1000.0;           %target SNRdB during learning (creating codebooks)        
+    aRVQ1.in_8__type        =   'double';
     aRVQ1.odir              =   '';
     aRVQ1.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
     aRVQ1.in_10_tstD        =   'maxQ';         %decoding rule for test data: 
@@ -102,8 +103,8 @@
 %-----------------------------
 
 %Dudek
-[DM2_trg, sw, sh]           =   DM2_create(13);
-[DM2_tst, sw, sh]           =   DM2_create(13);
+%[DM2_trg, sw, sh]           =   DM2_create(13);
+%[DM2_tst, sw, sh]           =   DM2_create(13);
 
 %Gauss Markov
 %[temp, sw, sh]              =   DM2_create(10);
@@ -111,11 +112,13 @@
 %DM2_tst                     =   temp(:,101);
 
 %Uniform and Gaussian
-%DM2_trg = round(255*rand(1089,100));            sw=33;sh=33;
-%DM2_tst = round(255*rand(1089,1));
+DM2_trg = rand(1089,100);            sw=33;sh=33;
+DM2_tst = DM2_trg;
 
-%DM2_trg = rand(1,7);            sw=1;sh=1;
+%DM2_trg = rand(1,7);            
 %DM2_trg=[0.6160    0.9475    0.0684    0.0370    0.9643    0.7116    0.1346];
+%DM2_trg=[1:7];
+%sw=1;sh=1;
 %DM2_tst = rand(1,1);
 
 
@@ -131,7 +134,7 @@ aRVQ1.in_7__sh__            =   sh;             %snippet height
 % 2. PROCESSING
 %-----------------------------
 midx                        =   0;
-lst_M                       =   3;
+lst_M                       =   4;
 for  m = lst_M
     
     tic
@@ -185,8 +188,8 @@ end
         out3(i) = UTIL_METRICS_compute_rms(aRVQ3.tst_8_drmse_QxN(i,:))
         out4(i) = UTIL_METRICS_compute_rms(aRVQ4.tst_8_drmse_QxN(i,:))
     end
-    %plot(1:Q,                     out , 'g+-');
-    %plot(1:Q,                     out1 , 'bd-');
+    plot(1:Q,                     out , 'g+-');
+    plot(1:Q,                     out1 , 'bd-');
     %plot(1:Q,                     aRVQ2.tst_8_drmse_QxN(1:Q) , 'bd-');
     %plot(1:Q, UTIL_RVQ_repeat_SNR(aRVQ3.tst_8_drmse_QxN(1:Q)), 'm*-');
     %plot(1:Q, UTIL_RVQ_repeat_SNR(aRVQ4.tst_8_drmse_QxN(1:Q)), 'ks-');
@@ -198,7 +201,7 @@ end
     xlabel('q (stage index)');
     ylabel('reconstruction rms error');
     set(gca, 'XTick', 1:Q)
-    legend('trg (eRMSE)', 'trg (dRMSE)');%'trg (eRMSE, matlab)'
+    legend('trg (eRMSE)', 'trg (dRMSE)', 'trg (eRMSE, matlab)', 'tst (dRMSE, matlab)');
     %legend('trg (eRMSE)', 'trg (dRMSE)', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR');
     %UTIL_FILE_save2pdf('RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf', gcf, 300);
     UTIL_FILE_save2pdf('RVQ_3x2_1_to_7_22_34.pdf', gcf, 300);
