@@ -13,15 +13,24 @@
 %===================================
 \section{Introduction}
 %===================================
-In this report, we look at a simple training set, $S_{trg}=\{1,2,3,4,5,6,7\}$ and design RVQ encoder and decoder codebooks for different number of code-books per stage, $m=\{2,3,4,5,6,7,8\}$.  Our goal is to understand when encoder and decoder codebooks differ, and how stagewise computations for reconstruction rms error are carried out.
+In this report, we look at some simple training sets, and design RVQ encoder and decoder codebooks.  Our goal is to understand how stagewise computations for reconstruction rms error are carried out.
 
 
 %===================================
 \section{Experiments}
 %===================================
 %We start with some trivial scalar examples where the training and test sets are the same.  We then move to the other extreme end of the spectrum using random data in high dimensional spaces with several observations and where the training and test sets have the same distributions but have different data.  After these experiments, we will get to tracking examples and use the likelihood formulation we have developed for RVQ.
+%-----------------------------------
+\subsection{Experiment 1: scalar training examples}
+%-----------------------------------
+In this experiment, the training set is $S_{trg}=\{1,2,3,4,5,6,7\}$.
 
-Table~\ref{table:encoder} gives the encoder codebooks for our training set while Table~\ref{table:decoder} gives the decoder codebooks.  Notice that all codebooks are the same except for the 2x3 case.  For reference, the output of gen.exe for the 2x3 case is given in Appendix~\ref{gen_stat}.
+Table~\ref{table:Exp1_encoder} gives the encoder codebooks for our training set while Table~\ref{table:Exp1_decoder} gives the decoder codebooks.  Notice that all codebooks are the same except for the 2x3 case.  For reference, the output of gen.exe for the 2x3 case is given in Appendix~\ref{Exp1_gen_stat}.
+
+Table~\ref{table:Exp2_detailed_computations} gives detailed computations for code-vectors picked at every stage, reconstructions, errors, etc for the 2x3 encoder codebook.  
+
+The actual rms errors as reported by gen.exe as given in Appendix~\ref{Exp1_gen_stat} and plotted in Figure~\ref{fig:RVQ_8x3_trg_1_to_7} are 0.6547 and 0.1543 respectively.
+
 
 \begin{table}
 \centering
@@ -53,11 +62,9 @@ Table~\ref{table:encoder} gives the encoder codebooks for our training set while
 \subtable[1x{\color{red}\textbf 8}]{\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
 1 & 7 & 4 & 2 & 3 &5 &6&0\\\hline
 \end{tabular}}
-\caption{RVQ \emph{encoder} codebooks with increasing code-vectors per stage, $m$ = {\color{red}\textbf {2, 3, 4, 5, 6, 7, 8}}.  As $m$ goes up for a given training set, the number of stages $q$ falls.}
-\label{table:encoder}
+\caption{Experiment 1, RVQ \emph{encoder} codebooks with increasing code-vectors per stage, $m$~=~{\color{red}\textbf {2, 3, 4, 5, 6, 7, 8}}.  As $m$ goes up for a given training set, the number of stages $q$ falls.}
+\label{table:Exp1_encoder}
 \end{table}
-
-
 
 \begin{table}
 \centering
@@ -83,56 +90,223 @@ same as encoder\\codebook\\\hline
 \subtable[3x{\color{red}\textbf 8}]{\begin{tabular}{|c|}\hline
 same as encoder\\codebook\\\hline
 \end{tabular}}
-\caption{RVQ \emph{decoder} codebooks with increasing code-vectors per stage, $m$ = {\color{red}\textbf {2, 3, 4, 5, 6, 7, 8}}.}
-\label{table:decoder}
+\caption{Experiment 1, RVQ \emph{decoder} codebooks with increasing code-vectors per stage, $m$~=~{\color{red}\textbf {2, 3, 4, 5, 6, 7, 8}}.}
+\label{table:Exp1_decoder}
 \end{table}
 
-Table~\ref{table:detailed_computations} gives detailed computations for code-vectors picked at every stage, reconstructions, errors, etc for the 2x3 encoder codebook.  
 
 
-The actual rms errors as reported by gen.exe as given in Appendix~\ref{gen_stat} and plotted in Figure~\ref{fig:RVQ_8x3_trg_1_to_7} are 0.6547 and 0.1543 respectively.
-
-
-\begin{figure}
-\centering
-\includegraphics[width=0.75\textwidth]{figs/RVQ_8x3_trg_1_to_7.pdf}
-\caption{eRMSE=\{0.6547, 0.1543\} for stages 1 and 2, and dRMSE=\{0\} for stage 2, as reported by gen.exe for 2x3 RVQ.  The training set is $S_{trg}=\{1,2,3,4,5,6,7\}$.}
-\label{fig:RVQ_8x3_trg_1_to_7}
-\end{figure}
+							\begin{figure}
+							\centering
+							\includegraphics[width=0.75\textwidth]{figs/RVQ_8x3_trg_1_to_7.pdf}
+							\caption{Experiment 1, results for 2x3 RVQ.  eRMSE=\{0.6547, 0.1543\} for stages 1 and 2, and dRMSE=\{0\} for stage 2, as reported by gen.exe for 2x3 RVQ (Appendix~\ref{Exp1_gen_stat}).  The training set is $S_{trg}=\{1,2,3,4,5,6,7\}$.}
+							\label{fig:RVQ_8x3_trg_1_to_7}
+							\end{figure}
 
 
 \begin{table}[t]
+\scriptsize
 \centering
 \begin{tabular}{|l||c|c|c|c|c|c|c|}\hline 
 \textbf{Test point} $\rightarrow$                             & \textbf{1}  &\textbf{2} &\textbf{3}   &\textbf{4}   &\textbf{5} &\textbf{6} &\textbf{7} \\\hline
-\textbf{selected code-vector index at stage 1} $\rightarrow$ & 1     &  1   &  3   &  3   &  3   &  2     & 2 \\
-\textbf{selected code-vector index at stage 2} $\rightarrow$ & 3     & 2     & 1   &  3   &  2   &  3     & 2 \\\hline
+\textbf{selected code-vector index at stage 1 (XDR)} $\rightarrow$ & 1     &  1   &  3   &  3   &  3   &  2     & 2 \\
+\textbf{selected code-vector index at stage 2 (XDR)} $\rightarrow$ & 3     & 2     & 1   &  3   &  2   &  3     & 2 \\\hline\hline
 \textbf{encoder: selected code-vector at stage 1} $\rightarrow$& 1.5     &1.5           &  4   &  4           &  4             &  6.5     & 6.5 \\
 \textbf{encoder: selected code-vector at stage 2} $\rightarrow$& -0.5     & 0.6667     & -1   &  -0.5       &  0.6667   &  -0.5     & 0.6667 \\\hline
-\textbf{decoder: selected code-vector at stage 1} $\rightarrow$& 1     &1           &  4   &  4           &  4             &  6     & 6 \\
-\textbf{decoder: selected code-vector at stage 2} $\rightarrow$& 0     & 1     & -1   &  0       &  1   &  0     & 1 \\\hline
 \textbf{encoder: recon. error after stage 1} $\rightarrow$& \color{blue}0.5  & \color{blue}0.5   &  \color{blue}1     &   0   &   \color{blue}1   &   \color{blue}0.5 & \color{blue}0.5 \\
 \textbf{encoder: recon. error after stage 2} $\rightarrow$ & 0   &  \color{darkgreen}0.1667     &  0   &\color{darkgreen}\textbf{0.5}&   \color{darkgreen}0.3333    &   0   & \color{darkgreen}0.1667 \\\hline
+\textbf{encoder: reconstructed output} $\rightarrow$             & 1         & 2.1667     & 3   & 3.5         &  4.6667   &  6         & 7.1667 \\\hline\hline
+\textbf{decoder: selected code-vector at stage 1} $\rightarrow$& 1     &1           &  4   &  4           &  4             &  6     & 6 \\
+\textbf{decoder: selected code-vector at stage 2} $\rightarrow$& 0     & 1     & -1   &  0       &  1   &  0     & 1 \\\hline
 \textbf{decoder: recon. error after stage 1} $\rightarrow$        & 0       & 1     & 1   & 0         &  1   &  0         & 1 \\
 \textbf{decoder: recon. error after stage 2} $\rightarrow$        & 0       & 0     & 0   & 0         &  0   &  0         & 0 \\\hline
-\textbf{encoder: reconstructed output} $\rightarrow$             & 1         & 2.1667     & 3   & 3.5         &  4.6667   &  6         & 7.1667 \\\hline
 \textbf{decoder: reconstructed output} $\rightarrow$             & 1         & 2     & 3   & 4         &  5   &  6         & 7 \\\hline
-\textbf{encoder: error} $\rightarrow$                                   & 0       & 0.1667     & 0   & 0.5         &  0.3333   &  0         & 0.1667 \\\hline
-\textbf{decoder: error} $\rightarrow$                                   & 0       & 0     & 0   & 0         &  0   &  0         & 0 \\\hline
 \end{tabular}
-\caption{Encoder rms error at the output of the first stage is {\color{blue}$\sqrt \frac{4(0.5^2) + 2(1^2)}{7} = \sqrt\frac{3}{7} = 0.6547$}, while the error at the output of the second stage is {\color{darkgreen}$\sqrt \frac{2(0.1667^2) + 0.3333^2}{7} = \sqrt\frac{0.1667}{7} = 0.1543$}.  Notice that in this second computation, we've omitted using 0.5, shown in boldface in the table, since the encoder error after the first stage has already reached 0.}
-\label{table:detailed_computations}
+\caption{Experiment 1, computations for 2x3 RVQ.  Encoder rms error at the output of the first stage is {\color{blue}$\sqrt \frac{4(0.5^2) + 2(1^2)}{7} = \sqrt\frac{3}{7} = 0.6547$}, while the error at the output of the second stage is {\color{darkgreen}$\sqrt \frac{2(0.1667^2) + 0.3333^2}{7} = \sqrt\frac{0.1667}{7} = 0.1543$}.  Notice that in this second computation, we've omitted using 0.5, shown in boldface in the table, since the encoder error for data point 4 after the first stage has already reached 0, and an intelligent encoder should factor this into rms error computations.  These numbers match eRMSE as reported by gen.exe as shown in Figure~\ref{fig:RVQ_8x3_trg_1_to_7}.}
+\label{table:Exp1_detailed_computations}
 \end{table}
 
 
-
+%-----------------------------------
 \clearpage
 \newpage
+\subsection{Experiment 2: vector training examples}
+%-----------------------------------
+In Experiment 1, the training set consisted of 7 correlated integers in $\mathbb{Z}$.  In this experiment, the data set $S_{trg}$ consists of 7 correlated vectors in $\mathbb{Z}^2$,
+
+Table~\ref{table:Exp2_encoder_decoder} gives the encoder and decoder codebooks for our training set using 2x3 RVQ.  For reference, the output of gen.exe for this experiment is given in Appendix~\ref{Exp2_gen_stat}.
+
+Table~\ref{table:Exp2_detailed_computations} gives detailed computations for code-vectors picked at every stage, reconstructions, errors, etc for the 2x3 encoder codebook.  
+
+The actual rms errors as reported by gen.exe as given in Appendix~\ref{Exp2_gen_stat} and plotted in Figure~\ref{fig:RVQ_3x2_1_to_7_22_to_34} are 1.0351 and 0.2440 respectively.
+
+
+
+\begin{equation}
+S_{trg} = \left[
+\begin{array}{ccccccc}
+1 & 2 & 3 & 4 & 5 & 6 & 7\\
+22 & 24 & 26 & 28 & 30 & 32 & 34
+\end{array}
+\right]
+\end{equation}
+
+
+\begin{table}[h]
+\centering
+\subtable[2x{\color{red}\textbf 3} encoder codebook.]{\begin{tabular}{|c|c|c|}\hline
+$\left[\begin{array}{c}1.5 \\23\end{array}\right]$  &  
+$\left[\begin{array}{c}6.5 \\33\end{array}\right]$  &    
+$\left[\begin{array}{c}4 \\28\end{array}\right]$ \\
+$\left[\begin{array}{c}-1 \\-2\end{array}\right]$ &   
+$\left[\begin{array}{c}0.6667 \\1.3333\end{array}\right]$ & 
+$\left[\begin{array}{c}-0.5 \\-1\end{array}\right]$\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 3} decoder codebook.]{\begin{tabular}{|c|c|c|}\hline
+$\left[\begin{array}{c}1 \\22\end{array}\right]$  &  
+$\left[\begin{array}{c}6 \\32\end{array}\right]$  &    
+$\left[\begin{array}{c}4 \\28\end{array}\right]$ \\
+$\left[\begin{array}{c}-1 \\-2\end{array}\right]$ &   
+$\left[\begin{array}{c}1 \\2\end{array}\right]$ & 
+$\left[\begin{array}{c}0 \\0\end{array}\right]$\\\hline
+\end{tabular}}
+\caption{Experiment 2, 2x3 RVQ \emph{encoder} and \emph{decoder} codebooks.}
+\label{table:Exp2_encoder_decoder}
+\end{table}
+
+
+							\begin{figure}[h]
+							\centering
+							\includegraphics[width=0.75\textwidth]{figs/RVQ_3x2_1_to_7_22_to_34.pdf}
+							\caption{Experiment 2, eRMSE=\{1.0351, 0.2440\} for stages 1 and 2, and dRMSE=\{0\} for stage 2, as reported by gen.exe for 2x3 RVQ.}
+							\label{fig:RVQ_3x2_1_to_7_22_to_34}
+							\end{figure}
+
+\begin{table}[t]
+\tiny
+\centering
+\begin{tabular}{|l||c|c|c|c|c|c|c|}\hline 
+\textbf{Test point} $\rightarrow$                             			& 
+$\left[\begin{array}{c}1 \\22\end{array}\right]$  				&
+$\left[\begin{array}{c}2 \\24\end{array}\right]$ 					&
+$\left[\begin{array}{c}3 \\26\end{array}\right]$   				&
+$\left[\begin{array}{c}4 \\28\end{array}\right]$   				&
+$\left[\begin{array}{c}5 \\30\end{array}\right]$ 					&
+$\left[\begin{array}{c}6 \\32\end{array}\right]$ 					&
+$\left[\begin{array}{c}7 \\34\end{array}\right]$ \\\hline\hline
+\textbf{selected code-vector index at stage 1 (XDR)} $\rightarrow$ & 1     &  1   &  3   &  3   &  3   &  2     & 2 \\
+\textbf{selected code-vector index at stage 2 (XDR)} $\rightarrow$ & 3     & 2     & 1   &  3   &  2   &  3     & 2 \\
+\hline
+\textbf{encoder: selected code-vector at stage 1} $\rightarrow$ & 
+$\left[\begin{array}{c}1.5 \\23\end{array}\right]$     			&  
+$\left[\begin{array}{c}1.5 \\23\end{array}\right]$				&  
+$\left[\begin{array}{c}4 \\28\end{array}\right]$   				&  
+$\left[\begin{array}{c}4 \\28\end{array}\right]$   				&  
+$\left[\begin{array}{c}4 \\28\end{array}\right]$   				&  
+$\left[\begin{array}{c}6.5 \\33\end{array}\right]$     			&	 
+$\left[\begin{array}{c}6.5 \\33\end{array}\right]$ 				\\
+\textbf{encoder: selected code-vector at stage 2} $\rightarrow$	& 
+$\left[\begin{array}{c}-0.5 \\-1\end{array}\right]$     			&  
+$\left[\begin{array}{c}0.6667 \\1.3333\end{array}\right]$		&  
+$\left[\begin{array}{c}-1 \\-2\end{array}\right]$   				&	  
+$\left[\begin{array}{c}-0.5 \\-1\end{array}\right]$   				&  
+$\left[\begin{array}{c}0.6667 \\1.3333\end{array}\right]$   		&  
+$\left[\begin{array}{c}-0.5 \\-1\end{array}\right]$     			& 
+$\left[\begin{array}{c}0.6667 \\1.3333\end{array}\right]$ 		\\
+\hline
+\textbf{encoder: recon. error after stage 1} $\rightarrow$		&
+$\left[\begin{array}{c}0.5 \\1\end{array}\right]$     				&  
+$\left[\begin{array}{c}0.5\\1\end{array}\right]$					&  
+$\left[\begin{array}{c}1 \\2\end{array}\right]$   					&  
+$\left[\begin{array}{c}0\\0\end{array}\right]$   					&  
+$\left[\begin{array}{c}1 \\2\end{array}\right]$   					&  
+$\left[\begin{array}{c}0.5 \\1\end{array}\right]$     				& 
+$\left[\begin{array}{c}0.5 \\1\end{array}\right]$ 				\\
+\textbf{encoder: recon. error after stage 2} $\rightarrow$ 		& 
+$\left[\begin{array}{c}0 \\0\end{array}\right]$     				&  
+$\left[\begin{array}{c}0.1667 \\0.3333\end{array}\right]$		&  
+$\left[\begin{array}{c}0 \\0\end{array}\right]$   					&  
+$\left[\begin{array}{c}0.5 \\1\end{array}\right]$   				&  
+$\left[\begin{array}{c}0.3333 \\0.6667\end{array}\right]$   		&  
+$\left[\begin{array}{c}0 \\0\end{array}\right]$     				& 
+$\left[\begin{array}{c}0.1667 \\0.3333\end{array}\right]$ 		\\
+\hline
+\textbf{encoder: rms error after stage 1} $\rightarrow$ 		&\color{blue}0.7906    &\color{blue}0.7906   &\color{blue}1.5811   	&\color{blue}0   &\color{blue}1.5811   &\color{blue}0.7906     	&\color{blue}0.7906 \\
+\textbf{encoder: rms error after stage 2} $\rightarrow$ 		&\color{darkgreen}0    &\color{darkgreen}0.2635 	   &\color{darkgreen}0   &\color{darkgreen}0.7906   	&\color{darkgreen}0.5270   &\color{darkgreen}0     		&{\textbf{\color{darkgreen}0.2635}} \\
+\hline
+\textbf{encoder: reconstructed output} $\rightarrow$          		& 
+$\left[\begin{array}{c}1 \\22\end{array}\right]$     				&  
+$\left[\begin{array}{c}2.1667 \\24.3333\end{array}\right]$		&  
+$\left[\begin{array}{c}3 \\26\end{array}\right]$   				&  
+$\left[\begin{array}{c}3.5 \\27\end{array}\right]$   				&  
+$\left[\begin{array}{c}4.6667 \\29.3333\end{array}\right]$   	&  
+$\left[\begin{array}{c}6 \\32\end{array}\right]$     				& 
+$\left[\begin{array}{c}7.1667 \\34.3333\end{array}\right]$ 		\\
+\hline
+\end{tabular}
+\caption{Experiment 2.  In this experiment, we deal with vector input.  As a result, we first compute the rms reconstruction error for each single vector at the output of every stage.  These rms errors are then used to compute total rms error for that particular stage.  For instance, the encoder rms error after stage 2 for the data-point $(7,34)^T$ can be computed as $\color{darkgreen}\sqrt{\frac{0.1667^2+ 0.3333^2}{2}}={\textbf{\color{darkgreen}0.2635}}$.  The total encoder rms error after stage 1 can be computed as  {\color{blue}$\sqrt \frac{4(0.7906^2) + 2(1.5811^2)}{7} = 1.0351$}.  The total encoder rms error after stage 2 can be computed as {\color{darkgreen}$\sqrt \frac{2(0.2635^2) + 0.5270^2}{7} = 0.2440$}.  Here again, as in Experiment 1, we ignore rms error for $(4,28)^T$ since its rms error reaches 0 after stage 1.  These numbers match eRMSE as reported by gen.exe as shown in Figure~\ref{fig:RVQ_3x2_1_to_7_22_to_34}.}
+\label{table:Exp2_detailed_computations}
+\end{table}
+
+%===================================
+\section{Conclusions}
+%===================================
+These experiments show that we can reproduce rms errors produced by gen.exe for scalar and vector training examples.
+
+
+%%-----------------------------------
+%\clearpage
+%\subsection{Experiment 3}
+%%-----------------------------------
+%In Experiments 1 and 2, the training set consisted of 7 correlated integers in $\mathbb{Z}$ and $\mathbb{Z}^2$.  In this experiment, the training set $S_{trg}$ consists of 7 points sampled from a uniform distributions in $\mathbb{R}$, $S_{trg}=\{0.6160, 0.9475, 0.0684, 0.0370, 0.9643, 0.7116, 0.1346\}$, .  The 1x3 encoder and decoder codebooks are given by,
+%
+%\begin{table}[h]
+%\centering
+%\begin{tabular}{|c|c|c|}\hline 
+%0  & 1 & 0\\\hline
+%\end{tabular}
+%\caption{Experiment 2, 1x3 RVQ encoder codebook.  The decoder codebook is the same as the encoder codebook.}
+%\label{table:Exp2_codebooks}
+%\end{table}
+%
+%The gen stat output in Appendix~\ref{Exp2_gen_stat} states that eRMSE is 0.  We need to reconcile this number since no input point is perfectly reconstructed.
+%
+%
+%%-----------------------------------
+%\clearpage
+%\subsection{Experiment 4}
+%%-----------------------------------
+%In this experiment, every data point in the training set in Experiment 2 was multiplied by 10.  Therefore, $S_{trg}=\{6.160, 9.475, 0.684, 0.370, 9.643, 7.116, 1.346\}$.  The encoder and decoder codebooks are,
+%
+%\begin{table}[h]
+%\centering
+%\subtable[2x{\color{red}\textbf 3} encoder codebook.]{\begin{tabular}{|c|c|c|}\hline
+%0.6667  &  9.5 &    6.5\\
+%-0.6667 &   0.4167 &  -0.5\\\hline
+%\end{tabular}}\hspace{0.2in}
+%\subtable[2x{\color{red}\textbf 3} decoder codebook.]{\begin{tabular}{|c|c|c|}\hline
+%0.5715 &   9.5714  &  6.5714\\
+%-0.5716 &   0.4285 &  -0.5713\\\hline
+%\end{tabular}}
+%\caption{Experiment 3, 2x3 RVQ \emph{encoder} and \emph{decoder} codebooks.}
+%\label{table:Exp1_decoder}
+%\end{table}
+
+
+
 \appendix
 %===================================
-\section{gen\_stat file output for 2x3 RVQ}
-\label{gen_stat}
+\clearpage
+\newpage
+\section{gen\_stat file outputs}
 %===================================
+
+%---------------------------------
+\subsection{Experiment 1}
+\label{Exp1_gen_stat}
+%---------------------------------
+This is the gen stat file for 2x3 RVQ for Experiment 1.
+
 \scriptsize
 \begin{verbatim}
 RVQ__training_gen8.exe 7_posEg_1x1.raw 7_codebook.ecbk 7_codebook.dcbk 4 -S1000 -i0.0005 -j0.0005 
@@ -244,6 +418,136 @@ Average Number-of-Stages     =  1.8571
 TERMINATING PROGRAM
 \end{verbatim}
 \normalsize
+
+%---------------------------------
+\clearpage
+\newpage
+\subsection{Experiment 2}
+\label{Exp2_gen_stat}
+%---------------------------------
+This is the gen stat file for 2x3 RVQ for Experiment 2.
+
+\scriptsize
+\begin{verbatim}
+RVQ__training_gen8.exe 7_posEg_2x1.raw 7_codebook.ecbk 7_codebook.dcbk 4 -S1000 -i0.0005 -j0.0005 
+getts:Initial Training Cummulative Distortion = 2.4228e+006
+Seeding Stage #1
+prime_cbks:GLA Codevec Cummulative Distortion = 2.7300e+003:2:
+prime_cbks:GLA Codevec Cummulative Distortion = 5.7000e+002:3:3.789474
+prime_cbks:GLA Encoder Cummulative Distortion = 1.2000e+002:4:
+prime_cbks:GLA Encoder Cummulative Distortion = 9.0000e+001:4:0.333333
+prime_cbks:GLA Encoder Cummulative Distortion = 9.0000e+001:4:0.000000
+encode:New Encoder Cummulative Distortion = 9.0000e+001:+2422680.000000
+Encoder:RelChg=+26918.6667:eSNR=44.30:eRMSE=  1.0351:sws=0
+Number Still Growing = 6
+  1->    2     2     3     0 
+Amoratized Fixed-Rate Coding =  0.1321 bits per sample
+Number-of-Stages Overhead    =  0.0000 bits per sample
+Average Number-of-Stages     =  1.0000
+Seeding Stage #2
+prime_cbks:GLA Codevec Cummulative Distortion = 2.7000e+002:2:
+prime_cbks:GLA Codevec Cummulative Distortion = 3.0000e+001:3:8.000000
+prime_cbks:GLA Encoder Cummulative Distortion = 1.5000e+001:4:
+prime_cbks:GLA Encoder Cummulative Distortion = 5.0000e+000:4:2.000000
+prime_cbks:GLA Encoder Cummulative Distortion = 5.0000e+000:4:0.000000
+encode:New Encoder Cummulative Distortion = 5.0000e+000:+85.000000
+Encoder:RelChg=+17.0000:eSNR=56.85:eRMSE=  0.2440:sws=0
+decode:Old Decoder Cummulative Distortion = 5.0000e+000
+decode:New Decoder Cummulative Distortion = 3.0556e+000:0.636364
+decode:New Decoder Cummulative Distortion = 1.8407e+000:0.659991
+decode:New Decoder Cummulative Distortion = 1.4387e+000:0.279417
+decode:New Decoder Cummulative Distortion = 1.1853e+000:0.213751
+decode:New Decoder Cummulative Distortion = 9.8524e-001:0.203097
+decode:New Decoder Cummulative Distortion = 8.2009e-001:0.201386
+decode:New Decoder Cummulative Distortion = 6.8277e-001:0.201112
+decode:New Decoder Cummulative Distortion = 5.6847e-001:0.201068
+decode:New Decoder Cummulative Distortion = 4.7331e-001:0.201061
+decode:New Decoder Cummulative Distortion = 3.9408e-001:0.201060
+decode:New Decoder Cummulative Distortion = 3.2811e-001:0.201059
+decode:New Decoder Cummulative Distortion = 2.7318e-001:0.201059
+decode:New Decoder Cummulative Distortion = 2.2745e-001:0.201059
+decode:New Decoder Cummulative Distortion = 1.8937e-001:0.201059
+decode:New Decoder Cummulative Distortion = 1.5767e-001:0.201059
+decode:New Decoder Cummulative Distortion = 1.3128e-001:0.201059
+decode:New Decoder Cummulative Distortion = 1.0930e-001:0.201059
+decode:New Decoder Cummulative Distortion = 9.1005e-002:0.201059
+decode:New Decoder Cummulative Distortion = 7.5770e-002:0.201059
+decode:New Decoder Cummulative Distortion = 6.3086e-002:0.201059
+decode:New Decoder Cummulative Distortion = 5.2525e-002:0.201059
+decode:New Decoder Cummulative Distortion = 4.3733e-002:0.201059
+decode:New Decoder Cummulative Distortion = 3.6412e-002:0.201059
+decode:New Decoder Cummulative Distortion = 3.0316e-002:0.201059
+decode:New Decoder Cummulative Distortion = 2.5241e-002:0.201059
+decode:New Decoder Cummulative Distortion = 2.1016e-002:0.201059
+decode:New Decoder Cummulative Distortion = 1.7498e-002:0.201059
+decode:New Decoder Cummulative Distortion = 1.4569e-002:0.201059
+decode:New Decoder Cummulative Distortion = 1.2130e-002:0.201059
+decode:New Decoder Cummulative Distortion = 1.0099e-002:0.201059
+decode:New Decoder Cummulative Distortion = 8.4086e-003:0.201059
+decode:New Decoder Cummulative Distortion = 7.0010e-003:0.201059
+decode:New Decoder Cummulative Distortion = 5.8290e-003:0.201059
+decode:New Decoder Cummulative Distortion = 4.8532e-003:0.201059
+decode:New Decoder Cummulative Distortion = 4.0408e-003:0.201059
+decode:New Decoder Cummulative Distortion = 3.3644e-003:0.201059
+decode:New Decoder Cummulative Distortion = 2.8012e-003:0.201059
+decode:New Decoder Cummulative Distortion = 2.3322e-003:0.201059
+decode:New Decoder Cummulative Distortion = 1.9418e-003:0.201059
+decode:New Decoder Cummulative Distortion = 1.6168e-003:0.201059
+decode:New Decoder Cummulative Distortion = 1.3461e-003:0.201059
+decode:New Decoder Cummulative Distortion = 1.1208e-003:0.201059
+decode:New Decoder Cummulative Distortion = 9.3315e-004:0.201059
+decode:New Decoder Cummulative Distortion = 7.7694e-004:0.201059
+decode:New Decoder Cummulative Distortion = 6.4688e-004:0.201059
+decode:New Decoder Cummulative Distortion = 5.3859e-004:0.201059
+decode:New Decoder Cummulative Distortion = 4.4843e-004:0.201059
+decode:New Decoder Cummulative Distortion = 3.7336e-004:0.201059
+decode:New Decoder Cummulative Distortion = 3.1086e-004:0.201059
+decode:New Decoder Cummulative Distortion = 2.5882e-004:0.201059
+decode:New Decoder Cummulative Distortion = 2.1549e-004:0.201059
+decode:New Decoder Cummulative Distortion = 1.7942e-004:0.201059
+decode:New Decoder Cummulative Distortion = 1.4939e-004:0.201059
+decode:New Decoder Cummulative Distortion = 1.2438e-004:0.201059
+decode:New Decoder Cummulative Distortion = 1.0356e-004:0.201059
+decode:New Decoder Cummulative Distortion = 8.6221e-005:0.201059
+decode:New Decoder Cummulative Distortion = 7.1788e-005:0.201059
+decode:New Decoder Cummulative Distortion = 5.9770e-005:0.201059
+decode:New Decoder Cummulative Distortion = 4.9765e-005:0.201059
+decode:New Decoder Cummulative Distortion = 4.1434e-005:0.201059
+decode:New Decoder Cummulative Distortion = 3.4498e-005:0.201059
+decode:New Decoder Cummulative Distortion = 2.8723e-005:0.201059
+decode:New Decoder Cummulative Distortion = 2.3915e-005:0.201059
+decode:New Decoder Cummulative Distortion = 1.9911e-005:0.201059
+decode:New Decoder Cummulative Distortion = 1.6578e-005:0.201059
+decode:New Decoder Cummulative Distortion = 1.3803e-005:0.201059
+decode:New Decoder Cummulative Distortion = 1.1492e-005:0.201059
+decode:New Decoder Cummulative Distortion = 9.5684e-006:0.201059
+decode:New Decoder Cummulative Distortion = 7.9667e-006:0.201059
+decode:New Decoder Cummulative Distortion = 6.6330e-006:0.201059
+decode:New Decoder Cummulative Distortion = 5.5226e-006:0.201059
+decode:New Decoder Cummulative Distortion = 4.5981e-006:0.201059
+decode:New Decoder Cummulative Distortion = 3.8284e-006:0.201059
+decode:New Decoder Cummulative Distortion = 3.1875e-006:0.201059
+decode:New Decoder Cummulative Distortion = 2.6539e-006:0.201059
+decode:New Decoder Cummulative Distortion = 2.2097e-006:0.201059
+decode:New Decoder Cummulative Distortion = 1.8398e-006:0.201059
+decode:New Decoder Cummulative Distortion = 1.5318e-006:0.201059
+decode:New Decoder Cummulative Distortion = 1.2754e-006:0.201059
+decode:New Decoder Cummulative Distortion = 1.0619e-006:0.201059
+decode:New Decoder Cummulative Distortion = 8.8410e-007:0.201059
+
+Decoder Cummulative Distortion is Less Than 0.000001
+Decoder:RelChg=+5655450.6071:dSNR=124.38:dRMSE=  0.0001
+Number Still Growing = 3
+  1->    2     2     3     0 
+  2->    1     3     2     0 
+Amoratized Fixed-Rate Coding =  0.2453 bits per sample
+Number-of-Stages Overhead    =  0.0833 bits per sample
+Average Number-of-Stages     =  1.8571
+
+TERMINATING PROGRAM
+\end{verbatim}
+\normalsize
+
 
 
 \clearpage

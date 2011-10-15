@@ -13,7 +13,7 @@ function RVQ = RVQ__2_encode_decode(DM2, RVQ)
         RVQ.trg_3_error_DxN =   [];                                      
         RVQ.trg_4_SNRdB_1x1 =   -999;
         RVQ.trg_5_rmse__1x1 =   -999;
-        RVQ.trg_6_stopQ_1xN =   [];  
+        RVQ.trg_6_encdQ_1xN =   [];  
         RVQ.trg_7_qidx__QxN =   []; 
         RVQ.trg_8_ermse_QxN =   [];
                
@@ -24,7 +24,7 @@ function RVQ = RVQ__2_encode_decode(DM2, RVQ)
         RVQ.tst_3_error_DxN =   [];                                      
         RVQ.tst_4_SNRdB_1x1 =   -999;
         RVQ.tst_5_rmse__1x1 =   -999;
-        RVQ.tst_6_stopQ_1xN =   [];  
+        RVQ.tst_6_encdQ_1xN =   [];  
         RVQ.tst_7_qidx__QxN =   [];
         RVQ.tst_8_drmse_QxN =   [];
         
