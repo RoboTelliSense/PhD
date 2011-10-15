@@ -126,7 +126,7 @@ function RVQ = RVQ__1_learn(DM2, RVQ)
 %POST-PROCESSING
 %-------------------
 %save model    
-    RVQ.mdl_1_Q__1x1        =   Q;
+    RVQ.mdl_1_Q___1x1        =   Q;
     RVQ.mdl_3_EC_DxMQ       =   ECr_DxMP;     %encoder single channel codebook
     RVQ.mdl_4_DC_DxMQ       =   DCr_DxMP;     %decoder single channel codebook
     

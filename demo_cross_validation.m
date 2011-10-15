@@ -11,7 +11,7 @@
     %BPCA
     aBPCA.in_1__name        =   'aBPCA';
 	aBPCA.in_2__data        =	'tst';
-    aBPCA.mdl_1_Q__1x1      =   16;  
+    aBPCA.mdl_1_Q___1x1      =   16;  
 
     %RVQ   
 	aRVQx.in_1__name        =   'aRVQx';
@@ -59,7 +59,7 @@ for tstI=lst_I
     for m=lst_M
     tic
     qidx                    =   qidx+1
-    %aBPCA.mdl_1_Q__1x1     =   q;
+    %aBPCA.mdl_1_Q___1x1     =   q;
     %aTSVQ.in_3__maxQ       =   q;
     aRVQx.in_4__M___        =   m;
     [aRVQx temp]            =   RVQx_config(PARAM, [], aRVQx.in_3__maxQ, m, aRVQx.in_5__tSNR, tstI, 0); %0 is lambda

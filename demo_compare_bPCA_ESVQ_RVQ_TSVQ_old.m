@@ -85,7 +85,7 @@
     %BPCA
     aBPCA.in_1__name        =   'aBPCA';
 	aBPCA.in_2__data        =	'tst';
-    aBPCA.mdl_1_Q__1x1      =   9;   
+    aBPCA.mdl_1_Q___1x1      =   9;   
     
     
     %RVQ   
@@ -135,8 +135,8 @@
     numDisplayCols          =   10;
                                 figure;DM2_show(DM2,            sh, sw, numDisplayRows, numDisplayCols, 0);title('input');
                                 figure;DM2_show(aBPCA.mdl_3_U__DxQ, sh, sw, numDisplayRows, numDisplayCols, 1);title('aBPCA eigenvectors');
-                                figure;DM2_show(aRVQx.mdl_3_EC_DxMQ, sh, sw, aRVQx.mdl_1_Q__1x1, aRVQx.in_4__M___, 1);title('aRVQx codebooks');
-                                figure;DM2_show(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
+                                figure;DM2_show(aRVQx.mdl_3_EC_DxMQ, sh, sw, aRVQx.mdl_1_Q___1x1, aRVQx.in_4__M___, 1);title('aRVQx codebooks');
+                                figure;DM2_show(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q___1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
     
     [aBPCA.trg_5_rmse__1x1     aRVQx.trg_5_rmse__1x1    aTSVQ.trg_5_rmse__1x1         ]
     [aBPCA.tst_5_rmse__1x1     aRVQx.tst_5_rmse__1x1    aTSVQ.tst_5_rmse__1x1         ]

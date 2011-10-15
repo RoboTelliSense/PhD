@@ -13,7 +13,7 @@ function TSVQ = TSVQ_2_encode_decode(DM2, TSVQ)
         %------------------------------ 
         x_Dx1                       =   DM2(:,n);
         CB_DxKt                     =   TSVQ.mdl_3_CB_DxKt;
-        Q                           =   TSVQ.mdl_1_Q__1x1;
+        Q                           =   TSVQ.mdl_1_Q___1x1;
 
         featr_Qx1                   =   [];     %TSVQ feature vector, similar to XDR in RVQ
         K                           =   2;      %binary TSVQ, hence K=2

@@ -61,14 +61,14 @@
     DM2                     =   [A_DxM1 B_DxM2];    %this is C_DxN
    
 %batch PCA (reference)
-    BPCA_C.mdl_1_Q__1x1     =   M1+M2;
+    BPCA_C.mdl_1_Q___1x1     =   M1+M2;
     BPCA_C                  =   PCA__1_learn(DM2, BPCA_C);        %reference SVD
     
 %---------------------------------------
 %PROCESSING
 %---------------------------------------
 %step 1: batch SVD for A
-    BPCA_A.mdl_1_Q__1x1     =   M1;
+    BPCA_A.mdl_1_Q___1x1     =   M1;
     BPCA_A                  =   PCA__1_learn(A_DxM1, BPCA_A);        %reference SVD
     
     muA_Dx1                 =   BPCA_A.mdl_2_mu_Dx1;

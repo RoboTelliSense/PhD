@@ -8,7 +8,7 @@
     DM2                     =   DM2z + repmat(mu, 1, 6)
     
     PCA                     =   []; 
-    PCA.mdl_1_Q__1x1        =   100;
+    PCA.mdl_1_Q___1x1        =   100;
     PCA.mode                =   'batch';
     
     PCA                     =   PCA__1_learn(DM2, PCA);  

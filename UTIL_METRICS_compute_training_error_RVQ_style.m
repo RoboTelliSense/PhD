@@ -20,7 +20,7 @@ function algo = UTIL_METRICS_compute_training_error_RVQ_style(DM2, algo)
 
 	[D, N]                              =   size(DM2);
 	algo.trg_3_error_DxN                 	=   zeros(D,N);
-	algo.trg_1_featr_QxN         	=   zeros(algo.mdl_1_Q__1x1,N);
+	algo.trg_1_featr_QxN         	=   zeros(algo.mdl_1_Q___1x1,N);
 	for n=1:N
 		x_Dx1                           =   DM2(:,n);                                %test vector
         if      (strcmp(algo.in_1__name, 'RVQ'))

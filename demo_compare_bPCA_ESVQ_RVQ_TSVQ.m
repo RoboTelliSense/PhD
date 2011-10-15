@@ -78,11 +78,11 @@
 %algorithm parameters    
     %BPCA
     aBPCA.in_1__name        =   'aBPCA';
-aBPCA.in_2__data        = 'tst';
-    aBPCA.mdl_1_Q__1x1      =   16;   
+    aBPCA.in_2__data        =   'tst';
+    aBPCA.mdl_1_Q___1x1      =   16;   
     
     %RVQ   
-aRVQ1.in_1__name        =   'aRVQx';
+    aRVQ1.in_1__name        =   'aRVQx';
     aRVQ1.in_2__data        =   'tst';          %data type: trg or tst, default is tst
     aRVQ1.in_3__maxQ        =   8;              %max number of stages  
     aRVQ1.in_4__M___        =   16;              %number of codevectors/stage
@@ -93,7 +93,7 @@ aRVQ1.in_1__name        =   'aRVQx';
     
     %TSVQ
     aTSVQ.in_1__name        =   'aTSVQ';
-aTSVQ.in_2__data        = 'tst';  
+    aTSVQ.in_2__data        =   'tst';  
     aTSVQ.in_3__maxQ        =   4;                                          %number of stages
     aTSVQ.in_4__M___        =   4;                                          %2 is for binary aTSVQ
     
@@ -160,47 +160,50 @@ for  m = lst_M
     save(['aRVQ_dudek_trg_1_to_95_m_' num2str(m)]);
 end    
     
-close all;
+%--------------------------------------------------------
+% POST-PROCESSING
+%--------------------------------------------------------
+%eRMSE and dRMSE
     [eRMSE_allvals eRMSE]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 1); %1 is for eRMSE
     [dRMSE_allvals dRMSE]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 3); %3 is for dRMSE
     plot(eRMSE(:,1), eRMSE(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(eRMSE_allvals(:,1))));
     hold on;
     plot(dRMSE(:,1), dRMSE(:,2), 'c^-');
+
+%my data   
+    Q=aRVQ1.mdl_1_Q___1x1;
+    %plot(1:Q,                     aRVQ1.tst_8_drmse_QxN(1:Q) , 'g+-');
+    %plot(1:Q,                     aRVQ2.tst_8_drmse_QxN(1:Q) , 'bd-');
+    %plot(1:Q, UTIL_RVQ_repeat_SNR(aRVQ3.tst_8_drmse_QxN(1:Q)), 'm*-');
+    %plot(1:Q, UTIL_RVQ_repeat_SNR(aRVQ4.tst_8_drmse_QxN(1:Q)), 'ks-');
+    axis([1 Q 0 1.5])
     grid on;
-    legend('trg (eRMSE)', 'trg (dRMSE)', 'Location', 'Best');
-    xlabel('stage #');
+    
+    %axis([1 8 0 1.5])
+    %axis([1 8 0 20])
+    xlabel('q (stage index)');
     ylabel('reconstruction rms error');
-    hold on;
-    
-    
-plot(1:aRVQ1.mdl_1_Q__1x1,                     aRVQ1.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1) , 'g+-');
-plot(1:aRVQ1.mdl_1_Q__1x1,                     aRVQ2.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1) , 'bd-');
-plot(1:aRVQ1.mdl_1_Q__1x1, UTIL_RVQ_repeat_SNR(aRVQ3.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1)), 'm*-');
-plot(1:aRVQ1.mdl_1_Q__1x1, UTIL_RVQ_repeat_SNR(aRVQ4.tst_9_decrmses_QxN(1:aRVQ1.mdl_1_Q__1x1)), 'ks-');
-axis([1 8 0 1.5])
-%axis([1 8 0 20])
-xlabel('q (stage index)')
-set(gca, 'XTick', 1:aRVQ1.mdl_1_Q__1x1)
-legend('trg (eRMSE)', 'trg (dRMSE)', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR');
-%UTIL_FILE_save2pdf('RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf', gcf, 300);
-UTIL_FILE_save2pdf('RVQ_8x4_GaussMarkov_trg_100_tst_1.pdf', gcf, 300);
+    set(gca, 'XTick', 1:Q)
+    legend('trg (eRMSE)', 'trg (dRMSE)', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR');
+    %UTIL_FILE_save2pdf('RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf', gcf, 300);
+    UTIL_FILE_save2pdf('RVQ_8x4_GaussMarkov_trg_100_tst_1.pdf', gcf, 300);
 
 
-%title('Dudek sequence, training: first 100 33x33 snippets, test: 101st 33x33 snippet, 8x4 RVQ');
 
-% mu_tst                      =   mean(rmse_tst);
-% rmse_tst_with_mean          =   [rmse_tst;mu_tst]
 
 %-----------------------------
 %RESULTS
 %-----------------------------
+    % mu_tst                      =   mean(rmse_tst);
+    % rmse_tst_with_mean          =   [rmse_tst;mu_tst]
+
 %view
-    numDisplayRows          =   10;
-    numDisplayCols          =   10;
+%    numDisplayRows          =   10;
+%    numDisplayCols          =   10;
                                 %figure;DM2_show(DM2_trg,            sh, sw, numDisplayRows, numDisplayCols, 0);
                                 %figure;DM2_show(aBPCA.mdl_3_U__DxQ, sh, sw, numDisplayRows, numDisplayCols, 1);title('aBPCA eigenvectors');
-                                %figure;DM2_show(aRVQ1.mdl_3_EC_DxMQ, sh, sw, aRVQ1.mdl_1_Q__1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
-                                %figure;DM2_show(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q__1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
+                                %figure;DM2_show(aRVQ1.mdl_3_EC_DxMQ, sh, sw, aRVQ1.mdl_1_Q___1x1, aRVQ1.in_4__M___, 1);%title('aRVQx codebooks');
+                                %figure;DM2_show(aTSVQ.mdl_4_CB_DxK, sh, sw, aTSVQ.mdl_1_Q___1x1, aTSVQ.mdl_5_K__1x1, 1);title('aTSVQ codebooks');
     
 %training
 %     figure;

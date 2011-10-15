@@ -10,7 +10,7 @@ function PCA = PCA__2_encode_decode(DM2, PCA)
     [D, N]                  =   size(DM2);                  %U_DxQ is DxD if N>D, otherwise it's DxN
    
     mu_Dx1                  =   PCA.mdl_2_mu_Dx1; 
-    Q                       =   PCA.mdl_1_Q__1x1;
+    Q                       =   PCA.mdl_1_Q___1x1;
     U_DxQ                   =   PCA.mdl_3_U__DxQ;
     
     DM2z                    =   DM2 - repmat(mu_Dx1, 1, N);  %zero centered, i.e., mean removed
