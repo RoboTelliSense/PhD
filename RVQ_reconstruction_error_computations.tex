@@ -21,7 +21,7 @@ In this report, we look at a simple training set, $S_{trg}=\{1,2,3,4,5,6,7\}$ an
 %===================================
 %We start with some trivial scalar examples where the training and test sets are the same.  We then move to the other extreme end of the spectrum using random data in high dimensional spaces with several observations and where the training and test sets have the same distributions but have different data.  After these experiments, we will get to tracking examples and use the likelihood formulation we have developed for RVQ.
 
-Table~\ref{table:encoder} gives the encoder codebooks while Table~\ref{table:decoder} gives the decoder codebooks for our training set.  Notice that all codebooks are the same except for the 3x2 case.  For reference, the output of gen.exe for the 2x3 case is given in Appendix~\ref{gen_stat}.
+Table~\ref{table:encoder} gives the encoder codebooks for our training set while Table~\ref{table:decoder} gives the decoder codebooks.  Notice that all codebooks are the same except for the 2x3 case.  For reference, the output of gen.exe for the 2x3 case is given in Appendix~\ref{gen_stat}.
 
 \begin{table}
 \centering
@@ -65,7 +65,7 @@ Table~\ref{table:encoder} gives the encoder codebooks while Table~\ref{table:dec
 same as encoder\\codebook\\\hline
 \end{tabular}}\hspace{0.2in}
 \subtable[2x{\color{red}\textbf 3}]{\begin{tabular}{|c|c|c|}\hline
--1 & 6 & 4\\
+1 & 6 & 4\\
 -1 & 1 & 0\\\hline
 \end{tabular}}\hspace{0.2in}
 \subtable[3x{\color{red}\textbf 4}]{\begin{tabular}{|c|}\hline
@@ -87,40 +87,44 @@ same as encoder\\codebook\\\hline
 \label{table:decoder}
 \end{table}
 
-For the 2x3 encoder codebook, the reconstruction rms errors, $e_1$ and $e_2$ after stages 1 and 2 respectively are,
+Table~\ref{table:detailed_computations} gives detailed computations for code-vectors picked at every stage, reconstructions, errors, etc for the 2x3 encoder codebook.  
 
-\begin{equation}
-\begin{array}{lllll}
-e_1 &= \sqrt \frac{4(0.5^2) + 3(1^2)}{7} &= \sqrt\frac{3}{7} &= 0.6547 \\
-e_2 &= \sqrt \frac{2(0.1667^2) + 0.5^2 + 0.3333^2}{7} &= \sqrt\frac{0.4167}{7} &= 0.2440 
-\end{array}
-\end{equation}
 
 The actual rms errors as reported by gen.exe as given in Appendix~\ref{gen_stat} and plotted in Figure~\ref{fig:RVQ_8x3_trg_1_to_7} are 0.6547 and 0.1543 respectively.
 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{figs/RVQ_8x3_trg_1_to_7.png}
+\caption{eRMSE=\{0.6547, 0.1543\} for stages 1 and 2, and dRMSE=\{0\} for stage 2, as reported by gen.exe for 2x3 RVQ.  The training set is $S_{trg}=\{1,2,3,4,5,6,7\}$.}
+\label{fig:RVQ_8x3_trg_1_to_7}
+\end{figure}
+
+
 \begin{table}[t]
 \centering
-\subtable[3x{\color{red}\textbf 2}]{\begin{tabular}{|c||c|c|c|c|c|c|c|}\hline 
-\textbf{Test point} $\rightarrow$& \textbf{1}    & \textbf{2}  &   \textbf{3}    &      \textbf{4}  &   \textbf{5} &   \textbf{6} &   \textbf{7}\\\hline
-\textbf{recon. error after stage 1} $\rightarrow$& 0.5    & 0.5  &   1    &      0  &   1  &   0.5 &    0.5\\
-\textbf{recon. error after stage 2} $\rightarrow$& 0  &   0.1667    &      0  &   0.5  &   0.3333    &      0  &   0.1667\\\hline
-\end{tabular}}
-\caption{RVQ reconstruction error using 2x3 \emph{encoder} codebook.}
-\label{table:encoder_recon}
+\begin{tabular}{|l||c|c|c|c|c|c|c|}\hline 
+\textbf{Test point} $\rightarrow$                             & \textbf{1}  &\textbf{2} &\textbf{3}   &\textbf{4}   &\textbf{5} &\textbf{6} &\textbf{7} \\\hline
+\textbf{selected code-vector index at stage 1} $\rightarrow$ & 1     &  1   &  3   &  3   &  3   &  2     & 2 \\
+\textbf{selected code-vector index at stage 2} $\rightarrow$ & 3     & 2     & 1   &  3   &  2   &  3     & 2 \\\hline
+\textbf{encoder: selected code-vector at stage 1} $\rightarrow$& 1.5     &1.5           &  4   &  4           &  4             &  6.5     & 6.5 \\
+\textbf{encoder: selected code-vector at stage 2} $\rightarrow$& -0.5     & 0.6667     & -1   &  -0.5       &  0.6667   &  -0.5     & 0.6667 \\\hline
+\textbf{decoder: selected code-vector at stage 1} $\rightarrow$& 1     &1           &  4   &  4           &  4             &  6     & 6 \\
+\textbf{decoder: selected code-vector at stage 2} $\rightarrow$& 0     & 1     & -1   &  0       &  1   &  0     & 1 \\\hline
+\textbf{encoder: recon. error after stage 1} $\rightarrow$& \color{blue}0.5  & \color{blue}0.5   &  \color{blue}1     &   0   &   \color{blue}1   &   \color{blue}0.5 & \color{blue}0.5 \\
+\textbf{encoder: recon. error after stage 2} $\rightarrow$ & 0   &  \color{darkgreen}0.1667     &  0   &\color{darkgreen}\textbf{0.5}&   \color{darkgreen}0.3333    &   0   & \color{darkgreen}0.1667 \\\hline
+\textbf{decoder: recon. error after stage 1} $\rightarrow$        & 0       & 1     & 1   & 0         &  1   &  0         & 1 \\
+\textbf{decoder: recon. error after stage 2} $\rightarrow$        & 0       & 0     & 0   & 0         &  0   &  0         & 0 \\\hline
+\textbf{encoder: reconstructed output} $\rightarrow$             & 1         & 2.1667     & 3   & 3.5         &  4.6667   &  6         & 7.1667 \\\hline
+\textbf{decoder: reconstructed output} $\rightarrow$             & 1         & 2     & 3   & 4         &  5   &  6         & 7 \\\hline
+\textbf{encoder: error} $\rightarrow$                                   & 0       & 0.1667     & 0   & 0.5         &  0.3333   &  0         & 0.1667 \\\hline
+\textbf{decoder: error} $\rightarrow$                                   & 0       & 0     & 0   & 0         &  0   &  0         & 0 \\\hline
+\end{tabular}
+\caption{Encoder rms error at the output of the first stage is {\color{blue}$\sqrt \frac{4(0.5^2) + 2(1^2)}{7} = \sqrt\frac{3}{7} = 0.6547$}, while the error at the output of the second stage is {\color{darkgreen}$\sqrt \frac{2(0.1667^2) + 0.3333^2}{7} = \sqrt\frac{0.1667}{7} = 0.1543$}.  Notice that in this second computation, we've omitted using 0.5, shown in boldface in the table, since the encoder error after the first stage has already reached 0.}
+\label{table:detailed_computations}
 \end{table}
 
-								\begin{figure}
-								\centering
-								\includegraphics[width=0.75\textwidth]{figs/RVQ_8x3_trg_1_to_7.pdf}
-								\caption{eRMSE=\{0.6547, 0.1543\} for stages 1 and 2, and dRMSE=\{0\} for stage 2, as reported by gen.exe for 2x3 RVQ.  The training set is $S_{trg}=\{1,2,3,4,5,6,7\}$.}
-								\label{fig:RVQ_8x3_trg_1_to_7}
-								\end{figure}
 
-
-%===================================
-\section{Conclusions}
-%===================================
-For the first stage, we are able to reconcile our rms computations with those reported by gen.exe.  However, for the second stage, we are unable to reconcile the computations.  We need to investigate this further.
 
 \clearpage
 \newpage
