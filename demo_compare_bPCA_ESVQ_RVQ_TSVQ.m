@@ -146,14 +146,14 @@ for  m = lst_M
     aRVQ3                   =   RVQ__2_encode_decode(DM2_tst, aRVQ3);
     aRVQ4                   =   RVQ__2_encode_decode(DM2_tst, aRVQ4);
     
-    str_rvq             =   RVQx_stats_str(aRVQ1,1);
+    str_rvq                 =   RVQx_stats_str(aRVQ1,1);
     
     %stats
     rmse_trg(midx)          =   aRVQ1.trg_5_rmse__1x1;
-    rmse_tst(midx,:)        =   [ aRVQ1.tst_5_rmse__1x1 ...
-                                  aRVQ2.tst_5_rmse__1x1 ...
-                                  aRVQ3.tst_5_rmse__1x1 ...
-                                  aRVQ4.tst_5_rmse__1x1] 
+    rmse_tst(midx,:)        = [ aRVQ1.tst_5_rmse__1x1 ...
+                                aRVQ2.tst_5_rmse__1x1 ...
+                                aRVQ3.tst_5_rmse__1x1 ...
+                                aRVQ4.tst_5_rmse__1x1] 
 
     %UTIL_FILE_copy(cfn_gentxt, [num2str(m) '_' cfn_gentxt]);
     toc
@@ -164,11 +164,11 @@ end
 % POST-PROCESSING
 %--------------------------------------------------------
 %eRMSE and dRMSE
-    [eRMSE_allvals eRMSE]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 1); %1 is for eRMSE
-    [dRMSE_allvals dRMSE]          =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 3); %3 is for dRMSE
-    plot(eRMSE(:,1), eRMSE(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(eRMSE_allvals(:,1))));
-    hold on;
-    plot(dRMSE(:,1), dRMSE(:,2), 'c^-');
+    [eRMSE_allvals eRMSE]   =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 1); %1 is for eRMSE
+    [dRMSE_allvals dRMSE]   =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 3); %3 is for dRMSE
+                                plot(eRMSE(:,1), eRMSE(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(eRMSE_allvals(:,1))));
+                                hold on;
+                                plot(dRMSE(:,1), dRMSE(:,2), 'c^-');
 
 %my data   
     Q=aRVQ1.mdl_1_Q___1x1;
