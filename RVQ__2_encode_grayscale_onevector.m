@@ -153,7 +153,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
          
         RVQ.trg_6_encdQ_1xN(1,n)    =   stopQ;                              %6. num of stages in feature vector
         RVQ.trg_7_qidx__QxN(:,n)    =   qidx__Qx1;                          %7. stage index at every stage
-        RVQ.trg_8_ermse_QxN(:,n)    =   rmses_Qx1;                          %8. encoder rmse at every stage
+        RVQ.trg_8_ermse_QxN(:,n)    =   UTIL_RVQ_repeat_SNR(rmses_Qx1);                          %8. encoder rmse at every stage
 
         
     elseif (strcmp(RVQ.in_2__data, 'tst'))        

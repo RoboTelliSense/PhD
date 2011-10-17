@@ -62,7 +62,7 @@ rvq__M                      =   2;
 rvq__tSNR                   =   1000;   %target SNR
 rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
 rvq__lmbd                   =   0;
-rvq__dataType               =   'uint8';
+rvq__type                   =   'uint8';
 
 tsvq_maxQ                   =   3;
 tsvq_M                      =   2;
@@ -72,7 +72,7 @@ bUseBPCA                    =   0;
 bUseRVQx                    =   1;
 bUseTSVQ                    =   0;
 
-ds_code                     =   1;
+ds_code                     =   3;
 
 %#######################################################################
 % function main(   pca__Q,                                                ...
@@ -161,13 +161,13 @@ ds_code                     =   1;
 %1. configure learning algos
     if (PARAM.in_bUseIPCA) [aIPCA, trkaIPCA]=  IPCA_config     (PARAM, trkMEAN, pca__Q, first_mean_shxsw);    end
     if (PARAM.in_bUseBPCA) [aBPCA, trkaBPCA]=  BPCA_config     (PARAM, trkMEAN, pca__Q);                      end
-    if (PARAM.in_bUseRVQx) [aRVQx, trkaRVQx]=  RVQx_config     (PARAM, trkMEAN, rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__dataType); end
+    if (PARAM.in_bUseRVQx) [aRVQx, trkaRVQx]=  RVQx_config     (PARAM, trkMEAN, rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__type); end
     if (PARAM.in_bUseTSVQ) [aTSVQ, trkaTSVQ]=  TSVQ_config     (PARAM, trkMEAN, tsvq_maxQ, tsvq_M);           end
       
     %clean up clutter
     clear bUseIPCA bUseBPCA bUseRVQx bUseTSVQ
     clear pca__Q 
-    clear rvq__maxQ rvq__M rvq__tSNR rvq__tstI rvq__dataType
+    clear rvq__maxQ rvq__M rvq__tSNR rvq__tstI 
     clear tsvq_maxQ tsvq_M 
     clear ds_code
     clear a b firstI first_mean_shxsw
@@ -187,7 +187,7 @@ ds_code                     =   1;
 %============================================
 for f = PARAM.trg_freq+1 : PARAM.ds_4_F
     %1. input
-    I                                 =   double(I_HxWxF(:,:,f));
+    I                       =   double(I_HxWxF(:,:,f));
 
     %2. tracking (condensation)
     if (PARAM.in_bUseIPCA) trkaIPCA   =   TRK_condensation(f, I, GT, RAND, PARAM, aIPCA, trkaIPCA); end %estwarp_grad(I, aIPCA, trkaIPCA, PARAM);

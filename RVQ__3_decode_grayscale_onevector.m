@@ -31,5 +31,5 @@ function RVQ = RVQ__3_decode_grayscale_onevector(x_Dx1, RVQ, n)
     
     RVQ.tst_2_recon_DxN(:,n)=   recon_Dx1;                              %2.               
     RVQ.tst_3_error_DxN(:,n)=   error_Dx1;                              %3.        
-    RVQ.tst_8_drmse_QxN(:,n)=   rmses_Qx1;
+    RVQ.tst_8_drmse_QxN(:,n)=   UTIL_RVQ_repeat_SNR(rmses_Qx1);
 

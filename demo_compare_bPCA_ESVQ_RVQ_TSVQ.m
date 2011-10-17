@@ -103,8 +103,8 @@
 %-----------------------------
 
 %Dudek
-%[DM2_trg, sw, sh]           =   DM2_create(13);
-%[DM2_tst, sw, sh]           =   DM2_create(13);
+[DM2_trg, sw, sh]           =   DM2_create(11);
+[DM2_tst, sw, sh]           =   DM2_create(11);
 
 %Gauss Markov
 %[temp, sw, sh]              =   DM2_create(10);
@@ -112,8 +112,8 @@
 %DM2_tst                     =   temp(:,101);
 
 %Uniform and Gaussian
-DM2_trg = rand(1089,100);            sw=33;sh=33;
-DM2_tst = DM2_trg;
+%DM2_trg = rand(1089,100);            sw=33;sh=33;
+%DM2_tst = DM2_trg;
 
 %DM2_trg = rand(1,7);            
 %DM2_trg=[0.6160    0.9475    0.0684    0.0370    0.9643    0.7116    0.1346];
@@ -134,7 +134,7 @@ aRVQ1.in_7__sh__            =   sh;             %snippet height
 % 2. PROCESSING
 %-----------------------------
 midx                        =   0;
-lst_M                       =   4;
+lst_M                       =   3;
 for  m = lst_M
     
     tic
@@ -168,31 +168,29 @@ for  m = lst_M
     toc
     save(['aRVQ_dudek_trg_1_to_95_m_' num2str(m)]);
 end    
-    
+
+%eRMSE and dRMSE reported by gen.exe
+    [eRMSE_allvals eRMSE]   =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 1); %1 is for eRMSE
+    [dRMSE_allvals dRMSE]   =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 3); %3 is for dRMSE
+    Q                       =   aRVQ1.mdl_1_Q___1x1;    
 %--------------------------------------------------------
 % POST-PROCESSING
 %--------------------------------------------------------
-%eRMSE and dRMSE
-    [eRMSE_allvals eRMSE]   =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 1); %1 is for eRMSE
-    [dRMSE_allvals dRMSE]   =   RVQ_FILES_read_from_genstat_file(cfn_gentxt, 3); %3 is for dRMSE
-                                plot(eRMSE(:,1), eRMSE(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(eRMSE_allvals(:,1))));
-                                hold on;
-                                plot(dRMSE(:,1), dRMSE(:,2), 'c^-');
+%plot
 
-%my data   
-    Q=aRVQ1.mdl_1_Q___1x1;
-    for i=1:Q
-        out(i) = UTIL_METRICS_compute_rms(aRVQ1.trg_8_ermse_QxN(i,:))
-        out1(i) = UTIL_METRICS_compute_rms(aRVQ1.tst_8_drmse_QxN(i,:))
-        out2(i) = UTIL_METRICS_compute_rms(aRVQ2.tst_8_drmse_QxN(i,:))
-        out3(i) = UTIL_METRICS_compute_rms(aRVQ3.tst_8_drmse_QxN(i,:))
-        out4(i) = UTIL_METRICS_compute_rms(aRVQ4.tst_8_drmse_QxN(i,:))
-    end
-    plot(1:Q,                     out , 'g+-');
-    plot(1:Q,                     out1 , 'bd-');
-    %plot(1:Q,                     aRVQ2.tst_8_drmse_QxN(1:Q) , 'bd-');
-    %plot(1:Q, UTIL_RVQ_repeat_SNR(aRVQ3.tst_8_drmse_QxN(1:Q)), 'm*-');
-    %plot(1:Q, UTIL_RVQ_repeat_SNR(aRVQ4.tst_8_drmse_QxN(1:Q)), 'ks-');
+    plot(eRMSE(:,1), eRMSE(:,2), 'ro-');%set(gca, 'XTickLabel', num2cell(num2str(eRMSE_allvals(:,1))));
+    hold on;
+    plot(dRMSE(:,1), dRMSE(:,2), 'c^-');
+
+    %plot(1:Q,   aRVQ1.trg_9_ermse_Qx1(1:Q), 'g+-'); %my decode training, should be same as dRMSE (sometimes it's slightly higher since if rms
+                                                     %reaches 0, Dr Barnes counts it as 0 even if subsequent stages increase
+                                                     %rms.  i take last stage rms.  in any case, in images, dRMSE will
+                                                     %hardly ever be 0 because of noise and so values will be the same.  
+    
+    plot(1:Q,   aRVQ1.tst_9_drmse_Qx1(1:Q), 'g+-');
+    plot(1:Q,   aRVQ2.tst_9_drmse_Qx1(1:Q), 'bd-');
+    plot(1:Q,   aRVQ3.tst_9_drmse_Qx1(1:Q), 'm*-');
+    plot(1:Q,   aRVQ4.tst_9_drmse_Qx1(1:Q), 'ks-');
     axis([1 Q 0 1.5])
     grid on;
     
@@ -201,10 +199,10 @@ end
     xlabel('q (stage index)');
     ylabel('reconstruction rms error');
     set(gca, 'XTick', 1:Q)
-    legend('trg (eRMSE)', 'trg (dRMSE)', 'trg (eRMSE, matlab)', 'tst (dRMSE, matlab)');
-    %legend('trg (eRMSE)', 'trg (dRMSE)', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR');
+    
+    legend('trg (eRMSE)', 'trg (dRMSE)', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR');
     %UTIL_FILE_save2pdf('RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf', gcf, 300);
-    UTIL_FILE_save2pdf('RVQ_3x2_1_to_7_22_34.pdf', gcf, 300);
+    %UTIL_FILE_save2pdf('RVQ_3x2_1_to_7_22_34.pdf', gcf, 300);
 
 
 

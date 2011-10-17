@@ -13,6 +13,8 @@ function [DM2, sw, sh] = DM2_create(dataset)
     elseif (dataset==11) DM2 =   1:7;     sw=1; sh=1;
     elseif (dataset==12) DM2 =   1:1000;                    sw=1; sh=1;   %deterministic, scalar, example mentioned in IDDM
     elseif (dataset==13) DM2 =   [1:7;22:2:34];               sw=2; sh=1;   %deterministic, scalar, example mentioned in IDDM
+    elseif (dataset==14) DM2 =   DM2_create_densityWithHole(1089, 1000, 0.5, 'Gaussian');sw=33;sh=33;  
+    elseif (dataset==15) DM2 =   DM2_create_densityWithHole(1089, 1000, 0.1, 'uniform');sw=33;sh=33;          
     end
 
     [D, N]                  =   size(DM2);                                  %dimensions of DM2

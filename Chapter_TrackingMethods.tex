@@ -9,7 +9,7 @@ The biggest challenge in tracking is difficulty in handling changes in target ap
 
 								\begin{figure}[t]
 								\center
-								\includegraphics[width=0.7\textwidth]{figs/PRML_PGM_overview.pdf}
+								\includegraphics[width=0.7\textwidth]{thesis/PRML_PGM_overview.pdf}
 								\caption{Tracking, big picture.}
 								\label{fig:TRK_big_picture}
 								\end{figure}
@@ -22,7 +22,7 @@ The biggest challenge in tracking is difficulty in handling changes in target ap
 
 								\begin{figure}[t]
 								\center
-								\includegraphics[width=1.0\textwidth]{figs/TRK_LinearEstimator_blockDiagram.pdf}
+								\includegraphics[width=1.0\textwidth]{thesis/TRK_LinearEstimator_blockDiagram.pdf}
 								\caption{Linear estimator.  The gain block is called the \emph{Kalman gain} for the Kalman filter.}
 								\label{TRK_overviewDiagram}
 								\end{figure}
@@ -31,7 +31,7 @@ Furthermore, several pre-processing steps may be required before tracking can be
 
 								\begin{figure}[t]
 								\center
-								\includegraphics[width=1.0\textwidth]{figs/TRK_ParticleFilter_multimodalPDF_part.png}
+								\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF_part.png}
 								\caption{Tracking using a particle filter.  Notice that the density is non-Gaussian and multi-modal.}
 								\label{fig:particle_filter_multi_modal_density}
 								\end{figure}
@@ -273,7 +273,7 @@ One of the main factors limiting visual tracking is the lack of suitable appeara
 \end{itemize}
 								\begin{figure}[t]
 								\center
-								\includegraphics[height=0.6\textheight]{figs/1991_JNL_TRKsub_Ullman_fig3.png}
+								\includegraphics[height=0.6\textheight]{thesis/1991_JNL_TRKsub_Ullman_fig3.png}
 								\caption{(a) Original images, (b) Synthetic images created from linear combinations of original images, (c) More original images at approximately same orientation as the synthetic images, (d) Synthetic images superimposed on original images~\cite{1991_JNL_Recog_Ullman}}.
 								\label{fig:1991_JNL_TRKsub_Ullman_fig3}
 								\end{figure}
@@ -286,7 +286,7 @@ In order to classify or recognize complex articulated objects, a large range of 
 
 								\begin{figure}[t]
 								\center
-								\includegraphics[width=0.6\textwidth]{figs/1992_JNL_VBR_Breuel_fig1.png}
+								\includegraphics[width=0.6\textwidth]{thesis/1992_JNL_VBR_Breuel_fig1.png}
 								\caption{Airplane recognized by view-based recognition system \cite{1992_JNL_VBR_Breuel}}
 								\label{fig:1992_JNL_VBR_Breuel_fig1}
 								\end{figure}
@@ -299,14 +299,14 @@ A fundamental question here is how to learn an appropriate set of view models.  
 
 								\begin{figure}[t]
 								\center
-								\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_SubspaceTracking_1998_Black_fig2_nocaption.png}
+								\includegraphics[width=1.0\textwidth]{thesis/TrackingPapers_SubspaceTracking_1998_Black_fig2_nocaption.png}
 								\caption{(a, b) Training images (c, d) Eigenspace basis images \cite{1998_JNL_Eigentracking_Black}}
 								\end{figure}
 
 
 								\begin{figure}
 								\center
-								\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_SubspaceTracking_1998_Black_fig3_nocaption.png}
+								\includegraphics[width=1.0\textwidth]{thesis/TrackingPapers_SubspaceTracking_1998_Black_fig3_nocaption.png}
 								\caption{(a) Test image (b) Least squares reconstruction (c) Robust reconstruction \cite{1998_JNL_Eigentracking_Black}}
 								\end{figure}
 
@@ -316,19 +316,19 @@ The transition of VBR to view-based tracking is first made in the seminal work o
 
 								\begin{figure}[t]
 								\center
-								\includegraphics[width=1.0\textwidth]{figs/TrackingPapers_SubspaceTracking_1998_Black_fig11_nocaption.png}
+								\includegraphics[width=1.0\textwidth]{thesis/TrackingPapers_SubspaceTracking_1998_Black_fig11_nocaption.png}
 								\caption{Brightness versus subspace constancy.  "Motion" between frames 16 and 18 ( computed within the white boxed region) (a) dense optical flow for the soda can computed using the brightness constancy assumption (b) "Flow" computed using the subspace constancy assumption for the same frames \cite{1998_JNL_Eigentracking_Black}}
 								\end{figure}
 
 
 \begin{figure}[t]
 \centering	
-\subfigure[Training image.]{\includegraphics[width=0.3\textwidth]{figs/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_trginp.png}}
-\subfigure[Training image reconstruction, parametric eigenspace]{\includegraphics[width=0.3\textwidth]{figs/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_trgout_paramPCA.png}}	
-\subfigure[Training image reconstruction, view-based eigenspace]{\includegraphics[width=0.3\textwidth]{figs/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_trgout_viewPCA.png}}	
-\subfigure[Test image.]{\includegraphics[width=0.3\textwidth]{figs/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_tstinp}}	
-\subfigure[Test image reconstruction, parametric eigenspace]{\includegraphics[width=0.3\textwidth]{figs/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_tstout_paramPCA.png}}	
-\subfigure[Test image reconstruction, view-based eigenspace]{\includegraphics[width=0.3\textwidth]{figs/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_tstout_viewPCA.png}}	
+\subfigure[Training image.]{\includegraphics[width=0.3\textwidth]{thesis/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_trginp.png}}
+\subfigure[Training image reconstruction, parametric eigenspace]{\includegraphics[width=0.3\textwidth]{thesis/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_trgout_paramPCA.png}}	
+\subfigure[Training image reconstruction, view-based eigenspace]{\includegraphics[width=0.3\textwidth]{thesis/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_trgout_viewPCA.png}}	
+\subfigure[Test image.]{\includegraphics[width=0.3\textwidth]{thesis/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_tstinp.png}}	
+\subfigure[Test image reconstruction, parametric eigenspace]{\includegraphics[width=0.3\textwidth]{thesis/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_tstout_paramPCA.png}}	
+\subfigure[Test image reconstruction, view-based eigenspace]{\includegraphics[width=0.3\textwidth]{thesis/TrackingPapers_SubspaceTracking_1997_Moghaddam_fig13_tstout_viewPCA.png}}	
 \caption{Comparing parametric eigenspace with view-based eigenspace.}								
 \label{fig:parametric_vs_viewBased_eigenspace}				
 \end{figure}
@@ -346,8 +346,8 @@ In \cite{2003_JNL_TRKsubspace_Jepson}, phase is chosen as the basis of the appea
 
 								\begin{figure}[t]
 								\centering	
-								\subfigure[In the image on the right, dimension is fixed to 50]{\includegraphics[width=1.0\textwidth]{figs/2008_JNL_TRKsub_Skocaj_fig4.png}}
-								\subfigure[Comparison of weighted vs non-weighted batch and incremental PCA algorithms]{\includegraphics[width=0.5\textwidth]{figs/2008_JNL_TRKsub_Skocaj_fig5.png}}
+								\subfigure[In the image on the right, dimension is fixed to 50]{\includegraphics[width=1.0\textwidth]{thesis/2008_JNL_TRKsub_Skocaj_fig4.png}}
+								\subfigure[Comparison of weighted vs non-weighted batch and incremental PCA algorithms]{\includegraphics[width=0.5\textwidth]{thesis/2008_JNL_TRKsub_Skocaj_fig5.png}}
 								\caption{Comparison of batch PCA with various incremental PCA update algorithms \cite{2008_JNL_TRKsubs_Skocaj}}
 								\label{fig:2008_JNL_TRKsub_Skocaj}				
 								\end{figure}
@@ -359,7 +359,7 @@ Having discussed traditional and subspace based tracking methods, we now turn to
 
 %								\begin{figure}[t]
 %								\center
-%								\includegraphics[width=0.5\textwidth]{figs/PRML_hierarchy_Bayes_MRF_regularization.pdf}
+%								\includegraphics[width=0.5\textwidth]{thesis/PRML_hierarchy_Bayes_MRF_regularization.pdf}
 %								\caption{Splines are equivalent to standard (smoothness based) regularization.  Standard regularization is a special case of MRF models.  MRF models are a subset of Bayesian estimators \cite{1990_JNL_Network_Poggio}}
 %								\label{fig:PRML_hierarchy_Bayes_MRF_regularization}
 %								\end{figure}

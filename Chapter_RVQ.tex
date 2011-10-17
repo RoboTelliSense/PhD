@@ -4,7 +4,7 @@
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 \begin{figure}[htp]			
-	\includegraphics[width=1\textwidth]{figs/Quantization_blockDiagram.pdf}
+	\includegraphics[width=1\textwidth]{thesis/Quantization_blockDiagram.pdf}
 	\caption{A quantizer $Q$ maps symbols from a source alphabet $\mathcal{X}$ to symbols from a reconstruction alphabet $\mathcal{C}$, where in general, the number of elements in $\mathcal{C}$, $|\mathcal{C}| << |\mathcal{X}|$, the number of elements in $\mathcal{X}$ }
 	\label{fig:Quantization_block_diagram}
 \end{figure}
@@ -51,7 +51,7 @@ The reconstruction alphabet is also known as the \emph{codebook}.  Members of th
 
 
 \begin{figure}[t]			
-	\includegraphics[width=1\textwidth]{figs/Quantization_MSE.pdf}
+	\includegraphics[width=1\textwidth]{thesis/Quantization_MSE.pdf}
 	\caption{Computing optimal centroids.}
 	\label{fig:computing_optimal_centroids}	
 \end{figure}
@@ -76,7 +76,7 @@ This tradeoff between rate and distortion can be plotted to create a \emph{rate-
 
 \begin{figure}[t]		
 	\center	
-	\includegraphics[height=0.4\textheight]{figs/MPEG4_VTK.png}
+	\includegraphics[height=0.4\textheight]{thesis/MPEG4_VTK.png}
 	\caption{Scalar quantization in the transform domain for MPEG-4.  The image on the left shows the 3 intensity channels of an input image patch drawn in the YUV color space.  The vertical dimension is the luma (Y) axis.  The right image shows the quantized reconstruction of the input image patch.  No deblocking filter has been used, and so the loss of information is entirely due to quantization.  Notice the straight lines along which the output pixels are aligned due to the quantization process.  The visualization was created using the Visualization Toolkit (VTK) \cite{VTK} in C.}
 	\label{fig:MPEG4_VTK}
 \end{figure}
@@ -87,7 +87,7 @@ This tradeoff between rate and distortion can be plotted to create a \emph{rate-
 %====================
 \begin{figure}[t]		
 	\center	
-	\includegraphics[height=0.5\textheight]{figs/Quantization_optimalPartitions2.pdf}
+	\includegraphics[height=0.5\textheight]{thesis/Quantization_optimalPartitions2.pdf}
 	\caption{Computing optimal partitions}
 	\label{fig:computing_optimal_partitions}
 \end{figure}
@@ -149,7 +149,7 @@ The only way to satisfy both Equations~\ref{Eq:partitions3} and \ref{Eq:partitio
 \subsection{Types of VQ}
 %=================
 \begin{figure}[htp]				
-	\includegraphics[width=1.1\textwidth]{figs/RVQ_comparisonWithESVQ_TSVQ.pdf}
+	\includegraphics[width=1.1\textwidth]{thesis/RVQ_comparisonWithESVQ_TSVQ.pdf}
 	\caption{Graphical comparison of ESVQ, TSVQ and RVQ, 16 codevectors}
 	\label{fig:comparison_ESVQ_TSVQ_RVQ}
 \end{figure}
@@ -189,7 +189,7 @@ We now list the main types of VQ that appear in the literature.  The goal of VQ 
 Residual Vector Quantizers were introduced by Juang et al. \cite{1982_CNF_SpeechRVQ_JuangGray}.  The RVQ structure is shown in Figure \ref{fig:RVQ_block_diagram}.  Initially a crude quantization of the input vector is carried out using a small codebook.  Then a second stage quantizer operates on the error of the first quantizer.  A third quantizer may be used to quantize the second error vector, and so on.  In other words, RVQs are realized as a sequence of small ESVQs.  Each stage operates on the error vector or \emph{residual} of the preceding ESVQ \cite{1991_CNF_DesignPerformanceRVQ_Frost}.  This direct sum structure coupled with a sequential search procedure enables the RVQ to have linear rather than exponential complexity, both in computations and in memory.  Two alternate graphical representations of this direct sum structure are given in Figure~\ref{fig:RVQ_sigma_tree}.
 
 \begin{figure}				
-	\includegraphics[width=1\textwidth]{figs/RVQ_blockDiagram.pdf}
+	\includegraphics[width=1\textwidth]{thesis/RVQ_blockDiagram.pdf}
 	\caption{RVQ: block diagram}
 	\label{fig:RVQ_block_diagram}
 \end{figure}
@@ -200,12 +200,12 @@ An RVQ is different from a traditional VQ in the sense that it partitions the in
 	\centering	
 	\subfigure[]
 	{
-		\includegraphics[width=0.65\textwidth]{figs/RVQ_graphicalReconstruction.pdf}
+		\includegraphics[width=0.65\textwidth]{thesis/RVQ_graphicalReconstruction.pdf}
 		\label{fig:MTT_codebooks}	
 	}
 	\subfigure[]
 	{
-		\includegraphics[width=0.65\textwidth]{figs/RVQ_trellis.pdf}
+		\includegraphics[width=0.65\textwidth]{thesis/RVQ_trellis.pdf}
 		\label{fig:MTT_reconstruction}	
 	}
 	\caption{RVQ $\sigma$-tree, $T$=3, $S=2$, two alternate representations} 
@@ -239,7 +239,7 @@ An example 3-level binary $\sigma$ tree is given in Figure~\ref{fig:RVQ_sigma_tr
 
 \begin{figure}[ht]
 \centering
-\includegraphics[height=0.6\textheight]{figs/RVQ_encoder_flowDiagram.pdf}
+\includegraphics[height=0.6\textheight]{thesis/RVQ_encoder_flowDiagram.pdf}
 \caption{Encoder flow diagram, generating codebooks $\Phi$}
 \label{fig:RVQ_encoder_flowDiagram}
 \end{figure}
@@ -275,7 +275,7 @@ In the equation above, $\mu_k$ is the cluster centroid for the $k$-th partition 
 
 \begin{figure}
 \center
-\includegraphics[width=0.5\textwidth]{figs/RVQ_CAC_toyExample2_2x2.pdf}
+\includegraphics[width=0.5\textwidth]{thesis/RVQ_CAC_toyExample2_2x2.pdf}
 \caption{2x2 RVQ example}
 \label{fig:Figure1}
 \end{figure}
@@ -363,7 +363,7 @@ m_{\tau, s} = \frac{\RVQInnerSum g_i}{N_{g_i \mapsto m_{\tau, s}}}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[height=0.6\textheight]{figs/RVQ_explorer_flowDiagram.pdf}
+\includegraphics[height=0.6\textheight]{thesis/RVQ_explorer_flowDiagram.pdf}
 \caption{Decoder flow diagram}
 \label{fig:RVQ_decoderFlowDiagram}
 \end{figure}

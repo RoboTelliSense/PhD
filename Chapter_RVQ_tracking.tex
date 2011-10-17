@@ -10,7 +10,7 @@ A learning-based tracking framework builds the target model while it tracks, thu
 %===================
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=1.0\textwidth]{figs/PhD_experimentalOverview.pdf}
+								\includegraphics[width=1.0\textwidth]{thesis/PhD_experimentalOverview.pdf}
 								\caption{Overview.}
 								\label{fig:overview}
 								\end{figure}
@@ -45,7 +45,7 @@ Visual tracking is the task of estimating a target's state over time.  In many c
 
 								\begin{figure}
 								\centering
-								\includegraphics[width=0.45\textwidth]{figs/PRML_PCA_problem.pdf}
+								\includegraphics[width=0.45\textwidth]{thesis/PRML_PCA_problem.pdf}
 								\caption{In $\mathbb{R}^2$, a reduced eigenspace means that eigenvector $u_2$ is discarded.  Vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ have the same projection error on eigenvector $u_1$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ of the training data $\mathbf{x}_i$.}
 								\label{fig:PRML_PCA_problem}
 								\end{figure}
@@ -56,7 +56,7 @@ In this work, we try to address single-target visual-tracking under several of t
 
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=0.5\textwidth]{figs/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
+								\includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
 								\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
 								\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
 								\end{figure}
@@ -88,7 +88,7 @@ In the previous section, we described the five major components of our visual tr
 
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=1\textwidth]{figs/PhD_experimentalTemporalOverview.pdf}
+								\includegraphics[width=1\textwidth]{thesis/PhD_experimentalTemporalOverview.pdf}
 								\caption{Temporal overview.}
 								\label{fig:temporal_overview}
 								\end{figure}
@@ -247,7 +247,7 @@ In this section, we discuss the representation model.  We refer back to Figure~\
 
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=0.5\textwidth]{figs/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
+								\includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
 								\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
 								\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
 								\end{figure}
@@ -450,19 +450,19 @@ car11			&Outdoors		&night			&vehicle					&yes	&4	&no	&yes	&yes	&N/A	&no		\\\hlin
 
 \begin{table}[h!]
 \centering
-\input{tables/tables_comparison_best}
+\input{thesis/tables_comparison_best}
 \caption{Comparison of best possible tracking error between PCA, RVQ and TSVQ over all algorithm parameters for 6 publicly available challenging datasets, Dudek, davidin300, sylv, fish, car4 and car11.  The table shows that RVQ produces the best results for 4 of the 6 datasets.  Overall tracking error is least for RVQ followed by PCA, and then followed by TSVQ.}
 \end{table}
 
 \begin{table}[h!]
 \centering
-\input{tables/tables_comparison_DOF_16}
+\input{thesis/tables_comparison_DOF_16}
 \caption{Comparison of tracking results using the same DoF, 16 eigenvectors for PCA, 8x2 RVQ and 3x2 TSVQ (15 DOF for TSVQ, 8 terminal code-vectors and 7 stage code-vectors).  RVQ has best overall tracking performance.}
 \end{table}
 
 \begin{table}[h!]
 \centering
-\input{tables/tables_comparison_DOF_32.tex}
+\input{thesis/tables_comparison_DOF_32.tex}
 \caption{Comparison of tracking results using the same DoF, 32 eigenvectors for PCA, 8x4 RVQ and 4x2 TSVQ (31 DOF for TSVQ, 16 terminal code-vectors and 15 stage code-vectors).  RVQ has best tracking performance every time, and therefore also best overall performance.}
 \end{table}
 
