@@ -1,0 +1,122 @@
+%===============================
+\clearpage
+\newpage
+\section{Tracking: Fish dataset} 
+%===============================
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[width=1.0\textwidth]{figs/seq_5_fish.png}
+								\caption{Fish dataset.}
+								\label{fig:seq_5_fish}
+								\end{figure}
+
+
+
+\begin{table}[h]
+\centering
+\input{thesis/tables_5_fish_rvq.tex}
+\caption{Tracking errors for various RVQ configurations.  -1 means that track was lost.  These results show that RVQ is able to track the object of interest very closely.}
+\end{table}
+
+For the interested reader, detailed graphical results follow for 8x4 RVQ.
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Tracking error}
+%------------------------------------
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.38\textheight]{figs/5_fish_8_4_1000_trk_rmse.pdf}
+								\caption{8x4 RVQ, tracking error (rmse).}
+								\label{fig:5_fish_8_4_1000_trk_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.38\textheight]{figs/5_fish_8_4_1000_trk_armse.pdf}
+								\caption{8x4 RVQ, tracking error (average rmse).}
+								\label{fig:5_fish_8_4_1000_trk_avg_rmse}
+								\end{figure}
+
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Target reconstruction}
+%------------------------------------
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_snp_rmse.pdf}
+								\caption{8x4 RVQ, snippet reconstruction error (rmse).}
+								\label{fig:5_fish_8_4_1000_snp_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_snp_armse.pdf}
+								\caption{8x4 RVQ, snippet reconstruction error (avg. rmse).}
+								\label{fig:5_fish_8_4_1000_snp_armse}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_snp_SNRdB.pdf}
+								\caption{8x4 RVQ, snippet reconstruction SNR in dB.}
+								\label{fig:5_fish_8_4_1000_snp_SNRdB}
+								\end{figure}
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Learning}
+%------------------------------------
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_trg_rmse.pdf}
+								\caption{8x4 RVQ, training error (rmse).}
+								\label{fig:5_fish_8_4_1000_trg_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_trg_armse.pdf}
+								\caption{8x4 RVQ, training error (avg. rmse).}
+								\label{fig:5_fish_8_4_1000_trg_armse}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_trg_SNRdB.pdf}
+								\caption{8x4 RVQ, training SNR in dB.}
+								\label{fig:5_fish_8_4_1000_trg_SNRdB}
+								\end{figure}
+%------------------------------------
+\clearpage
+\newpage
+\subsection{Testing}
+%------------------------------------
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_tst_rmse.pdf}
+								\caption{8x4 RVQ, testing error (rmse).}
+								\label{fig:5_fish_8_4_1000_tst_rmse}
+								\end{figure}
+
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_tst_armse.pdf}
+								\caption{8x4 RVQ, testing error (avg. rmse).}
+								\label{fig:5_fish_8_4_1000_tst_armse}
+								\end{figure}
+
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.4\textheight]{figs/5_fish_8_4_1000_tst_SNRdB.pdf}
+								\caption{8x4 RVQ,testing SNR in dB.}
+								\label{fig:5_fish_8_4_1000_tst_SNRdB}
+								\end{figure}
