@@ -13,7 +13,29 @@
 %===================================
 \section{Introduction}
 %===================================
-We consider a simple training set, $S_{trg}=\{1,2,3,4,5,6,7\}$.  Table~\ref{table:Exp1_encoder} gives the encoder codebooks for this training set while Table~\ref{table:Exp1_decoder} gives the decoder codebooks for $m=2,3,4,5,6,7,8$.  As $m$ increases, less stages $Q$ are required to achieve the same distortion.  As a result, the stages drop from 3 to 1 in going from $m=1$ to $m=7$.  Also notice that encoder and decoder codebooks are the same except for the 2x3 case.  Using the encoder codebook, the reconstruction rms error at the output of the first stage is 0.6547.  A slightly higher rms error of 0.7557 is achieved using the decoder codebook.   Table~\ref{table:Exp2_detailed_computations} gives detailed computations for code-vectors picked at every stage, reconstructions, errors, etc for the 2x3 encoder codebook.  
+We consider a simple training set, $S_{trg}=\{1,2,3,4,5,6,7\}$ and design RVQ codebooks for $M=2,3,4,5,6,7,8$.  Table~\ref{table:Exp1_encoder} displays the values of the code-vectors in the encoder codebooks while Table~\ref{table:Exp1_decoder} displays the values of the code-vectors in the decoder codebooks.  As $M$ increases, the number of equivalent code-vectors increases as $M^Q$.  It is therefore possible to reduce the value of $Q$ to achieve a given level of distortion.  For instance, in Table~\ref{table:Exp1_decoder}, the value of $Q$ decreases from 3 to 1 as the value of $M$ increases from 2 to 7.  The rms reconstruction error however stays constant at 0 in all cases, except in the 2x3 case where the rms error is 0.1543.
+
+
+As a result, the stages drop from 3 to 1 in going from $m=1$ to $m=7$.  Figure~\ref{fig:RVQ_entanglement_tree} graphically displays construction of equivalent code-vectors for the 3x2 and 2x4 cases.  In the former case, the trained RVQ $\sigma$-tree is unentangled and the equivalent Voronoi cells are simply connected regions.  In the latter case, the RVQ $\sigma$-tree is mildly entangled.  As a result, the equivalent code-vectors    
+
+
+							\begin{figure}
+							\centering
+							\subfigure[Unentangled tree using the 3x2 encoder codebook.]{\includegraphics[width=0.75\textwidth]{thesis2/RVQ_trg_1_to_7_equivalentCVs.pdf}}
+							\subfigure[Entanglement using the 2x4 encoder codebook.  The paths shown in bold will not be taken by any input data-point.]{\includegraphics[width=0.75\textwidth]{thesis2/RVQ_trg_1_to_7_equivalentCVs_2.pdf}}
+							\caption{Training set $S_{trg}=\{1,2,3,4,5,6,7\}$.  Construction of equivalent code-vectors using encoder codebooks given in Table~\ref{table:Exp1_encoder}.  In both cases shown above, the encoder codebook is exactly the same as the decoder codebook.  In the 3x2 case, the tree is unentangled since the equivalent partitions in $\mathbb{R}$ are connected regions~\cite{1992_JNL_RVQ_Barnes}.  In the 2x4 case, there is mild entanglement.}
+							\label{fig:RVQ_entanglement_tree}
+							\end{figure}
+
+							\begin{figure}
+							\centering
+							\includegraphics[width=0.75\textwidth]{thesis2/RVQ_trg_1_to_7_equivalentCVs_3.pdf}
+							\caption{Training set $S_{trg}=\{1,2,3,4,5,6,7\}$.  Unentangled tree using the 3x2 encoder codebook.  Construction of equivalent code-vectors using encoder codebooks given in Table~\ref{table:Exp1_encoder}.  In both cases shown above, the encoder codebook is exactly the same as the decoder codebook.  In the 3x2 case, the tree is unentangled since the equivalent partitions in $\mathbb{R}$ are connected regions~\cite{1992_JNL_RVQ_Barnes}.  In the 2x4 case, there is mild entanglement.}
+							\label{fig:RVQ_entanglement_tree}
+							\end{figure}
+
+The entanglement inhibits even placement of equivalent code-vectors, thereby increasing distortion.
+Also notice that encoder and decoder codebooks are the same except for the 2x3 case.  Using the encoder codebook, the reconstruction rms error at the output of the first stage is 0.6547.  A slightly higher rms error of 0.7557 is achieved using the decoder codebook.   Table~\ref{table:Exp2_detailed_computations} gives detailed computations for code-vectors picked at every stage, reconstructions, errors, etc for the 2x3 encoder codebook.  
 
 The actual rms errors as reported by gen.exe as given in Appendix~\ref{Exp1_gen_stat} and plotted in Figure~\ref{fig:RVQ_8x3_trg_1_to_7} are 0.6547 and 0.1543 respectively.
 

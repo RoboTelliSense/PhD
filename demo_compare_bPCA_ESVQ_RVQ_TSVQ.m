@@ -134,7 +134,7 @@ aRVQ1.in_7__sh__            =   sh;             %snippet height
 % 2. PROCESSING
 %-----------------------------
 midx                        =   0;
-lst_M                       =   3;
+lst_M                       =   6;
 for  m = lst_M
     
     tic
