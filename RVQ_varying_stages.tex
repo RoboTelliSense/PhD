@@ -2,7 +2,7 @@
 \title{RVQ Experiments}
 \author{Salman Aslam\\ Georgia Institute of Technology}
 \date{}
-\include{figs/inkscapeLatex}
+\include{thesis2/inkscapeLatex}
 \begin{document}
 \maketitle
 \rule[0pt]{\textwidth}{1pt}
@@ -84,7 +84,7 @@ In this sense, half of the available information in an infinite collection of cl
 
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=1.0\textwidth]{figs/theory_PRML_shattering.pdf}
+								\includegraphics[width=1.0\textwidth]{thesis2/theory_PRML_shattering.pdf}
 								\caption{A linear classifier in $\mathbb{R}^D$ can shatter $D+1$ points.  Here, in the first 3 examples, a line in $\mathbb{R}^2$ is able to shatter 3 points.  However, in the fourth example, it is unable to shatter 4 points.}
 								\label{fig:shattering}
 								\end{figure}
@@ -122,10 +122,10 @@ We make the following observations in Figure~\ref{fig:RVQ_results}:
 \end{itemize}
 
 \begin{figure}
-\subfigure[Dudek sequence, a 100 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images and used as training examples.  The test example is a single 33x33 snippet from the 101st image.]{\includegraphics[width=0.45\textwidth]{figs/RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf}}\hspace{0.2in}
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations were used for training.  The test example is a single realization in $\mathbb{R}^{1089}$.]{\includegraphics[width=0.45\textwidth]{figs/RVQ_8x4_uniform_trg_100_tst_1.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations were used for training.  The test example is a single realization in $\mathbb{R}^{1089}$.]{\includegraphics[width=0.45\textwidth]{figs/RVQ_8x4_Gaussian_trg_100_tst_1.pdf}}\hspace{0.55in}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations were used for training.  The test example is the 101st realization in $\mathbb{R}^{1089}$ and has correlation with the 100th realization.]{\includegraphics[width=0.45\textwidth]{figs/RVQ_8x4_GaussMarkov_trg_100_tst_1.pdf}}
+\subfigure[Dudek sequence, a 100 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images and used as training examples.  The test example is a single 33x33 snippet from the 101st image.]{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf}}\hspace{0.2in}
+\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations were used for training.  The test example is a single realization in $\mathbb{R}^{1089}$.]{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_uniform_trg_100_tst_1.pdf}}
+\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations were used for training.  The test example is a single realization in $\mathbb{R}^{1089}$.]{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Gaussian_trg_100_tst_1.pdf}}\hspace{0.55in}
+\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations were used for training.  The test example is the 101st realization in $\mathbb{R}^{1089}$ and has correlation with the 100th realization.]{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_GaussMarkov_trg_100_tst_1.pdf}}
 \caption{RVQ experiments with 8x4 codebook. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments.  A single test example in $\mathbb{R}^{1089}$ was reconstructed.}
 \label{fig:RVQ_results}
 \end{figure}

@@ -1,0 +1,137 @@
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\newcommand{\Ntrg}{\big[N_{t=1, m=1} + \lambda \big] + \big[N_{t=1, m=2} + \lambda \big] + \ldots + \big[N_{t=1, m=M} + \lambda \big]}
+\newcommand{\jointcnt}{\sum\limits_{n_{trg}=1}^{N_{trg}}I(X_t=x_t, X_{t-1}=x_{t-1})}
+\newcommand{\singlecnt}{\sum\limits_{n_{trg}=1}^{N_{trg}}I(X_{t-1}=x_{t-1})}
+\newcommand{\singlep}{p(X_{t-1}=x_{t-1})}
+\newcommand{\singlepone}{p(X_{t-1}=1)}
+\newcommand{\singleptwo}{p(X_{t-1}=2)}
+\newcommand{\singlepM}{p(X_{t-1}=M)}
+\newcommand{\condp}{p(X_t=x_t | X_{t-1}=x_{t-1})}
+\newcommand{\jointp}{p(X_t=x_t, X_{t-1}=x_{t-1})}
+\newcommand{\KmeansOuterSum}{\sum\limits_{k=1}^K}
+\newcommand{\KmeansInnerSum}{\sum\limits_{{i=1 \atop x_i \in \mathcal{K}_k}}^N}
+\newcommand{\KmeansSum}{\KmeansOuterSum \KmeansInnerSum}
+\newcommand{\RVQInnerSum}{\sum\limits_{{i=1 \atop g_i \mapsto m_{\tau, s}}}^N}
+\newcommand{\RVQOuterSum}{\sum_{s=1}^S}
+\newcommand{\RVQsum}{\KmeansOuterSum \sum\limits_{{i=1 \atop g_i \in \mathcal{K}_k}}^N}
+\newcommand{\KmeansInner}{{(x_i - \mu_k)}^2}
+\newcommand{\RVQinner}{            {(x_i  - \hat{\mu}^{(k)})}^2}
+\newcommand{\RVQinneralternate}{{(g_i - m_\tau^{(k)})}^2}
+\newcommand{\RVQinneralternatealternate}{{(g_i - m_{\tau, s})}^2}
+\newcommand{\KmeansError}{\KmeansSum \KmeansInner}
+\newcommand{\RVQerror}     {\KmeansSum \RVQinner}
+\newcommand{\RVQerroralternate}{\RVQsum \RVQinneralternate}
+\newcommand{\RVQunit}{x_i -\bigg(\sum_{t=1}^Tm^{(k)}_t\bigg)}
+\newcommand{\RVQequivalentCodevector}{\sum_{t=1 }^Tm^{(k)}_t}
+\newcommand{\RVQequivalentCodevectorBroken}{\sum_{t=1 \atop t \neq \tau}^Tm^{(k)}_t+ m^{(k)}_\tau}
+\newcommand{\RVQmultipleKmeans}{x_i -\bigg(\RVQequivalentCodevectorBroken\bigg)}
+\newcommand{\RVQmultipleKmeansone}{x_i -\sum_{t=2}^Tm^{(k)}_t+ m^{(k)}_1\bigg)}
+\newcommand{\RVQmultipleKmeansonealternate}{\bigg(x_i -\sum_{t=1 \atop t \neq \tau}^Tm^{(k)}_t\bigg) - m^{(k)}_\tau}
+\newcommand{\RVQmultipleKmeanstwo}{x_i -\bigg(\sum_{t=1 \atop t \neq 2}^Tm^{(k)}_t+ m^{(k)}_2\bigg)}
+\newcommand{\RVQmultipleKmeansT}{x_i -\bigg(\sum_{t=1}^{T-1}m^{(k)}_t+ m^{(k)}_2\bigg)}
+\newcommand{\EucMatrix}
+{
+\left[
+\begin{array}{lll}
+r_{11} & r_{12} & t_x \\ 
+r_{21} & r_{22} & t_y \\ 
+0 & 0 & 1 \\ 
+\end{array}
+\right]
+}	
+
+\newcommand{\SimMatrix}
+{
+\left[
+\begin{array}{lll}
+sr_{11} & sr_{12} & t_x \\ 
+sr_{21} & sr_{22} & t_y \\
+0 & 0 & 1 \\ 
+\end{array}
+\right]
+}
+
+\newcommand{\AffMatrix}
+{
+\left[
+\begin{array}{lll}
+a &b & t_x \\ 
+c & d & t_y \\
+0 & 0 & 1 \\
+\end{array}
+\right]
+}
+
+\newcommand{\ProjMatrix}
+{
+\left[
+\begin{array}{lll}
+h_{11} & h_{12} & h_{13} \\ 
+h_{21} & h_{22} & h_{23} \\ 
+h_{31} & h_{32} & h_{33} \\ 
+\end{array}
+\right]
+}
+
+\newcommand{\RotMatrixTheta}
+{
+\left[
+\begin{array}{rr}
+\cos(\theta) & -\sin(\theta) \\ 
+\sin(\theta) & \cos(\theta) \\ 
+\end{array}
+\right]
+}
+
+\newcommand{\RotMatrixPhi}
+{
+\left[
+\begin{array}{rr}
+\cos(\phi) & -\sin(\phi) \\ 
+\sin(\phi) & \cos(\phi) \\ 
+\end{array}
+\right]
+}
+
+\newcommand{\RotMatrixminusPhi}
+{
+\left[
+\begin{array}{rr}
+\cos(-\phi) & -\sin(-\phi) \\ 
+\sin(-\phi) & \cos(-\phi) \\ 
+\end{array}
+\right]
+}
+
+
+\newcommand{\EigenvalueMatrix}
+{
+\left[
+\begin{array}{cc}
+\lambda_1 & 0\\
+0 & \lambda_2
+\end{array}
+\right]
+}
+
+\newcommand{\bigMatrix}
+{
+s \left[
+\begin{array}{cc}
+ (r)(a) + b &  (r)(d) - c \\
+ (r)(c) - d &  (r)(b) + a
+\end{array}
+\right]
+}
+
+
+\newcommand{\bigMatrixTwo}
+{
+\left[
+\begin{array}{cc}
+(\lambda_2) p + (\lambda_1) q & (\lambda_2) s  - (\lambda_1) r \\
+(\lambda_2) r  - (\lambda_1) s & (\lambda_2) q + (\lambda_1) p
+\end{array}
+\right]
+}
+\newcommand{\dr}{(\mathbf{x}_i-\boldsymbol\mu_k)^T(\mathbf{x}_i-\boldsymbol\mu_k) + \lambda({Q_{\textrm{max}}-Q_i})}
