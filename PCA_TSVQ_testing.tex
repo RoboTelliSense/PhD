@@ -20,10 +20,10 @@ In our experiments, the reason for using $\mathbb{R}^{1089}$ is that our targets
 
 
 \begin{figure}
-\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.  The ground truth affine parameters $\theta, \lambda_1, \lambda_2, t_x, t_y$ used to extract the snippets from the images were corrupted with zero-mean additive gaussian-noise (standard deviation 0.1) to simulate the effect of errors in tracking estimates.]{\includegraphics[width=0.45\textwidth]{figs/PCA_Dudek.pdf}}\hspace{0.2in}
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{figs/PCA_Uniform.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{figs/PCA_Gaussian.pdf}}\hspace{0.55in}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{figs/PCA_GaussMarkov.pdf}}
+\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.  The ground truth affine parameters $\theta, \lambda_1, \lambda_2, t_x, t_y$ used to extract the snippets from the images were corrupted with zero-mean additive gaussian-noise (standard deviation 0.1) to simulate the effect of errors in tracking estimates.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Dudek.pdf}}\hspace{0.2in}
+\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Uniform.pdf}}
+\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Gaussian.pdf}}\hspace{0.55in}
+\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_GaussMarkov.pdf}}
 \caption{PCA experiments, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments.  Results were averaged over 10 cross-validation runs.  For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
 \label{fig:PCA_results}
 \end{figure}
@@ -31,10 +31,10 @@ In our experiments, the reason for using $\mathbb{R}^{1089}$ is that our targets
 
 
 \begin{figure}
-\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.  The ground truth affine parameters $\theta, \lambda_1, \lambda_2, t_x, t_y$ used to extract the snippets from the images were corrupted with zero-mean additive gaussian-noise (standard deviation 0.1) to simulate the effect of errors in tracking estimates.]{\includegraphics[width=0.45\textwidth]{figs/TSVQ_Dudek.pdf}}\hspace{0.2in}
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{figs/TSVQ_Uniform.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{figs/TSVQ_Gaussian.pdf}}\hspace{0.55in}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{figs/TSVQ_GaussMarkov.pdf}}
+\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.  The ground truth affine parameters $\theta, \lambda_1, \lambda_2, t_x, t_y$ used to extract the snippets from the images were corrupted with zero-mean additive gaussian-noise (standard deviation 0.1) to simulate the effect of errors in tracking estimates.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Dudek.pdf}}\hspace{0.2in}
+\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Uniform.pdf}}
+\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Gaussian.pdf}}\hspace{0.55in}
+\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_GaussMarkov.pdf}}
 \caption{TSVQ experiments, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments.  Results were averaged over 10 cross-validation runs.  For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
 \label{fig:TSVQ_results}
 \end{figure}
