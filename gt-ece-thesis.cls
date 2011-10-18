@@ -914,7 +914,7 @@
 \newcommand{\title@bottom}{
    \begin{center}%
       \ifcampanile%
-         \scalebox{0.22}{\includegraphics{figs/logo_GTcampanile}}%
+         \scalebox{0.22}{\includegraphics{thesis/logo_GTcampanile}}%
          \ \\%
       \fi%
       \@dept\\%
