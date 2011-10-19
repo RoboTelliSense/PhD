@@ -1,26 +1,27 @@
 \include{begin_article}
-\title{RVQ Experiments}
-\author{Salman Aslam\\ Georgia Institute of Technology}
+\title{Appearance Modeling using PCA, RVQ and TSVQ}
 \date{}
-\include{inkscapeLatex}
 \begin{document}
 \maketitle
 \rule[0pt]{\textwidth}{1pt}
 \tableofcontents
 \rule[0pt]{\textwidth}{1pt}
 
-%================================
+%=========================
 \section{Introduction}
-%================================
-Our goal is to examine the effects on training and test error of varying $q$, the number of stages in RVQ, while keeping $m$, the number of code-vectors per stage fixed.  For this, we train an 8x4 RVQ (maximum q=8, m=4) using four different data distributions in $\mathbb{R}^{1089}$: (a) Dudek sequence, (b) Uniform random variable, (c) Gaussian random variable, and (d) Gauss-Markov random variable.
+%=========================
+Our tracking framework consists of the following five components: (a) Target appearance model, (b) target representation model, (c) target observation model, (d) target inference model, and (e) target motion model
+
+In this report, we are interested in target appearance modeling only.  For this, we look at rms errors for target appearance reconstruction using PCA, RVQ and TSVQ.  It is hoped that investigating reconstruction errors will aid in the understanding of appearance modeling.
+
+We use four datasets in $\mathbb{R}^{1089}$: (a) Uniform random variable, (c) Gaussian random variable, (c) Gauss-Markov random variable, and (d) images from the Dudek sequence.
 
 %================================
 \section{Theory}
 %================================
-While examining the effects on training and test error of varying $q$, we would also like to relate the notions of generalization ability of RVQ, varying $q$ and VC dimension in statistical learning theory.  The  motivation behind this is to get a theoretical justification for using a particular $q$ in a given situation.  In particular, this is given by the notion of empirical risk minimization.
+While examining the effects of training and test error of varying $q$, we would also like to relate the notions of generalization ability of RVQ, varying $q$ and VC dimension in statistical learning theory.  The  motivation behind this is to get a theoretical justification for using a particular $q$ in a given situation.  In particular, this is given by the notion of empirical risk minimization.
 
 The concept of VC dimension was introduced by Vapnik~\cite{1999_BOOK_PRML_Vapnik} as a means of specifying the generalization ability of classifiers.  In this work, we look at some definitions leading up to the VC dimension.  It has been shown that the VC dimension of a nearest neighbor classifier is equal to the number of reference points in the training set~\cite{2003_JNL_PRML_Karacali}.  We extend this to show that the VC dimension of an RVQ classifier depends on both its number of stages $Q$ and the number of code-vectors per stage $M$.
-
 
 In pattern recognition, a \emph{classifier} $g(x)$ is a function that maps $x_i \in \mathbb{R}^D$ to a set of $M$ discrete \emph{class} labels, $\theta  \in \{1, 2, \ldots M\}$, i.e., $g(x):~\mathbb{R}^D~\rightarrow~\{1, 2, \ldots M\}$.  The classifier errs if $g(x) \neq \theta$~\cite{1996_BOOK_PR_DevroyeGyorfiLugosi}.  Since it is not possible to create a classifier that always achieves perfect mapping, we create a probabilistic setting and let $\mathbf{X} \times \mathbf{\Theta}$ be an $\mathbb{R}^D \times \{1, 2, \ldots M\}$-valued random pair.  
 
@@ -92,12 +93,67 @@ In this sense, half of the available information in an infinite collection of cl
 \item \underline{VC dimension of NN classifier}.   It has been shown by Kara\c{c}ali and Krim~\cite{2003_JNL_PRML_Karacali} that the VC dimension of the NN classifier is given by the number of reference points in the training set~\cite{2005_CNF_ML_Angiulli}.  These reference points can be obtained from the codevectors of a VQ codebook, such as an RVQ codebook.  For an RVQ codebook with $Q$ stages, and $M$ code-vectors per stage, there are $M^Q$ equivalent code-vectors.  Moreover, the number of direct-sum code-vectors at the end of the $q$-th stage is $M^q$\footnote{This assumes that there are no null code-vectors, i.e. code-vectors in which all elements are 0.}.   Therefore, the VC dimension of an RVQ nearest neighbor classifier in a variable-rate framework depends on how many stages and codevectors per stage are used.  Changing these numbers can be used to change the VC dimension of the RVQ NN classifier, and hence its generalization ability.  
 \end{enumerate}
 
- 
 
-
-%================================
+%=========================
 \section{Experiments}
-%================================
+%=========================
+In our experiments, the reason for using $\mathbb{R}^{1089}$ is that our targets for all our tracking datasets are warped to a canonical size of 33-pixel height and 33-pixel width (33x33=1089).  In all cases, we take 100 examples and split them up using an 80/20 rule, i.e. 80 training examples and 20 test examples.  10 cross-validation runs are used to smooth out the effect of the rare bizarre distribution.  In each cross-validation run, the training and test examples are picked randomly in the 80/20 ratio.  Results for PCA are shown in Figure~\ref{fig:PCA_results} while results for TSVQ are shown in Figure~\ref{fig:TSVQ_results}.
+
+%---------------------------------
+\subsection{PCA}
+%---------------------------------
+\begin{figure}
+\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.  The ground truth affine parameters $\theta, \lambda_1, \lambda_2, t_x, t_y$ used to extract the snippets from the images were corrupted with zero-mean additive gaussian-noise (standard deviation 0.1) to simulate the effect of errors in tracking estimates.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Dudek.pdf}}\hspace{0.2in}
+\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Uniform.pdf}}
+\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Gaussian.pdf}}\hspace{0.55in}
+\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_GaussMarkov.pdf}}
+\caption{PCA experiments, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments.  Results were averaged over 10 cross-validation runs.  For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
+\label{fig:PCA_results}
+\end{figure}
+
+%---------------------------------
+\subsection{RVQ}
+%---------------------------------
+Our goal is to examine the effects on training and test error of varying $q$, the number of stages in RVQ, while keeping $m$, the number of code-vectors per stage fixed.  For this, we train an 8x4 RVQ (maximum q=8, m=4) using four different data distributions in $\mathbb{R}^{1089}$: (a) Dudek sequence, (b) Uniform random variable, (c) Gaussian random variable, and (d) Gauss-Markov random variable.
+
+
+\begin{figure}
+\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations were used for training.]
+{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Uniform.pdf}}
+\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations were used for training.]
+{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Gaussian.pdf}}
+\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations were used for training.]
+{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_GaussMarkov.pdf}}\hspace{0.55in}
+\subfigure[Dudek sequence, a 100 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images and used as training examples.]
+{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Dudek.pdf}}
+\caption{RVQ experiments with 8x4 codebook. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments.  A single test example in $\mathbb{R}^{1089}$ was reconstructed.}
+\label{fig:RVQ_results}
+\end{figure}
+
+%---------------------------------
+\subsection{TSVQ}
+%---------------------------------
+\begin{figure}
+\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.  The ground truth affine parameters $\theta, \lambda_1, \lambda_2, t_x, t_y$ used to extract the snippets from the images were corrupted with zero-mean additive gaussian-noise (standard deviation 0.1) to simulate the effect of errors in tracking estimates.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Dudek.pdf}}\hspace{0.2in}
+\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Uniform.pdf}}
+\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Gaussian.pdf}}\hspace{0.55in}
+\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_GaussMarkov.pdf}}
+\caption{TSVQ experiments, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments.  Results were averaged over 10 cross-validation runs.  For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
+\label{fig:TSVQ_results}
+\end{figure}
+
+
+%=========================
+\section{Conclusions}
+%=========================
+\subsection{PCA}
+In all 4 cases, the training error decreases monotonically with increasing eigenvectors.  This is expected, even in the random datasets since more and more eigenvectors continue to explain the data until the training error becomes 0 when 80 eigenvectors are used, since there are 80 training examples.  Also, for all cases, the test error decreases at a slower rate than test error as expected. 
+
+For the Dudek sequence, we see that the test error decreases up till about 50 eigenvectors and then levels off.  This means that it takes about 50 eigenvectors to capture most of the linear dependencies in this dataset.  After the 50 eigenvector mark, the test error does not increase since the test vectors are very similar to the training set.  This is what one would expect in a tracking scenario over short periods of time.  
+
+For the uniform, Gaussian, and uniform random variable cases, PCA test error stays about the same since there is no statistical correlation in the data.  For the Gaussian source, the error is equal to the variance of the source.  For the Gauss-Markov case, test error drops and then levels off.  This is expected since the Gauss-Markov has first order linear dependency.
+
+\subsection{RVQ}
 In the following experiments, we keep $m$, the number of code-vectors per stage constant and vary $q$, the number of stages.  We see that as stages increase, the training error tends to decrease and so does test error, a sign of increasing VC dimension.
 
 We make the following observations in Figure~\ref{fig:RVQ_results}:
@@ -121,25 +177,16 @@ We make the following observations in Figure~\ref{fig:RVQ_results}:
 \item Of the random variable experiments, the highest reconstruction errors are for Gaussian, uniform and Gauss-Markov random variables, as expected.  The reason is that the Gaussian distribution has the highest entropy, followed by the uniform random variable, and then followed by the statistically correlated Gauss-Markov random variable.
 \end{itemize}
 
-\begin{figure}
-\subfigure[Dudek sequence, a 100 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images and used as training examples.  The test example is a single 33x33 snippet from the 101st image.]{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf}}\hspace{0.2in}
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations were used for training.  The test example is a single realization in $\mathbb{R}^{1089}$.]{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_uniform_trg_100_tst_1.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations were used for training.  The test example is a single realization in $\mathbb{R}^{1089}$.]{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Gaussian_trg_100_tst_1.pdf}}\hspace{0.55in}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations were used for training.  The test example is the 101st realization in $\mathbb{R}^{1089}$ and has correlation with the 100th realization.]{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_GaussMarkov_trg_100_tst_1.pdf}}
-\caption{RVQ experiments with 8x4 codebook. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments.  A single test example in $\mathbb{R}^{1089}$ was reconstructed.}
-\label{fig:RVQ_results}
-\end{figure}
-
-%================================
-\section{Conclusions}
-%================================
 In these experiments, we see that as $q$, the number of stages increases, training error and test error decrease.  This is as expected.  However, we intend to do more experiments using cross-validation to gain more confidence in these results.
 
-These initial experiments appear to confirm the fact that RVQ has variable VC dimension.  Whereas it is to be expected that increasing stages will decrease reconstruction error, both at design-time and run-time, ERM (empirical risk minimization) from statistical learning theory can be used as a justification for the number of stages $q$ that are used in a given classification or tracking scenario.
+These initial experiments appear to confirm the fact that RVQ has variable VC dimension.  Whereas it is to be expected that increasing stages will decrease reconstruction error, both at design-time and run-time, ERM (empirical risk minimization) from statistical learning theory can be used as a justification for the number of stages $q$ that are used in a given classification or tracking scenario. 
 
+\subsection{TSVQ}
+For the binary balanced-tree TSVQ, test error and training error for the Dudek and Gauss-Markov cases decrease as expected with increasing stages.  However, for the datasets in which there is no correlation, TSVQ test error increases monotonically.  It appears that the TSVQ code-book is over-trained.  Since the test data is quite different from the training data, test error starts to increase.  
 
-\clearpage
-\newpage
+\subsection{Overall}
+Overall, the test error for low Q in PCA and low Q in TSVQ is about the same.  However, TSVQ with its high VC dimension as the number of stages goes up starts to over-generalize.
+
 \normalsize
 \bibliographystyle{ieee}
 \bibliography{MyCitations}

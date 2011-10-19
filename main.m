@@ -51,35 +51,35 @@
 %> Date last modified       :   Sep 19, 2011
 
 
-clear;
-clc;
-close all;
-
-pca__Q                      =   16;
-
-rvq__maxQ                   =   8;
-rvq__M                      =   4;
-rvq__tSNR                   =   1000;   %target SNR
-rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
-rvq__lmbd                   =   0;
-rvq__type                   =   'uint8';
-
-tsvq_maxQ                   =   3;
-tsvq_M                      =   2;
-
-bUseIPCA                    =   0;
-bUseBPCA                    =   0;   
-bUseRVQx                    =   1;
-bUseTSVQ                    =   0;
-
-ds_code                     =   1;
+% clear;
+% clc;
+% close all;
+% 
+% pca__Q                      =   16;
+% 
+% rvq__maxQ                   =   8;
+% rvq__M                      =   4;
+% rvq__tSNR                   =   1000;   %target SNR
+% rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
+% rvq__lmbd                   =   0;
+% rvq__type                   =   'uint8';
+% 
+% tsvq_maxQ                   =   3;
+% tsvq_M                      =   2;
+% 
+% bUseIPCA                    =   0;
+% bUseBPCA                    =   0;   
+% bUseRVQx                    =   1;
+% bUseTSVQ                    =   0;
+% 
+% ds_code                     =   1;
 
 %#######################################################################
-% function main(   pca__Q,                                                ...
-%                  rvq__maxQ, rvq__M, rvq__tSNR, rvq__lmbd, rvq__tstI,    ...
-%                  tsvq_maxQ, tsvq_M,                                     ...
-%                  bUseIPCA , bUseBPCA , bUseRVQx, bUseTSVQ,              ...
-%                  ds_code)
+function main(   pca__Q,                                                ...
+                 rvq__maxQ, rvq__M, rvq__tSNR, rvq__lmbd, rvq__tstI,    ...
+                 tsvq_maxQ, tsvq_M,                                     ...
+                 bUseIPCA , bUseBPCA , bUseRVQx, bUseTSVQ,              ...
+                 ds_code)
 
 %-----------------------------------------
 %INITIALIZATION
@@ -100,6 +100,9 @@ ds_code                     =   1;
     PARAM.pf_Np             =   600;                %particle filter, number of particles
     PARAM.pf_errfunc        =   'L2';               %    "       "  , options: PPCA, robust, L2
     PARAM.pf_reseig         =   0;    
+    
+    rvq__type               =   'uint8';
+    
 	colormap(gray)
                    
     
@@ -167,7 +170,7 @@ ds_code                     =   1;
     %clean up clutter
     clear bUseIPCA bUseBPCA bUseRVQx bUseTSVQ
     clear pca__Q 
-    clear rvq__maxQ rvq__M rvq__tSNR rvq__tstI 
+    clear rvq__maxQ rvq__M rvq__tSNR rvq__tstI rvq__type
     clear tsvq_maxQ tsvq_M 
     clear ds_code
     clear a b firstI first_mean_shxsw

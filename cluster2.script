@@ -1,5 +1,5 @@
-cd /cluster/users/gtg629v/salman/portable/RVQ_xplatform1
+cd /cluster/users/gtg629v/salman/PhD
 /usr/local/bin/matlab -nodesktop << EOF
-RVQ_3_drawAllResults($1, $2)
+demo_cross_validation($1)
 exit
 EOF

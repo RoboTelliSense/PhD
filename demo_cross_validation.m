@@ -2,11 +2,12 @@
 %INITIALIZATIONS
 %-----------------------------
 %matlab
-    clear;
-    clc;
-    close all;
-    format compact;
+%     clear;
+%     clc;
+%     close all;
+%     format compact;
     
+function demo_cross_validation(ds_code)
 %algorithm parameters    
     %BPCA
     aBPCA.in_1__name        =   'aBPCA';
@@ -17,9 +18,9 @@
 	aRVQx.in_1__name        =   'aRVQx';
     aRVQx.in_2__data        =   'tst';          %data type: trg or tst, default is tst
     aRVQx.in_3__maxQ        =   8;              %max number of stages  
-    aRVQx.in_4__M___        =   16;              %number of codevectors/stage
     aRVQx.in_5__tSNR        =   1000;           %target SNRdB during learning (creating codebooks)   
     aRVQx.odir              =   '';
+    rvq__tstI               =   1;
     aRVQx.in_9__trgD        =   'maxQ';         %decoding rule for training data: can't have RofE because RofE only happens after training!
 
     
@@ -37,8 +38,13 @@
 % PRE-PROCESSING
 %-----------------------------
 
-[DM2, sw, sh]               =   DM2_create(8);
-PARAM.ds_1_code             =   1;  %Dudek
+[DM2, sw, sh]               =   DM2_create(ds_code);
+PARAM.ds_1_code             =   ds_code;  %Dudek
+if (ds_code==9)
+    aRVQx.in_8__type        =   'uint8';
+else
+    aRVQx.in_8__type        =   'double';
+end
 PARAM.tgt_sw                =   sw;
 PARAM.tgt_sh                =   sh;
 [PARAM.ds_2_name, PARAM.ds_3_name] =    UTIL_DATASET_getName3(PARAM.ds_1_code);
@@ -46,34 +52,27 @@ PARAM.tgt_sh                =   sh;
 %-----------------------------
 % 2. PROCESSING
 %-----------------------------
-%lst_Q                       =   [1:8];
-%lst_Q                       =   [4:4:256];
-lst_M                       =   4;
-lst_I                       =   1:4;
+    %lst_Q                  =   [1:8];
+    %lst_Q                  =   [4:4:256];
+    lst_M                   =   2:2;
+    qidx                    =   0;
 
-
-
-qidx                        =   0;
-%for  q = lst_Q
-for tstI=lst_I
-    for m=lst_M
-    tic
-    qidx                    =   qidx+1
-    %aBPCA.mdl_1_Q___1x1     =   q;
-    %aTSVQ.in_3__maxQ       =   q;
-    aRVQx.in_4__M___        =   m;
-    [aRVQx temp]            =   RVQx_config(PARAM, [], aRVQx.in_3__maxQ, m, aRVQx.in_5__tSNR, tstI, 0); %0 is lambda
-    [rmse_trg(qidx), rmse_tst(qidx)]  ... 
+    %for  q = lst_Q
+    for m=lst_M 
+        qidx                =   qidx+1
+        %aBPCA.mdl_1_Q___1x1=   q;
+        %aTSVQ.in_3__maxQ   =   q;
+        aRVQx.in_4__M___    =   m;
+        [aRVQx temp]        =   RVQx_config(PARAM, [], aRVQx.in_3__maxQ, m, aRVQx.in_5__tSNR, rvq__tstI, 0, aRVQx.in_8__type); %0 is lambda
+        [rmse_trg(qidx), rmse_tst(qidx)]  ... 
                             =   UTIL_DATA_crossvalidation(DM2, aRVQx, numTrials, percentage_tst)
                             %=   UTIL_DATA_crossvalidation(DM2, aTSVQ, numTrials, percentage_tst)
                             %=   UTIL_DATA_crossvalidation(DM2, aBPCA, numTrials, percentage_tst)
-    toc
-    %
     end    
-end
-rmse_trg
-rmse_tst
 
+    rmse_trg
+    rmse_tst
+    save(['rvq_cross_validation_' num2str(ds_code)])
 % figure;
 % plot(lst_Q, rmse_trg, 'ro-')
 % hold on;

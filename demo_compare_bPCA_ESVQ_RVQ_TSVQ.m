@@ -85,7 +85,7 @@
     aRVQ1.in_1__name        =   'aRVQx';
     aRVQ1.in_2__data        =   'tst';          %data type: trg or tst, default is tst
     aRVQ1.in_3__maxQ        =   8;              %max number of stages  
-    aRVQ1.in_4__M___        =   16;              %number of codevectors/stage
+    aRVQ1.in_4__M___        =   4;              %number of codevectors/stage
     aRVQ1.in_5__tSNR        =   1000.0;           %target SNRdB during learning (creating codebooks)        
     aRVQ1.in_8__type        =   'double';
     aRVQ1.odir              =   '';
@@ -103,17 +103,18 @@
 %-----------------------------
 
 %Dudek
-[DM2_trg, sw, sh]           =   DM2_create(11);
-[DM2_tst, sw, sh]           =   DM2_create(11);
+%[DM2_trg, sw, sh]           =   DM2_create(8);
+%[DM2_tst, sw, sh]           =   DM2_create(11);
+%DM2_tst                     =   DM2_trg;
 
 %Gauss Markov
-%[temp, sw, sh]              =   DM2_create(10);
+%[DM2_trg, sw, sh]              =   DM2_create(10);
 %DM2_trg                     =   temp(:,1:100);
-%DM2_tst                     =   temp(:,101);
+%DM2_tst                     =   DM2_trg;
 
 %Uniform and Gaussian
-%DM2_trg = rand(1089,100);            sw=33;sh=33;
-%DM2_tst = DM2_trg;
+DM2_trg = randn(1089,100);            sw=33;sh=33;
+DM2_tst = DM2_trg;
 
 %DM2_trg = rand(1,7);            
 %DM2_trg=[0.6160    0.9475    0.0684    0.0370    0.9643    0.7116    0.1346];
@@ -134,7 +135,7 @@ aRVQ1.in_7__sh__            =   sh;             %snippet height
 % 2. PROCESSING
 %-----------------------------
 midx                        =   0;
-lst_M                       =   6;
+lst_M                       =   4;
 for  m = lst_M
     
     tic
@@ -182,26 +183,26 @@ end
     hold on;
     plot(dRMSE(:,1), dRMSE(:,2), 'c^-');
 
-    %plot(1:Q,   aRVQ1.trg_9_ermse_Qx1(1:Q), 'g+-'); %my decode training, should be same as dRMSE (sometimes it's slightly higher since if rms
+    plot(1:Q,   aRVQ1.trg_9_ermse_Qx1(1:Q), 'g+-'); %my decode training, should be same as dRMSE (sometimes it's slightly higher since if rms
                                                      %reaches 0, Dr Barnes counts it as 0 even if subsequent stages increase
                                                      %rms.  i take last stage rms.  in any case, in images, dRMSE will
                                                      %hardly ever be 0 because of noise and so values will be the same.  
     
-    plot(1:Q,   aRVQ1.tst_9_drmse_Qx1(1:Q), 'g+-');
-    plot(1:Q,   aRVQ2.tst_9_drmse_Qx1(1:Q), 'bd-');
-    plot(1:Q,   aRVQ3.tst_9_drmse_Qx1(1:Q), 'm*-');
-    plot(1:Q,   aRVQ4.tst_9_drmse_Qx1(1:Q), 'ks-');
-    axis([1 Q 0 1.5])
+    %plot(1:Q,   aRVQ1.tst_9_drmse_Qx1(1:Q), 'g+-');
+    %plot(1:Q,   aRVQ2.tst_9_drmse_Qx1(1:Q), 'bd-');
+    %plot(1:Q,   aRVQ3.tst_9_drmse_Qx1(1:Q), 'm*-');
+    %plot(1:Q,   aRVQ4.tst_9_drmse_Qx1(1:Q), 'ks-');
+    %axis([1 Q 0 1.5])
     grid on;
     
     %axis([1 8 0 1.5])
-    %axis([1 8 0 20])
+    axis([1 Q 0 20])
     xlabel('q (stage index)');
     ylabel('reconstruction rms error');
     set(gca, 'XTick', 1:Q)
     
     legend('trg (eRMSE)', 'trg (dRMSE)', 'tst, maxQ', 'tst, RofE', 'tst, nulE', 'tst, monR');
-    %UTIL_FILE_save2pdf('RVQ_8x4_Dudek_trg_1_to_100_tst_101.pdf', gcf, 300);
+    UTIL_FILE_save2pdf('RVQ_8x4_Dudek.pdf', gcf, 300);
     %UTIL_FILE_save2pdf('RVQ_3x2_1_to_7_22_34.pdf', gcf, 300);
 
 
