@@ -151,7 +151,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
         RVQ.trg_2_recon_DxN(:,n)    =   recon_Dx1;                          %2. will come from decoder codebook              
         RVQ.trg_3_error_DxN(:,n)    =   error_Dx1;                          %3.   "   "     "     "       "
          
-        RVQ.trg_6_encdQ_1xN(1,n)    =   stopQ;                              %6. num of stages in feature vector
+        RVQ.trg_6_reqdQ_1xN(1,n)    =   stopQ;                              %6. num of stages in feature vector
         RVQ.trg_7_qidx__QxN(:,n)    =   qidx__Qx1;                          %7. stage index at every stage
         RVQ.trg_8_ermse_QxN(:,n)    =   UTIL_RVQ_repeat_SNR(rmses_Qx1);                          %8. encoder rmse at every stage
 
@@ -159,6 +159,6 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
     elseif (strcmp(RVQ.in_2__data, 'tst'))        
         RVQ.tst_1_featr_QxN(:,n)    =   featr_Qx1;                          %1.             
        
-        RVQ.tst_6_encdQ_1xN(1,n)    =   stopQ;                              %6.
+        RVQ.tst_6_reqdQ_1xN(1,n)    =   stopQ;                              %6.
         RVQ.tst_7_qidx__QxN(:,n)    =   qidx__Qx1;                          %7. 
     end

@@ -120,7 +120,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
 %2. compute candidate errors, i.e., find how well the algorithm model explains each snippet)
 
     %IPCA, BPCA
-    if     (strcmp(TRK.name, 'trkaMEAN'))                                 ALGO = MEAN_2_test   (cand_snps_DxNp, ALGO);
+    if     (strcmp(TRK.name, 'trkaMEAN'))                                 ALGO = MEAN_2_test          (cand_snps_DxNp, ALGO);
     elseif (strcmp(TRK.name, 'trkaIPCA') || strcmp(TRK.name, 'trkaBPCA')) ALGO = PCA__2_encode_decode (cand_snps_DxNp, ALGO);
     elseif (strcmp(TRK.name, 'trkaRVQx'))                                 ALGO = RVQ__2_encode_decode (cand_snps_DxNp, ALGO);
     elseif (strcmp(TRK.name, 'trkaTSVQ'))                                 ALGO = TSVQ_2_encode_decode (cand_snps_DxNp, ALGO);
@@ -232,6 +232,7 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
   
 %write RVQ stats, if RVQ, to string
     if (strcmp(TRK.name, 'trkaRVQx'))
+        ALGO.tst_9_drmse_Qx1=   ALGO.tst_8_drmse_QxN(:, maxidx);
         str_rvq             =   RVQx_stats_str(ALGO,maxidx);
         str_out             =   [str_out ' ' str_rvq];
     end

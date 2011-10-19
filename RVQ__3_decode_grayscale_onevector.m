@@ -8,12 +8,12 @@ function RVQ = RVQ__3_decode_grayscale_onevector(x_Dx1, RVQ, n)
     
     if      (strcmp(RVQ.in_2__data, 'trg'))   
         featr_Qx1           =   RVQ.trg_1_featr_QxN(:,n);
-        encdQ               =   RVQ.trg_6_encdQ_1xN(1,n);                   %number of stages in feature vector
+        encdQ               =   RVQ.trg_6_reqdQ_1xN(1,n);                   %number of stages in feature vector
         qidx_Qx1            =   RVQ.trg_7_qidx__QxN(:,n);
         
     elseif  (strcmp(RVQ.in_2__data, 'tst'))   
         featr_Qx1           =   RVQ.tst_1_featr_QxN(:,n);
-        encdQ               =   RVQ.tst_6_encdQ_1xN(1,n);
+        encdQ               =   RVQ.tst_6_reqdQ_1xN(1,n);
         qidx_Qx1            =   RVQ.tst_7_qidx__QxN(:,n);
         
     end

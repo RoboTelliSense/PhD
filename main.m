@@ -58,7 +58,7 @@ close all;
 pca__Q                      =   16;
 
 rvq__maxQ                   =   8;
-rvq__M                      =   2;
+rvq__M                      =   4;
 rvq__tSNR                   =   1000;   %target SNR
 rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
 rvq__lmbd                   =   0;
@@ -72,7 +72,7 @@ bUseBPCA                    =   0;
 bUseRVQx                    =   1;
 bUseTSVQ                    =   0;
 
-ds_code                     =   3;
+ds_code                     =   1;
 
 %#######################################################################
 % function main(   pca__Q,                                                ...
@@ -155,7 +155,7 @@ ds_code                     =   3;
     
    
 %============================================
-%TRACKING AND LEARNING
+% INITIALIZE LEARNING ALGORITHMS
 %============================================
 
 %1. configure learning algos
