@@ -6,10 +6,10 @@ function [DM2, sw, sh] = DM2_create(ds)
     elseif (ds==4)                  load testS_DM2_small;       sw=41;sh=27;  %deterministic, vector, i created this movie in Blender3D.  it has an S written on a moving box          
     elseif (ds==5) DM2          =   [1:7;22:2:34];              sw=2; sh=1;   %deterministic, scalar, example mentioned in IDDM
     
-    elseif (ds==6) DM2          =   rand (1089,100);            sw=33;sh=33;
-    elseif (ds==7) DM2          =   randn(1089,100);            sw=33;sh=33;
-    elseif (ds==8) DM2          =   DM2_create_gaussMarkov(1089,100,0.9); sw=33;sh=33;%last 0 means no randomness
-    elseif (ds==9) [DM2,sw,sh]  =   DM2_extract_roi_from_Dudek(1,100,0);   %last 0 means no randomness
+    elseif (ds==9) DM2          =   rand (1089,100);            sw=33;sh=33;
+    elseif (ds==10) DM2          =   randn(1089,100);            sw=33;sh=33;
+    elseif (ds==11) DM2          =   DM2_create_gaussMarkov(1089,100,0.9); sw=33;sh=33;%last 0 means no randomness
+    elseif (ds==12) [DM2,sw,sh]  =   DM2_extract_roi_from_Dudek(1,100,0);   %last 0 means no randomness
     end
 
     [D, N]                  =   size(DM2);                                  %dimensions of DM2
