@@ -65,7 +65,7 @@ PARAM.tgt_sh                =   sh;
         aRVQx.in_4__M___    =   m;
         [aRVQx temp]        =   RVQx_config(PARAM, [], aRVQx.in_3__maxQ, m, aRVQx.in_5__tSNR, rvq__tstI, 0, aRVQx.in_8__type); %0 is lambda
         [rmse_trg(qidx), rmse_tst(qidx)]  ... 
-                            =   UTIL_DATA_crossvalidation(DM2, aRVQx, numTrials, percentage_tst)
+                            =   UTIL_DATA_cross_validation(DM2, aRVQx, numTrials, percentage_tst)
                             %=   UTIL_DATA_crossvalidation(DM2, aTSVQ, numTrials, percentage_tst)
                             %=   UTIL_DATA_crossvalidation(DM2, aBPCA, numTrials, percentage_tst)
     end    
