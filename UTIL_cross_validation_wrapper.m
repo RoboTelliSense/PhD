@@ -73,17 +73,4 @@ PARAM.tgt_sh                =   sh;
     rmse_trg
     rmse_tst
     save(['rvq_cross_validation_' num2str(ds_code)])
-% figure;
-% plot(lst_Q, rmse_trg, 'ro-')
-% hold on;
-% plot(lst_Q, rmse_tst, 'bd-')
-% %xlabel('Q (number of PCA eigenvectors)');
-% %xlabel('Q (number of TSVQ stages)');
-% %xlabel('Q (number of TSVQ stages)');
-% ylabel('reconstruction rms error');
-% axis([0 100 0 1.5])
-% %axis([1 8 0 20]) 
-% grid on;
-% legend('trg', 'tst');
-% %UTIL_FILE_save2pdf('randn_PCA.pdf')
-% UTIL_FILE_save2pdf('PCA_GaussMarkov.pdf')
+
