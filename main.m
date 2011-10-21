@@ -60,7 +60,7 @@ pca__Q                      =   16;
 rvq__maxQ                   =   8;
 rvq__M                      =   2;
 rvq__tSNR                   =   1000;   %target SNR
-rvq__tstI                   =   1;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
+rvq__tstI                   =   3;      %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
 rvq__lmbd                   =   0;
 rvq__type                   =   'uint8';
 

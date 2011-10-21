@@ -1,4 +1,4 @@
-function OUT = results_tables()
+function OUT = results_numbers()
 
 %----------------------------------------------------
 % RVQ (using only decoder codebook)
