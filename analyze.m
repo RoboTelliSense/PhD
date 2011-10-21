@@ -23,7 +23,6 @@ clf;
     ds_code                 =   1;
     
     [PARAM.ds_2_name, PARAM.ds_3_name] =    UTIL_DATASET_getName3(ds_code);
-    PARAM.ds_4_name                    =    UTIL_DATASET_getName4(ds_code);
     PARAM.tgt_sw            =   33;
     PARAM.tgt_sh            =   33;
     
@@ -53,19 +52,19 @@ clf;
             end
         end    
         hold off;
-        if      (val==2) ylabel('learning time (sec)')                      ;cfn=[PARAM.ds_4_name '8_4_1000_lrn_time.pdf'];        
-        elseif  (val==3) ylabel('condensation time (sec)')                  ;cfn=[PARAM.ds_4_name '8_4_1000_con_time.pdf'];        
-        elseif  (val==5) ylabel('tracking error (rmse)')                    ;cfn=[PARAM.ds_4_name '8_4_1000_trk_rmse.pdf'];
-        elseif  (val==6) ylabel('tracking error (avg. rmse)')               ;cfn=[PARAM.ds_4_name '8_4_1000_trk_armse.pdf'];
-        elseif  (val==7) ylabel('target reconstruction SNR (dB)')           ;cfn=[PARAM.ds_4_name '8_4_1000_snp_SNRdB.pdf'];
-        elseif  (val==8) ylabel('target reconstruction error (rmse)')       ;cfn=[PARAM.ds_4_name '8_4_1000_snp_rmse.pdf'];        
-        elseif  (val==9) ylabel('target reconstruction error (avg. rmse)')  ;cfn=[PARAM.ds_4_name '8_4_1000_snp_armse.pdf'];           
-        elseif  (val==10)ylabel('training SNR (dB)')                        ;cfn=[PARAM.ds_4_name '8_4_1000_trg_SNRdB.pdf'];        
-        elseif  (val==11)ylabel('training error (rmse)')                    ;cfn=[PARAM.ds_4_name '8_4_1000_trg_rmse.pdf'];        
-        elseif  (val==12)ylabel('training error (avg. rmse)')               ;cfn=[PARAM.ds_4_name '8_4_1000_trg_armse.pdf'];  
-        elseif  (val==13)ylabel('testing SNR (dB)')                         ;cfn=[PARAM.ds_4_name '8_4_1000_tst_SNRdB.pdf'];        
-        elseif  (val==14)ylabel('testing error (rmse)')                     ;cfn=[PARAM.ds_4_name '8_4_1000_tst_rmse.pdf'];        
-        elseif  (val==15)ylabel('testing error (avg. rmse)')                ;cfn=[PARAM.ds_4_name '8_4_1000_tst_armse.pdf'];  
+        if      (val==2) ylabel('learning time (sec)')                      ;cfn=[PARAM.ds_3_name '8_4_1000_lrn_time.pdf'];        
+        elseif  (val==3) ylabel('condensation time (sec)')                  ;cfn=[PARAM.ds_3_name '8_4_1000_con_time.pdf'];        
+        elseif  (val==5) ylabel('tracking error (rmse)')                    ;cfn=[PARAM.ds_3_name '8_4_1000_trk_rmse.pdf'];
+        elseif  (val==6) ylabel('tracking error (avg. rmse)')               ;cfn=[PARAM.ds_3_name '8_4_1000_trk_armse.pdf'];
+        elseif  (val==7) ylabel('target reconstruction SNR (dB)')           ;cfn=[PARAM.ds_3_name '8_4_1000_snp_SNRdB.pdf'];
+        elseif  (val==8) ylabel('target reconstruction error (rmse)')       ;cfn=[PARAM.ds_3_name '8_4_1000_snp_rmse.pdf'];        
+        elseif  (val==9) ylabel('target reconstruction error (avg. rmse)')  ;cfn=[PARAM.ds_3_name '8_4_1000_snp_armse.pdf'];           
+        elseif  (val==10)ylabel('training SNR (dB)')                        ;cfn=[PARAM.ds_3_name '8_4_1000_trg_SNRdB.pdf'];        
+        elseif  (val==11)ylabel('training error (rmse)')                    ;cfn=[PARAM.ds_3_name '8_4_1000_trg_rmse.pdf'];        
+        elseif  (val==12)ylabel('training error (avg. rmse)')               ;cfn=[PARAM.ds_3_name '8_4_1000_trg_armse.pdf'];  
+        elseif  (val==13)ylabel('testing SNR (dB)')                         ;cfn=[PARAM.ds_3_name '8_4_1000_tst_SNRdB.pdf'];        
+        elseif  (val==14)ylabel('testing error (rmse)')                     ;cfn=[PARAM.ds_3_name '8_4_1000_tst_rmse.pdf'];        
+        elseif  (val==15)ylabel('testing error (avg. rmse)')                ;cfn=[PARAM.ds_3_name '8_4_1000_tst_armse.pdf'];  
         end
         xlabel('frame number')
         legend([p1 p2 p3 p4], 'maxQ', 'RofE', 'nulE', 'monR', 'Location', 'Best')
