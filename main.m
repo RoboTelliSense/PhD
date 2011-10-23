@@ -68,8 +68,8 @@ tsvq_maxQ                   =   3;
 tsvq_M                      =   2;
 
 bUseIPCA                    =   0;
-bUseBPCA                    =   0;   
-bUseRVQx                    =   1;
+bUseBPCA                    =   1;   
+bUseRVQx                    =   0;
 bUseTSVQ                    =   0;
 
 ds_code                     =   1;
