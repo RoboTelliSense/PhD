@@ -1,78 +1,130 @@
     clear;
     clc;
     close all;
-    
+
 %------------------------------------------------
 % PRE-PROCESSING
 %------------------------------------------------   
 %input data
+    
     OUT                     =   results_numbers();      %read numbers
     
-%make a single matrix: stack columns for each dataset side by side
-    Table_pca_3x6           = [ OUT.pca__1_Dudek__ ... %8;16;32
-                                OUT.pca__2_david__ ... %8;16;32
-                                OUT.pca__3_sylv___ ... %8;16;32
-                                OUT.pca__5_fish___ ... %8;16;32
-                                OUT.pca__6_car4___ ... %8;16;32
-                                OUT.pca__7_car11__ ];  %8;16;32
-
-%plot rows, one at a time (xaxis: datasets)
-    figure;
-    plot(1:6, Table_pca_3x6(1,:), 'b*-'); hold on; %8
-    plot(1:6, Table_pca_3x6(2,:), 'gs-');          %16
-    plot(1:6, Table_pca_3x6(3,:), 'rd-');          %32
-    legend({'Q=8', 'Q=16', 'Q=32'});
-    grid on;
-    axis([1 6 0 15])
-    set(gca, 'XTick', 1:6);
-    set(gca, 'XTickLabel', {'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11'});
-    xlabel('publicly available datasets');
-    ylabel('tracking error');
-    UTIL_FILE_save2pdf('temp/results_pca__trk_1a', gcf, 300); 
+    bUsePCA                 =   0;
+    bUseTSVQ                =   0;
+    bUseRVQ1                =   0;
+    bUseRVQ2                =   0;
+    bUseRVQ3                =   0;
+    bUseRVQ4                =   1;
+    
+    if (bUsePCA)
+        algo_xlabel         =   'Number of eigenvectors, Q';
+        algo_xTickLabels    =   {'8', '16', '32'};
+        algo_legend         =   {'Q=8', 'Q=16', 'Q=32'};
+        Table_Nd_x_Nc       =   OUT.pca;
+        algofn              =   'pca__';
+    elseif (bUseTSVQ)
+        algo_xlabel         =   'Number of stages, P';
+        algo_xTickLabels    =   {'3', '4', '5'};
+        algo_legend         =   {'P=3', 'P=4', 'P=5'};
+        Table_Nd_x_Nc       =   OUT.tsvq;        
+        algofn              =   'tsvq_';
+    else
+        algo_xlabel         =   'Number of stages x codevectors/stage, PxM';
+        algo_xTickLabels    =   {'8x2', '8x4', '8x8'};
+        algo_legend         =   {'PxM=8x2', 'PxM=8x4', 'PxM=8x8'};        
+        if      (bUseRVQ1) Table_Nd_x_Nc = OUT.rvq1(:,1:3);algofn='rvq1_';  %1:3 means only use 8x2, 8x4, 8x8
+        elseif  (bUseRVQ2) Table_Nd_x_Nc = OUT.rvq2(:,1:3);algofn='rvq2_';
+        elseif  (bUseRVQ3) Table_Nd_x_Nc = OUT.rvq3(:,1:3);algofn='rvq3_';
+        elseif  (bUseRVQ4) Table_Nd_x_Nc = OUT.rvq4(:,1:3);algofn='rvq4_';
+        end
+    end
+    
+    ylabel1                 =   'tracking error'; 
+    yampl                   =   15; %max y amplitude
+    ds_xlabel               =   'publicly available datasets';
+    ds_xTickLabels          =   {'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11'};    
+    ds_legend               =   ds_xTickLabels
+    
+    bSave                   =   1;
+    
 
 
     
-%plot cols (xaxis: Q)
-    figure;
-    plot(Table_pca_3x6(:,1), 'r*-'); hold on; %Dudek
-    plot(Table_pca_3x6(:,2), 'g+-');          %davidin300
-    plot(Table_pca_3x6(:,3), 'ro-');          %sylv
-    plot(Table_pca_3x6(:,4), 'g^-');          %fish
-    plot(Table_pca_3x6(:,5), 'bs-');          %car4
-    plot(Table_pca_3x6(:,6), 'bd-');          %car11
-    legend({'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11'});
+%make a single matrix: stack columns for each dataset side by side
+    [Nd, Nc]                =   size(Table_Nd_x_Nc); %Nc is number of configurations
+                                                     %Nd is number of datasets
+
+%------------------------------------------------
+% PROCESSING
+%------------------------------------------------  
+%1. CONFIGURATIONS ON X AXIS (plot rows)
+    %plot1a: instantaneous
+    h1=figure;
+    plot(Table_Nd_x_Nc(1,:), 'r*-'); hold on; %Dudek
+    plot(Table_Nd_x_Nc(2,:), 'g+-');          %davidin300
+    plot(Table_Nd_x_Nc(3,:), 'ro-');          %sylv
+    plot(Table_Nd_x_Nc(4,:), 'g^-');          %fish
+    plot(Table_Nd_x_Nc(5,:), 'bs-');          %car4
+    plot(Table_Nd_x_Nc(6,:), 'bd-');          %car11
+    legend(ds_legend);
     grid on;
-    axis([1 3 0 15])
-    set(gca, 'XTick', 1:3);
-    set(gca, 'XTickLabel', {'8', '16', '32'});
-    xlabel('Number of eigenvectors, Q');
-    ylabel('tracking error');
-    UTIL_FILE_save2pdf('temp/results_pca__trk_1b', gcf, 300);     
+    axis([1 Nc 0 yampl])
+    set(gca, 'XTick', 1:Nc);
+    set(gca, 'XTickLabel', algo_xTickLabels);
+    xlabel(algo_xlabel);
+    ylabel(ylabel1);
+
  
-%average over datasets
-    figure;
-    Table_config_1x6 = mean(Table_pca_3x6, 1)
+    %plot1b: averaged by squashing up down
+    h2=figure;
+    Table_config_1x6 = mean(Table_Nd_x_Nc, 1)
     bar(Table_config_1x6)
     grid on;
-    axis([0 7 0 15])
-    set(gca, 'XTick', 1:6);
-    set(gca, 'XTickLabel', {'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11'});
-    xlabel('publicly available datasets');
-    ylabel('tracking error');
-    UTIL_FILE_save2pdf('temp/results_pca__trk_1c.pdf', gcf, 300);    
+    axis([0 Nc+1 0 yampl])
+    set(gca, 'XTick', 1:Nc);
+    set(gca, 'XTickLabel', algo_xTickLabels);
+    xlabel(algo_xlabel);
+    ylabel(ylabel1);
+  
+
     
     
-%average over 8, 16, 32
-    figure;
-    Table_config_3x1 = mean(Table_pca_3x6, 2)
+    
+    
+    
+    
+%2. DATASETS ON X AXIS (plot cols)
+    %plot2a: instantaneous
+    h3=figure;
+    plot(1:Nd, Table_Nd_x_Nc(:,1), 'b*-'); hold on; %8
+    plot(1:Nd, Table_Nd_x_Nc(:,2), 'gs-');          %16
+    plot(1:Nd, Table_Nd_x_Nc(:,3), 'rd-');          %32
+    legend(algo_legend);
+    grid on;
+    axis([1 Nd 0 yampl])
+    set(gca, 'XTick', 1:Nd);
+    set(gca, 'XTickLabel', ds_xTickLabels);
+    xlabel(ds_xlabel);
+    ylabel(ylabel1);
+    
+    %plot 2b: averaged by squashing left right
+    h4=figure;
+    Table_config_3x1 = mean(Table_Nd_x_Nc, 2)
     bar(Table_config_3x1)
     grid on;
-    axis([0 4 0 15])
-    set(gca, 'XTick', 1:3);
-    set(gca, 'XTickLabel', {'8', '16', '32'});
-    xlabel('Number of eigenvectors, Q');
-    ylabel('tracking error');
-    UTIL_FILE_save2pdf('temp/results_pca__trk_1d', gcf, 300);   
-    
+    axis([0 Nd+1 0 yampl])
+    set(gca, 'XTick', 1:Nd);
+    set(gca, 'XTickLabel', ds_xTickLabels);
+    xlabel(ds_xlabel);
+    ylabel(ylabel1);
 
-    UTIL_matrix2latex(Table_pca_3x6,   'temp/results_pca__trk.tex',    'rowLabels', {'Q=8', 'Q=16', 'Q=32'}, 'columnLabels', {'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11'}, 'alignment', 'c', 'format', '%-6.2f');
+    
+    
+%save to hard disk
+    if (bSave)
+        UTIL_FILE_save2pdf(                 ['temp/results_' algofn 'trk_1a.pdf'], h1, 300); 
+        UTIL_FILE_save2pdf(                 ['temp/results_' algofn 'trk_1b.pdf'], h2, 300);   
+        UTIL_FILE_save2pdf(                 ['temp/results_' algofn 'trk_2a.pdf'], h3, 300); 
+        UTIL_FILE_save2pdf(                 ['temp/results_' algofn 'trk_2b.pdf'], h4, 300);   
+        UTIL_matrix2latex(Table_Nd_x_Nc,    ['temp/results_' algofn 'trk.tex'], 'rowLabels', ds_legend, 'columnLabels', algo_legend, 'alignment', 'c', 'format', '%-6.2f');        
+    end    

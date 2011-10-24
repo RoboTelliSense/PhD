@@ -20,7 +20,7 @@ clf;
     bUseRVQx                =   1;
     bUseTSVQ                =   0;
     
-    ds_code                 =   1;
+    ds_code                 =   5;
     
     [PARAM.ds_2_name, PARAM.ds_3_name] =    UTIL_DATASET_getName3(ds_code);
     PARAM.tgt_sw            =   33;
@@ -32,7 +32,7 @@ clf;
 %--------------------------------------------------
     figure(1);clf;
     
-    rvq__M = 4;
+    rvq__M = 8;
     
     for val=[2 3 5:15]
         clf;
@@ -40,7 +40,7 @@ clf;
         hold on;
         for rvq__tstI = [1 2 3 4] %testing index, 4 options are, 1: maxQ, 2: RofE, 3: nulE , 4: monR
             [aRVQx trkaRVQx]        =   RVQx_config(PARAM, [], rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__type);    
-            rvq                     =   textread(['results\' trkaRVQx.config_str '.txt']);
+            rvq                     =   textread(['results2\' trkaRVQx.config_str '.txt']);
             [F,temp]                =   size(rvq);
             
             I=1:5:F;
@@ -85,13 +85,13 @@ clf;
     axis([0 600 0 30])
     
     f=10;
-    figure;
-    load trellis70
-    I=data(:,:,1);
-    imagesc(I);colormap('gray');
-    hold on
-     UTIL_PLOT_filledCircle( [rvq(f, 16), rvq(f, 17)],   3,   3000,   'g');      %yellow color
-     UTIL_PLOT_filledCircle( [rvq(f, 18), rvq(f, 19)],   3,   3000,   'g');      %yellow color    
+%     figure;
+%     load trellis70
+%     I=data(:,:,1);
+%     imagesc(I);colormap('gray');
+%     hold on
+%      UTIL_PLOT_filledCircle( [rvq(f, 16), rvq(f, 17)],   3,   3000,   'g');      %yellow color
+%      UTIL_PLOT_filledCircle( [rvq(f, 18), rvq(f, 19)],   3,   3000,   'g');      %yellow color    
 %     UTIL_PLOT_filledCircle( [rvq(f, 20), rvq(f, 21)],   3,   3000,   'g');      %yellow color    
 %     UTIL_PLOT_filledCircle( [rvq(f, 22), rvq(f, 23)],   3,   3000,   'g');      %yellow color    
 %     UTIL_PLOT_filledCircle( [rvq(f, 24), rvq(f, 25)],   3,   3000,   'g');      %yellow color    
