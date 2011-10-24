@@ -13,7 +13,7 @@
 %> Date created       : July 29, 2011.
 %> Date last modified : July 29, 2011.
 
-function continue_decoding = RVQ_RULES_DECODE_STOPPING_realm_of_experience(featr_QxN, tst_XDR_parQx1)
+function continue_decoding = RVQ_RULES_DECODE_STOPPING_realm_of_experience(featr_QxN, tst_XDR_parQx1, q)
     
     [P, N]                  =   size(featr_QxN);
     parQ                    =   length(tst_XDR_parQx1);
@@ -27,3 +27,8 @@ function continue_decoding = RVQ_RULES_DECODE_STOPPING_realm_of_experience(featr
             break;
         end
     end
+    
+    if (continue_decoding  ==   false && q==1) %if first stage, then RofE may not work if M is large, take care of that here
+        continue_decoding = true;
+    end
+    

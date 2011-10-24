@@ -109,7 +109,7 @@ function RVQ = RVQ__2_encode_grayscale_onevector(x_Dx1, RVQ, n)
         if      (strcmp(rule_stop_decoding, 'maxQ'))    %max stages
             this_stage_acceptable   =   true;
         elseif  (strcmp(rule_stop_decoding, 'RofE'))    %realm of experience
-            this_stage_acceptable   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_1_featr_QxN, temp2_XDR_parQx1);
+            this_stage_acceptable   =   RVQ_RULES_DECODE_STOPPING_realm_of_experience  (RVQ.trg_1_featr_QxN, temp2_XDR_parQx1, q);
         elseif  (strcmp(rule_stop_decoding, 'nulE'))    %null encoding
             this_stage_acceptable   =   RVQ_RULES_DECODE_STOPPING_monotonic_rmse        (temp2_rmse, rmse_prev);
         elseif  (strcmp(rule_stop_decoding, 'monR'))    %monotonically decreasing rmse
