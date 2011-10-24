@@ -1,4 +1,4 @@
-function h = filledCircle(center,r,N,color)
+function h = UTIL_PLOT_filledCircle(center,r,N,color)
 %---------------------------------------------------------------------------------------------
 % FILLEDCIRCLE Filled circle drawing
 % 
@@ -24,6 +24,7 @@ X=X+center(1);
 Y=Y+center(2);
 h=fill(X,Y,color);
 axis square;
+clear;
 
 
 % COPYRIGHT STUFF... :D (Since I am modifying Zhenhai's code.)

@@ -15,7 +15,7 @@
                                   -3.9535   -4.7745   -3.6580    9.0161    8.0800    8.2949   12.8408 ];                                
     [temp1 G]               =   size(fp_gt_can_2xG);
     
-    Iroi_shxsw              =   UTIL_2D_affine_extractROI_using_fp(I_ui8, sw, sh, fp_gt_roi_2xG, fp_gt_can_2xG);
+    Iroi_shxsw              =   UTIL_2D_affine_extractROI_using_fp(I_ui8, sw, sh, fp_gt_roi_2xG, fp_gt_can_2xG, 0);
     fp_gt_can_nzc_2xG       =   fp_gt_can_2xG + repmat([sw/2;sh/2], 1, G);
     
     imagesc(Iroi_shxsw);
