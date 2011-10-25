@@ -45,10 +45,10 @@
         algo_xlabel         =   'Number of stages x codevectors/stage, PxM';
         algo_xTickLabels    =   {'8x2', '8x4', '8x8'};
         algo_legend         =   {'PxM=8x2', 'PxM=8x4', 'PxM=8x8'};        
-        if      (bUsemaxP) Table_Nd_x_Nc = OUT.maxP(:,1:3);algofn='maxP';  %1:3 means only use 8x2, 8x4, 8x8
-        elseif  (bUseRofE) Table_Nd_x_Nc = OUT.RofE(:,1:3);algofn='RofE';
-        elseif  (bUsenulE) Table_Nd_x_Nc = OUT.nulE(:,1:3);algofn='nulE';
-        elseif  (bUsemonR) Table_Nd_x_Nc = OUT.monR(:,1:3);algofn='monR';
+        if      (bUsemaxP) Table_Nd_x_Nc = OUT.maxP;algofn='maxP';  %1:3 means only use 8x2, 8x4, 8x8
+        elseif  (bUseRofE) Table_Nd_x_Nc = OUT.RofE;algofn='RofE';
+        elseif  (bUsenulE) Table_Nd_x_Nc = OUT.nulE;algofn='nulE';
+        elseif  (bUsemonR) Table_Nd_x_Nc = OUT.monR;algofn='monR';
         end
     end
     
@@ -96,7 +96,7 @@
     
     %plot c: averaged by squashing up down
     h3=figure;
-    Table_config_1x6 = mean(Table_Nd_x_Nc, 1);
+    Table_config_1x6 = DM2_filtered_mean(Table_Nd_x_Nc, 50, 1);
     bar(Table_config_1x6);
     grid on;
     axis([0 Nc+1 0 yampl]);
@@ -108,7 +108,7 @@
 
     %plot d: averaged by squashing left right
     h4=figure;
-    Table_config_3x1 = mean(Table_Nd_x_Nc, 2);
+    Table_config_3x1 = DM2_filtered_mean(Table_Nd_x_Nc, 50, 2);
     bar(Table_config_3x1);
     grid on;
     axis([0 Nd+1 0 yampl]);
@@ -117,8 +117,8 @@
     xlabel(ds_xlabel);
     ylabel(ylabel1);
 
-    mean1                   =   DM2_filtered_mean(Table_Nd_x_Nc, 9999, 1);
-    mean2                   =   DM2_filtered_mean(Table_Nd_x_Nc, 9999, 2);
+    mean1                   =   DM2_filtered_mean(Table_Nd_x_Nc, 50, 1);
+    mean2                   =   DM2_filtered_mean(Table_Nd_x_Nc, 50, 2);
     
 %save to hard disk
     if (bSave)

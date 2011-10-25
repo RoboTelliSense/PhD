@@ -13,8 +13,8 @@ close all;
     rvq__lmbd               =   0;
     rvq__type               =   'uint8';
     
-    ds_code                 =   6;
-        load car4
+    ds_code                 =   1;
+        load Dudek
             [t1, t2, F]=size(data);
 
 %PARAM
@@ -66,7 +66,7 @@ grid
 
 
     idx=0;
-    for f=6:F
+    for f=492:492
         idx=f-5;
         %I=data(:,:,f);
         imshow(uint8(data(:,:,f)));
