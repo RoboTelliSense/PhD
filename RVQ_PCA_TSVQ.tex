@@ -1,13 +1,126 @@
 \include{begin_article}
-\title{RVQ experiments}
+\title{RVQ, PCA and TSVQ}
 \author{Salman Aslam\\ Georgia Institute of Technology}
 \date{}
-\include{inkscapeLatex}
+\include{figs/inkscapeLatex}
 \begin{document}
 \maketitle
 \rule[0pt]{\textwidth}{1pt}
 \tableofcontents
 \rule[0pt]{\textwidth}{1pt}
+
+
+%================================
+\section{Theory}
+%================================
+In pattern recognition, a \emph{classifier} $g(x)$ is a function that maps $x_i \in \mathbb{R}^D$ to a set of $M$ discrete \emph{class} labels, $\theta  \in \{1, 2, \ldots M\}$, i.e., $g(x):~\mathbb{R}^D~\rightarrow~\{1, 2, \ldots M\}$.  The classifier errs if $g(x) \neq \theta$~\cite{1996_BOOK_PR_DevroyeGyorfiLugosi}.  Since it is not possible to create a classifier that always achieves perfect mapping, we create a probabilistic setting and let $\mathbf{X} \times \mathbf{\Theta}$ be an $\mathbb{R}^D \times \{1, 2, \ldots M\}$-valued random pair.  
+
+\begin{enumerate}
+\item \underline{Risk}.  The probability of error for estimator $g(x)$, the {\color{blue}\emph{risk}} is
+
+\begin{equation}
+\boxed{
+{\color{blue}R(g)} = \mathbf{P}(g(\mathbf{X}) \neq \mathbf{\Theta})}
+\label{Eqn:loss}
+\end{equation}
+
+\item \underline{Bayes Risk}. In Equation~\ref{Eqn:loss}, the minimal probability of error $\mathbf{P}^*$ is called the \emph{Bayes error} or the \emph{Bayes risk}.  
+
+\item \underline{Bayes Classifier}.  The best classifier $g^*$ is called the \emph{Bayes classifier} or the \emph{Bayes rule}, and is given by
+
+\begin{equation}
+g^* = \arg\min_{\tiny g:~\mathbb{R}^D~\rightarrow~\{1, 2, \ldots M\}} {\color{blue}R(g)}
+\end{equation}
+
+\item \underline{Risk}. In practical situations, $\mathbf{P}(g(\mathbf{X}) \neq \mathbf{\Theta})$ is generally unknown, and therefore so is $g^*$.  However, we assume that we have $N$ i.i.d. random pairs, $\{(x_1, \theta_1), (x_2, \theta_2), \ldots, (x_N, \theta_N)\}$ with the same distribution as $p(\mathbf{X},\mathbf{\Theta})$.  The risk function for this data is $R_N$, or $R(g_N)$~\footnote{The quantity $\mathbb{E}\left[R_N\right]$ is marginally useful since it is the quality of an average data sequence and not the data sequence at hand.  A \emph{consistent} classifier is one for which $\lim\limits_{N \rightarrow \infty}\mathbb{E}\left[R_N\right] = R^*$~\cite{1996_BOOK_PR_DevroyeGyorfiLugosi}.}.
+  
+\item \underline{Empirical risk minimization}.
+Since we cannot find $g^*$, we change the setting and define $R$ as being the risk of the best classifier in class $\mathcal{C}$, for instance, all $k$-nearest neighbor classifiers with all possible values of $k$.  Then,
+
+\begin{equation}
+R \triangleq \inf\limits_{g_N \in \mathcal{C}} \mathbf{P}(g_N(\mathbf{X}) \neq \mathbf{\Theta})
+\end{equation}
+
+Using \emph{empirical risk minimization}~\cite{1999_BOOK_PRML_Vapnik}, we select a classifier $g_N$ from a class $\mathcal{C}$ by minimizing, 
+
+\begin{equation}
+\frac{1}{N} \sum\limits_{n=1}^N I_{g_N(x_n \neq \theta_n)}
+\end{equation}
+
+then the corresponding risk $R_N$ satisfies the following inequality for all $\epsilon > 0$
+
+\begin{equation}
+\mathbf{P}(R_N > R + \epsilon) \leq 8(N^V + 1) e^{-N\epsilon^2/128}
+\end{equation}
+
+where $V$ is the Vapnik Chervonenkis (VC) dimension.
+
+\item \underline{VC dimension}.  A given set of $h$ points can be labeled in $2^h$ ways.  If, for all possible labelings, a classifier $g(x)$ from the class $\mathcal{C}$ can be found which correctly assigns those labels, then we say that the set of $h$ points is shattered by the class $\mathcal{C}$.  An example of shattering in $\mathbb{R}^2$ is given in Figure~\ref{fig:shattering}.  If a classifier class $\mathcal{C}$, such as the class of linear classifiers, or the class of $k$-nearest neighbors with different values of $k$,  has VC dimension $h$, then there exists at least one set of $h$ points that can be shattered by it, but in general, not every set of $h$ points can be shattered~\cite{1998_JNL_SVM_Burges}.
+
+\item \underline{Nearest neighbor classifier}.  The most popular nonparametric classifier is the nearest neighbor classifier that assigns the class label of the nearest neighbor in the training set to unknown data~\cite{2003_JNL_PRML_Karacali}.  For the nearest neighbor rule, for all distributions, the risk $R_{1NN}$ is bounded above by twice the Bayes risk,
+
+\begin{equation}
+\lim\limits_{N \rightarrow \infty} \sup\mathbb{E}\left[R_{1NN}\right] \leq 2R^*  
+\end{equation}
+
+In this sense, half of the available information in an infinite collection of classified samples is contained in the nearest neighbor~\cite{1967_JNL_PRML_Cover, 1996_BOOK_PR_DevroyeGyorfiLugosi}.  It has been shown by Kara\c{c}ali and Krim~\cite{2003_JNL_PRML_Karacali} that the VC dimension of the NN classifier is given by the number of reference points in the training set~\cite{2005_CNF_ML_Angiulli}.
+
+\end{enumerate}
+
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=1.0\textwidth]{figs/theory_PRML_shattering.pdf}
+								\caption{A linear classifier in $\mathbb{R}^D$ can shatter $D+1$ points.  Here, in the first 3 examples, a line in $\mathbb{R}^2$ is able to shatter 3 points.  However, in the fourth example, it is unable to shatter 4 points.}
+								\label{fig:shattering}
+								\end{figure}
+
+
+%================================
+\section{Experiments}
+%================================
+In this section, we experiment with 4 RVQ decode methods:
+
+
+
+We start with some trivial scalar examples where the training and test sets are the same.  We then move to the other extreme end of the spectrum using random data in high dimensional spaces with several observations and where the training and test sets have the same distributions but have different data.  After these experiments, we will get to tracking examples and use the likelihood formulation we have developed for RVQ.
+
+\subsection{$S_{trg}=\{1,2,3,4,5,6,7\}$}
+%-------------------------------------------------------------
+
+\begin{table}
+\centering
+\subtable[3x{\color{red}\textbf 2}]{\begin{tabular}{|c|c|}\hline 
+2.5  & 6\\
+-1  & 1\\
+-0.5  & 0.5\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 3}]{\begin{tabular}{|c|c|c|}\hline
+-1 & 6 & 4\\
+-1 & 1 & 0\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 4}]{\begin{tabular}{|c|c|c|c|}\hline
+1 & 6.5 & 4 & 2\\
+-1 & 1 & -0.5 & 0.5\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 5}]{\begin{tabular}{|c|c|c|c|c|}\hline
+1 & 6.5 & 4.5 & 2 & 3\\
+-0.5 & 0.5 & 0 & 0 &0\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[2x{\color{red}\textbf 6}]{\begin{tabular}{|c|c|c|c|c|c|}\hline
+1 & 6.5 & 4 & 2 & 3 &5\\
+-0.5 & 0.5 & 0 & 0 &0 &0\\\hline
+\end{tabular}}\hspace{0.2in}
+\subtable[1x{\color{red}\textbf 7}]{\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+1 & 7 & 4 & 2 & 3 &5 &6\\\hline
+\end{tabular}}
+\caption{Designing RVQ codebooks with increasing code-vectors per stage, $m$ = {\color{red}\textbf {2, 3, 4, 5, 6, 7}}.  The training set is $S_{trg}=\{1,2,3,4,5,6,7\}$}
+\label{table:1_to_7}
+\end{table}
+
+Table~\ref{table:1_to_7} gives an example of designing RVQ codebooks for a trivial  training set in $\mathbb{R}$ that contains only 7 training points, $S_{trg}=\{1,2,3,4,5,6,7\}$.
+
+For $m={\color{red}\textbf 2}$, case, 
+For the 3x{\color{red}\textbf 2} case, 
 
 \subsection{Integers, Z=$\{4, 6, 8, 10, 20, 22, 24, 26\}$}
 %-------------------------------------------------------------
@@ -86,8 +199,8 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 %-------------------------------------------------------------
 								\begin{figure}[h!]
 								\centering
-								\subfigure[3x2 RVQ codebook.  The reconstruction path taken through the codebook by the integer 8 is shaded dark.  Notice that monR is the only method unable to correctly decode the integer 8 and produces a 7 instead.  monR also incorrectly decodes 6, 8, 23 and 24.]{\includegraphics[width=0.5\textwidth]{thesis2/RVQ_CAC_toyExample_3x2.pdf}}
-						\subfigure[3x2 TSVQ codebook and reconstruction path taken by the number 8.]{\includegraphics[width=0.85\textwidth]{thesis2/TSVQ_toyExample_3x2.pdf}}
+								\subfigure[3x2 RVQ codebook.  The reconstruction path taken through the codebook by the integer 8 is shaded dark.  Notice that monR is the only method unable to correctly decode the integer 8 and produces a 7 instead.  monR also incorrectly decodes 6, 8, 23 and 24.]{\includegraphics[width=0.5\textwidth]{figs/RVQ_CAC_toyExample_3x2.pdf}}
+						\subfigure[3x2 TSVQ codebook and reconstruction path taken by the number 8.]{\includegraphics[width=0.85\textwidth]{figs/TSVQ_toyExample_3x2.pdf}}
 								\caption{RVQ and TSVQ codebooks generated using the training data $S_{trg}~=~\{4, 6, 8, 10, 20, 22, 24, 26\}$.}
 								\end{figure}
 															
@@ -95,7 +208,7 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 
 								\begin{table}[h]
 								\centering
-								\input{thesis2/aRVQ_4_6_8_10_20_22_24_26.tex}
+								\input{tables/aRVQ_4_6_8_10_20_22_24_26.tex}
 								\caption{RVQ reconstruction rms errors.  The training set is $S_{\textrm{trg}}=S_{\textrm{tst}}=\{4, 6, 8, 10, 20, 22, 24, 26\}$.  As the number of templates per stage $m$ is increased, less and less stages are needed for perfect reconstruction.}
 								\label{fig:aRVQ_4_6_8_10_20_22_24_26}
 								\end{table}
@@ -105,10 +218,10 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 %------------------------------------------------
 								\begin{figure}[h]
 								\centering
-								\subfigure[8x2 RVQ codebook.  The reconstruction path taken through the codebook by the integer 13 is shaded dark.  Notice that monR is the only method unable to correctly decode the integer 13 and produces 16.5 instead.]{\includegraphics[height=3in]{thesis2/RVQ_CAC_toyExample_8x2.pdf}}\hspace{0.1in}
-								\subfigure[For the 8x2 RVQ codebook, input and decoded outputs produced by monR.  Notice quite a few incorrect reconstructions.  In contrast, maxP, RofE and nulE all produce perfect reconstructions.]{\includegraphics[height=2in]{thesis2/RVQ_CAC_toyExample_8x2_monR.pdf}}
-								\subtable{\input{thesis2/aRVQ_1_to_256.tex}}
-								\subfigure{\includegraphics[width=0.5\textwidth]{thesis2/aRVQ_1_to_256.pdf}}
+								\subfigure[8x2 RVQ codebook.  The reconstruction path taken through the codebook by the integer 13 is shaded dark.  Notice that monR is the only method unable to correctly decode the integer 13 and produces 16.5 instead.]{\includegraphics[height=3in]{figs/RVQ_CAC_toyExample_8x2.pdf}}\hspace{0.1in}
+								\subfigure[For the 8x2 RVQ codebook, input and decoded outputs produced by monR.  Notice quite a few incorrect reconstructions.  In contrast, maxP, RofE and nulE all produce perfect reconstructions.]{\includegraphics[height=2in]{figs/RVQ_CAC_toyExample_8x2_monR.pdf}}
+								\subtable{\input{tables/aRVQ_1_to_256.tex}}
+								\subfigure{\includegraphics[width=0.5\textwidth]{figs/aRVQ_1_to_256.pdf}}
 								\caption{Training set  $S_{\textrm{trg}}=\{1, 2, \ldots 256\}$, , the test set $S_{\textrm{tst}}$ is the same as the training set.}
 								\label{fig:aRVQ_1_to_256}
 								\end{figure}
@@ -120,7 +233,7 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 
 								\begin{figure}[h]
 								\centering
-								\subtable{\begin{tiny}\input{figs/aRVQ_gaussian_rand.tex}\end{tiny}}
+								\subtable{\begin{tiny}\input{tables/aRVQ_gaussian_rand.tex}\end{tiny}}
 								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_gaussian_rand.pdf}}
 								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of 100 realizations of a zero-mean unit-variance Gaussian random variable, $S_{\textrm{trg}} \sim \mathcal{N}(0, 1) \in \mathbb{R}^{1089}$.  The test set $S_{\textrm{tst}}$ consists of 100 different realizations of a zero-mean unit-variance Gaussian random variable 	 $S_{\textrm{tst}} \sim \mathcal{N}(0, 1) \in \mathbb{R}^{1089}$, $S_{\textrm{tst}} \neq S_{\textrm{trg}}$.  Notice that the error is close to the variance of the random variable. }
 								\label{fig:aRVQ_gaussian_rand}
@@ -132,7 +245,7 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 %------------------------------------------------
 								\begin{figure}[h]
 								\centering
-								\subtable{\begin{tiny}\input{figs/aRVQ_uniform_rand.tex}\end{tiny}}
+								\subtable{\begin{tiny}\input{tables/aRVQ_uniform_rand.tex}\end{tiny}}
 								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_uniform_rand.pdf}}
 								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$.  The training set $S_{\textrm{trg}}$ consists of 100 realizations of a uniform random variable, $S_{\textrm{trg}} \sim U[0, 1] \in \mathbb{R}^{1089}$.  The test set $S_{\textrm{tst}}$ consists of 100 different realizations of a zero-mean uniform random variable 	 $S_{\textrm{tst}} \sim U[0, 1] \in \mathbb{R}^{1089}$, $S_{\textrm{tst}} \neq S_{\textrm{trg}}$.}
 								\label{fig:aRVQ_uniform_rand}
@@ -162,7 +275,7 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 
 								\begin{figure}
 								\centering
-								\subtable{\begin{tiny}\input{figs/aRVQ_Dudek_first_100.tex}\end{tiny}}
+								\subtable{\begin{tiny}\input{tables/aRVQ_Dudek_first_100.tex}\end{tiny}}
 								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_Dudek_first_100.pdf}}
 								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$ for the first 100 target snippets in the Dudek sequence.  These snippets can be seen in Figure~\ref{fig:Dudek_1_to_100}.}
 								\label{fig:aRVQ_Dudek_first_100}
@@ -184,7 +297,7 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 
 								\begin{figure}
 								\centering
-								\subtable{\begin{tiny}\input{figs/aRVQ_dudek_first_100rand_101test.tex}\end{tiny}}
+								\subtable{\begin{tiny}\input{tables/aRVQ_dudek_first_100rand_101test.tex}\end{tiny}}
 								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_dudek_first_100rand_101test.pdf}}
 								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$ with first 100 target snippets in the Dudek sequence randomized with zero-mean gaussian noise with 0.1 standard deviation.  The training snippets can be seen in Figure~\ref{fig:aRVQ_dudek_first_100rand_snippets}.}
 								\label{fig:aRVQ_Dudek_first_100_rand}
@@ -209,11 +322,14 @@ Training snippets are similar to the ones in Figure~\ref{fig:aRVQ_dudek_first_10
 
 								\begin{figure}[h]
 								\centering
-								\subtable{\begin{tiny}\input{thesis2/aRVQ_dudek_first_100rand_5test.tex}\end{tiny}}
+								\subtable{\begin{tiny}\input{tables/aRVQ_dudek_first_100rand_5test.tex}\end{tiny}}
 								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_dudek_first_100rand_5test.pdf}}
 								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$ with first 100 target snippets in the Dudek sequence randomized with zero-mean gaussian noise with 0.1 standard deviation.  The training snippets can be seen in Figure~\ref{fig:aRVQ_dudek_first_100rand_snippets}.}
 								\label{fig:aRVQ_Dudek_first_100_rand}
 								\end{figure}
+
+
+
 
 \clearpage
 \newpage

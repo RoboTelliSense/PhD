@@ -11,76 +11,62 @@ close all;
 %------------------------------------------------
 % PROCESSING: PCA
 %------------------------------------------------
-    Table_1__best           = [ min(OUT.pca(1,:))     min(OUT.tsvq(1,:))    min(OUT.rvq1(1,1:3))    min(OUT.rvq2(1,1:3))    min(OUT.rvq3(1,1:3))    min(OUT.rvq4(1,1:3));
-                                min(OUT.pca(2,:))     min(OUT.tsvq(2,:))    min(OUT.rvq1(2,1:3))    min(OUT.rvq2(2,1:3))    min(OUT.rvq3(2,1:3))    UTIL_min_ignoring_a_num(OUT.rvq4(2,1:3), 9999);
-                                min(OUT.pca(3,:))     min(OUT.tsvq(3,:))    min(OUT.rvq1(3,1:3))    min(OUT.rvq2(3,1:3))    min(OUT.rvq3(3,1:3))    min(OUT.rvq4(3,1:3));
-                                min(OUT.pca(4,:))     min(OUT.tsvq(4,:))    min(OUT.rvq1(4,1:3))    min(OUT.rvq2(4,1:3))    min(OUT.rvq3(4,1:3))    min(OUT.rvq4(4,1:3));
-                                min(OUT.pca(5,:))     min(OUT.tsvq(5,:))    min(OUT.rvq1(5,1:3))    min(OUT.rvq2(5,1:3))    min(OUT.rvq3(5,1:3))    min(OUT.rvq4(5,1:3));
-                                min(OUT.pca(6,:))     min(OUT.tsvq(6,:))    min(OUT.rvq1(6,1:3))    min(OUT.rvq2(6,1:3))    min(OUT.rvq3(6,1:3))    min(OUT.rvq4(6,1:3))];
-    Table_1__best
-                            mean(Table_1__best);
+%for rvq, we use 1:3 since we only use 8x2, 8x4, 8x8 and ignore 8x12 and 8x16
+    Table_1__best           = [ min(    OUT.pca,                        [], 2)  ...
+                                min(    OUT.tsvq,                       [], 2)  ...
+                                min(    OUT.rvq1(:,1:3),                [], 2)  ...
+                                min(    OUT.rvq2(:,1:3),                [], 2)  ...
+                                min(    OUT.rvq3(:,1:3),                [], 2)  ...
+                                min(    OUT.rvq4(:,1:3),                [], 2)  ];
                             
-% 
-%     temp1                   =   mean(Table_1__best);
-%     Table_1__best           =   [Table_1__best;temp1]';
-% 
-%     
+    Table_1__mean           = [ mean(   OUT.pca,                            2)  ...
+                                mean(   OUT.tsvq,                           2)  ...
+                                mean(   OUT.rvq1(:,1:3),                    2)  ...
+                                mean(   OUT.rvq2(:,1:3),                    2)  ...
+                                mean(   OUT.rvq3(:,1:3),                    2)  ...
+                                DM2_filtered_mean(OUT.rvq4(:,1:3), 9999,    2)  ];  
+                            
 % %comparison DoF_16 (PCA: 16, TSVQ: 3 stages, RVQ: 8x2)
-%     Table_2a_16             = [ OUT.pca__1_Dudek__(2)            OUT.tsvq_1_Dudek__(1)           UTIL_min_ignoring_a_num(OUT.rvq__1_Dudek__(1,:), 9999)    ; 
-%                                 OUT.pca__2_david__(2)            OUT.tsvq_2_david__(1)           UTIL_min_ignoring_a_num(OUT.rvq__2_david__(1,:), 9999)    ;
-%                                 OUT.pca__3_sylv___(2)            OUT.tsvq_3_sylv___(1)           UTIL_min_ignoring_a_num(OUT.rvq__3_sylv___(1,:), 9999)    ;
-%                                 OUT.pca__5_fish___(2)            OUT.tsvq_5_fish___(1)           UTIL_min_ignoring_a_num(OUT.rvq__5_fish___(1,:), 9999)    ;
-%                                 OUT.pca__6_car4___(2)            OUT.tsvq_6_car4___(1)           UTIL_min_ignoring_a_num(OUT.rvq__6_car4___(1,:), 9999)    ;
-%                                 OUT.pca__7_car11__(2)            OUT.tsvq_7_car11__(1)           UTIL_min_ignoring_a_num(OUT.rvq__7_car11__(1,:), 9999)    ];
-%                             
-%     temp2                   =   mean(Table_2a_16);
-%     Table_2a_16             =   [Table_2a_16;temp2]';
-% 
-%     
-% %comparison DoF_32 (PCA: 32, TSVQ: 4 stages, RVQ: 8x4)   
-%     Table_2b_32             = [ OUT.pca__1_Dudek__(3)           OUT.tsvq_1_Dudek__(2)           min(OUT.rvq__1_Dudek__(2,:))    ;
-%                                 OUT.pca__2_david__(3)           OUT.tsvq_2_david__(2)           min(OUT.rvq__2_david__(2,:))    ;
-%                                 OUT.pca__3_sylv___(3)           OUT.tsvq_3_sylv___(2)           min(OUT.rvq__3_sylv___(2,:))    ;
-%                                 OUT.pca__5_fish___(3)           OUT.tsvq_5_fish___(2)           min(OUT.rvq__5_fish___(2,:))    ;
-%                                 OUT.pca__6_car4___(3)           OUT.tsvq_6_car4___(2)           min(OUT.rvq__6_car4___(2,:))    ;
-%                                 OUT.pca__7_car11__(3)           OUT.tsvq_7_car11__(2)           min(OUT.rvq__7_car11__(2,:))    ];
-%                             
-%     temp3                   =   mean(Table_2b_32);
-%     Table_2b_32             =   [Table_2b_32;temp3]';
+    Table_2a_16             = [ OUT.pca(:,2) ...
+                                OUT.tsvq(:,1) ...
+                                OUT.rvq1(:,1) ...
+                                OUT.rvq2(:,1) ...
+                                OUT.rvq3(:,1) ...
+                                OUT.rvq4(:,1) ];
+                                
 
+    Table_2b_32             = [ OUT.pca(:,3)  ...
+                                OUT.tsvq(:,2) ...
+                                OUT.rvq1(:,2) ...
+                                OUT.rvq2(:,2) ...
+                                OUT.rvq3(:,2) ...
+                                OUT.rvq4(:,2) ];
+                            
+                            
+    Table_1__best           =   [Table_1__best ; DM2_cnt_min_row_element(Table_1__best)]
+    Table_1__mean           =   [Table_1__mean ; DM2_cnt_min_row_element(Table_1__mean)]
+    
+    Table_2a_16             =   [Table_2a_16   ; DM2_cnt_min_row_element(Table_2a_16)]
+    Table_2b_32             =   [Table_2b_32   ; DM2_cnt_min_row_element(Table_2b_32)]
+    
+								
 
 %------------------------------------------------
 % POST-PROCESSING
 %------------------------------------------------  
-    labels_datasets         =   {'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11', 'mean'};      
+    labels_datasets         =   {'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11', ' \% best'};   
+    labels_algos            =   {'PCA', 'TSVQ', 'maxP', 'RofE', 'nulE', 'monR'};
     labels_pca__8_16_32     =   {'8', '16', '32'};
     labels_tsvq_3_4_5       =   {'3', '4', '5'};    
     labels_rvq__2_4_8_12_16 =   {'2', '4', '8', '12', '16'};  
   
 
-    
-% %Appendix A
-  
-%     %TSVQ
-%     UTIL_matrix2latex(OUT.tsvq_1_Dudek__,   'AppA_table_tsvq_1_Dudek__.tex',    'rowLabels', labels_tsvq_3_4_5,                                    'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.tsvq_2_david__,   'AppA_table_tsvq_2_david__.tex',    'rowLabels', labels_tsvq_3_4_5,                                    'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.tsvq_3_sylv___,   'AppA_table_tsvq_3_sylv___.tex',    'rowLabels', labels_tsvq_3_4_5,                                    'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.tsvq_5_fish___,   'AppA_table_tsvq_5_fish___.tex',    'rowLabels', labels_tsvq_3_4_5,                                    'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.tsvq_6_car4___,   'AppA_table_tsvq_6_car4___.tex',    'rowLabels', labels_tsvq_3_4_5,                                    'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.tsvq_7_car11__,   'AppA_table_tsvq_7_car11__.tex',    'rowLabels', labels_tsvq_3_4_5,                                    'alignment', 'c', 'format', '%-6.2f');
-% 
-%     %RVQ    
-%     UTIL_matrix2latex(OUT.rvq__1_Dudek__,   'AppA_table_rvq__1_Dudek__.tex',    'rowLabels', labels_rvq__2_4_8_12_16, 'columnLabels', {'maxQ', 'RofE', 'nulE', 'monR'}, 'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.rvq__2_david__,   'AppA_table_rvq__2_david__.tex',    'rowLabels', labels_rvq__2_4_8_12_16, 'columnLabels', {'maxQ', 'RofE', 'nulE', 'monR'}, 'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.rvq__3_sylv___,   'AppA_table_rvq__3_sylv___.tex',    'rowLabels', labels_rvq__2_4_8_12_16, 'columnLabels', {'maxQ', 'RofE', 'nulE', 'monR'}, 'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.rvq__5_fish___,   'AppA_table_rvq__5_fish___.tex',    'rowLabels', labels_rvq__2_4_8_12_16, 'columnLabels', {'maxQ', 'RofE', 'nulE', 'monR'}, 'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.rvq__6_car4___,   'AppA_table_rvq__6_car4___.tex',    'rowLabels', labels_rvq__2_4_8_12_16, 'columnLabels', {'maxQ', 'RofE', 'nulE', 'monR'}, 'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(OUT.rvq__7_car11__,   'AppA_table_rvq__7_car11__.tex',    'rowLabels', labels_rvq__2_4_8_12_16, 'columnLabels', {'maxQ', 'RofE', 'nulE', 'monR'}, 'alignment', 'c', 'format', '%-6.2f');
-
+     
 %     %comparisons    
-%     UTIL_matrix2latex(Table_1__best,        'AppB_tables_Table_1__best.tex',  'rowLabels', labels_datasets,         'columnLabels', {'PCA', 'TSVQ', 'RVQ'},'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(Table_2a_16,          'AppB_tables_Table_2a_16.tex','rowLabels', labels_datasets,         'columnLabels', {'PCA', 'TSVQ', 'RVQ'},'alignment', 'c', 'format', '%-6.2f');
-%     UTIL_matrix2latex(Table_2b_32,          'AppB_tables_Table_2b_32.tex','rowLabels', labels_datasets,         'columnLabels', {'PCA', 'TSVQ', 'RVQ'},'alignment', 'c', 'format', '%-6.2f');
+     UTIL_matrix2latex(Table_1__best, 'temp/Table_1a_best.tex', 'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
+     UTIL_matrix2latex(Table_1__mean, 'temp/Table_1b_mean.tex', 'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
+     UTIL_matrix2latex(Table_2a_16,   'temp/Table_2a_16.tex',   'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
+     UTIL_matrix2latex(Table_2b_32,   'temp/Table_2b_32.tex',   'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
 
 %1. PCA
 

@@ -25,11 +25,6 @@ We have previously described our 5-component tracker comprising appearance, obse
 
 All trackers were run on 6 publicly available datasets, Dudek, davidin300, sylv, fish, car4 and car11.  See Figure~\ref{fig:trk_sequences} in Appendix~\ref{App:dataset_snapshots} for snapshots of images in each dataset at 100 image intervals.  These datasets can be downloaded from~\cite{2008_JNL_subspaceTRK_Ross}.  Tracking error was measured on each of these datasets using the error between ground truth feature points and estimated feature points as shown in Figure~\ref{fig:results_pca__trk_dudek_0007} for the Dudek sequence.
 
-
-
-%=========================
-\section{Results}
-%=========================
 Tracking error results are given in Figures~\ref{fig:trk_pca}, \ref{fig:trk_tsvq}, \ref{fig:trk_rvq1}, \ref{fig:trk_rvq2}, \ref{fig:trk_rvq3} and \ref{fig:trk_rvq4} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, RVQ1, RVQ2, RVQ3 and RVQ4 respectively.  Each of these figures comprises a table and 4 plots.  Each entry in a table represents tracking error temporally averaged over the frames of a dataset (most of the datasets have more than 500 images).  The entries in a table are visualized in the accompanying 4 plots.  The plots show tracking error for different parameter values and their averages, and tracking error for different datasets and their averages.  
 
 For the datasets, we make the following observations:
@@ -63,6 +58,18 @@ Given these observations in related areas of facial processing, we do not remove
 \item \underline{Best Q is 16}.  Overall, on average, $Q=16$ produces the lowest tracking error.  On average, the tracking error decreases from $Q=8$ to $Q=16$, and then increases from $Q=16$ to $Q=32$.  It appears that the number of eigenvectors required to capture the linear correlation in these datasets is between 16 and 32, but closer to 16.   
 The reason for the decrease in tracking error is that a certain number of eigenvectors are needed to capture the linear correlations in the data.  A subsequent increase in tracking error, as discussed earlier, appears to be related to the difficulty in correctly aligning the targets which causes later PCA eigenvectors to explain noise.
 \end{enumerate}
+
+%=========================
+\section{Results}
+%=========================
+\begin{table}[h!]
+\centering
+\input{temp/Table_1__best}
+\caption{Comparison of best tracking performance.}
+\label{fig:Table_1__best}
+\end{table}
+
+
 
 %=========================
 \section{Conclusions}
