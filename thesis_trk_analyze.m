@@ -1,3 +1,13 @@
+% This file generates tracking tables and plots.
+%
+% Copyright (c) Salman Aslam.  All rights reserved.
+% Date created : Oct 22, 2011
+% Date modified: Oct 24, 2011
+
+
+
+
+
     clear;
     clc;
     close all;
@@ -16,7 +26,7 @@
 %------------------------------------------------   
    
 %input data
-    OUT                     =   results_numbers();      %read numbers
+    OUT                     =  thesis_trk_results();      %read numbers
     
 %select labels, etc based on algo
     if (bUsePCA)

@@ -1,4 +1,4 @@
-function OUT = results_numbers()
+function OUT =thesis_trk_results()
 
 %----------------------------------------------------
 % RVQ (using only decoder codebook)
