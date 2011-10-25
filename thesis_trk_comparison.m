@@ -11,13 +11,14 @@ close all;
 %------------------------------------------------
 % PROCESSING: PCA
 %------------------------------------------------
-    Table_1__best           = [ UTIL_min_ignoring_a_num(OUT.pca(1,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(1,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(1,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(1,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(1,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(1,:), 9999);
-                                UTIL_min_ignoring_a_num(OUT.pca(2,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(2,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(2,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(2,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(2,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(2,:), 9999);
-                                UTIL_min_ignoring_a_num(OUT.pca(3,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(3,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(3,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(3,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(3,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(3,:), 9999);
-                                UTIL_min_ignoring_a_num(OUT.pca(4,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(4,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(4,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(4,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(4,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(4,:), 9999);
-                                UTIL_min_ignoring_a_num(OUT.pca(5,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(5,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(5,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(5,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(5,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(5,:), 9999);
-                                UTIL_min_ignoring_a_num(OUT.pca(6,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(6,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(6,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(6,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(6,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(6,:), 9999)];
-    mean(Table_1__best)
+    Table_1__best           = [ min(OUT.pca(1,:))     min(OUT.tsvq(1,:))    min(OUT.rvq1(1,1:3))    min(OUT.rvq2(1,1:3))    min(OUT.rvq3(1,1:3))    min(OUT.rvq4(1,1:3));
+                                min(OUT.pca(2,:))     min(OUT.tsvq(2,:))    min(OUT.rvq1(2,1:3))    min(OUT.rvq2(2,1:3))    min(OUT.rvq3(2,1:3))    UTIL_min_ignoring_a_num(OUT.rvq4(2,1:3), 9999);
+                                min(OUT.pca(3,:))     min(OUT.tsvq(3,:))    min(OUT.rvq1(3,1:3))    min(OUT.rvq2(3,1:3))    min(OUT.rvq3(3,1:3))    min(OUT.rvq4(3,1:3));
+                                min(OUT.pca(4,:))     min(OUT.tsvq(4,:))    min(OUT.rvq1(4,1:3))    min(OUT.rvq2(4,1:3))    min(OUT.rvq3(4,1:3))    min(OUT.rvq4(4,1:3));
+                                min(OUT.pca(5,:))     min(OUT.tsvq(5,:))    min(OUT.rvq1(5,1:3))    min(OUT.rvq2(5,1:3))    min(OUT.rvq3(5,1:3))    min(OUT.rvq4(5,1:3));
+                                min(OUT.pca(6,:))     min(OUT.tsvq(6,:))    min(OUT.rvq1(6,1:3))    min(OUT.rvq2(6,1:3))    min(OUT.rvq3(6,1:3))    min(OUT.rvq4(6,1:3))];
+    Table_1__best
+                            mean(Table_1__best);
                             
 % 
 %     temp1                   =   mean(Table_1__best);
