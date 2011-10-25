@@ -68,9 +68,9 @@ function OUT =thesis_trk_results()
 %3. sylv                        %    maxQ   RofE   nulE   monR                                
     rvq__3_sylv___          =   [    4      4.12   4.81   4.31; %8x2
                                      4.68   5.54   5.74   4.58; %8x4
-                                     4.72   4.56   4.74   5.08; %8x8
-                                     5.04   5.03   5.06   4.50; %8x12
-                                     5.01   4.54   4.10   5.12];%8x16 
+                                     4.72   4.83   4.74   5.08; %8x8
+                                     5.04   5.03   5.06   4.50; %8x12 %5.03 is old because of small bug in code which is fixed now, need to rerun but ok since i'm not using 8x12
+                                     5.01   4.54   4.10   5.12];%8x16 %4.54 is old because of small bug in code which is fixed now, need to rerun but ok since i'm not using 8x16
                                  
 %5. fish                        %    maxQ   RofE   nulE   monR                                
     rvq__5_fish___          =   [   11.50   2.96   4.03   2.89; %8x2
@@ -87,7 +87,7 @@ function OUT =thesis_trk_results()
                                      3.97   5.86   5.48   5.24];%8x16
                                  
 %7. car11                       %    maxQ   RofE   nulE   monR                                
-    rvq__7_car11__          =   [    2.32   2.47   2.59   2.47; %8x2
+    rvq__7_car11__          =   [    2.17   2.47   2.59   2.47; %8x2
                                      2.36   2.33   2.52   2.72; %8x4
                                      3.57   2.68   2.96   2.55; %8x8
                                      3.23   3.28   8.25  13.81; %8x12

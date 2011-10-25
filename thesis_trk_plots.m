@@ -15,9 +15,9 @@
 %select an algo to run
     bUsePCA                 =   0;
     bUseTSVQ                =   0;
-    bUseRVQ1                =   0;
+    bUseRVQ1                =   1;
     bUseRVQ2                =   0;
-    bUseRVQ3                =   1;
+    bUseRVQ3                =   0;
     bUseRVQ4                =   0;
 
     bSave                   =   1; 
