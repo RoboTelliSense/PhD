@@ -13,12 +13,12 @@
     close all;
 
 %select an algo to run
-    bUsePCA                 =   0;
+    bUsePCA                 =   1;
     bUseTSVQ                =   0;
     bUsemaxP                =   0;
     bUseRofE                =   0;
     bUsenulE                =   0;
-    bUsemonR                =   1;
+    bUsemonR                =   0;
 
     bSave                   =   1; 
 %------------------------------------------------
@@ -129,9 +129,9 @@
     
 %save to hard disk
     if (bSave)
-        UTIL_FILE_save2pdf(                 ['temp/results_' algofn 'trk_1a.pdf'], h1, 300); 
-        UTIL_FILE_save2pdf(                 ['temp/results_' algofn 'trk_1b.pdf'], h2, 300);   
-        UTIL_FILE_save2pdf(                 ['temp/results_' algofn 'trk_2a.pdf'], h3, 300); 
-        UTIL_FILE_save2pdf(                 ['temp/results_' algofn 'trk_2b.pdf'], h4, 300);   
-        UTIL_matrix2latex(Table_Nd_x_Nc,    ['temp/results_' algofn 'trk.tex'], 'rowLabels', ds_legend, 'columnLabels', algo_legend, 'alignment', 'c', 'format', '%-6.2f');        
+        UTIL_FILE_save2pdf(                 ['temp/results_final_' algofn 'trk_1a.pdf'], h1, 300); 
+        UTIL_FILE_save2pdf(                 ['temp/results_final_' algofn 'trk_1b.pdf'], h2, 300);   
+        UTIL_FILE_save2pdf(                 ['temp/results_final_' algofn 'trk_2a.pdf'], h3, 300); 
+        UTIL_FILE_save2pdf(                 ['temp/results_final_' algofn 'trk_2b.pdf'], h4, 300);   
+        UTIL_matrix2latex(Table_Nd_x_Nc,    ['temp/results_final_' algofn 'trk.tex'], 'rowLabels', ds_legend, 'columnLabels', algo_legend, 'alignment', 'c', 'format', '%-6.2f');        
     end    
