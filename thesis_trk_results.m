@@ -7,7 +7,7 @@ function OUT =thesis_trk_results()
 % codebooks, and i should have used encoder+decoder codebooks.
 %----------------------------------------------------
 %1. Dudek                       %    maxQ   RofE   nulE   monR
-	rvq__1_Dudek___old      =	[    9999   6.68   7.96   7.85  ; 	%8x2
+	rvq__1_Dudek___old      =	[    50     6.68   7.96   7.85  ; 	%8x2  %50 means track was lost
 									 8.40   8.19   7.22   8.89  ; 	%8x4
 									 9.13   7.95   8.67   8.47  ; 	%8x8
 									 8.34  10.02   8.18   7.60  ; 	%8x12
@@ -46,8 +46,8 @@ function OUT =thesis_trk_results()
     rvq__7_car11___old      =   [    2.32   2.23   2.57   2.23; %8x2
                                      2.30   2.06   2.12   2.71; %8x4
                                      2.14   2.48   3.45  12.04; %8x8
-                                     2.94   2.90   5.29   9999;   %8x12
-                                     9999   2.78   2.97   2  ]; %8x16
+                                     2.94   2.90   5.29   50;   %8x12
+                                     50     2.78   2.97   2  ]; %8x16 %50 means track was lost
 %----------------------------------------------------
 % RVQ (using encoder + decoder codebook)
 %----------------------------------------------------
@@ -59,11 +59,11 @@ function OUT =thesis_trk_results()
                                      9.05   7.55   7.86   8.71];%8x16
                                  
 %2. davidin300                  %    maxQ   RofE   nulE   monR                               
-    rvq__2_david__          =   [    6.84   9.02   7.17   9999; %8x2
+    rvq__2_david__          =   [    6.84   9.02   7.17   50;   %8x2
                                      4.47   6.21   5.35   5.83; %8x4
                                      9.89   5.74   4.63   4.15; %8x8
                                      7.16   6.67   6.42   5.25; %8x12
-                                     7.23   7.31   9999   5.58];%8x16
+                                     7.23   7.31   50     5.58]; %8x16  %50 means track was lost
                                  
 %3. sylv                        %    maxQ   RofE   nulE   monR                                
     rvq__3_sylv___          =   [    4      4.12   4.81   4.31; %8x2
