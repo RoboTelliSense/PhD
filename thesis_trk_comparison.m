@@ -11,59 +11,26 @@ close all;
 %------------------------------------------------
 % PROCESSING: PCA
 %------------------------------------------------
-                           
-%------------------------------------------------
-% PROCESSING: TSVQ
-%------------------------------------------------
-%     Table_rvq__tstD         = [ DM2_filtered_mean(OUT.rvq__1_Dudek__, -1, 1);
-%                                 DM2_filtered_mean(OUT.rvq__2_david__, -1, 1);
-%                                 DM2_filtered_mean(OUT.rvq__3_sylv___, -1, 1);
-%                                 DM2_filtered_mean(OUT.rvq__5_fish___, -1, 1);
-%                                 DM2_filtered_mean(OUT.rvq__6_car4___, -1, 1);
-%                                 DM2_filtered_mean(OUT.rvq__7_car11__, -1, 1);];
-%     temp                    =   mean(Table_rvq__tstD);
-%     Table_rvq__tstD         =   [Table_rvq__tstD;temp]';
-% 
-% 
-%     Table_rvq__M            = [ DM2_filtered_mean(OUT.rvq__1_Dudek__, -1, 2) ...
-%                                 DM2_filtered_mean(OUT.rvq__2_david__, -1, 2) ...
-%                                 DM2_filtered_mean(OUT.rvq__3_sylv___, -1, 2) ...
-%                                 DM2_filtered_mean(OUT.rvq__5_fish___, -1, 2) ...
-%                                 DM2_filtered_mean(OUT.rvq__6_car4___, -1, 2) ...
-%                                 DM2_filtered_mean(OUT.rvq__7_car11__, -1, 2)];
-%     temp                    =   mean(Table_rvq__M, 2);
-%     Table_rvq__M            =   [Table_rvq__M temp];
-% 
-% 
-% 
-%     Table_tsvq              = [ OUT.tsvq_1_Dudek__ ...
-%                                 OUT.tsvq_2_david__ ...
-%                                 OUT.tsvq_3_sylv___ ...
-%                                 OUT.tsvq_5_fish___ ...
-%                                 OUT.tsvq_6_car4___ ...
-%                                 OUT.tsvq_7_car11__ ];
-%     temp                    =   mean(Table_tsvq, 2);
-%     Table_tsvq              =   [Table_tsvq temp];
-%     
-% %comparison best
-%     Table_1__best           = [ UTIL_min_ignoring_a_num(OUT.pca__1_Dudek__, -1)     UTIL_min_ignoring_a_num(OUT.tsvq_1_Dudek__, -1)    UTIL_min_ignoring_a_num(OUT.rvq__1_Dudek__, -1)    ;
-%                                 UTIL_min_ignoring_a_num(OUT.pca__2_david__, -1)     UTIL_min_ignoring_a_num(OUT.tsvq_2_david__, -1)    UTIL_min_ignoring_a_num(OUT.rvq__2_david__, -1)    ;
-%                                 UTIL_min_ignoring_a_num(OUT.pca__3_sylv___, -1)     UTIL_min_ignoring_a_num(OUT.tsvq_3_sylv___, -1)    UTIL_min_ignoring_a_num(OUT.rvq__3_sylv___, -1)    ;
-%                                 UTIL_min_ignoring_a_num(OUT.pca__5_fish___, -1)     UTIL_min_ignoring_a_num(OUT.tsvq_5_fish___, -1)    UTIL_min_ignoring_a_num(OUT.rvq__5_fish___, -1)    ;
-%                                 UTIL_min_ignoring_a_num(OUT.pca__6_car4___, -1)     UTIL_min_ignoring_a_num(OUT.tsvq_6_car4___, -1)    UTIL_min_ignoring_a_num(OUT.rvq__6_car4___, -1)    ;
-%                                 UTIL_min_ignoring_a_num(OUT.pca__7_car11__, -1)     UTIL_min_ignoring_a_num(OUT.tsvq_7_car11__, -1)    UTIL_min_ignoring_a_num(OUT.rvq__7_car11__, -1)    ];
+    Table_1__best           = [ UTIL_min_ignoring_a_num(OUT.pca(1,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(1,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(1,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(1,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(1,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(1,:), 9999);
+                                UTIL_min_ignoring_a_num(OUT.pca(2,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(2,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(2,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(2,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(2,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(2,:), 9999);
+                                UTIL_min_ignoring_a_num(OUT.pca(3,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(3,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(3,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(3,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(3,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(3,:), 9999);
+                                UTIL_min_ignoring_a_num(OUT.pca(4,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(4,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(4,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(4,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(4,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(4,:), 9999);
+                                UTIL_min_ignoring_a_num(OUT.pca(5,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(5,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(5,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(5,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(5,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(5,:), 9999);
+                                UTIL_min_ignoring_a_num(OUT.pca(6,:), 9999)     UTIL_min_ignoring_a_num(OUT.tsvq(6,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq1(6,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq2(6,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq3(6,:), 9999)    UTIL_min_ignoring_a_num(OUT.rvq4(6,:), 9999)];
+    mean(Table_1__best)
+                            
 % 
 %     temp1                   =   mean(Table_1__best);
 %     Table_1__best           =   [Table_1__best;temp1]';
 % 
 %     
 % %comparison DoF_16 (PCA: 16, TSVQ: 3 stages, RVQ: 8x2)
-%     Table_2a_16             = [ OUT.pca__1_Dudek__(2)            OUT.tsvq_1_Dudek__(1)           UTIL_min_ignoring_a_num(OUT.rvq__1_Dudek__(1,:), -1)    ; 
-%                                 OUT.pca__2_david__(2)            OUT.tsvq_2_david__(1)           UTIL_min_ignoring_a_num(OUT.rvq__2_david__(1,:), -1)    ;
-%                                 OUT.pca__3_sylv___(2)            OUT.tsvq_3_sylv___(1)           UTIL_min_ignoring_a_num(OUT.rvq__3_sylv___(1,:), -1)    ;
-%                                 OUT.pca__5_fish___(2)            OUT.tsvq_5_fish___(1)           UTIL_min_ignoring_a_num(OUT.rvq__5_fish___(1,:), -1)    ;
-%                                 OUT.pca__6_car4___(2)            OUT.tsvq_6_car4___(1)           UTIL_min_ignoring_a_num(OUT.rvq__6_car4___(1,:), -1)    ;
-%                                 OUT.pca__7_car11__(2)            OUT.tsvq_7_car11__(1)           UTIL_min_ignoring_a_num(OUT.rvq__7_car11__(1,:), -1)    ];
+%     Table_2a_16             = [ OUT.pca__1_Dudek__(2)            OUT.tsvq_1_Dudek__(1)           UTIL_min_ignoring_a_num(OUT.rvq__1_Dudek__(1,:), 9999)    ; 
+%                                 OUT.pca__2_david__(2)            OUT.tsvq_2_david__(1)           UTIL_min_ignoring_a_num(OUT.rvq__2_david__(1,:), 9999)    ;
+%                                 OUT.pca__3_sylv___(2)            OUT.tsvq_3_sylv___(1)           UTIL_min_ignoring_a_num(OUT.rvq__3_sylv___(1,:), 9999)    ;
+%                                 OUT.pca__5_fish___(2)            OUT.tsvq_5_fish___(1)           UTIL_min_ignoring_a_num(OUT.rvq__5_fish___(1,:), 9999)    ;
+%                                 OUT.pca__6_car4___(2)            OUT.tsvq_6_car4___(1)           UTIL_min_ignoring_a_num(OUT.rvq__6_car4___(1,:), 9999)    ;
+%                                 OUT.pca__7_car11__(2)            OUT.tsvq_7_car11__(1)           UTIL_min_ignoring_a_num(OUT.rvq__7_car11__(1,:), 9999)    ];
 %                             
 %     temp2                   =   mean(Table_2a_16);
 %     Table_2a_16             =   [Table_2a_16;temp2]';

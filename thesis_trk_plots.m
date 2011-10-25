@@ -17,8 +17,8 @@
     bUseTSVQ                =   0;
     bUseRVQ1                =   0;
     bUseRVQ2                =   0;
-    bUseRVQ3                =   0;
-    bUseRVQ4                =   1;
+    bUseRVQ3                =   1;
+    bUseRVQ4                =   0;
 
     bSave                   =   1; 
 %------------------------------------------------
@@ -124,7 +124,8 @@
     xlabel(ds_xlabel);
     ylabel(ylabel1);
 
-    
+    mean1                   =   DM2_filtered_mean(Table_Nd_x_Nc, 9999, 1);
+    mean2                   =   DM2_filtered_mean(Table_Nd_x_Nc, 9999, 2);
     
 %save to hard disk
     if (bSave)
