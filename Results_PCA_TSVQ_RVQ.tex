@@ -25,7 +25,7 @@ We have previously described our 5-component tracker comprising appearance, obse
 
 All trackers were run on 6 publicly available datasets, Dudek, davidin300, sylv, fish, car4 and car11.  See Figure~\ref{fig:trk_sequences} in Appendix~\ref{App:dataset_snapshots} for snapshots of images in each dataset at 100 image intervals.  These datasets can be downloaded from~\cite{2008_JNL_subspaceTRK_Ross}.  Tracking error was measured on each of these datasets using the error between ground truth feature points and estimated feature points as shown in Figure~\ref{fig:results_pca__trk_dudek_0007} for the Dudek sequence.
 
-Tracking error results are given in Figures~\ref{fig:trk_pca}, \ref{fig:trk_tsvq}, \ref{fig:trk_maxP}, \ref{fig:trk_RofE}, \ref{fig:trk_nulE} and \ref{fig:trk_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.  Each of these figures comprises a table and 4 plots.  Each entry in a table represents tracking error temporally averaged over the frames of a dataset (most of the datasets have more than 500 images).  The entries in a table are visualized in the accompanying 4 plots.  The plots show tracking error for different parameter values and their averages, and tracking error for different datasets and their averages.  
+Tracking error results are given in Figures~\ref{fig:results_final_pca}, \ref{fig:results_final_tsvq}, \ref{fig:results_final_maxP}, \ref{fig:results_final_RofE} \ref{fig:results_final_nulE} and \ref{fig:results_final_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.  Each of these figures comprises a table and 4 plots.  Each entry in a table represents tracking error temporally averaged over the frames of a dataset (most of the datasets have more than 500 images).  The entries in a table are visualized in the accompanying 4 plots.  The plots show tracking error for different parameter values and their averages, and tracking error for different datasets and their averages.  
 
 For the datasets, we make the following observations:
 
@@ -62,44 +62,44 @@ The reason for the decrease in tracking error is that a certain number of eigenv
 %=========================
 \section{Results}
 %=========================
-Our overall results are summarized in 4 figures, Figures~\ref{fig:results_final_1a_best}, \ref{fig:results_final_1b_mean}, \ref{fig:results_final_2a_16} and \ref{fig:results_final_2b_32}.  These results are derived from Figures~\ref{fig:trk_pca}, \ref{fig:trk_tsvq}, \ref{fig:trk_maxP}, \ref{fig:trk_RofE}, \ref{fig:trk_nulE} and \ref{fig:trk_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.
+Our Tracking results are summarized in 4 figures, Figures~\ref{fig:results_final_1a_best}, \ref{fig:results_final_1b_mean}, \ref{fig:results_final_2a_16} and \ref{fig:results_final_2b_32}.  These results are derived from Figures~\ref{fig:trk_pca}, \ref{fig:trk_tsvq}, \ref{fig:trk_maxP}, \ref{fig:trk_RofE}, \ref{fig:trk_nulE} and \ref{fig:trk_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.
 
 \begin{figure}[t]
 \centering
-\input{temp/results_final_1a_best}
+\input{temp/results_final_1_best}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_1a_best_percent.pdf}\label{fig:results_final_1a_best_percent}}
-\caption{Overall results, 1 of 4, comparison of best tracking performance.}
-\label{fig:results_final_1a_best}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
+\caption{Tracking results, figure 1 of 5, comparison of best tracking performance.}
+\label{fig:results_final_1_best}
 \end{figure}
 
 \begin{figure}[t]
 \centering
-\input{temp/results_final_1b_mean}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_1b_mean.pdf}\label{fig:results_final_1b_mean}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_1b_mean_percent.pdf}\label{fig:results_final_1b_mean_percent}}
-\caption{Overall results, 2 of 4, comparison of mean tracking performance.}
-\label{fig:results_final_1b_mean}
-\end{figure}
-
-
-\begin{figure}[t]
-\centering
-\input{temp/results_final_2a_16}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_2a_16.pdf}\label{fig:results_final_2a_16}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_2a_16_percent.pdf}\label{fig:results_final_2a_16_percent}}
-\caption{Overall results, 3 of 4, comparison of tracking performance if 16 images are stored.}
-\label{fig:results_final_2a_16}
+\input{temp/results_final_2_mean}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
+\caption{Tracking results, figure 2 of 5, comparison of mean tracking performance.}
+\label{fig:results_final_2_mean}
 \end{figure}
 
 
 \begin{figure}[t]
 \centering
-\input{temp/results_final_2b_32}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_2b_32.pdf}\label{fig:results_final_2b_32}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_2b_32_percent.pdf}\label{fig:results_final_2b_32_percent}}
-\caption{Overall results, 4 of 4, comparison of tracking performance if 32 images are stored.}
-\label{fig:results_final_2b_32}
+\input{temp/results_final_3_16}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_3a_16.pdf}\label{fig:results_final_3a_16}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_3b_16_percent.pdf}\label{fig:results_final_3b_16_percent}}
+\caption{Tracking results, figure 3 of 5, comparison of tracking performance if 16 images are stored.}
+\label{fig:results_final_3_16}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\input{temp/results_final_4_32}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_4a_32.pdf}\label{fig:results_final_4a_32}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_4b_32_percent.pdf}\label{fig:results_final_4b_32_percent}}
+\caption{Tracking results, figure 4 of 5, comparison of tracking performance if 32 images are stored.}
+\label{fig:results_final_4_32}
 \end{figure}
 
 
@@ -150,13 +150,13 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nu
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_final_pca__trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__trk_2b.pdf}\label{fig:trk_pca_2b}}
+\input{temp/results_final_pca_}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__a.pdf}\label{fig:results_final_pca__a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__b.pdf}\label{fig:results_final_pca__b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__c.pdf}\label{fig:results_final_pca__c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__d.pdf}\label{fig:results_final_pca__d}}
 \caption{Tracking error for PCA based tracking for different number of eigenvectors $Q$ for 6 different publicly available datasets.}
-\label{fig:trk_pca}
+\label{fig:results_final_pca_}
 \end{figure}
 
 %----------------------------------------------------
@@ -166,13 +166,13 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nu
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_final_tsvq_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\input{temp/results_final_tsvq}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_a.pdf}\label{fig:results_final_tsvq_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_b.pdf}\label{fig:results_final_tsvq_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_c.pdf}\label{fig:results_final_tsvq_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_d.pdf}\label{fig:results_final_tsvq_d}}
 \caption{Tracking error for binary balanced-tree-TSVQ based tracking for different number of stages $P$ for 6 different publicly available datasets.}
-\label{fig:trk_tsvq}
+\label{fig:results_final_tsvq}
 \end{figure}
 
 
@@ -183,13 +183,13 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nu
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_final_maxP_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\input{temp/results_final_maxP}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_a.pdf}\label{fig:results_final_maxP_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_b.pdf}\label{fig:results_final_maxP_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_c.pdf}\label{fig:results_final_maxP_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_d.pdf}\label{fig:results_final_maxP_d}}
 \caption{Tracking error for maxP based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
-\label{fig:trk_maxP}
+\label{fig:results_final_maxP}
 \end{figure}
 
 
@@ -200,13 +200,13 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nu
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_final_RofE_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\input{temp/results_final_RofE}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_a.pdf}\label{fig:results_final_RofE_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_b.pdf}\label{fig:results_final_RofE_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_c.pdf}\label{fig:results_final_RofE_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_d.pdf}\label{fig:results_final_RofE_d}}
 \caption{Tracking error for RofE based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
-\label{fig:trk_RofE}
+\label{fig:results_final_RofE}
 \end{figure}
 
 %----------------------------------------------------
@@ -216,13 +216,13 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nu
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_final_nulE_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\input{temp/results_final_nulE}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_a.pdf}\label{fig:results_final_nulE_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_b.pdf}\label{fig:results_final_nulE_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_c.pdf}\label{fig:results_final_nulE_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_d.pdf}\label{fig:results_final_nulE_d}}
 \caption{Tracking error for nulE based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
-\label{fig:trk_nulE}
+\label{fig:results_final_nulE}
 \end{figure}
 %----------------------------------------------------
 \clearpage
@@ -231,13 +231,13 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nu
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_final_monR_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\input{temp/results_final_monR}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_a.pdf}\label{fig:results_final_monR_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_b.pdf}\label{fig:results_final_monR_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_c.pdf}\label{fig:results_final_monR_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_d.pdf}\label{fig:results_final_monR_d}}
 \caption{Tracking error for monR based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets. A value of 50 means that track was lost.}
-\label{fig:trk_monR}
+\label{fig:results_final_monR}
 \end{figure}
 
 \clearpage
