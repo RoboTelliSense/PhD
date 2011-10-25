@@ -7,13 +7,15 @@ close all;
 %============================================
 %RVQ    
     rvq__maxQ               =   8;
-    rvq__M                  =   2;
-    rvq__tstI               =   1; %1, 2, 3, or 4    
+
+    rvq__tstI               =   4; %1, 2, 3, or 4    
     rvq__tSNR               =   1000;
     rvq__lmbd               =   0;
     rvq__type               =   'uint8';
     
     ds_code                 =   6;
+        load car4
+            [t1, t2, F]=size(data);
 
 %PARAM
     
@@ -22,44 +24,68 @@ close all;
     PARAM.tgt_sw            =   33;
     PARAM.tgt_sh            =   33;
     
-%USE RVQ and PARAM    
-    [aRVQx trkaRVQx]        =   RVQx_config(PARAM, [], rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__type);    
+%USE RVQ and PARAM  
+    rvq__M                  =   2;
+    [aRVQ2a trkaRVQ2a]      =   RVQx_config(PARAM, [], rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__type);    
+    rvqa                    =   textread(['results2\' trkaRVQ2a.config_str '.txt']);
 
+    rvq__M                  =   4;
+    [aRVQ2b trkaRVQ2b]      =   RVQx_config(PARAM, [], rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__type);    
+    rvqb                    =   textread(['results2\' trkaRVQ2b.config_str '.txt']);
+
+    rvq__M                  =   8;
+    [aRVQ2c trkaRVQ2c]      =   RVQx_config(PARAM, [], rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__type);    
+    rvqc                    =   textread(['results2\' trkaRVQ2c.config_str '.txt']);
+    
 %============================================    
 % PROCESSING    
 %============================================
-    rvq                     =   textread(['results2\' trkaRVQx.config_str '.txt']);
+    
 
 %============================================    
 % POST-PROCESSING    
 %============================================   
-    stem(rvq(:,21), '.')
+     figure;
+   subplot(2,1,1)
+   plot(6:F, rvqa(:,5), 'b');
+hold on;
+plot(6:F, rvqb(:,5), 'g');
+plot(6:F, rvqc(:,5), 'r');
+grid 
+    
+subplot(2,1,2)
+ plot(rvqa(:,6), 'b');
+hold on;
+plot(rvqb(:,6), 'g');
+plot(rvqc(:,6), 'r');
+grid
+
     
     figure;
     hold on;
-    load car4
-    [t1, t2, F]=size(data);
+
+
     idx=0;
     for f=6:F
         idx=f-5;
         %I=data(:,:,f);
         imshow(uint8(data(:,:,f)));
         
-        x1=rvq(idx,16);
-        y1=rvq(idx,17);
-        x2=rvq(idx,18);
-        y2=rvq(idx,19);
-        %x3=rvq(idx,20);
-        %y3=rvq(idx,21);
 
         hold on;
-        UTIL_PLOT_filledCircle([x1 y1], 3, 300, 'r');
-        UTIL_PLOT_filledCircle([x2 y2], 3, 300, 'r');
-        %UTIL_PLOT_filledCircle([x3 y3], 3, 300, 'r');
+        UTIL_PLOT_filledCircle([rvqa(idx,16) rvqa(idx,17)], 3, 300, 'b');
+        UTIL_PLOT_filledCircle([rvqa(idx,18) rvqa(idx,19)], 3, 300, 'b');
+        
+        UTIL_PLOT_filledCircle([rvqb(idx,16) rvqb(idx,17)], 3, 300, 'g');
+        UTIL_PLOT_filledCircle([rvqb(idx,18) rvqb(idx,19)], 3, 300, 'g');
+        
+        UTIL_PLOT_filledCircle([rvqc(idx,16) rvqc(idx,17)], 3, 300, 'r');
+        UTIL_PLOT_filledCircle([rvqc(idx,18) rvqc(idx,19)], 3, 300, 'r');        
+
         hold off;
         title(num2str(f));
         f
         drawnow
-        
+       
         
     end

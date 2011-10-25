@@ -2,20 +2,23 @@
     clc;
     close all;
 
-%------------------------------------------------
-% PRE-PROCESSING
-%------------------------------------------------   
-%input data
-    
-    OUT                     =   results_numbers();      %read numbers
-    
+%select an algo to run
     bUsePCA                 =   0;
     bUseTSVQ                =   0;
     bUseRVQ1                =   0;
     bUseRVQ2                =   0;
     bUseRVQ3                =   0;
     bUseRVQ4                =   1;
+
+    bSave                   =   1; 
+%------------------------------------------------
+% PRE-PROCESSING
+%------------------------------------------------   
+   
+%input data
+    OUT                     =   results_numbers();      %read numbers
     
+%select labels, etc based on algo
     if (bUsePCA)
         algo_xlabel         =   'Number of eigenvectors, Q';
         algo_xTickLabels    =   {'8', '16', '32'};
@@ -43,14 +46,7 @@
     yampl                   =   15; %max y amplitude
     ds_xlabel               =   'publicly available datasets';
     ds_xTickLabels          =   {'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11'};    
-    ds_legend               =   ds_xTickLabels
-    
-    bSave                   =   1;
-    
-
-
-    
-%make a single matrix: stack columns for each dataset side by side
+    ds_legend               =   ds_xTickLabels;
     [Nd, Nc]                =   size(Table_Nd_x_Nc); %Nc is number of configurations
                                                      %Nd is number of datasets
 
@@ -77,10 +73,10 @@
  
     %plot1b: averaged by squashing up down
     h2=figure;
-    Table_config_1x6 = mean(Table_Nd_x_Nc, 1)
-    bar(Table_config_1x6)
+    Table_config_1x6 = mean(Table_Nd_x_Nc, 1);
+    bar(Table_config_1x6);
     grid on;
-    axis([0 Nc+1 0 yampl])
+    axis([0 Nc+1 0 yampl]);
     set(gca, 'XTick', 1:Nc);
     set(gca, 'XTickLabel', algo_xTickLabels);
     xlabel(algo_xlabel);
@@ -101,7 +97,7 @@
     plot(1:Nd, Table_Nd_x_Nc(:,3), 'rd-');          %32
     legend(algo_legend);
     grid on;
-    axis([1 Nd 0 yampl])
+    axis([1 Nd 0 yampl]);
     set(gca, 'XTick', 1:Nd);
     set(gca, 'XTickLabel', ds_xTickLabels);
     xlabel(ds_xlabel);
@@ -109,10 +105,10 @@
     
     %plot 2b: averaged by squashing left right
     h4=figure;
-    Table_config_3x1 = mean(Table_Nd_x_Nc, 2)
-    bar(Table_config_3x1)
+    Table_config_3x1 = mean(Table_Nd_x_Nc, 2);
+    bar(Table_config_3x1);
     grid on;
-    axis([0 Nd+1 0 yampl])
+    axis([0 Nd+1 0 yampl]);
     set(gca, 'XTick', 1:Nd);
     set(gca, 'XTickLabel', ds_xTickLabels);
     xlabel(ds_xlabel);
