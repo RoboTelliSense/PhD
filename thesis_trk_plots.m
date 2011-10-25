@@ -15,10 +15,10 @@
 %select an algo to run
     bUsePCA                 =   0;
     bUseTSVQ                =   0;
-    bUseRVQ1                =   1;
-    bUseRVQ2                =   0;
-    bUseRVQ3                =   0;
-    bUseRVQ4                =   0;
+    bUsemaxP                =   0;
+    bUseRofE                =   0;
+    bUsenulE                =   0;
+    bUsemonR                =   1;
 
     bSave                   =   1; 
 %------------------------------------------------
@@ -45,10 +45,10 @@
         algo_xlabel         =   'Number of stages x codevectors/stage, PxM';
         algo_xTickLabels    =   {'8x2', '8x4', '8x8'};
         algo_legend         =   {'PxM=8x2', 'PxM=8x4', 'PxM=8x8'};        
-        if      (bUseRVQ1) Table_Nd_x_Nc = OUT.rvq1(:,1:3);algofn='rvq1_';  %1:3 means only use 8x2, 8x4, 8x8
-        elseif  (bUseRVQ2) Table_Nd_x_Nc = OUT.rvq2(:,1:3);algofn='rvq2_';
-        elseif  (bUseRVQ3) Table_Nd_x_Nc = OUT.rvq3(:,1:3);algofn='rvq3_';
-        elseif  (bUseRVQ4) Table_Nd_x_Nc = OUT.rvq4(:,1:3);algofn='rvq4_';
+        if      (bUsemaxP) Table_Nd_x_Nc = OUT.maxP(:,1:3);algofn='maxP_';  %1:3 means only use 8x2, 8x4, 8x8
+        elseif  (bUseRofE) Table_Nd_x_Nc = OUT.RofE(:,1:3);algofn='RofE_';
+        elseif  (bUsenulE) Table_Nd_x_Nc = OUT.nulE(:,1:3);algofn='nulE_';
+        elseif  (bUsemonR) Table_Nd_x_Nc = OUT.monR(:,1:3);algofn='monR_';
         end
     end
     

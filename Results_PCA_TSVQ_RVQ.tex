@@ -9,7 +9,7 @@
 %=========================
 \section{Introduction}
 %=========================
-In this report, our goal is to present tracking error results for our 6 different trackers, PCA-based, TSVQ-based and 4 RVQ-based trackers, RVQ1, RVQ2, RVQ3, and RVQ4.  RVQ1, RVQ2, RVQ3 and RVQ4 are convenient names for $\mathrm{RVQ_{maxP}}$, $\mathrm{RVQ_{RofE}}$, $\mathrm{RVQ_{nulE}}$ and $\mathrm{RVQ_{monR}}$ respectively.
+In this report, our goal is to present tracking error results for our 6 different trackers, PCA-based, TSVQ-based and 4 RVQ-based trackers, maxP, RofE, nulE, and monR.  maxP, RofE, nulE and monR are convenient names for $\mathrm{RVQ_{maxP}}$, $\mathrm{RVQ_{RofE}}$, $\mathrm{RVQ_{nulE}}$ and $\mathrm{RVQ_{monR}}$ respectively.
 
 
 								\begin{figure}[t]
@@ -25,7 +25,7 @@ We have previously described our 5-component tracker comprising appearance, obse
 
 All trackers were run on 6 publicly available datasets, Dudek, davidin300, sylv, fish, car4 and car11.  See Figure~\ref{fig:trk_sequences} in Appendix~\ref{App:dataset_snapshots} for snapshots of images in each dataset at 100 image intervals.  These datasets can be downloaded from~\cite{2008_JNL_subspaceTRK_Ross}.  Tracking error was measured on each of these datasets using the error between ground truth feature points and estimated feature points as shown in Figure~\ref{fig:results_pca__trk_dudek_0007} for the Dudek sequence.
 
-Tracking error results are given in Figures~\ref{fig:trk_pca}, \ref{fig:trk_tsvq}, \ref{fig:trk_rvq1}, \ref{fig:trk_rvq2}, \ref{fig:trk_rvq3} and \ref{fig:trk_rvq4} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, RVQ1, RVQ2, RVQ3 and RVQ4 respectively.  Each of these figures comprises a table and 4 plots.  Each entry in a table represents tracking error temporally averaged over the frames of a dataset (most of the datasets have more than 500 images).  The entries in a table are visualized in the accompanying 4 plots.  The plots show tracking error for different parameter values and their averages, and tracking error for different datasets and their averages.  
+Tracking error results are given in Figures~\ref{fig:trk_pca}, \ref{fig:trk_tsvq}, \ref{fig:trk_maxP}, \ref{fig:trk_RofE}, \ref{fig:trk_nulE} and \ref{fig:trk_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.  Each of these figures comprises a table and 4 plots.  Each entry in a table represents tracking error temporally averaged over the frames of a dataset (most of the datasets have more than 500 images).  The entries in a table are visualized in the accompanying 4 plots.  The plots show tracking error for different parameter values and their averages, and tracking error for different datasets and their averages.  
 
 For the datasets, we make the following observations:
 
@@ -62,6 +62,8 @@ The reason for the decrease in tracking error is that a certain number of eigenv
 %=========================
 \section{Results}
 %=========================
+Our overall results are summarized in 4 figures, Figures~\ref{fig:results_final_1a_best}, \ref{fig:results_final_1b_mean}, \ref{fig:results_final_2a_16} and \ref{fig:results_final_2b_32}.  These results are derived from Figures~\ref{fig:trk_pca}, \ref{fig:trk_tsvq}, \ref{fig:trk_maxP}, \ref{fig:trk_RofE}, \ref{fig:trk_nulE} and \ref{fig:trk_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.
+
 \begin{figure}[t]
 \centering
 \input{temp/results_final_1a_best}
@@ -139,7 +141,7 @@ In tracking scenarios, it is therefore recommended to use between 8 and 16 eigen
 \section{Tracking error plots}
 \label{App:tracking_error_plots}
 %==========================
-The following 6 pages contain tracking error plots for PCA, TSVQ, RVQ1, RVQ2, RVQ3 and RVQ4 based trackers respectively.
+The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nulE and monR based trackers respectively.
 
 %----------------------------------------------------
 \clearpage
@@ -177,65 +179,65 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, RVQ1, RVQ2, RV
 %----------------------------------------------------
 \clearpage
 \newpage
-\subsection{RVQ1}
+\subsection{maxP}
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_rvq1_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq1_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq1_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq1_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq1_trk_2b.pdf}\label{fig:trk_pca_2b}}
-\caption{Tracking error for RVQ1 based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
-\label{fig:trk_rvq1}
+\input{temp/results_maxP_trk}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_maxP_trk_1a.pdf}\label{fig:trk_pca_1a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_maxP_trk_2a.pdf}\label{fig:trk_pca_2a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_maxP_trk_1b.pdf}\label{fig:trk_pca_1b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_maxP_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\caption{Tracking error for maxP based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
+\label{fig:trk_maxP}
 \end{figure}
 
 
 %----------------------------------------------------
 \clearpage
 \newpage
-\subsection{RVQ2}
+\subsection{RofE}
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_rvq2_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq2_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq2_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq2_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq2_trk_2b.pdf}\label{fig:trk_pca_2b}}
-\caption{Tracking error for RVQ2 based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
-\label{fig:trk_rvq2}
+\input{temp/results_RofE_trk}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_RofE_trk_1a.pdf}\label{fig:trk_pca_1a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_RofE_trk_2a.pdf}\label{fig:trk_pca_2a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_RofE_trk_1b.pdf}\label{fig:trk_pca_1b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_RofE_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\caption{Tracking error for RofE based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
+\label{fig:trk_RofE}
 \end{figure}
 
 %----------------------------------------------------
 \clearpage
 \newpage
-\subsection{RVQ3}
+\subsection{nulE}
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_rvq3_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq3_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq3_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq3_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq3_trk_2b.pdf}\label{fig:trk_pca_2b}}
-\caption{Tracking error for RVQ3 based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
-\label{fig:trk_rvq3}
+\input{temp/results_nulE_trk}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_nulE_trk_1a.pdf}\label{fig:trk_pca_1a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_nulE_trk_2a.pdf}\label{fig:trk_pca_2a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_nulE_trk_1b.pdf}\label{fig:trk_pca_1b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_nulE_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\caption{Tracking error for nulE based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
+\label{fig:trk_nulE}
 \end{figure}
 %----------------------------------------------------
 \clearpage
 \newpage
-\subsection{RVQ4}
+\subsection{monR}
 %----------------------------------------------------
 \begin{figure}[h!]
 \centering
-\input{temp/results_rvq4_trk}\\
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq4_trk_1a.pdf}\label{fig:trk_pca_1a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq4_trk_2a.pdf}\label{fig:trk_pca_2a}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq4_trk_1b.pdf}\label{fig:trk_pca_1b}}
-\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_rvq4_trk_2b.pdf}\label{fig:trk_pca_2b}}
-\caption{Tracking error for RVQ4 based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets. A value of 9999 means that track was lost.}
-\label{fig:trk_rvq4}
+\input{temp/results_monR_trk}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_monR_trk_1a.pdf}\label{fig:trk_pca_1a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_monR_trk_2a.pdf}\label{fig:trk_pca_2a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_monR_trk_1b.pdf}\label{fig:trk_pca_1b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_monR_trk_2b.pdf}\label{fig:trk_pca_2b}}
+\caption{Tracking error for monR based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets. A value of 9999 means that track was lost.}
+\label{fig:trk_monR}
 \end{figure}
 
 \clearpage
