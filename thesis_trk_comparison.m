@@ -35,7 +35,7 @@ close all;
                                 OUT.monR(:,1) ];
                                 
 
-    Table_4_32             = [ OUT.pca( :,3)  ...
+    Table_4_32             = [  OUT.pca( :,3)  ...
                                 OUT.tsvq(:,2) ...
                                 OUT.maxP(:,2) ...
                                 OUT.RofE(:,2) ...
@@ -43,12 +43,12 @@ close all;
                                 OUT.monR(:,2) ];
                             
 % %comparison algo parameters                           
-     Table_3a               =   mean(OUT.pca); 
-     Table_3b               =   mean(OUT.tsvq); 
-     Table_3c               =   mean(OUT.maxP); 
-     Table_3d               =   mean(OUT.RofE); 
-     Table_3e               =   mean(OUT.nulE); 
-     Table_3f               =   DM2_filtered_mean(OUT.monR, 50, 1); 
+     Table_5a               =   mean(OUT.pca); 
+     Table_5b               =   mean(OUT.tsvq); 
+     Table_5c               =   mean(OUT.maxP); 
+     Table_5d               =   mean(OUT.RofE); 
+     Table_5e               =   mean(OUT.nulE); 
+     Table_5f               =   DM2_filtered_mean(OUT.monR, 50, 1); %don't use track lost
 								
 
 %------------------------------------------------
@@ -69,7 +69,7 @@ close all;
     set(gca, 'XTickLabel', labels_datasets);
     grid on;
     xlabel('publicly available datasets');
-    ylabel('best tracking error');
+    ylabel('tracking error, best');
     axis([1 6 0 15]);
     UTIL_FILE_save2pdf('temp/results_final_1a_best', gcf, 300);
  
@@ -78,7 +78,7 @@ close all;
     bar(DM2_cnt_min_row_element(Table_1_best));
     set(gca, 'XTickLabel', labels_algos);
     xlabel('learning algorithms');
-    ylabel('best percentage');
+    ylabel('tracking error, best, percentage');
     axis([0 7 0 100]);
     grid on;
     UTIL_FILE_save2pdf('temp/results_final_1b_best_percent', gcf, 300);
@@ -95,7 +95,7 @@ close all;
     set(gca, 'XTickLabel', labels_datasets);
     grid on;
     xlabel('publicly available datasets');
-    ylabel('mean tracking error');
+    ylabel('tracking error, mean');
     axis([1 6 0 15]);
     UTIL_FILE_save2pdf('temp/results_final_2a_mean', gcf, 300);
 
@@ -103,7 +103,7 @@ close all;
     bar(DM2_cnt_min_row_element(Table_2_mean));
     set(gca, 'XTickLabel', labels_algos);
     xlabel('learning algorithms');
-    ylabel('mean percentage');
+    ylabel('tracking error, mean, percentage');
     axis([0 7 0 100]);
     grid on;
     UTIL_FILE_save2pdf('temp/results_final_2b_mean_percent', gcf, 300);
@@ -128,7 +128,7 @@ close all;
     bar(DM2_cnt_min_row_element(Table_3_16));
     set(gca, 'XTickLabel', labels_algos);
     xlabel('learning algorithms');
-    ylabel('Storage=16 percentage');
+    ylabel('tracking error, PCA_{16}, TSVQ_3, RVQ_{8x2}, percentage');
     axis([0 7 0 100]);
     grid on;
     UTIL_FILE_save2pdf('temp/results_final_3b_16_percent', gcf, 300);
@@ -153,15 +153,68 @@ close all;
     bar(DM2_cnt_min_row_element(Table_4_32));
     set(gca, 'XTickLabel', labels_algos);
     xlabel('learning algorithms');
-    ylabel('Storage=32 percentage');
+    ylabel('tracking error, PCA_{32}, TSVQ_4, RVQ_{8x4}, percentage');
     axis([0 7 0 100]);
     grid on;
     UTIL_FILE_save2pdf('temp/results_final_4b_32_percent', gcf, 300);
         
 %figure 5
+    figure;
+    bar(Table_5a);
+    set(gca, 'XTickLabel', {'8', '16', '32'});
+    xlabel('PCA, number of eigenvectors (Q)');
+    ylabel('tracking error');
+    axis([0 4 0 15]);
+    grid on;
+    UTIL_FILE_save2pdf('temp/results_final_5a_pca_', gcf, 300);
 
+    figure;
+    bar(Table_5b);
+    set(gca, 'XTickLabel', {'3', '4', '5'});
+    xlabel('TSVQ, number of stages (P)');
+    ylabel('tracking error');
+    axis([0 4 0 15]);
+    grid on;
+    UTIL_FILE_save2pdf('temp/results_final_5b_tsvq', gcf, 300);
+    
+    figure;
+    bar(Table_5c);
+    set(gca, 'XTickLabel', {'3', '4', '5'});
+    xlabel('maxP, number of stages (P)');
+    ylabel('tracking error');
+    axis([0 4 0 15]);
+    grid on;
+    UTIL_FILE_save2pdf('temp/results_final_5c_maxP', gcf, 300);
 
+    figure;
+    bar(Table_5d);
+    set(gca, 'XTickLabel', {'3', '4', '5'});
+    xlabel('RofE, number of stages (P)');
+    ylabel('tracking error');
+    axis([0 4 0 15]);
+    grid on;
+    UTIL_FILE_save2pdf('temp/results_final_5d_RofE', gcf, 300);
 
+    
+    figure;
+    bar(Table_5e);
+    set(gca, 'XTickLabel', {'3', '4', '5'});
+    xlabel('nulE, number of stages (P)');
+    ylabel('tracking error');
+    axis([0 4 0 15]);
+    grid on;
+    UTIL_FILE_save2pdf('temp/results_final_5e_nulE', gcf, 300);
+
+    figure;
+    bar(Table_5f);
+    set(gca, 'XTickLabel', {'3', '4', '5'});
+    xlabel('monR, number of stages (P)');
+    ylabel('tracking error');
+    axis([0 4 0 15]);
+    grid on;
+    UTIL_FILE_save2pdf('temp/results_final_5f_monR', gcf, 300);
+    
+    
 %tables
     Table_1_best           =   [Table_1_best ; DM2_cnt_min_row_element(Table_1_best)];
     Table_2_mean           =   [Table_2_mean ; DM2_cnt_min_row_element(Table_2_mean)];

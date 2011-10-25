@@ -25,7 +25,7 @@ We have previously described our 5-component tracker comprising appearance, obse
 
 All trackers were run on 6 publicly available datasets, Dudek, davidin300, sylv, fish, car4 and car11.  See Figure~\ref{fig:trk_sequences} in Appendix~\ref{App:dataset_snapshots} for snapshots of images in each dataset at 100 image intervals.  These datasets can be downloaded from~\cite{2008_JNL_subspaceTRK_Ross}.  Tracking error was measured on each of these datasets using the error between ground truth feature points and estimated feature points as shown in Figure~\ref{fig:results_pca__trk_dudek_0007} for the Dudek sequence.
 
-Tracking error results are given in Figures~\ref{fig:results_final_pca}, \ref{fig:results_final_tsvq}, \ref{fig:results_final_maxP}, \ref{fig:results_final_RofE} \ref{fig:results_final_nulE} and \ref{fig:results_final_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.  Each of these figures comprises a table and 4 plots.  Each entry in a table represents tracking error temporally averaged over the frames of a dataset (most of the datasets have more than 500 images).  The entries in a table are visualized in the accompanying 4 plots.  The plots show tracking error for different parameter values and their averages, and tracking error for different datasets and their averages.  
+Tracking error results are given in Figures~\ref{fig:results_final_pca_}, \ref{fig:results_final_tsvq}, \ref{fig:results_final_maxP}, \ref{fig:results_final_RofE} \ref{fig:results_final_nulE} and \ref{fig:results_final_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.  Each of these figures comprises a table and 4 plots.  Each entry in a table represents tracking error temporally averaged over the frames of a dataset (most of the datasets have more than 500 images).  The entries in a table are visualized in the accompanying 4 plots.  The plots show tracking error for different parameter values and their averages, and tracking error for different datasets and their averages.  
 
 For the datasets, we make the following observations:
 
@@ -62,14 +62,14 @@ The reason for the decrease in tracking error is that a certain number of eigenv
 %=========================
 \section{Results}
 %=========================
-Our Tracking results are summarized in 4 figures, Figures~\ref{fig:results_final_1a_best}, \ref{fig:results_final_1b_mean}, \ref{fig:results_final_2a_16} and \ref{fig:results_final_2b_32}.  These results are derived from Figures~\ref{fig:trk_pca}, \ref{fig:trk_tsvq}, \ref{fig:trk_maxP}, \ref{fig:trk_RofE}, \ref{fig:trk_nulE} and \ref{fig:trk_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.
+Our Tracking results are summarized in 5 figures, Figures~\ref{fig:results_final_1_best}, \ref{fig:results_final_2_mean}, \ref{fig:results_final_3_16} and \ref{fig:results_final_4_32}.  These results are derived from Figures~\ref{fig:results_final_pca_}, \ref{fig:results_final_tsvq}, \ref{fig:results_final_maxP}, \ref{fig:results_final_RofE} \ref{fig:results_final_nulE} and \ref{fig:results_final_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.
 
 \begin{figure}[t]
 \centering
 \input{temp/results_final_1_best}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
-\caption{Tracking results, figure 1 of 5, comparison of best tracking performance.}
+\caption{Tracking results (1 of 5), comparison of best tracking performance.  PCA give best performance for half the datasets, i.e. 3 datasets, while RVQ gives best performance for the other half.}
 \label{fig:results_final_1_best}
 \end{figure}
 
@@ -78,7 +78,7 @@ Our Tracking results are summarized in 4 figures, Figures~\ref{fig:results_final
 \input{temp/results_final_2_mean}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
-\caption{Tracking results, figure 2 of 5, comparison of mean tracking performance.}
+\caption{Tracking results (2 of 5), comparison of mean tracking performance.}
 \label{fig:results_final_2_mean}
 \end{figure}
 
@@ -88,7 +88,7 @@ Our Tracking results are summarized in 4 figures, Figures~\ref{fig:results_final
 \input{temp/results_final_3_16}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_3a_16.pdf}\label{fig:results_final_3a_16}}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_3b_16_percent.pdf}\label{fig:results_final_3b_16_percent}}
-\caption{Tracking results, figure 3 of 5, comparison of tracking performance if 16 images are stored.}
+\caption{Tracking results (3 of 5), comparison of tracking performance if 16 eigenvectors/code-vectors are stored in memory.}
 \label{fig:results_final_3_16}
 \end{figure}
 
@@ -98,8 +98,21 @@ Our Tracking results are summarized in 4 figures, Figures~\ref{fig:results_final
 \input{temp/results_final_4_32}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_4a_32.pdf}\label{fig:results_final_4a_32}}
 \subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_4b_32_percent.pdf}\label{fig:results_final_4b_32_percent}}
-\caption{Tracking results, figure 4 of 5, comparison of tracking performance if 32 images are stored.}
+\caption{Tracking results (4 of 5), comparison of tracking performance if 32 eigenvectors/code-vectors are stored in memory.}
 \label{fig:results_final_4_32}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\subfigure[]{\includegraphics[width=0.3\textwidth]{temp/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
+\subfigure[]{\includegraphics[width=0.3\textwidth]{temp/results_final_5b_tsvq.pdf}\label{fig:results_final_5b}}
+\subfigure[]{\includegraphics[width=0.3\textwidth]{temp/results_final_5c_maxP.pdf}\label{fig:results_final_5c}}
+\subfigure[]{\includegraphics[width=0.3\textwidth]{temp/results_final_5d_RofE.pdf}\label{fig:results_final_5d}}
+\subfigure[]{\includegraphics[width=0.3\textwidth]{temp/results_final_5e_nulE.pdf}\label{fig:results_final_5e}}
+\subfigure[]{\includegraphics[width=0.3\textwidth]{temp/results_final_5f_monR.pdf}\label{fig:results_final_5f}}
+\caption{Tracking results (5 of 5), comparison of tracking performance if 32 images are stored.}
+\label{fig:results_final_5_configs}
 \end{figure}
 
 
