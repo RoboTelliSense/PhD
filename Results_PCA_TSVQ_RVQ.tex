@@ -108,7 +108,8 @@ Finally, in Figure~\ref{fig:results_final_configs}, we plot tracking performance
 \item \underline{Monotonically increasing error.}  This would mean that the degrees of freedom (DoF) in the learning algorithm, such as PCA, TSVQ and RVQ, model the underlying distribution well for low DoFs and adding DoFs is leading to over-generalization.  We do not see this performance in any case.
 \item \underline{Monotonically decreasing error.}  This happens for TSVQ.  This means that adding more stages to TSVQ may increase performance.  In our case, we use 3, 4 and 5 stages to keep the DoFs in TSVQ close to the DoFs for RVQ and PCA.
 \item \underline{Decreasing error followed by increasing error.}  We see this performance for PCA, maxP, nulE and monR.  This is a sign that the correct number of DoFs were chosen and that when error is minimum, the algorithm now has enough capacity to model the underlying distribution, but without over-fitting.
-\item \underline{Increasing error followed by decreasing error.}  We see this in one case, RofE.  This happens due to a couple of outliers as explained next.
+\item \underline{Increasing error followed by decreasing error.}  We see this in one case, RofE, and in some cases in TSVQ in Figure~\ref{fig:results_final_tsvq}.  To see this, consider the example of uniform 2, 4 and 8 codevectors in $\mathbb{R}$ on the inteval [0,7].  In certain regions, a test codevector can have lower reconstruction error in the 2 and 8 code-vector cases than in the 4 codevector case.  For an example, see Appendix~\ref{App:blabla}.
+
 
 \end{enumerate}
 
@@ -282,6 +283,36 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nu
 \caption{Tracking error for monR based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets. A value of 50 means that track was lost.}
 \label{fig:results_final_monR}
 \end{figure}
+
+%==========================
+\clearpage
+\newpage
+\section{Example of tracking error}
+\label{App:blabla}
+%==========================
+\begin{figure}[h!]
+\centering
+\subfigure[Tracking error over frames.]{\includegraphics[width=1.0\textwidth]{temp/out20.pdf}\label{fig:results_final_monR_a}}
+\subfigure[Ground truth.]{\includegraphics[width=0.45\textwidth]{temp/out21.pdf}\label{fig:results_final_monR_b}}
+\subfigure[P=3.]{\includegraphics[width=0.45\textwidth]{temp/out22.pdf}\label{fig:results_final_monR_c}}
+\subfigure[P=4.]{\includegraphics[width=0.45\textwidth]{temp/out23.pdf}\label{fig:results_final_monR_d}}
+\subfigure[P=5.]{\includegraphics[width=0.45\textwidth]{temp/out24.pdf}\label{fig:results_final_monR_d}}
+\caption{Good tracking, frame=10.}
+\label{fig:results_final_monR}
+\end{figure}
+
+
+\begin{figure}[h!]
+\centering
+\subfigure[Ground truth.]{\includegraphics[width=0.45\textwidth]{temp/out1.pdf}\label{fig:results_final_monR_b}}
+\subfigure[P=3.]{\includegraphics[width=0.45\textwidth]{temp/out2.pdf}\label{fig:results_final_monR_c}}
+\subfigure[P=4.]{\includegraphics[width=0.45\textwidth]{temp/out3.pdf}\label{fig:results_final_monR_d}}
+\subfigure[P=5.]{\includegraphics[width=0.45\textwidth]{temp/out4.pdf}\label{fig:results_final_monR_d}}
+\caption{P=4 has greatest error in this frame, frame 457.}
+\label{fig:results_final_monR}
+\end{figure}
+
+
 
 \clearpage
 \newpage

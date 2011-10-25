@@ -8,13 +8,13 @@ close all;
 %RVQ    
     rvq__maxQ               =   8;
 
-    rvq__tstI               =   2; %1, 2, 3, or 4    
+    rvq__tstI               =   4; %1, 2, 3, or 4    
     rvq__tSNR               =   1000;
     rvq__lmbd               =   0;
     rvq__type               =   'uint8';
     
-    ds_code                 =   1;
-        load Dudek
+    ds_code                 =   6;
+        load car4
             [t1, t2, F]=size(data);
 
 %PARAM
@@ -66,7 +66,7 @@ grid
 
 
     idx=0;
-    for f=492:492
+    for f=6:F
         idx=f-5;
         %I=data(:,:,f);
         imshow(uint8(data(:,:,f)));
@@ -75,11 +75,6 @@ grid
         hold on;
         UTIL_PLOT_filledCircle([rvqa(idx,16) rvqa(idx,17)], 3, 300, 'b');
         UTIL_PLOT_filledCircle([rvqa(idx,18) rvqa(idx,19)], 3, 300, 'b');
-        UTIL_PLOT_filledCircle([rvqa(idx,20) rvqa(idx,21)], 3, 300, 'b');
-        UTIL_PLOT_filledCircle([rvqa(idx,22) rvqa(idx,23)], 3, 300, 'b');
-        UTIL_PLOT_filledCircle([rvqa(idx,24) rvqa(idx,25)], 3, 300, 'b');
-        UTIL_PLOT_filledCircle([rvqa(idx,26) rvqa(idx,29)], 3, 300, 'b');
-        UTIL_PLOT_filledCircle([rvqa(idx,30) rvqa(idx,31)], 3, 300, 'b');
         
         UTIL_PLOT_filledCircle([rvqb(idx,16) rvqb(idx,17)], 3, 300, 'g');
         UTIL_PLOT_filledCircle([rvqb(idx,18) rvqb(idx,19)], 3, 300, 'g');
