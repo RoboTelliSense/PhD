@@ -55,7 +55,7 @@
     ylabel1                 =   'tracking error'; 
     yampl                   =   15; %max y amplitude
     ds_xlabel               =   'publicly available datasets';
-    ds_xTickLabels          =   {'Dudek', 'davidin300', 'sylv', 'fish', 'car4', 'car11'};    
+    ds_xTickLabels          =   {'1. Dudek', '2. davidin300', '3. sylv', '4. fish', '5. car4', '6. car11', 'mean'};    
     ds_legend               =   ds_xTickLabels;
     [Nd, Nc]                =   size(Table_Nd_x_Nc); %Nc is number of configurations
                                                      %Nd is number of datasets
@@ -119,6 +119,7 @@
 
     mean1                   =   DM2_filtered_mean(Table_Nd_x_Nc, 50, 1);
     mean2                   =   DM2_filtered_mean(Table_Nd_x_Nc, 50, 2);
+    Table_Nd_x_Nc           =   [Table_Nd_x_Nc; mean1];
     
 %save to hard disk
     if (bSave)

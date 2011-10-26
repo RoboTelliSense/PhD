@@ -29,7 +29,7 @@ All trackers were run on 6 publicly available datasets, Dudek, davidin300, sylv,
 								\centering
 								\input{temp/results_final_1_best}
 								\subfigure[Best tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{temp/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}
-								\subfigure[]{\includegraphics[width=0.47\textwidth]{temp/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
+								\subfigure[\%age of datasets over which best tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{temp/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
 								\caption{Tracking results (1 of 5), comparison of best tracking performance.  PCA give best performance for half the datasets, i.e. 3 datasets, while RVQ gives best performance for the other half.}
 								\label{fig:results_final_1_best}
 								\end{figure}
@@ -47,9 +47,9 @@ For the datasets, we make the following observations:
 								\begin{figure}[t]
 								\centering
 								\input{temp/results_final_2_mean}
-								\subfigure[]{\includegraphics[width=0.47\textwidth]{temp/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
-								\subfigure[]{\includegraphics[width=0.47\textwidth]{temp/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
-								\caption{Tracking results (2 of 5), comparison of mean tracking performance.}
+								\subfigure[Mean tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{temp/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
+								\subfigure[\%age of datasets over which best mean tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{temp/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
+								\caption{Tracking results (2 of 5), comparison of mean tracking performance.  RVQ performs better over twice as many datasets as PCA.}
 								\label{fig:results_final_2_mean}
 								\end{figure}
 
@@ -73,9 +73,9 @@ For the Dudek and davidin300 sequences which consist of tracking a face, we look
 								\begin{figure}[t]
 								\centering
 								\input{temp/results_final_3_16}
-								\subfigure[]{\includegraphics[width=0.47\textwidth]{temp/results_final_3a_16.pdf}\label{fig:results_final_3a_16}}
-								\subfigure[]{\includegraphics[width=0.47\textwidth]{temp/results_final_3b_16_percent.pdf}\label{fig:results_final_3b_16_percent}}
-								\caption{Tracking results (3 of 5), comparison of tracking performance if 16 eigenvectors/code-vectors are stored in memory.}
+								\subfigure[Tracking error for each algorithm with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{temp/results_final_3a_16.pdf}\label{fig:results_final_3a_16}}
+								\subfigure[\%age of datasets over which best tracking error is achieved with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{temp/results_final_3b_16_percent.pdf}\label{fig:results_final_3b_16_percent}}
+								\caption{Tracking results (3 of 5), comparison of tracking performance if 16 eigenvectors/code-vectors are stored in memory.  PCA performs better over twice as many datasets as RVQ.}
 								\label{fig:results_final_3_16}
 								\end{figure}
 
@@ -84,9 +84,9 @@ Given these observations in related areas of facial processing, we do not remove
 								\begin{figure}[t]
 								\centering
 								\input{temp/results_final_4_32}
-								\subfigure[]{\includegraphics[width=0.47\textwidth]{temp/results_final_4a_32.pdf}\label{fig:results_final_4a_32}}
-								\subfigure[]{\includegraphics[width=0.47\textwidth]{temp/results_final_4b_32_percent.pdf}\label{fig:results_final_4b_32_percent}}
-								\caption{Tracking results (4 of 5), comparison of tracking performance if 32 eigenvectors/code-vectors are stored in memory.}
+								\subfigure[Tracking error for each algorithm with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{temp/results_final_4a_32.pdf}\label{fig:results_final_4a_32}}
+								\subfigure[\%age of datasets over which best tracking error is achieved with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{temp/results_final_4b_32_percent.pdf}\label{fig:results_final_4b_32_percent}}
+								\caption{Tracking results (4 of 5), comparison of tracking performance if 32 eigenvectors/code-vectors are stored in memory.  RVQ performs the best over all datasets.}
 								\label{fig:results_final_4_32}
 								\end{figure}
 
@@ -103,19 +103,22 @@ RVQ performs best over the Dudek, davidin300 and sylv sequences.  All 3 of these
 
 								\begin{figure}[h!]
 								\centering
-								\subtable[PCA]{\input{temp/results_final_5a_pca_}}\hspace{0.2in}
-								\subtable[TSVQ]{\input{temp/results_final_5b_tsvq}}\\
-								\subtable[maxP]{\input{temp/results_final_5c_maxP}}\hspace{0.2in}
-								\subtable[RofE]{\input{temp/results_final_5d_RofE}}\\
-								\subtable[nulE]{\input{temp/results_final_5e_nulE}}\hspace{0.2in}
-								\subtable[monR]{\input{temp/results_final_5f_monR}}\\
-								\subfigure[PCA]{\includegraphics[width=0.3\textwidth]{temp/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
-								\subfigure[TSVQ]{\includegraphics[width=0.3\textwidth]{temp/results_final_5b_tsvq.pdf}\label{fig:results_final_5b}}
-								\subfigure[maxP]{\includegraphics[width=0.3\textwidth]{temp/results_final_5c_maxP.pdf}\label{fig:results_final_5c}}
-								\subfigure[RofE]{\includegraphics[width=0.3\textwidth]{temp/results_final_5d_RofE.pdf}\label{fig:results_final_5d}}
-								\subfigure[nulE]{\includegraphics[width=0.3\textwidth]{temp/results_final_5e_nulE.pdf}\label{fig:results_final_5e}}
-								\subfigure[monR]{\includegraphics[width=0.3\textwidth]{temp/results_final_5f_monR.pdf}\label{fig:results_final_5f}}
-								\caption{Tracking results (5 of 5), comparison of tracking performance as parameters for each algorithm are varied.}
+	
+								\subtable[PCA.]{\input{temp/results_final_5a_pca_}}
+								\subtable[TSVQ.]{\input{temp/results_final_5b_tsvq}}
+								\subtable[maxP.]{\input{temp/results_final_5c_maxP}}
+								\subtable[RofE.]{\input{temp/results_final_5d_RofE}}
+								\subtable[nulE.]{\input{temp/results_final_5e_nulE}}
+								\subtable[monR.]{\input{temp/results_final_5f_monR}}
+								\subtable[maxP, RofE, nulE, monR.]{\input{temp/results_final_5g_8x2_8x4_8x8}}\\
+								\subfigure[PCA]{\includegraphics[width=0.225\textwidth, angle=90]{temp/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
+								\subfigure[TSVQ.]{\includegraphics[width=0.225\textwidth, angle=90]{temp/results_final_5b_tsvq.pdf}\label{fig:results_final_5b}}
+								\subfigure[maxP.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5c_maxP.pdf}\label{fig:results_final_5c}}
+								\subfigure[RofE.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5d_RofE.pdf}\label{fig:results_final_5d}}
+								\subfigure[nulE.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5e_nulE.pdf}\label{fig:results_final_5e}}
+							\subfigure[monR.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5f_monR.pdf}\label{fig:results_final_5f}}
+								\subfigure[maxP, RofE, nulE, monR.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5g_8x2_8x4_8x8.pdf}\label{fig:results_final_5g_8x2_8x4_8x8}}
+								\caption{Tracking results (5 of 5), comparison of tracking performance as parameters for each algorithm are varied.  In (d), we see that over all RVQ algorithms, RofE has best mean performance.  In (g) it is clear that the best RVQ configuration is 8x4.}
 								\label{fig:results_final_5_configs}
 								\end{figure}
 
