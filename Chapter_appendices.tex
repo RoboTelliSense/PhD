@@ -2,11 +2,168 @@
 \appendix{Appendices}
 \label{app:AppendixA}
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+%\input{thesis/results_1_Dudek_rvq.tex}
+%\input{thesis/results_2_davidin300_rvq.tex}
+%\input{thesis/results_3_sylv_rvq.tex}
+%%\input{thesis/results_4_trellis70_rvq.tex}
+%\input{thesis/results_5_fish_rvq.tex}
+%\input{thesis/results_6_car4_rvq.tex}
+%\input{thesis/results_7_car11_rvq.tex}
 
-\input{thesis/results_1_Dudek_rvq.tex}
-\input{thesis/results_2_davidin300_rvq.tex}
-\input{thesis/results_3_sylv_rvq.tex}
-%\input{thesis/results_4_trellis70_rvq.tex}
-\input{thesis/results_5_fish_rvq.tex}
-\input{thesis/results_6_car4_rvq.tex}
-\input{thesis/results_7_car11_rvq.tex}
+%==========================
+\clearpage
+\newpage
+\section{Datasets}
+\label{App:dataset_snapshots}
+%==========================
+
+									\begin{figure}[h!]
+									\centering\subfigure[Dudek.]{\includegraphics[height=0.95in]{thesis/seq_1_Dudek.png}\label{fig:trk_pca_1a}}
+									\subfigure[Davidin300.]{\includegraphics[height=0.95in]{thesis/seq_2_davidin300.png}\label{fig:trk_pca_1b}}
+									\subfigure[Sylv.]{\includegraphics[height=0.95in]{thesis/seq_3_sylv.png}\label{fig:trk_pca_1c}}
+									\subfigure[Fish.]{\includegraphics[height=0.95in]{thesis/seq_5_fish.png}\label{fig:trk_pca_1d}}
+									\subfigure[Car4.]{\includegraphics[height=0.95in]{thesis/seq_6_car4.png}\label{fig:trk_pca_1d}}
+									\subfigure[Car11.]{\includegraphics[height=0.95in]{thesis/seq_7_car11.png}\label{fig:trk_pca_1d}}
+									\caption{Publicly available tracking sequences downloadable from~\cite{2008_JNL_subspaceTRK_Ross}.}
+									\label{fig:trk_sequences}
+									\end{figure}
+
+
+%==========================
+\clearpage
+\newpage
+\section{Tracking error plots}
+\label{App:tracking_error_plots}
+%==========================
+The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nulE and monR based trackers respectively.
+
+%----------------------------------------------------
+\clearpage
+\newpage
+\subsection{PCA}
+%----------------------------------------------------
+\begin{figure}[h!]
+\centering
+\input{temp/results_final_pca_}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__a.pdf}\label{fig:results_final_pca__a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__b.pdf}\label{fig:results_final_pca__b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__c.pdf}\label{fig:results_final_pca__c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_pca__d.pdf}\label{fig:results_final_pca__d}}
+\caption{Tracking error for PCA based tracking for different number of eigenvectors $Q$ for 6 different publicly available datasets.}
+\label{fig:results_final_pca_}
+\end{figure}
+
+%----------------------------------------------------
+\clearpage
+\newpage
+\subsection{TSVQ}
+%----------------------------------------------------
+\begin{figure}[h!]
+\centering
+\input{temp/results_final_tsvq}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_a.pdf}\label{fig:results_final_tsvq_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_b.pdf}\label{fig:results_final_tsvq_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_c.pdf}\label{fig:results_final_tsvq_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_tsvq_d.pdf}\label{fig:results_final_tsvq_d}}
+\caption{Tracking error for binary balanced-tree-TSVQ based tracking for different number of stages $P$ for 6 different publicly available datasets.}
+\label{fig:results_final_tsvq}
+\end{figure}
+
+
+%----------------------------------------------------
+\clearpage
+\newpage
+\subsection{maxP}
+%----------------------------------------------------
+\begin{figure}[h!]
+\centering
+\input{temp/results_final_maxP}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_a.pdf}\label{fig:results_final_maxP_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_b.pdf}\label{fig:results_final_maxP_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_c.pdf}\label{fig:results_final_maxP_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_maxP_d.pdf}\label{fig:results_final_maxP_d}}
+\caption{Tracking error for maxP based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
+\label{fig:results_final_maxP}
+\end{figure}
+
+
+%----------------------------------------------------
+\clearpage
+\newpage
+\subsection{RofE}
+%----------------------------------------------------
+\begin{figure}[h!]
+\centering
+\input{temp/results_final_RofE}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_a.pdf}\label{fig:results_final_RofE_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_b.pdf}\label{fig:results_final_RofE_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_c.pdf}\label{fig:results_final_RofE_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_RofE_d.pdf}\label{fig:results_final_RofE_d}}
+\caption{Tracking error for RofE based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
+\label{fig:results_final_RofE}
+\end{figure}
+
+%----------------------------------------------------
+\clearpage
+\newpage
+\subsection{nulE}
+%----------------------------------------------------
+\begin{figure}[h!]
+\centering
+\input{temp/results_final_nulE}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_a.pdf}\label{fig:results_final_nulE_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_b.pdf}\label{fig:results_final_nulE_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_c.pdf}\label{fig:results_final_nulE_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_nulE_d.pdf}\label{fig:results_final_nulE_d}}
+\caption{Tracking error for nulE based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets.}
+\label{fig:results_final_nulE}
+\end{figure}
+%----------------------------------------------------
+\clearpage
+\newpage
+\subsection{monR}
+%----------------------------------------------------
+\begin{figure}[h!]
+\centering
+\input{temp/results_final_monR}\\
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_a.pdf}\label{fig:results_final_monR_a}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_b.pdf}\label{fig:results_final_monR_b}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_c.pdf}\label{fig:results_final_monR_c}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{temp/results_final_monR_d.pdf}\label{fig:results_final_monR_d}}
+\caption{Tracking error for monR based tracking for different number of codevectors per stage $M$ with fixed stages $P=8$ for 6 different publicly available datasets. A value of 50 means that track was lost.}
+\label{fig:results_final_monR}
+\end{figure}
+
+%==========================
+\clearpage
+\newpage
+\section{Example of tracking error}
+\label{App:TSVQ_Dudek_example}
+%==========================
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1.0\textwidth]{temp/Dudek_TSVQ_errors.pdf}
+\caption{Tracking error for TSVQ tracker, $P$=3, 4, 5, Dudek sequence.  The top figure shows instantaneous tracking error for the current frame while the bottom figure shows average tracking errors.  Notice that at frame 457, the tracker with $P=4$ makes an error which causes its average error to first exceed that of the $P$=2 tracker, and then eventually the $P$=5 tracker.}
+\label{fig:results_TSVQ_Dudek_errors}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\subfigure[Ground truth.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_GT_FN10.pdf}\label{fig:results_final_monR_b}}
+\subfigure[$P$=3.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN10_P3.pdf}\label{fig:Dudek_TSVQ_FN10_P3}}
+\subfigure[$P$=4.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN10_P4.pdf}\label{fig:Dudek_TSVQ_FN10_P4}}
+\subfigure[$P$=5.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN10_P5.pdf}\label{fig:Dudek_TSVQ_FN10_P5}}
+\caption{Low tracking error for TSVQ tracker, frame number=10.  The overlaid circles are ground truth and estimated feature points.}
+\label{fig:results_TSVQ_Dudek_FN10}
+\end{figure}
+
+
+\begin{figure}[h!]
+\centering
+\subfigure[Ground truth.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_GT_FN457.pdf}\label{fig:results_final_monR_b}}
+\subfigure[$P$=3.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN457_P3.pdf}\label{fig:Dudek_TSVQ_FN10_P3}}
+\subfigure[$P$=4.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN457_P4.pdf}\label{fig:Dudek_TSVQ_FN10_P4}}
+\subfigure[$P$=5.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN457_P5.pdf}\label{fig:Dudek_TSVQ_FN10_P5}}
+\caption{High tracking error for TSVQ tracker, frame number=457.  In this frame, the person being tracked is swiftly turning his head and moving at the same time.  The tracking errors for $P$=3, 4 and 5 are 19.9, 47.3 and 25.1 respectively.  This error causes average error for $P$=4 to first exceed that of the $P$=2 tracker, and then eventually the $P$=5 tracker.  This shows that an error at a time when the target is undergoing large motion can be costly in the long term.  This is because a wrong decision can cause the wrong snippet to be included in the training set which can cause further wrong decisions.}
+\label{fig:results_TSVQ_Dudek_FN457}
+\end{figure}

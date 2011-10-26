@@ -31,6 +31,23 @@ This work has 2 contributions:
 \section{Rationale}
 %#################################
 We have based our design on a well-known method for visual tracking~\cite{2008_JNL_subspaceTRK_Ross}.  The advantage of using an existing tracking framework is that it allows this approach is that since RVQ has never been used for visual tracking, the tracking framework is 
+
+Based on the experiments conducted in this report, we draw the following conclusions:
+
+\begin{enumerate}
+\item \underline{Performance comparison}.  We chose three metrics to compare PCA, TSVQ and RVQ.  A fourth metric is added which counts number of lost drifts.
+\begin{enumerate}
+\item \underline{Best possible performance}.  PCA and RVQ performed best in half the times each.  TSVQ never performed best.  However, of the 3 times that PCA performed best, in 2 cases, the performance difference was not significantly better than RVQ.  Moreover, and perhaps more importantly, RVQ performed best in the two most challenging datasets, Dudek and davidin300 since they both have multiple sources of noise.
+\item \underline{Best mean performance}.  Here, RVQ performed best in twice the number of scenarios as PCA.  TSVQ had the worst mean performance.
+\item \underline{Memory cost=16 vectors}.  Here PCA performed best in twice the number of scenarios as RVQ .
+\item \underline{Memory cost=32 vectors}.  Here RVQ completely outperformed PCA and TSVQ.  This is understandable since the capacity of RVQ to explain an underlying distribution grows exponentially as $M^P$.  Moreover, we have used $M=2, 4, 8$ ensuring that we do not increase our VC dimension too much so as to start over-fitting.
+\item \underline{Lost tracks}.  There was only one lost track for monR.  This is understandable since monR is a greedy approach.  The lost track was in davidin300 which is a challenging dataset.
+\end{enumerate}
+
+\item \underline{Target alignment}.  In tracking scenarios, accurate alignment of targets is difficult.  In the case of PCA for instance, it has been mentioned earlier that between 25 to 45 eigenvectors can be used for accurate face reconstruction~\cite{1997_JNL_EigenVsFisherFaces_Bel}.  In our case, for the Dudek sequence that has faces, PCA with 16 eigenvectors was able to capture the linear dependence between slightly shifted versions of the same target since slight shifts still preserve correlation.  However, as the number of eigenvectors increased further, the additional eigenvectors explained noise in the data.  This scenario can lead to noisy reconstructions and subsequent noisy weighting for target candidates.  When the noisy target candidate that is best explained by the PCA subspace is then added to the training set to update the PCA subspace, the resulting subspace will be noisy which will further increase the chances of noisy reconstructions.  
+\end{enumerate}
+
+Overall, PCA and RVQ outperform TSVQ completely.  Between PCA and RVQ, RVQ outperforms PCA in more areas.  In a tracking scenario, it is desirable to try different algorithms to get a feel for the dynamics of the underlying distribution.  Specifically, it is desired to understand how many DoFs are needed for a given algorithm to explain the distribution.  Our experiments show that averaged over all distributions and over all algorithms and their parameters, 8x4 RofE performs the best.  The reason is that 8x4 has a moderate VC dimension and that RofE is resistant to noise since it will penalize candidate snippets that have not appeared before.  In this sense, it allows the RVQ codebook to adapt gradually to the changing underlying distribution as tracking progresses over time.
 %#################################
 \section{Next steps}
 %#################################
