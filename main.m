@@ -133,7 +133,7 @@ function main(   pca__Q,                                                ...
         %3. learn
         
         %4a. output: create strings
-        str_plot            =   sprintf('%3d, %4.2f, %4.2f', f, trkMEAN.tim_t_sec(f), trkMEAN.trk_2_rmse__Fx1(f));
+        str_plot            =   sprintf('%3d,        %4.2f', f,                       trkMEAN.trk_3_armse_Fx1(f));
         str_console         =   sprintf('%3d, %4.2f, %4.2f', f, trkMEAN.tim_t_sec(f), trkMEAN.trk_3_armse_Fx1(f));
         
        %4b. output: console
@@ -164,14 +164,15 @@ function main(   pca__Q,                                                ...
 %1. configure learning algos
     if (PARAM.in_bUseIPCA) [aIPCA, trkaIPCA]=  IPCA_config     (PARAM, trkMEAN, pca__Q, first_mean_shxsw);    end
     if (PARAM.in_bUseBPCA) [aBPCA, trkaBPCA]=  BPCA_config     (PARAM, trkMEAN, pca__Q);                      end
-    if (PARAM.in_bUseRVQx) [aRVQx, trkaRVQx]=  RVQx_config     (PARAM, trkMEAN, rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__type); end
     if (PARAM.in_bUseTSVQ) [aTSVQ, trkaTSVQ]=  TSVQ_config     (PARAM, trkMEAN, tsvq_maxQ, tsvq_M);           end
+    if (PARAM.in_bUseRVQx) [aRVQx, trkaRVQx]=  RVQx_config     (PARAM, trkMEAN, rvq__maxQ, rvq__M, rvq__tSNR, rvq__tstI, rvq__lmbd, rvq__type); end
+    
       
     %clean up clutter
     clear bUseIPCA bUseBPCA bUseRVQx bUseTSVQ
     clear pca__Q 
-    clear rvq__maxQ rvq__M rvq__tSNR rvq__tstI rvq__type
     clear tsvq_maxQ tsvq_M 
+    clear rvq__maxQ rvq__M rvq__tSNR rvq__tstI rvq__type
     clear ds_code
     clear a b firstI first_mean_shxsw
 
@@ -179,9 +180,8 @@ function main(   pca__Q,                                                ...
 %2. run learning algorithms once
     if (PARAM.in_bUseIPCA) aIPCA     =   IPCA_1_learn    (trkaIPCA.DM2(:,f-PARAM.trg_freq+1:f), aIPCA);  end		
     if (PARAM.in_bUseBPCA) aBPCA     =   PCA__1_learn    (trkaBPCA.DM2                        , aBPCA);  end
-    if (PARAM.in_bUseRVQx) aRVQx     =   RVQ__1_learn    (trkaRVQx.DM2                        , aRVQx);  end
     if (PARAM.in_bUseTSVQ) aTSVQ     =   TSVQ_1_learn    (trkaTSVQ.DM2                        , aTSVQ);  end  
-
+    if (PARAM.in_bUseRVQx) aRVQx     =   RVQ__1_learn    (trkaRVQx.DM2                        , aRVQx);  end
     disp('initialization complete');
     
 
@@ -195,22 +195,26 @@ for f = PARAM.trg_freq+1 : PARAM.ds_4_F
     %2. tracking (condensation)
     if (PARAM.in_bUseIPCA) trkaIPCA   =   TRK_condensation(f, I, GT, RAND, PARAM, aIPCA, trkaIPCA); end %estwarp_grad(I, aIPCA, trkaIPCA, PARAM);
     if (PARAM.in_bUseBPCA) trkaBPCA   =   TRK_condensation(f, I, GT, RAND, PARAM, aBPCA, trkaBPCA); end
-    if (PARAM.in_bUseRVQx) trkaRVQx   =   TRK_condensation(f, I, GT, RAND, PARAM, aRVQx, trkaRVQx); end
     if (PARAM.in_bUseTSVQ) trkaTSVQ   =   TRK_condensation(f, I, GT, RAND, PARAM, aTSVQ, trkaTSVQ); end
+    if (PARAM.in_bUseRVQx) trkaRVQx   =   TRK_condensation(f, I, GT, RAND, PARAM, aRVQx, trkaRVQx); end
 
     %3. training (update model) 
     if (mod(f,PARAM.trg_freq)==0)                                               %every PARAM.trg_freq frames
         if (PARAM.in_bUseIPCA) aIPCA = IPCA_1_learn  (trkaIPCA.DM2(:,f-PARAM.trg_freq+1:f), aIPCA); end		
         if (PARAM.in_bUseBPCA) aBPCA = PCA__1_learn  (trkaBPCA.DM2,                         aBPCA); end
-        if (PARAM.in_bUseRVQx) aRVQx = RVQ__1_learn  (trkaRVQx.DM2 ,                        aRVQx); end
         if (PARAM.in_bUseTSVQ) aTSVQ = TSVQ_1_learn  (trkaTSVQ.DM2,                         aTSVQ); end  
+        if (PARAM.in_bUseRVQx) aRVQx = RVQ__1_learn  (trkaRVQx.DM2 ,                        aRVQx); end
+
     end
 
     %4a. output: create strings
-    if (PARAM.in_bUseIPCA) str_plot = sprintf('%3d, %4.2f, %4.2f', f, trkaIPCA.tim_t_sec(f), trkaIPCA.trk_2_rmse__Fx1(f)); str_console = sprintf('%3d, %4.2f, %4.2f', f, trkaIPCA.tim_t_sec(f), trkaIPCA.trk_3_armse_Fx1(f)); end
-    if (PARAM.in_bUseBPCA) str_plot = sprintf('%3d, %4.2f, %4.2f', f, trkaBPCA.tim_t_sec(f), trkaBPCA.trk_2_rmse__Fx1(f)); str_console = sprintf('%3d, %4.2f, %4.2f', f, trkaBPCA.tim_t_sec(f), trkaBPCA.trk_3_armse_Fx1(f)); end
-    if (PARAM.in_bUseRVQx) str_plot = sprintf('%3d, %4.2f, %4.2f', f, trkaRVQx.tim_t_sec(f), trkaRVQx.trk_2_rmse__Fx1(f)); str_console = sprintf('%3d, %4.2f, %4.2f', f, trkaRVQx.tim_t_sec(f), trkaRVQx.trk_3_armse_Fx1(f)); end
-    if (PARAM.in_bUseTSVQ) str_plot = sprintf('%3d, %4.2f, %4.2f', f, trkaTSVQ.tim_t_sec(f), trkaTSVQ.trk_2_rmse__Fx1(f)); str_console = sprintf('%3d, %4.2f, %4.2f', f, trkaTSVQ.tim_t_sec(f), trkaTSVQ.trk_3_armse_Fx1(f)); end
+    str_plot   =sprintf('%3d ', f);
+    str_console=sprintf('%3d ', f);
+    if (PARAM.in_bUseIPCA) str_plot = sprintf('%s, %4.2f', str_plot, trkaIPCA.trk_3_armse_Fx1(f)); str_console = sprintf('%s, %4.2f, %4.2f', str_console, trkaIPCA.tim_t_sec(f), trkaIPCA.trk_3_armse_Fx1(f)); end
+    if (PARAM.in_bUseBPCA) str_plot = sprintf('%s, %4.2f', str_plot, trkaBPCA.trk_3_armse_Fx1(f)); str_console = sprintf('%s, %4.2f, %4.2f', str_console, trkaBPCA.tim_t_sec(f), trkaBPCA.trk_3_armse_Fx1(f)); end
+    if (PARAM.in_bUseTSVQ) str_plot = sprintf('%s, %4.2f', str_plot, trkaTSVQ.trk_3_armse_Fx1(f)); str_console = sprintf('%s, %4.2f, %4.2f', str_console, trkaTSVQ.tim_t_sec(f), trkaTSVQ.trk_3_armse_Fx1(f)); end
+    if (PARAM.in_bUseRVQx) str_plot = sprintf('%s, %4.2f', str_plot, trkaRVQx.trk_3_armse_Fx1(f)); str_console = sprintf('%s, %4.2f, %4.2f', str_console, trkaRVQx.tim_t_sec(f), trkaRVQx.trk_3_armse_Fx1(f)); end
+
 
     %4b. output: console
     str_console
@@ -219,9 +223,9 @@ for f = PARAM.trg_freq+1 : PARAM.ds_4_F
     if (ispc)   
         imagesc(uint8(I));hold on;
         if (PARAM.in_bUseIPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaIPCA.fpt_2_estim_2xG, trkaIPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'm'); end
-        if (PARAM.in_bUseBPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaBPCA.fpt_2_estim_2xG, trkaBPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'r'); end
-        if (PARAM.in_bUseRVQx) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaRVQx.fpt_2_estim_2xG, trkaRVQx.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'g'); end
+        if (PARAM.in_bUseBPCA) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaBPCA.fpt_2_estim_2xG, trkaBPCA.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'g'); end
         if (PARAM.in_bUseTSVQ) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaTSVQ.fpt_2_estim_2xG, trkaTSVQ.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'b'); end
+        if (PARAM.in_bUseRVQx) UTIL_PLOT_display(f, GT.fpt_1_truth_2xGxF(:,:,f), trkaRVQx.fpt_2_estim_2xG, trkaRVQx.snp_1_tsrpxy_1x6, PARAM.tgt_sh, PARAM.tgt_sw, 'r'); end
         title(str_plot); 
         hold off;
         drawnow

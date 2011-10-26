@@ -11,7 +11,7 @@ function UTIL_2D_affine_drawQuadFrom_Ha_2x3(Ha_2x3, sw, sh, alpha, polycolor)
 %                                      'EdgeColor', polycolor, ...            %edge color
 %                                      'LineWidth',1.5);      
 
-line(corners_zc(1,:), corners_zc(2,:), 'LineWidth', 2, 'Color', polycolor);
+line(corners_zc(1,:), corners_zc(2,:), 'LineWidth', 2, 'Color', polycolor, 'LineStyle', '--');
 
     %center                  =   mean(corners_zc(:,1:4),2);
     %hold on;

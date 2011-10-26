@@ -205,37 +205,46 @@ function TRK = TRK_condensation(f, I, GT, RAND, PARAM, ALGO, TRK)
     TRK.tim_T_sec           =   TRK.tim_T_sec + TRK.tim_t_sec(f);           %total time for all runs
     TRK.tim_fps             =   f/TRK.tim_T_sec;                            %frames per sec for this run
     
-%write 4 kinds of stats to string
+%WRITE STATS TO STRING
     if     (strcmp(TRK.name, 'trkaMEAN'))           %no need to write for trkaMEAN, reason is that name cannot be differentiated between configurations, and running on the cluster then causes problems.
         return;
     end
     
     fid                     =   fopen(TRK.cfn, 'a');
                                 UTIL_FILE_checkFileOpen(fid, TRK.cfn); 
+    %time and errors
                                          %1,2,3,        4,5,6            7,8,9            10,11,12         13,14,15         
-    str_stats               =   sprintf('%4d%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f',...
+    str_1_time_errors       =   sprintf('%4d%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f  %8.2f%8.2f%8.2f ',...
                                 f                       , ALGO.tim_t_sec          , TRK.tim_t_sec(f)      , ... %1,2,3                                  
                                 TRK.trk_1_SNRdB_Fx1(f)  , TRK.trk_2_rmse__Fx1(f)  , TRK.trk_3_armse_Fx1(f), ... %4,5,6
                                 TRK.snp_4_SNRdB_Fx1(f)  , TRK.snp_5_rmse__Fx1(f)  , TRK.snp_6_armse_Fx1(f), ... %7,8,9
                                 TRK.trg_1_SNRdB_Fx1(f)  , TRK.trg_2_rmse__Fx1(f)  , TRK.trg_3_armse_Fx1(f), ... %10,11,12
                                 TRK.tst_1_SNRdB_Fx1(f)  , TRK.tst_2_rmse__Fx1(f)  , TRK.tst_3_armse_Fx1(f) ...  %13,14,15
                                 );
-                            
-%write ground truth data to string
-    str_gt                  =   [];
+    %affine parameters
+                                         %16  17      18   19     20   21 
+    str_2_aff               =   sprintf('%8.2f%8.2f  %8.2f%8.2f  %8.2f%8.2f ',...
+                                TRK.snp_1_tsrpxy_1x6(1), TRK.snp_1_tsrpxy_1x6(2), TRK.snp_1_tsrpxy_1x6(3), TRK.snp_1_tsrpxy_1x6(4), TRK.snp_1_tsrpxy_1x6(5), TRK.snp_1_tsrpxy_1x6(6) ...
+                                );
+   
+    %estimated feature points
+    str_3_fp                =   [];
     [temp1, G]              =   size(TRK.fpt_2_estim_2xG);  
     for g=1:G
         temp2               =   sprintf('%8.2f%8.2f ', TRK.fpt_2_estim_2xG(1,g), TRK.fpt_2_estim_2xG(2,g));
-        str_gt              =   [str_gt temp2];
+        str_3_fp            =   [str_3_fp temp2];
     end
-    str_out                 =   [str_stats ' ' str_gt];
+    
+    %combine strings    
+    str_out                 =   [str_1_time_errors  ' '  str_2_aff ' '  str_3_fp];
   
-%write RVQ stats, if RVQ, to string
+    %write RVQ stats, if RVQ, to string
     if (strcmp(TRK.name, 'trkaRVQx'))
         ALGO.tst_9_drmse_Qx1=   ALGO.tst_8_drmse_QxN(:, maxidx);
         str_rvq             =   RVQx_stats_str(ALGO,maxidx);
         str_out             =   [str_out ' ' str_rvq];
     end
-%write to file           
+    
+    %write to file           
                                 fprintf(fid, [str_out '\n']); 
                                 fclose(fid);
