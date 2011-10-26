@@ -236,4 +236,4 @@ close all;
     UTIL_matrix2latex(Table_3_16,     'temp/results_final_3_16.tex',     'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
     UTIL_matrix2latex(Table_4_32,     'temp/results_final_4_32.tex',     'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
     UTIL_matrix2latex(Table_5_configs,'temp/results_final_5_configs.tex','rowLabels', labels_algos,    'columnLabels', labels_configs, 'alignment', 'c', 'format', '%-6.2f');
-    
+    UTIL_matrix2latex(Table_5a_pca_ 'temp/results_final_5_configs.tex');

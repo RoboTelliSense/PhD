@@ -52,7 +52,7 @@ UTIL_FILE_save2pdf('temp/out20.pdf');
     hold on;
 
     idx=0;
-    for f=10:10
+    for f=457:457
         idx=f-5;
         %I=data(:,:,f);
         figure;
@@ -65,7 +65,9 @@ UTIL_FILE_save2pdf('temp/out20.pdf');
         UTIL_PLOT_filledCircle([truepts(1,5,f) truepts(2,5,f)], 5, 300, 'y');
         UTIL_PLOT_filledCircle([truepts(1,6,f) truepts(2,6,f)], 5, 300, 'y');
         UTIL_PLOT_filledCircle([truepts(1,7,f) truepts(2,7,f)], 5, 300, 'y');
-        UTIL_FILE_save2pdf('temp/out21.pdf');
+        axis equal
+        axis tight
+        UTIL_FILE_save2pdf('temp/Dudek_GT_FN457.pdf');
         
 
         
@@ -79,7 +81,9 @@ UTIL_FILE_save2pdf('temp/out20.pdf');
         UTIL_PLOT_filledCircle([tsvq1(idx,24) tsvq1(idx,25)], 5, 300, 'b');
         UTIL_PLOT_filledCircle([tsvq1(idx,26) tsvq1(idx,27)], 5, 300, 'b');
         UTIL_PLOT_filledCircle([tsvq1(idx,28) tsvq1(idx,29)], 5, 300, 'b');
-        UTIL_FILE_save2pdf('temp/out22.pdf');
+            axis equal
+        axis tight
+        UTIL_FILE_save2pdf('temp/Dudek_TSVQ_FN457_P3.pdf');
 
         figure;
         imshow(uint8(data(:,:,f)));
@@ -91,7 +95,9 @@ UTIL_FILE_save2pdf('temp/out20.pdf');
         UTIL_PLOT_filledCircle([tsvq2(idx,24) tsvq2(idx,25)], 5, 300, 'g');
         UTIL_PLOT_filledCircle([tsvq2(idx,26) tsvq2(idx,27)], 5, 300, 'g');
         UTIL_PLOT_filledCircle([tsvq2(idx,28) tsvq2(idx,29)], 5, 300, 'g');
-        UTIL_FILE_save2pdf('temp/out23.pdf');
+            axis equal
+        axis tight
+        UTIL_FILE_save2pdf('temp/Dudek_TSVQ_FN457_P4');
         
         figure;
         imshow(uint8(data(:,:,f)));
@@ -103,7 +109,9 @@ UTIL_FILE_save2pdf('temp/out20.pdf');
         UTIL_PLOT_filledCircle([tsvq3(idx,24) tsvq3(idx,25)], 5, 300, 'r');
         UTIL_PLOT_filledCircle([tsvq3(idx,26) tsvq3(idx,27)], 5, 300, 'r');
         UTIL_PLOT_filledCircle([tsvq3(idx,28) tsvq3(idx,29)], 5, 300, 'r');
-        UTIL_FILE_save2pdf('temp/out24.pdf');
+        axis equal
+        axis tight
+        UTIL_FILE_save2pdf('temp/Dudek_TSVQ_FN457_P5.pdf');
         
         %UTIL_PLOT_filledCircle([x3 y3], 5, 300, 'r');
         hold off;

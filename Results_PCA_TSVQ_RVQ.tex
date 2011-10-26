@@ -9,7 +9,7 @@
 %=========================
 \section{Introduction}
 %=========================
-In this report, our goal is to present tracking error results for our 6 different trackers, PCA-based, TSVQ-based and 4 RVQ-based trackers, maxP, RofE, nulE, and monR.  maxP, RofE, nulE and monR are convenient names for $\mathrm{RVQ_{maxP}}$, $\mathrm{RVQ_{RofE}}$, $\mathrm{RVQ_{nulE}}$ and $\mathrm{RVQ_{monR}}$ respectively.
+In this report, our goal is to present tracking error results for our 6 different trackers, PCA-based, TSVQ-based and 4 RVQ-based trackers, maxP, RofE, nulE, and monR.
 
 
 								\begin{figure}[t]
@@ -39,9 +39,8 @@ Experimental results are given in Figures~\ref{fig:results_final_pca_}, \ref{fig
 For the datasets, we make the following observations:
 
 \begin{enumerate}
-\item The Dudek sequence has large pose variation.
-\item The fish sequence has sudden lighting changes.
-\item The Dudek and fish sequences are characterized by sudden motions.
+\item The Dudek and davidin300 sequences have lighting changes, pose changes, structured noise (putting on and taking off glasses) and expression changes.  In addition, the Dudek sequence has temporary occlusions and sudden motion.  These two sequences can be considered to be the most challenging datasets since they both have several different forms of noise.  A significant form of noise is blur due to sudden motion.  
+\item The fish sequence has sudden lighting changes and sudden motion.
 \item Sylv, car4 and car11 sequences have relatively less variation in lighting and pose.
 \end{enumerate}
 
@@ -63,7 +62,7 @@ For the datasets, we make the following observations:
 %\item \underline{Face tracking}.  
 %\end{enumerate}
 
-For the Dudek sequence which consists of tracking a face, we look at some related areas in the context of facial processing using PCA, 
+For the Dudek and davidin300 sequences which consist of tracking a face, we look at some related areas in the context of facial processing using PCA, 
 
 \begin{enumerate}
 \item \underline{Face reconstruction}.  It has been shown that 40 eigenfaces can be used to reconstruct a face with 3\% error~\cite{1987_JNL_Faces_Sirovich}.
@@ -80,7 +79,7 @@ For the Dudek sequence which consists of tracking a face, we look at some relate
 								\label{fig:results_final_3_16}
 								\end{figure}
 
-Given these observations in related areas of facial processing, we do not remove any principal components.  However, unlike the face recognition case, our tracking performance does not keep increasing till 20 or more eigenvectors.  An important difference in tracking applications however is that face alignment is noisy.  It appears that in the Dudek and sylv (sylv is a cartoonish face) sequences which have large pose changes, the first few eigenvectors are able to capture the linear dependencies in the slightly shifted faces.  After that, the later eigenvectors explain the residual noise.  This can lead to decreased tracking performance since reconstructions using an eigenspace that partially explains noise will naturally be noisy.  Noisy reconstructions will get inaccurate DFFS (distance-from-feature-space) scores, which in turn will cause incorrect weighting for particle filter candidates in the tracking process.
+Given these observations in related areas of facial processing, we do not remove any principal components.  However, unlike the face recognition case, our tracking performance does not keep increasing till 20 or more eigenvectors.  An important difference in tracking applications however is that face alignment is noisy.  It appears that in the Dudek and davidin300 sequences which have large pose changes, the first few eigenvectors are able to capture the linear dependencies in the slightly shifted faces.  After that, the later eigenvectors explain the residual noise.  This can lead to decreased tracking performance since reconstructions using an eigenspace that partially explains noise will be noisy.  Noisy reconstructions will get inaccurate DFFS (distance-from-feature-space) scores, which in turn will cause incorrect weighting for particle filter candidates in the tracking process.  This will lead to larger tracking error.
 
 								\begin{figure}[t]
 								\centering
@@ -96,19 +95,23 @@ Given these observations in related areas of facial processing, we do not remove
 %=========================
 Our final tracking results are plotted in 5 figures, Figures~\ref{fig:results_final_1_best}, \ref{fig:results_final_2_mean}, \ref{fig:results_final_3_16}, \ref{fig:results_final_4_32} and~\ref{fig:results_final_5_configs}.  These plots are based entirely on detailed plots in Figures~\ref{fig:results_final_pca_}, \ref{fig:results_final_tsvq}, \ref{fig:results_final_maxP}, \ref{fig:results_final_RofE} \ref{fig:results_final_nulE} and \ref{fig:results_final_monR} in Appendix~\ref{App:tracking_error_plots} for PCA, TSVQ, maxP, RofE, nulE and monR respectively.
 
-We start with Figure~\ref{fig:results_final_1_best}.  In this figure, we plot best possible tracking performance for each algorithm.  For PCA, this means the best possible performance attained for each of the datasets for $Q$=8, 16 and 32.  For TSVQ, best possible performance for each dataset is over $P$=3, 4 and 5.  For maxP, RofE, nulE and monR, best possible performance for each dataset is over 8x2, 8x4 and 8x8.  The reason for plotting performance for each dataset separately is that each dataset represents a different distribution and we would like to gauge performance for each algorithm over the different distributions.  We see that performance for PCA and all 4 RVQ based algorithms is very close.  PCA performs better in the fish, car4 and car11 sequences.  However, the performance difference in the car4 and car11 sequences is negligible.  Recall that car4 and car11 are relatively benign datasets with little variation in pose and lighting.  The fish sequence has sudden motion as well as sudden global lighting changes.   Since global lighting change induces linear correlation in the data, it makes sense that PCA does well in this sequence.  The reason is that global illumination change moves the illuminated object within the modeled PCA subspace.  For a VQ based method such as RVQ or TSVQ, several codevectors would have to be dedicated to different lighting conditions to model all possible lighting changes.  RVQ performs best over the Dudek, davidin300 and sylv sequences.  All 3 of these sequences have lighting changes as well as severe pose changes.  Dudek and davidin300 can be considered to be the most challenging datasets since they both have several different forms of noise including lighting changes, pose changes, structured noise (putting on and taking off glasses) and expression changes.  The Dudek sequence also has temporary occlusions and sudden motion.  The most significant form of noise is blur due to sudden motion.  For Dudek, RofE does best.  The reason is that in the presence of uncertainties, RofE holds tight to what has already been modeled and is resistant to accepting sudden changes in the underlying distribution.  It is therefore better able to handle blur and other forms of noise that did not exist in the training data.  On the other extreme is monR which greedily attempts to minimize reconstruction error.  Out of all RVQ methods, this method performs worse, but even then, not by much.  Second best performance is for maxP which is again not a greedy method.  Third best performance is for nulE which is also a greedy method but less so than monR.
+We start with Figure~\ref{fig:results_final_1_best}.  In this figure, we plot best possible tracking performance for each algorithm.  For PCA, this means the best possible performance attained for each of the datasets for $Q$=8, 16 and 32.  For TSVQ, best possible performance for each dataset is over $P$=3, 4 and 5.  For maxP, RofE, nulE and monR, best possible performance for each dataset is over 8x2, 8x4 and 8x8.  The reason for plotting performance for each dataset separately is that each dataset represents a different distribution and we would like to gauge performance for each algorithm over the different distributions.  We see that performance for PCA and all 4 RVQ based algorithms is very close while TSVQ tracking error is highest in most cases.  
+
+PCA performs best in the fish, car4 and car11 sequences while RVQ performs best in the remaining three datasets, Dudek, davidin300 and sylv.  TSVQ does not perform best in any sequence.  Note that the performance difference between PCA and RVQ in the car4 and car11 sequences is negligible.  Recall that car4 and car11 are relatively benign datasets with little variation in pose and lighting.  The fish sequence has sudden motion as well as sudden global lighting changes.   Since global lighting change induces linear correlation in the data, it makes sense that PCA does well in this sequence.  The reason is that global illumination moves the illuminated object within the modeled PCA subspace~\cite{1987_JNL_Faces_Sirovich}.  For a VQ based method such as RVQ or TSVQ, several codevectors would have to be dedicated to different lighting conditions to model all possible lighting changes.  
+
+RVQ performs best over the Dudek, davidin300 and sylv sequences.  All 3 of these sequences have moderate lighting changes while Dudek and davidin300 have several forms of noise as discussed earlier.  For Dudek, RofE does best.  The reason is that in the presence of uncertainties, RofE holds tight to what has already been modeled and is resistant to accepting sudden changes in the underlying distribution.  It is therefore better able to handle blur and other forms of noise that did not exist in the training data.  On the other extreme is monR which greedily attempts to minimize reconstruction error.  Out of all RVQ methods, this method performs worse, but even then, not by much.  Second best performance is for maxP which is again not a greedy method.  Third best performance is for nulE which is also a greedy method but less so than monR.
 
 We now turn to Figure~\ref{fig:results_final_2_mean}.  In this figure, mean performance over all configurations is shown.  It may be noted that monR loses track in one instance.  That instance is not factored into the means since it is not clear how penalize a lost track when performing mean computations.  Here, we see that RVQ performs best 66.7\% of the time.  This time, in addition to Dudek, davindin300 and sylv, RVQ performs better than PCA in the fish sequence as well.  The reason for this is that PCA is unable to track the fish sequence well when it has too few, i.e., 8 eigenvectors or when it has too many, i.e., 32 eigenvectors.  In the 8 eigenvector case, the subspace does not have enough dimensions to model lighting changes well.  Even though it has been shown, as mentioned earlier, that only 3 eigenvectors are needed to model lighting changes~\cite{1987_JNL_Faces_Sirovich}, in practice this does not hold due to shadowing and specularities~\cite{1997_JNL_EigenVsFisherFaces_Bel}.  For too many eigenvectors, over-fitting is an issue as mentioned in an earlier report.  For $Q=16$, PCA performs best and that is why it had best possible performance.  However, when it comes to means, all 4 RVQ configurations are able to outperform PCA in mean performance.
 
 In Figures~\ref{fig:results_final_3_16} and~\ref{fig:results_final_4_32}, we hold the number of eigenvectors for PCA or codevectors for TSVQ and RVQ constant at 16 and 32 respectively\footnote{This is 15 and 31 actually for TSVQ but we ignore this slight difference.}.  In these figures, we see that PCA outperforms RVQ for 16 vectors but RVQ completely outperforms PCA for 32 vectors.  For a given memory cost, and therefore for a given rate, RVQ overall outperforms PCA.  
 
-Finally, in Figure~\ref{fig:results_final_configs}, we plot tracking performance for each algoritm separately for its different configurations.  For 3 configurations, there are 4 possible outcomes listed below.  Of these, the first 3 are to be expected.  The fourth however requires further scrutiny.
+Finally, in Figure~\ref{fig:results_final_5_configs}, we plot tracking performance for each algoritm separately for its different configurations.  For 3 configurations per algorithm, $Q$=8, 16, 32 for PCA, $P$=3, 4, 5 for TSVQ and $PxM$ = 8x2, 8x4, 8x8 for RVQ, there are 4 possible outcomes listed below.  Of these, the first 3 are to be expected.  The fourth however requires further scrutiny.
 
 \begin{enumerate}
-\item \underline{Monotonically increasing error.}  This would mean that the degrees of freedom (DoF) in the learning algorithm, such as PCA, TSVQ and RVQ, model the underlying distribution well for low DoFs and adding DoFs is leading to over-generalization.  We do not see this performance in any case.
+\item \underline{Monotonically increasing error.}  This would mean that the degrees of freedom (DoF) in the learning algorithm, such as PCA, TSVQ or RVQ, model the underlying distribution well with low DoFs and adding DoFs is leading to over-generalization.  We do not see this performance in any case since we start with low DoFs.  We got an initial estimate of how many DoFs to use using our experiments on appearance modeling that have mentioned in a previous report.
 \item \underline{Monotonically decreasing error.}  This happens for TSVQ.  This means that adding more stages to TSVQ may increase performance.  In our case, we use 3, 4 and 5 stages to keep the DoFs in TSVQ close to the DoFs for RVQ and PCA.
 \item \underline{Decreasing error followed by increasing error.}  We see this performance for PCA, maxP, nulE and monR.  This is a sign that the correct number of DoFs were chosen and that when error is minimum, the algorithm now has enough capacity to model the underlying distribution, but without over-fitting.
-\item \underline{Increasing error followed by decreasing error.}  We see this in one case, RofE, and in some cases in TSVQ in Figure~\ref{fig:results_final_tsvq}.  To see this, consider the example of uniform 2, 4 and 8 codevectors in $\mathbb{R}$ on the inteval [0,7].  In certain regions, a test codevector can have lower reconstruction error in the 2 and 8 code-vector cases than in the 4 codevector case.  For an example, see Appendix~\ref{App:blabla}.
+\item \underline{Increasing error followed by decreasing error.}  We see this in one case, RofE, and in some cases in TSVQ in Figure~\ref{fig:results_final_tsvq}.  To see this, consider the example of $K$=2, 4 and 8 code-vectors in $\mathbb{R}$ uniformly spaced on the inteval [0,7].  For $K$=2, the code-vectors are 2.33 and 4.66.  For the $K$=4 case, the code-vectors are 1.4, 2.8, 4.2 and 5.6.  For the $K$=8 case, the code-vectors are $\{0, 1, 2, 3, \ldots, 7\}$.  In regions around 2.33 and 4.6, there are certain contiguous regions where the reconstruction error is greatest for $K$=4.  This shows that although in general, one would not expect reconstruction error, and therefore tracking error to be lowest for an intermediate number of code-vectors $K$, it is possible for a test vector to score highest error for an intermediate $K$.  If this occurs at a point in the tracking process where the target is moving quickly for instance, then a wrong decision can cause tracking error to increase.  In certain cases, it may not be possible to recover from this wrong decision.  See Figures~\ref{fig:results_TSVQ_Dudek_errors}, \ref{fig:results_TSVQ_Dudek_FN10} and \ref{fig:results_TSVQ_Dudek_FN457} in Appendix~\ref{App:TSVQ_Dudek_example} for an example of such a scenario for TSVQ tracking.
 
 
 \end{enumerate}
@@ -139,19 +142,19 @@ Finally, in Figure~\ref{fig:results_final_configs}, we plot tracking performance
 Based on the experiments conducted in this report, we draw the following conclusions:
 
 \begin{enumerate}
-\item \underline{Performance comparison}.  We chose three metrics to compare PCA, TSVQ and RVQ.
+\item \underline{Performance comparison}.  We chose three metrics to compare PCA, TSVQ and RVQ.  A fourth metric is added which counts number of lost drifts.
 \begin{enumerate}
-\item \underline{Best possible performance}.  PCA and RVQ performed best in half the times each.  However, of the 3 times that PCA performed better, in 2 cases, the performance difference was not significant.  Moreover, RVQ performed best in the two most challenging datasets, Dudek and davidin300 since they both had multiple sources of noise.
-\item \underline{Best mean performance}.  Here, RVQ performed twice as better as PCA.  TSVQ had the worst mean performance.
-\item \underline{Memory cost=16 vectors}.  Here PCA performed twice as better as RVQ .
-\item \underline{Memory cost=32 vectors}.  Here RVQ completely outperformed PCA and TSVQ.  This is understandable since the capacity of RVQ to explain an underlying distribution grows exponentially as $M^P$.
-\item \underline{Lost tracks}.  There was only one lost track for monR.  This is understandable since monR is a greedy approach.  The lost track is in davidin300 which is a challenging datasets with several forms of noise.
+\item \underline{Best possible performance}.  PCA and RVQ performed best in half the times each.  TSVQ never performed best.  However, of the 3 times that PCA performed best, in 2 cases, the performance difference was not significantly better than RVQ.  Moreover, and perhaps more importantly, RVQ performed best in the two most challenging datasets, Dudek and davidin300 since they both have multiple sources of noise.
+\item \underline{Best mean performance}.  Here, RVQ performed best in twice the number of scenarios as PCA.  TSVQ had the worst mean performance.
+\item \underline{Memory cost=16 vectors}.  Here PCA performed best in twice the number of scenarios as RVQ .
+\item \underline{Memory cost=32 vectors}.  Here RVQ completely outperformed PCA and TSVQ.  This is understandable since the capacity of RVQ to explain an underlying distribution grows exponentially as $M^P$.  Moreover, we have used $M=2, 4, 8$ ensuring that we do not increase our VC dimension too much so as to start over-fitting.
+\item \underline{Lost tracks}.  There was only one lost track for monR.  This is understandable since monR is a greedy approach.  The lost track was in davidin300 which is a challenging dataset.
 \end{enumerate}
 
 \item \underline{Target alignment}.  In tracking scenarios, accurate alignment of targets is difficult.  In the case of PCA for instance, it has been mentioned earlier that between 25 to 45 eigenvectors can be used for accurate face reconstruction~\cite{1997_JNL_EigenVsFisherFaces_Bel}.  In our case, for the Dudek sequence that has faces, PCA with 16 eigenvectors was able to capture the linear dependence between slightly shifted versions of the same target since slight shifts still preserve correlation.  However, as the number of eigenvectors increased further, the additional eigenvectors explained noise in the data.  This scenario can lead to noisy reconstructions and subsequent noisy weighting for target candidates.  When the noisy target candidate that is best explained by the PCA subspace is then added to the training set to update the PCA subspace, the resulting subspace will be noisy which will further increase the chances of noisy reconstructions.  
 \end{enumerate}
 
-Overall, it appears that PCA and RVQ outperform TSVQ completely.  However, for the other metrics chosen, it appears that RVQ outperforms PCA in more areas.  In a tracking scenario, it is desirable to try different algorithms to get a feel for the dynamics of the underlying distribution.  Specifically, it is desired to understand how many DoFs are needed for a given algorithm to explain the distribution.  Our experiments show that for difficult distributions with several forms of noise, 8x4 RofE performs the best.
+Overall, PCA and RVQ outperform TSVQ completely.  Between PCA and RVQ, RVQ outperforms PCA in more areas.  In a tracking scenario, it is desirable to try different algorithms to get a feel for the dynamics of the underlying distribution.  Specifically, it is desired to understand how many DoFs are needed for a given algorithm to explain the distribution.  Our experiments show that averaged over all distributions and over all algorithms and their parameters, 8x4 RofE performs the best.  The reason is that 8x4 has a moderate VC dimension and that RofE is resistant to noise since it will penalize candidate snippets that have not appeared before.  In this sense, it allows the RVQ codebook to adapt gradually to the changing underlying distribution as tracking progresses over time.
 
 
 %
@@ -288,28 +291,34 @@ The following 6 pages contain tracking error plots for PCA, TSVQ, maxP, RofE, nu
 \clearpage
 \newpage
 \section{Example of tracking error}
-\label{App:blabla}
+\label{App:TSVQ_Dudek_example}
 %==========================
 \begin{figure}[h!]
 \centering
-\subfigure[Tracking error over frames.]{\includegraphics[width=1.0\textwidth]{temp/out20.pdf}\label{fig:results_final_monR_a}}
-\subfigure[Ground truth.]{\includegraphics[width=0.45\textwidth]{temp/out21.pdf}\label{fig:results_final_monR_b}}
-\subfigure[P=3.]{\includegraphics[width=0.45\textwidth]{temp/out22.pdf}\label{fig:results_final_monR_c}}
-\subfigure[P=4.]{\includegraphics[width=0.45\textwidth]{temp/out23.pdf}\label{fig:results_final_monR_d}}
-\subfigure[P=5.]{\includegraphics[width=0.45\textwidth]{temp/out24.pdf}\label{fig:results_final_monR_d}}
-\caption{Good tracking, frame=10.}
-\label{fig:results_final_monR}
+\includegraphics[width=1.0\textwidth]{temp/Dudek_TSVQ_errors.pdf}
+\caption{Tracking error for TSVQ tracker, $P$=3, 4, 5, Dudek sequence.  The top figure shows instantaneous tracking error for the current frame while the bottom figure shows average tracking errors.  Notice that at frame 457, the tracker with $P=4$ makes an error which causes its average error to first exceed that of the $P$=2 tracker, and then eventually the $P$=5 tracker.}
+\label{fig:results_TSVQ_Dudek_errors}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\subfigure[Ground truth.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_GT_FN10.pdf}\label{fig:results_final_monR_b}}
+\subfigure[$P$=3.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN10_P3.pdf}\label{fig:Dudek_TSVQ_FN10_P3}}
+\subfigure[$P$=4.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN10_P4.pdf}\label{fig:Dudek_TSVQ_FN10_P4}}
+\subfigure[$P$=5.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN10_P5.pdf}\label{fig:Dudek_TSVQ_FN10_P5}}
+\caption{Low tracking error for TSVQ tracker, frame number=10.  The overlaid circles are ground truth and estimated feature points.}
+\label{fig:results_TSVQ_Dudek_FN10}
 \end{figure}
 
 
 \begin{figure}[h!]
 \centering
-\subfigure[Ground truth.]{\includegraphics[width=0.45\textwidth]{temp/out1.pdf}\label{fig:results_final_monR_b}}
-\subfigure[P=3.]{\includegraphics[width=0.45\textwidth]{temp/out2.pdf}\label{fig:results_final_monR_c}}
-\subfigure[P=4.]{\includegraphics[width=0.45\textwidth]{temp/out3.pdf}\label{fig:results_final_monR_d}}
-\subfigure[P=5.]{\includegraphics[width=0.45\textwidth]{temp/out4.pdf}\label{fig:results_final_monR_d}}
-\caption{P=4 has greatest error in this frame, frame 457.}
-\label{fig:results_final_monR}
+\subfigure[Ground truth.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_GT_FN457.pdf}\label{fig:results_final_monR_b}}
+\subfigure[$P$=3.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN457_P3.pdf}\label{fig:Dudek_TSVQ_FN10_P3}}
+\subfigure[$P$=4.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN457_P4.pdf}\label{fig:Dudek_TSVQ_FN10_P4}}
+\subfigure[$P$=5.]{\includegraphics[width=0.3\textwidth]{temp/Dudek_TSVQ_FN457_P5.pdf}\label{fig:Dudek_TSVQ_FN10_P5}}
+\caption{High tracking error for TSVQ tracker, frame number=457.  In this frame, the person being tracked is swiftly turning his head and moving at the same time.  The tracking errors for $P$=3, 4 and 5 are 19.9, 47.3 and 25.1 respectively.  This error causes average error for $P$=4 to first exceed that of the $P$=2 tracker, and then eventually the $P$=5 tracker.  This shows that an error at a time when the target is undergoing large motion can be costly in the long term.  This is because a wrong decision can cause the wrong snippet to be included in the training set which can cause further wrong decisions.}
+\label{fig:results_TSVQ_Dudek_FN457}
 \end{figure}
 
 
