@@ -222,12 +222,12 @@ close all;
 
     Table_3_16              =   [Table_3_16   ; DM2_cnt_min_row_element(Table_3_16)];
     Table_4_32              =   [Table_4_32   ; DM2_cnt_min_row_element(Table_4_32)];
-    Table_5_configs         =   [Table_5a_pca_;
-                                Table_5b_tsvq;
-                                Table_5c_maxP;
-                                Table_5d_RofE;
-                                Table_5e_nulE;
-                                Table_5f_monR];
+    Table_5a_pca_           =   [Table_5a_pca_  mean(Table_5a_pca_)];
+    Table_5b_tsvq           =   [Table_5b_tsvq  mean(Table_5b_tsvq)];
+    Table_5c_maxP           =   [Table_5c_maxP  mean(Table_5c_maxP)];
+    Table_5d_RofE           =   [Table_5d_RofE  mean(Table_5d_RofE)];
+    Table_5e_nulE           =   [Table_5e_nulE  mean(Table_5e_nulE)];
+    Table_5f_monR           =   [Table_5f_monR  mean(Table_5f_monR)];
     
     labels_datasets         =   [labels_datasets ' \% best'];
     
@@ -235,5 +235,11 @@ close all;
     UTIL_matrix2latex(Table_2_mean,   'temp/results_final_2_mean.tex',   'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
     UTIL_matrix2latex(Table_3_16,     'temp/results_final_3_16.tex',     'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
     UTIL_matrix2latex(Table_4_32,     'temp/results_final_4_32.tex',     'rowLabels', labels_datasets, 'columnLabels', labels_algos, 'alignment', 'c', 'format', '%-6.2f');
-    UTIL_matrix2latex(Table_5_configs,'temp/results_final_5_configs.tex','rowLabels', labels_algos,    'columnLabels', labels_configs, 'alignment', 'c', 'format', '%-6.2f');
-    UTIL_matrix2latex(Table_5a_pca_ 'temp/results_final_5_configs.tex');
+    
+    UTIL_matrix2latex(Table_5a_pca_,   'temp/results_final_5a_pca_.tex', 'columnLabels', {'8',   '16',   '32',   'mean'}, 'alignment', 'c', 'format', '%-6.2f');
+    UTIL_matrix2latex(Table_5b_tsvq,   'temp/results_final_5b_tsvq.tex', 'columnLabels', {'3',   '4' ,   '5',    'mean'}, 'alignment', 'c', 'format', '%-6.2f');
+    UTIL_matrix2latex(Table_5c_maxP,   'temp/results_final_5c_maxP.tex', 'columnLabels', {'8x2', '8x4' , '8x8',  'mean'}, 'alignment', 'c', 'format', '%-6.2f');
+    UTIL_matrix2latex(Table_5d_RofE,   'temp/results_final_5d_RofE.tex', 'columnLabels', {'8x2', '8x4' , '8x8',  'mean'}, 'alignment', 'c', 'format', '%-6.2f');
+    UTIL_matrix2latex(Table_5e_nulE,   'temp/results_final_5e_nulE.tex', 'columnLabels', {'8x2', '8x4' , '8x8',  'mean'}, 'alignment', 'c', 'format', '%-6.2f');
+    UTIL_matrix2latex(Table_5f_monR,   'temp/results_final_5f_monR.tex', 'columnLabels', {'8x2', '8x4' , '8x8',  'mean'}, 'alignment', 'c', 'format', '%-6.2f');
+    
