@@ -114,45 +114,45 @@ We now discuss each component in our tracking framework (Figure~\ref{fig:overvie
 \label{Sec:RVQ_trk_appearance_model}
 %============================
 \begin{figure}[t]
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Uniform.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Gaussian.pdf}}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_GaussMarkov.pdf}}\hspace{0.55in}
-\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]{\includegraphics[width=0.45\textwidth]{thesis2/PCA_Dudek.pdf}}
+\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Uniform.pdf}}
+\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Gaussian.pdf}}
+\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_GaussMarkov.pdf}}\hspace{0.55in}
+\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Dudek.pdf}}
 \caption{PCA, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
 \label{fig:PCA_results}
 \end{figure}
 
 \begin{figure}[t]
 \subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Uniform.pdf}}
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Uniform.pdf}}
 \subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Gaussian.pdf}}
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Gaussian.pdf}}
 \subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_GaussMarkov.pdf}}\hspace{0.55in}
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_GaussMarkov.pdf}}\hspace{0.55in}
 \subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]
-{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_8x4_Dudek.pdf}}
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Dudek.pdf}}
 \caption{RVQp, varying number of stages $P$ with number of code-vectors per stage held constant at $M=4$. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. A single test example in $\mathbb{R}^{1089}$ was reconstructed.}
 \label{fig:RVQ_results_varyingP}
 \end{figure}
 
 \begin{figure}[t]
 \subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_uniform.pdf}}
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_uniform.pdf}}
 \subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_Gaussian.pdf}}
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Gaussian.pdf}}
 \subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_GaussMarkov.pdf}}\hspace{0.55in}
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_GaussMarkov.pdf}}\hspace{0.55in}
 \subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]
-{\includegraphics[width=0.45\textwidth]{thesis2/RVQ_Dudek.pdf}}
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Dudek.pdf}}
 \caption{RVQm, experiments, varying number of code-vectors per stage $M$ with number of stages held constant at $P=8$. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
 \label{fig:RVQ_results_varyingM}
 \end{figure}
 
 \begin{figure}[t]
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Uniform.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Gaussian.pdf}}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_GaussMarkov.pdf}}\hspace{0.55in}
-\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]{\includegraphics[width=0.45\textwidth]{thesis2/TSVQ_Dudek.pdf}}
+\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Uniform.pdf}}
+\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Gaussian.pdf}}
+\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_GaussMarkov.pdf}}\hspace{0.55in}
+\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Dudek.pdf}}
 \caption{TSVQ, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
 \label{fig:TSVQ_results}
 \end{figure}
@@ -978,7 +978,7 @@ In this report, our goal is to present tracking error results for our 6 differen
 
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=0.7\textwidth]{temp/results_pca__trk_dudek_0007.png}
+								\includegraphics[width=0.7\textwidth]{thesis/results_pca__trk_dudek_0007.png}
 								\caption{Computing tracking error.  The larger yellow circles indicate ground truth feature points.  The smaller red circles indicate estimated feature points.  Tracking error is computed using the rms error between the ground truth feature points and the estimated feature points.  In this particular frame, the tracking error is 2.57.}
 								\label{fig:results_pca__trk_dudek_0007}
 								\end{figure}
@@ -989,9 +989,9 @@ All trackers were run on 6 publicly available datasets, Dudek, davidin300, sylv,
 
 								\begin{figure}[t]
 								\centering
-								\input{temp/results_final_1_best}
-								\subfigure[Best tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{temp/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}
-								\subfigure[\%age of datasets over which best tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{temp/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
+								\input{thesis/results_final_1_best}
+								\subfigure[Best tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}
+								\subfigure[\%age of datasets over which best tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
 								\caption{Tracking results (1 of 5), comparison of best tracking performance.  PCA give best performance for half the datasets, i.e. 3 datasets, while RVQ gives best performance for the other half.}
 								\label{fig:results_final_1_best}
 								\end{figure}
@@ -1008,9 +1008,9 @@ For the datasets, we make the following observations:
 
 								\begin{figure}[t]
 								\centering
-								\input{temp/results_final_2_mean}
-								\subfigure[Mean tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{temp/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
-								\subfigure[\%age of datasets over which best mean tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{temp/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
+								\input{thesis/results_final_2_mean}
+								\subfigure[Mean tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
+								\subfigure[\%age of datasets over which best mean tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
 								\caption{Tracking results (2 of 5), comparison of mean tracking performance.  RVQ performs better over twice as many datasets as PCA.}
 								\label{fig:results_final_2_mean}
 								\end{figure}
@@ -1034,9 +1034,9 @@ For the Dudek and davidin300 sequences which consist of tracking a face, we look
 
 								\begin{figure}[t]
 								\centering
-								\input{temp/results_final_3_16}
-								\subfigure[Tracking error for each algorithm with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{temp/results_final_3a_16.pdf}\label{fig:results_final_3a_16}}
-								\subfigure[\%age of datasets over which best tracking error is achieved with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{temp/results_final_3b_16_percent.pdf}\label{fig:results_final_3b_16_percent}}
+								\input{thesis/results_final_3_16}
+								\subfigure[Tracking error for each algorithm with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_3a_16.pdf}\label{fig:results_final_3a_16}}
+								\subfigure[\%age of datasets over which best tracking error is achieved with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_3b_16_percent.pdf}\label{fig:results_final_3b_16_percent}}
 								\caption{Tracking results (3 of 5), comparison of tracking performance if 16 eigenvectors/code-vectors are stored in memory.  PCA performs better over twice as many datasets as RVQ.}
 								\label{fig:results_final_3_16}
 								\end{figure}
@@ -1045,9 +1045,9 @@ Given these observations in related areas of facial processing, we do not remove
 
 								\begin{figure}[t]
 								\centering
-								\input{temp/results_final_4_32}
-								\subfigure[Tracking error for each algorithm with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{temp/results_final_4a_32.pdf}\label{fig:results_final_4a_32}}
-								\subfigure[\%age of datasets over which best tracking error is achieved with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{temp/results_final_4b_32_percent.pdf}\label{fig:results_final_4b_32_percent}}
+								\input{thesis/results_final_4_32}
+								\subfigure[Tracking error for each algorithm with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_4a_32.pdf}\label{fig:results_final_4a_32}}
+								\subfigure[\%age of datasets over which best tracking error is achieved with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_4b_32_percent.pdf}\label{fig:results_final_4b_32_percent}}
 								\caption{Tracking results (4 of 5), comparison of tracking performance if 32 eigenvectors/code-vectors are stored in memory.  RVQ performs the best over all datasets.}
 								\label{fig:results_final_4_32}
 								\end{figure}
@@ -1066,20 +1066,20 @@ RVQ performs best over the Dudek, davidin300 and sylv sequences.  All 3 of these
 								\begin{figure}[h!]
 								\centering
 	
-								\subtable[PCA.]{\input{temp/results_final_5a_pca_}}
-								\subtable[TSVQ.]{\input{temp/results_final_5b_tsvq}}
-								\subtable[maxP.]{\input{temp/results_final_5c_maxP}}
-								\subtable[RofE.]{\input{temp/results_final_5d_RofE}}
-								\subtable[nulE.]{\input{temp/results_final_5e_nulE}}
-								\subtable[monR.]{\input{temp/results_final_5f_monR}}
-								\subtable[maxP, RofE, nulE, monR.]{\input{temp/results_final_5g_8x2_8x4_8x8}}\\
-								\subfigure[PCA]{\includegraphics[width=0.225\textwidth, angle=90]{temp/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
-								\subfigure[TSVQ.]{\includegraphics[width=0.225\textwidth, angle=90]{temp/results_final_5b_tsvq.pdf}\label{fig:results_final_5b}}
-								\subfigure[maxP.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5c_maxP.pdf}\label{fig:results_final_5c}}
-								\subfigure[RofE.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5d_RofE.pdf}\label{fig:results_final_5d}}
-								\subfigure[nulE.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5e_nulE.pdf}\label{fig:results_final_5e}}
-							\subfigure[monR.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5f_monR.pdf}\label{fig:results_final_5f}}
-								\subfigure[maxP, RofE, nulE, monR.]{\includegraphics[width=0.3\textwidth]{temp/results_final_5g_8x2_8x4_8x8.pdf}\label{fig:results_final_5g_8x2_8x4_8x8}}
+								\subtable[PCA.]{\input{thesis/results_final_5a_pca_}}
+								\subtable[TSVQ.]{\input{thesis/results_final_5b_tsvq}}
+								\subtable[maxP.]{\input{thesis/results_final_5c_maxP}}
+								\subtable[RofE.]{\input{thesis/results_final_5d_RofE}}
+								\subtable[nulE.]{\input{thesis/results_final_5e_nulE}}
+								\subtable[monR.]{\input{thesis/results_final_5f_monR}}
+								\subtable[maxP, RofE, nulE, monR.]{\input{thesis/results_final_5g_8x2_8x4_8x8}}\\
+								\subfigure[PCA]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
+								\subfigure[TSVQ.]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5b_tsvq.pdf}\label{fig:results_final_5b}}
+								\subfigure[maxP.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5c_maxP.pdf}\label{fig:results_final_5c}}
+								\subfigure[RofE.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5d_RofE.pdf}\label{fig:results_final_5d}}
+								\subfigure[nulE.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5e_nulE.pdf}\label{fig:results_final_5e}}
+							\subfigure[monR.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5f_monR.pdf}\label{fig:results_final_5f}}
+								\subfigure[maxP, RofE, nulE, monR.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5g_8x2_8x4_8x8.pdf}\label{fig:results_final_5g_8x2_8x4_8x8}}
 								\caption{Tracking results (5 of 5), comparison of tracking performance as parameters for each algorithm are varied.  In (d), we see that over all RVQ algorithms, RofE has best mean performance.  In (g) it is clear that the best RVQ configuration is 8x4.}
 								\label{fig:results_final_5_configs}
 								\end{figure}
