@@ -1,4 +1,5 @@
 \include{begin}
+\include{inkscapeLatex}
 %####################################################################################################
 \title{Target Tracking \\ Using \\Residual Vector Quantization}
 %####################################################################################################
@@ -32,11 +33,24 @@
 \end{figure}
 \end{frame}
 
+
+\begin{frame}
+\frametitle{Background}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
+\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
+\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
+\end{figure}
+\end{frame}
+
 %==================================
 \section{II. Tracking}
 %==================================
 %---------------------------------------------------------
-\subsection{(a) overview}
+\subsection{(a) Overview}
 %---------------------------------------------------------
 \begin{frame}
 \frametitle{Tracking}
@@ -94,10 +108,6 @@
 	\end{figure}
 \end{frame}
 
-
-%---------------------------------------------------------
-\subsection{(b) radars}
-%---------------------------------------------------------
 \begin{frame}
 \frametitle{Tracking}
 \framesubtitle{update}
@@ -119,15 +129,34 @@
 	\end{figure}
 \end{frame}
 
-
+%---------------------------------------------------------
+\subsection{(b) Radars}
+%---------------------------------------------------------
 \begin{frame}
-\frametitle{Origin: radar}
+\frametitle{Originally: radars}
 \framesubtitle{Kalman Filter}
 \logoCSIPCPL\mypagenum
-	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_blockDiagram.pdf}
-	\end{figure}
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_blockDiagram.pdf}
+\end{figure}
 \end{frame}
+
+
+
+\begin{frame}
+\frametitle{Radar tracking\footnote{Bar-Shalom et al., 2009}}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}
+\subfigure[US Navy, long-range surveillance]{\includegraphics[height=0.2\textheight]{figs/TRK_PDAF_example_US_Navy_ROTHR.jpg}}\hspace{0.2in}
+\subfigure[Theater High Altitude Area Defense]{\includegraphics[height=0.2\textheight]{figs/TRK_JPDAF_example_THAAD.jpg}}
+\subfigure[long-range surveillance against ICBMs]{\includegraphics[height=0.2\textheight]{figs/TRK_JPDAF_example_Cobra.jpg}}\hspace{0.2in}
+\subfigure[long-range surveillance against ICBMs]{\includegraphics[height=0.2\textheight]{figs/TRK_JPDAF_example_SBX.jpg}}
+\end{figure}
+\end{frame}
+
+
 
 \begin{frame}
 \frametitle{Particle Filter}
@@ -153,7 +182,7 @@
 
 
 %---------------------------------------------------------
-\subsection{(c) computer vision}
+\subsection{(c) Computer vision}
 %---------------------------------------------------------
 \begin{frame}
 \frametitle{Pre-processing}
@@ -222,7 +251,7 @@
 \section{III. RVQ}
 %####################################################################################################
 %--------------------------------------
-\subsection{(a) introduction}
+\subsection{(a) Introduction}
 %--------------------------------------
 
 \begin{frame}
@@ -348,7 +377,7 @@
 
 
 %--------------------------------------
-\subsection{(b) comparisons}
+\subsection{(b) Comparisons}
 %--------------------------------------
 \begin{frame}
 \frametitle{RVQ comparison}\logoCSIPCPL\mypagenum
@@ -404,7 +433,7 @@
 
 
 %--------------------------------------------------------
-\subsection{(c) image classification}
+\subsection{(c) Image classification}
 %--------------------------------------------------------
 
 
@@ -439,6 +468,52 @@
 %=======================================
 \section{IV. RVQ tracking}
 %=======================================
+\begin{frame}
+\frametitle{Experimental overview}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\textwidth]{thesis/PhD_experimentalOverview.pdf}
+\label{fig:overview}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[plain]
+\frametitle{Temporal evolution}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{changemargin}{-1.3in}{0in}
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.3\textwidth]{thesis/PhD_experimentalTemporalOverview.pdf}
+\label{fig:temporal_overview}
+\end{figure}
+\end{changemargin}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Publicly available datasets\footnote{Ross et. al. 2008}}
+\framesubtitle{Dudek, davidin300, sylv, fish, car4, car11}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[h!]
+\centering\subfigure{\includegraphics[height=0.41in]{thesis/seq_1_Dudek.png}\label{fig:trk_pca_1a}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_2_davidin300.png}\label{fig:trk_pca_1b}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_3_sylv.png}\label{fig:trk_pca_1c}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_5_fish.png}\label{fig:trk_pca_1d}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_6_car4.png}\label{fig:trk_pca_1d}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_7_car11.png}\label{fig:trk_pca_1d}}
+\label{fig:trk_sequences}
+\end{figure}
+\end{frame}
+
+
 %------------------------------------------------------
 \subsection{(a) Appearance model}
 %------------------------------------------------------
@@ -523,11 +598,103 @@
 %------------------------------------------------------
 \subsection{(c) Representation model}
 %------------------------------------------------------
+\begin{frame}[plain]
+\frametitle{RVQ, $P=8$, varying $M$}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\scriptsize
+\begin{changemargin}{-1.3in}{0in}
+\begin{equation}
+\begin{array}{llllllll}
+\mathbf{A} &= \left[\begin{array}{lll}a & b \\ c & d\\ \end{array}\right] \\
+&=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t} \\
+&={\color{blue}(\mathbf{U}\mathbf{V}^t)}{\color{red}\mathbf{V}}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}\\
+&={\color{blue}\mathbf{R}(\theta)}{\color{red}\mathbf{R}(-\phi)}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{R} (\phi)}\\
+&={\color{blue}\RotMatrixTheta}{\color{red}\RotMatrixminusPhi}{\color{darkgreen}\EigenvalueMatrix}{\color{red}\RotMatrixPhi}\\\\
+\end{array}
+\label{Eq:AffineDecomposition}
+\end{equation}
+\end{changemargin}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Inverse affine transform}
+\framesubtitle{one time initialization}
+\logoCSIPCPL\mypagenum
+In first frame
+\begin{itemize}
+\item given target affine parameters and ground truth feature points
+\item apply inverse affine transform on ground truth points to warp them to canonical position, and save this position $(\mathbf{x, y})$
+\end{itemize}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.6\textwidth]{figs/dataset_Dudek_00001_inverseAffine.pdf}
+\label{fig:original_feature_points}
+\end{figure}
+\end{frame}
+
+
 
 
 %------------------------------------------------------
 \subsection{(d) Motion model}
 %------------------------------------------------------
+\begin{frame}
+\frametitle{Generating track candidates}
+\framesubtitle{use random affine deformation to model motion}
+\logoCSIPCPL\mypagenum
+During run-time
+\begin{itemize}
+\item Perturb affine parameters
+\item For each affine set, 
+\begin{itemize}
+\item apply forward affine transform on zero-centered canonical grid 
+\item bilinear interpolation to extract ROI, one per affine set, as shown below
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.35\textwidth]{figs/affineCandidates.pdf}
+\label{Fig:affine_candidates}
+\end{figure}
+\end{itemize}
+\item For set corresponding to least reconstruction error, apply forward affine transform to $(\mathbf{x, y})$ and compare with ground truth to get track error
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[plain]
+\frametitle{1st forward affine transform}
+\framesubtitle{get ROI}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+Density of grid points is greater in the horizontal direction.
+\begin{figure}[t]
+\centering
+\fbox{\includegraphics[width=1.3\textwidth]{figs/dataset_Dudek_00001_forwardAffine.pdf}}
+\end{figure}
+\end{changemargin}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{2nd forward affine transform}
+\framesubtitle{overlay feature points on ROI}
+appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtained in first frame
+\logoCSIPCPL\mypagenum
+\scriptsize
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.55\textwidth]{figs/dataset_Dudek_with_feature_points_00001.pdf}
+\label{Fig:overall}
+\end{figure}
+\end{frame}
 
 
 %------------------------------------------------------
@@ -596,6 +763,9 @@
 \section{V. Results}
 %=======================================
 
+%-------------------------------------------------
+\subsection{(a) Best performance}
+%-------------------------------------------------
 \begin{frame}
 \frametitle{Comparison}
 \framesubtitle{best tracking performance}
@@ -605,25 +775,92 @@
 \centering
 \scriptsize
 \input{thesis/results_final_1_best}
-\subfigure[Best tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}
+\subfigure[Best tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}\hspace{0.1in}
 \subfigure[\%age of datasets over which best tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
 \end{figure}
 \end{frame}
 
+%-------------------------------------------------
+\subsection{(b) Mean performance}
+%-------------------------------------------------
 
 \begin{frame}
-\frametitle{Comparison, }
+\frametitle{Comparison}
 \framesubtitle{mean performance}
 \logoCSIPCPL\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \centering
+\scriptsize
 \input{thesis/results_final_2_mean}
-\subfigure[Mean tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
+\subfigure[Mean tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}\hspace{0.1in}
 \subfigure[\%age of datasets over which best mean tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
 \label{fig:results_final_2_mean}
 \end{figure}
 \end{frame}
+
+%-------------------------------------------------
+\subsection{(c) Memory=16 vectors}
+%-------------------------------------------------
+
+\begin{frame}
+\frametitle{Comparison}
+\framesubtitle{memory=16 vectors}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\scriptsize
+\input{thesis/results_final_3_16}
+\subfigure[Tracking error for each algorithm with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_3a_16.pdf}\label{fig:results_final_3a_16}}\hspace{0.1in}
+\subfigure[\%age of datasets over which best tracking error is achieved with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_3b_16_percent.pdf}\label{fig:results_final_3b_16_percent}}
+\label{fig:results_final_3_16}
+\end{figure}
+\end{frame}
+
+
+%-------------------------------------------------
+\subsection{(d) Memory=32 vectors}
+%-------------------------------------------------
+\begin{frame}
+\frametitle{Comparison}
+\framesubtitle{memory=32 vectors}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\scriptsize
+\input{thesis/results_final_4_32}
+\subfigure[Tracking error for each algorithm with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_4a_32.pdf}\label{fig:results_final_4a_32}}\hspace{0.1in}
+\subfigure[\%age of datasets over which best tracking error is achieved with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_4b_32_percent.pdf}\label{fig:results_final_4b_32_percent}}
+\label{fig:results_final_4_32}
+\end{figure}
+\end{frame}
+
+
+%-------------------------------------------------
+\subsection{(e) Over all configurations}
+%-------------------------------------------------
+\begin{frame}
+\frametitle{Comparison}
+\framesubtitle{over all configurations}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\vspace{-0.2in}
+\begin{figure}[h!]
+\centering
+\subfigure[PCA]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
+\subfigure[TSVQ.]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5b_tsvq.pdf}\label{fig:results_final_5b}}
+\subfigure[maxP.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5c_maxP.pdf}\label{fig:results_final_5c}}
+\subfigure[RofE.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5d_RofE.pdf}\label{fig:results_final_5d}}
+\subfigure[nulE.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5e_nulE.pdf}\label{fig:results_final_5e}}
+\subfigure[monR.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5f_monR.pdf}\label{fig:results_final_5f}}
+\subfigure[maxP, RofE, nulE, monR.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5g_8x2_8x4_8x8.pdf}\label{fig:results_final_5g_8x2_8x4_8x8}}
+\caption{Tracking results (5 of 5), comparison of tracking performance as parameters for each algorithm are varied.  In (d), we see that over all RVQ algorithms, RofE has best mean performance.  In (g) it is clear that the best RVQ configuration is 8x4.}
+\label{fig:results_final_5_configs}
+\end{figure}
+\end{frame}
+
 
 %=======================================
 \section{VI. Conclusions}
@@ -632,7 +869,28 @@
 %=======================================
 \section{VII. Future work}
 %=======================================
-
+\begin{enumerate}
+\item 
+\end{enumerate}
+%=======================================
+\section{Questions}
+%=======================================
+\begin{frame}
+\frametitle{Open source}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{itemize}
+\item All PhD work released under open source license
+\item git clone, or download as zip
+\item To run tracker, run main.m
+\end{itemize}
+\vspace{0.3in}
+\color{blue}\underline{\url{https://github.com/SalmanAslamPhD/current}}
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{thesis/github.png}
+\end{figure}
+\end{frame}
 
 \begin{frame}
 \frametitle{}

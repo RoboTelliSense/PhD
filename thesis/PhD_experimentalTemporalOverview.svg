@@ -23,16 +23,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="350.28704"
+     inkscape:zoom="1.4"
+     inkscape:cx="457.20269"
      inkscape:cy="212.44752"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1108"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1600"
+     inkscape:window-height="825"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -247,7 +247,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -259,10 +259,10 @@
     <rect
        y="-12.462315"
        x="66.041359"
-       height="118.51065"
+       height="123.24826"
        width="294.96454"
        id="rect4986"
-       style="fill:#e3dbdb;fill-opacity:1;stroke:#ff0000;stroke-width:0.94997799;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:#e3dbdb;fill-opacity:1;stroke:#ff0000;stroke-width:0.96878022;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
     <path
        inkscape:connector-curvature="0"
        id="path3886-4"
@@ -299,13 +299,13 @@
        x="-25.424547"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#008000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        xml:space="preserve"><tspan
-         style="fill:#008000;stroke:none"
+         style="fill:#008000;stroke:none;font-size:15px"
          y="11.284595"
          x="-23.924547"
          id="tspan3042"
          sodipodi:role="line">initialize target </tspan><tspan
          id="tspan3101"
-         style="fill:#008000;stroke:none"
+         style="fill:#008000;stroke:none;font-size:15px"
          y="26.284595"
          x="-25.424547"
          sodipodi:role="line">bounding quad</tspan></text>
@@ -343,22 +343,22 @@
        x="277.85062"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        xml:space="preserve"><tspan
-         style="text-align:center;text-anchor:middle;fill:#ff0000"
+         style="text-align:center;text-anchor:middle;fill:#ff0000;font-size:15px"
          y="49.044643"
          x="277.85062"
          id="tspan3931"
          sodipodi:role="line">likelihood of observation is</tspan><tspan
-         style="text-align:center;text-anchor:middle;fill:#ff0000"
+         style="text-align:center;text-anchor:middle;fill:#ff0000;font-size:15px"
          id="tspan3933"
          y="64.044647"
          x="279.35062"
          sodipodi:role="line">proportional to euclidean </tspan><tspan
-         style="text-align:center;text-anchor:middle;fill:#ff0000"
+         style="text-align:center;text-anchor:middle;fill:#ff0000;font-size:15px"
          id="tspan3939"
          y="79.044647"
          x="279.35062"
          sodipodi:role="line">distance to initial target </tspan><tspan
-         style="text-align:center;text-anchor:middle;fill:#ff0000"
+         style="text-align:center;text-anchor:middle;fill:#ff0000;font-size:15px"
          y="94.044647"
          x="277.85062"
          sodipodi:role="line"
@@ -397,7 +397,7 @@
     <path
        inkscape:connector-curvature="0"
        id="path3886-4-5-80"
-       d="m 314.62716,-3.3824315 0,-85.3603425"
+       d="m 294.62716,-3.3824315 0,-85.3603425"
        style="fill:none;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 2;stroke-dashoffset:0;marker-end:url(#Arrow2Mend5)" />
     <path
        inkscape:connector-curvature="0"
@@ -410,47 +410,47 @@
        x="97.395157"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        xml:space="preserve"><tspan
-         style="text-align:center;text-anchor:middle;fill:#ff0000"
+         style="text-align:center;text-anchor:middle;fill:#ff0000;font-size:15px"
          id="tspan3939-5"
          y="121.93496"
          x="98.895157"
          sodipodi:role="line">warp to </tspan><tspan
          id="tspan4368"
-         style="text-align:center;text-anchor:middle;fill:#ff0000"
+         style="text-align:center;text-anchor:middle;fill:#ff0000;font-size:15px"
          y="136.93497"
          x="98.895157"
          sodipodi:role="line">upright </tspan><tspan
          id="tspan4370"
-         style="text-align:center;text-anchor:middle;fill:#ff0000"
+         style="text-align:center;text-anchor:middle;fill:#ff0000;font-size:15px"
          y="151.93497"
          x="97.395157"
          sodipodi:role="line">position</tspan></text>
     <text
        id="text3929-4-7"
-       y="-72.15834"
-       x="320.53351"
+       y="-73.586914"
+       x="296.96207"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        xml:space="preserve"><tspan
-         style="text-align:start;text-anchor:start;fill:#ff0000"
+         style="font-size:15px;text-align:start;text-anchor:start;fill:#ff0000"
          id="tspan3939-5-8"
-         y="-72.15834"
-         x="320.53351"
+         y="-73.586914"
+         x="296.96207"
          sodipodi:role="line">warp <tspan
    id="tspan4450"
-   style="font-style:italic;text-align:start;text-anchor:start;fill:#ff0000">B</tspan> best </tspan><tspan
-         style="text-align:start;text-anchor:start;fill:#ff0000"
-         y="-57.15834"
-         x="320.53351"
+   style="font-size:15px;font-style:italic;text-align:start;text-anchor:start;fill:#ff0000">B</tspan> best </tspan><tspan
+         style="font-size:15px;text-align:start;text-anchor:start;fill:#ff0000"
+         y="-54.836914"
+         x="296.96207"
          sodipodi:role="line"
          id="tspan5594">candidates to </tspan><tspan
          id="tspan4370-1"
-         style="text-align:start;text-anchor:start;fill:#ff0000"
-         y="-42.15834"
-         x="320.53351"
+         style="font-size:15px;text-align:start;text-anchor:start;fill:#ff0000"
+         y="-36.086914"
+         x="296.96207"
          sodipodi:role="line">upright position </tspan><tspan
-         style="text-align:start;text-anchor:start;fill:#ff0000"
-         y="-27.15834"
-         x="320.53351"
+         style="font-size:15px;text-align:start;text-anchor:start;fill:#ff0000"
+         y="-17.336914"
+         x="296.96207"
          sodipodi:role="line"
          id="tspan5596">and store</tspan></text>
     <text
@@ -501,21 +501,24 @@
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
-       x="425.27316"
-       y="-32.623089"
+       x="423.8446"
+       y="-36.194519"
        id="text5499"><tspan
          sodipodi:role="line"
          id="tspan5501"
-         x="425.27316"
-         y="-32.623089">PCA eigenspace, or</tspan><tspan
+         x="423.8446"
+         y="-36.194519"
+         style="font-size:15px">PCA eigenspace, or</tspan><tspan
          sodipodi:role="line"
-         x="425.27316"
-         y="-17.623089"
-         id="tspan5503">RVQ  codebook, or</tspan><tspan
+         x="423.8446"
+         y="-17.444517"
+         id="tspan5503"
+         style="font-size:15px">RVQ  codebook, or</tspan><tspan
          sodipodi:role="line"
-         x="425.27316"
-         y="-2.6230888"
-         id="tspan5505">TSVQ codebook</tspan></text>
+         x="423.8446"
+         y="1.3054826"
+         id="tspan5505"
+         style="font-size:15px">TSVQ codebook</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path3886-4-5-8-0"
@@ -530,7 +533,8 @@
          sodipodi:role="line"
          x="336.38745"
          y="201.32156"
-         id="tspan5505-9">Initialize RVQ, PCA or TSVQ</tspan></text>
+         id="tspan5505-9"
+         style="font-size:15px">Initialize RVQ, PCA or TSVQ</tspan></text>
     <g
        id="g5639"
        transform="translate(-30.052038,-14.896744)">
@@ -572,24 +576,24 @@
        x="577.27008"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        xml:space="preserve"><tspan
-         style="text-align:start;text-anchor:start;fill:#0000ff"
+         style="text-align:start;text-anchor:start;fill:#0000ff;font-size:15px"
          id="tspan3939-5-8-1"
          y="78.485771"
          x="577.27008"
          sodipodi:role="line">warp <tspan
    id="tspan4450-4"
-   style="font-style:italic;text-align:start;text-anchor:start;fill:#0000ff">B</tspan> best </tspan><tspan
-         style="text-align:start;text-anchor:start;fill:#0000ff"
+   style="font-style:italic;text-align:start;text-anchor:start;fill:#0000ff;font-size:15px">B</tspan> best </tspan><tspan
+         style="text-align:start;text-anchor:start;fill:#0000ff;font-size:15px"
          y="93.485771"
          x="577.27008"
          sodipodi:role="line"
          id="tspan5594-8">candidates to </tspan><tspan
          id="tspan4370-1-8"
-         style="text-align:start;text-anchor:start;fill:#0000ff"
+         style="text-align:start;text-anchor:start;fill:#0000ff;font-size:15px"
          y="108.48577"
          x="577.27008"
          sodipodi:role="line">upright position </tspan><tspan
-         style="text-align:start;text-anchor:start;fill:#0000ff"
+         style="text-align:start;text-anchor:start;fill:#0000ff;font-size:15px"
          y="123.48577"
          x="577.27008"
          sodipodi:role="line"
