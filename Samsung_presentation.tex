@@ -1,0 +1,541 @@
+\include{begin}
+%####################################################################################################
+\title{Target Tracking \\ Using \\Residual Vector Quantization}
+%####################################################################################################
+\begin{frame}[plain]\logoCSIPCPL\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{2}	
+	\tableofcontents
+\end{frame}
+
+%####################################################################################################
+\section{I. Background}
+%####################################################################################################
+\begin{frame}
+\frametitle{Milestones}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\vspace{0.2in}
+\begin{itemize}
+\item 2005: Dr Altunbasak, hierarchical motion vector estimation, background modeling
+\item {\color{blue}Interest}: pattern recognition applied to images
+\item 2007: switched to Dr Bobick, robust computer vision on compressed video
+\item 2010: Dr Barnes + Dr Bobick, RVQ as a pattern recognition method extended to several images
+\end{itemize}
+\begin{figure}
+\includegraphics[width=0.8\textwidth]{figs_thesis/professors.pdf}
+\end{figure}
+\end{frame}
+
+%####################################################################################################
+\section{I. Tracking: introduction}
+%####################################################################################################
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{definition}
+\logoCSIPCPL\mypagenum
+	Estimate and maintain {\color{red}target state} over {\color{red}time}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_overviewDiagram.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{Tracking}
+\framesubtitle{overview\tiny{\footnote {Yilmaz et.al., 2006}}}
+\logoCSIPCPL\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}
+			\includegraphics[width=1.3\textwidth]{thesis/TRK_overview.pdf}
+		\end{figure}	
+	\end{changemargin}
+	\begin{block}{Tracking methods}
+		\begin{itemize}
+			\item Point
+			\item Region
+			\item Contour
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{big picture}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.9\textwidth]{thesis/PRML_PGM_overview.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{relationship with HMM}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[height=0.3\textheight]{thesis/HMM_flowDiagram.pdf}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/HMM_flowDiagram2.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{update}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_update.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{prediction}
+\logoCSIPCPL\mypagenum
+	Chapman Kolmogorov equation
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_prediction.pdf}
+	\end{figure}
+\end{frame}
+
+
+%#######################################################################
+\section{II. Tracking: radar (points)}
+%#######################################################################
+
+
+
+\begin{frame}
+\frametitle{Kalman Filter}
+\framesubtitle{block diagram}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_blockDiagram.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+\frametitle{Kalman Filter}
+\framesubtitle{equations}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_equations.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+%#######################################################################
+\section{III. Tracking: computer vision}
+%#######################################################################
+
+
+\begin{frame}
+\frametitle{Pre-processing}
+\logoCSIPCPL\mypagenum
+	{\color{red}Steps}
+	\begin{enumerate}
+		\item Downsampling
+		\item Normalization
+		\item Stabilization
+		\item Background modeling
+		\item Feature Extraction
+	\end{enumerate}
+	\vspace{0.3in}
+	{\color{red}Features}
+	\begin{enumerate}
+		\item Color
+		\item Edges
+		\item Corners
+		\item Motion
+		\item Texture
+		\item Depth
+		\item Density
+	\end{enumerate}
+\end{frame}
+
+
+%===================================================
+\subsection{\ \ \ \ point}
+%===================================================
+\begin{frame}
+\frametitle{Deterministic methods}
+\framesubtitle{constraints}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item proximity
+		\item max velocity
+		\item path coherence
+			\begin{itemize}
+				\item no abrupt motion change
+			\end{itemize}
+		\item motion smoothness
+			\begin{itemize}
+				\item path coherence over long durations
+			\end{itemize}			
+		\item rigidity
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Particle Filter}
+\framesubtitle{multi-modal PDF}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
+	\end{figure}	
+\end{frame}
+
+
+
+
+%===================================================
+\subsection{\ \ \ \ region}
+%===================================================
+\begin{frame}
+\frametitle{Region tracking}
+\framesubtitle{overview}
+\logoCSIPCPL\mypagenum
+	\begin{enumerate}
+		\item Template matching
+			\begin{itemize}
+				\item fixed templates: reliable over short durations \href{run:distribute/run_TRK_templateMatching.bat}{{\color{blue}\underline {demo}}}
+			\end{itemize}
+		\item Subspace methods
+			\begin{itemize}
+				\item usually learned with PCA
+				\item model variations in lighting and pose
+				\item disadvantages: object specific, training
+			\end{itemize}			
+		\item Probability density
+			\begin{itemize}
+				\item robustness under image distortions and occlusions
+				\item fast to learn
+				\item disadvantage: lack of expressiveness, registration can be difficult
+			\end{itemize}
+		\item Motion
+			\begin{itemize}
+				\item optical flow works well for small displacements
+				\item block matching for large motion
+				\item computing motion vectors is computationally complex
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+%####################################################################################################
+\section{IV. RVQ}
+%####################################################################################################
+%===================================================
+\subsection{\ \ \ \ introduction}
+%===================================================
+
+\begin{frame}
+\frametitle{Quantization}
+\framesubtitle{overview}
+\logoCSIPCPL\mypagenum
+	\begin{figure}				
+		\includegraphics[width=0.9\textwidth]{thesis/Quantization_MSE.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}[plain]
+\frametitle{Lloyd Max conditions}
+\framesubtitle{Optimal code-vectors}
+\logoCSIPCPL\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[height=0.8\textheight]{thesis/Quantization_optimalCodevectors.pdf}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Lloyd Max conditions}
+\framesubtitle{Optimal partitions}
+\logoCSIPCPL\mypagenum
+	\begin{figure}				
+		\includegraphics[width=1.0\textwidth]{thesis/Quantization_optimalPartitions.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[plain]
+\frametitle{Lloyd Max conditions}
+\framesubtitle{Optimal partitions (cont.)}
+\logoCSIPCPL\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[height=0.8\textheight]{thesis/Quantization_optimalPartitions2.pdf}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Vector Quantization}
+\framesubtitle{types}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item Unstructured
+			\begin{itemize}
+				\item Exhaustive Search (ESVQ)
+			\end{itemize}
+		\item Structured
+		\begin{itemize}
+			\item Tree Structured (TSVQ)
+			\item Transform
+			\item Product
+				\begin{itemize}
+					\item Mean-removed
+					\item Shape-gain
+					\item Residual (RVQ)
+				\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+\frametitle{RVQ}
+\framesubtitle{block diagram}
+\logoCSIPCPL\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[width=1.3\textwidth]{thesis/RVQ_blockDiagram.pdf}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+%\begin{frame}
+%\frametitle{RVQ}
+%\framesubtitle{distortion}
+%\logoCSIPCPL\mypagenum
+%	\begin{figure}				
+%		\includegraphics[width=1.0\textwidth]{thesis/RVQ_distortion.pdf}
+%	\end{figure}
+%\end{frame}
+
+
+
+\begin{frame}
+\frametitle{RVQ}
+\framesubtitle{tree structure}
+\logoCSIPCPL\mypagenum
+	\begin{figure}				
+		\includegraphics[width=1.0\textwidth]{thesis/RVQ_graphicalReconstruction.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+\frametitle{RVQ}
+\framesubtitle{derivation}
+\logoCSIPCPL\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[width=1.3\textwidth]{thesis/RVQ_CAC_derivation.pdf}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+%===================================================
+\subsection{\ \ \ \ comparisons}
+%===================================================
+\begin{frame}
+\frametitle{RVQ comparison}\logoCSIPCPL\mypagenum
+\framesubtitle{1. with ESVQ}
+	\begin{itemize}
+		\item ESVQ
+			\begin{itemize}
+				\item $N=2^{rk}$ code-vectors
+				\item Computations: $O(2^{rk})$
+				\item Memory: $O(2^{rk})$
+				\item Exponential in computations and memory
+			\end{itemize}
+		\item RVQ
+			\begin{itemize}
+				\item $N={M^P}$ code-vectors
+				\item M code-vectors for each of P stages
+				\item Computations: $O(MP)$
+				\item Memory: $O(MP)$
+				\item Linear in computations and memory
+			\end{itemize}
+	\end{itemize}
+	Generally, structurally constrained quantizers cannot provide performance as good as ESVQ
+	\begin{itemize}
+		\item RVQ can handle higher dimensions due to linear complexity
+		\item Better performance than ESVQ possible, for given implementation cost
+	\end{itemize}	
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{RVQ comparison}
+\framesubtitle{2. with TSVQ}
+\logoCSIPCPL\mypagenum
+%	\begin{changemargin}{-1.3in}{0in}
+%		\begin{figure}				
+%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithTSVQ.pdf}
+%		\end{figure}
+%	\end{changemargin}
+\end{frame}
+
+
+
+%\begin{frame}[plain]
+%\frametitle{RVQ comparison}
+%\framesubtitle{3. with PCA}
+%\logoCSIPCPL\mypagenum
+%	\begin{changemargin}{-1.3in}{0in}
+%		\begin{figure}				
+%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithPCA.pdf}
+%		\end{figure}
+%	\end{changemargin}
+%\end{frame}
+
+
+%===================================================
+\subsection{\ \ \ \ usage: image analysis}
+%===================================================
+
+
+
+
+
+\begin{frame}
+\frametitle{RVQ classification}
+\framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka \\(training phase)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}		
+		\includegraphics[height=0.35\textheight]{thesis/RVQ_SatelliteSriLanka_1_snippets.png}			
+	\end{figure}
+	\begin{figure}		
+		\includegraphics[height=0.40\textheight]{thesis/RVQ_SatelliteSriLanka_2_codebooks.png}			
+	\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{RVQ classification}
+\framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka\\(testing phase)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}		
+		\includegraphics[height=0.6\textheight]{thesis/RVQ_SatelliteSriLanka_3_labeling.png}
+		\caption{\hspace{1.3in}{\color{yellow}yellow}: dirt paths \\\hspace{1.3in}{\color{blue}blue}: rivers \\\hspace{1.3in}{\color{red}red}: paved roads \\\hspace{1.3in}{\color{green}green}: train tracks}
+	\end{figure}
+\end{frame}
+
+
+
+
+%%===================================================
+%\subsection{\ \ \ \ usage: video analysis}
+%%===================================================
+%\begin{frame}
+%\frametitle{Action recognition using RVQ}
+%\framesubtitle{Weizmann dataset}
+%\logoCSIPCPL
+%	10 different actions to be classified
+%	\begin{figure}	
+%		\includegraphics[width=1.0\textwidth]{thesis/RVQ_HMM_IPCV2010_Weizmann_dataset.pdf}
+%	\end{figure}
+%	\hspace{0.6in}
+%	\multiinclude[<+>][format=jpg, start=0, graphics={width=0.6\textwidth}]{thesis/RVQ_HMM_denis_silhouette}
+%\end{frame}
+%
+%
+%\begin{frame}[plain]
+%\frametitle{Action recognition using RVQ}
+%	\begin{changemargin}{-1.3in}{0in}
+%	\begin{figure}	
+%		\includegraphics[width=1.35\textwidth]{thesis/RVQ_HMM_IPCV2010_blockDiagram.pdf}
+%	\end{figure}
+%	\end{changemargin}
+%\end{frame}
+%
+%
+%\begin{frame}
+%\frametitle{Action recognition using RVQ}
+%\framesubtitle{action confusion (all methods: fixed windows)	 \tiny{\footnote{S. M. Aslam, C. F. Barnes, and A. F. Bobick, Video action recognition using residual vector quantization and hidden markov models," in \emph{International Conference on Image Processing, Computer Vision, and Pattern Recognition, 2010}.}}}
+%\logoCSIPCPL
+%	\begin{figure}
+%		\centering	
+%		\subfigure[Our method]
+%		{
+%			\includegraphics[width=.45\textwidth]{thesis/Proposal_fig7a_RVQ_HMM_Weizmann_TabularResults_us.pdf}
+%			\label{fig:Weizmann_TabularResults_us}	
+%		}
+%		\subfigure[Gorelick et al.]
+%		{
+%			\includegraphics[width=0.40\textwidth]{thesis/Proposal_fig7b_RVQ_HMM_Weizmann_TabularResults_gorelick.pdf}
+%			\label{fig:Weizmann_TabularResults_gorelick}	
+%		}
+%		\subfigure[Manor et al.]
+%		{
+%			\includegraphics[width=0.45\textwidth]{thesis/Proposal_fig7c_RVQ_HMM_Weizmann_TabularResults_manor.pdf}
+%			\label{fig:Weizmann_TabularResults_irani}	
+%		}
+%		\subfigure[Ali et al.]
+%		{
+%			\includegraphics[width=0.40\textwidth]{thesis/Proposal_fig7d_RVQ_HMM_Weizmann_TabularResults_shah.pdf}
+%			\label{fig:Weizmann_TabularResults_shah}	
+%		}												
+%		\label{fig:Weizmann_TabularResults}			
+%	\end{figure}
+%\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{}
+\logoCSIPCPL\mypagenum
+		QUESTIONS
+\end{frame}
+
+%####################################################################################################
+\include{end}
+%####################################################################################################
+
