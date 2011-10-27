@@ -14,7 +14,7 @@
 \end{frame}
 
 %####################################################################################################
-\section{I. Background}
+\section{Background}
 %####################################################################################################
 \begin{frame}
 \frametitle{Milestones}
@@ -33,7 +33,7 @@
 \end{frame}
 
 %####################################################################################################
-\section{I. Tracking: introduction}
+\section{Tracking}
 %####################################################################################################
 \begin{frame}
 \frametitle{Tracking}
@@ -115,41 +115,23 @@
 \end{frame}
 
 
-%#######################################################################
-\section{II. Tracking: radar (points)}
-%#######################################################################
-
-
-
 \begin{frame}
-\frametitle{Kalman Filter}
-\framesubtitle{block diagram}
+\frametitle{Origin: radar}
+\framesubtitle{Kalman Filter}
 \logoCSIPCPL\mypagenum
 	\begin{figure}
 		\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_blockDiagram.pdf}
 	\end{figure}
 \end{frame}
 
-
-
-
-
-
 \begin{frame}
-\frametitle{Kalman Filter}
-\framesubtitle{equations}
+\frametitle{Particle Filter}
+\framesubtitle{multi-modal PDF}
 \logoCSIPCPL\mypagenum
 	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_equations.pdf}
-	\end{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
+	\end{figure}	
 \end{frame}
-
-
-
-
-%#######################################################################
-\section{III. Tracking: computer vision}
-%#######################################################################
 
 
 \begin{frame}
@@ -177,37 +159,9 @@
 \end{frame}
 
 
-%===================================================
-\subsection{\ \ \ \ point}
-%===================================================
-\begin{frame}
-\frametitle{Deterministic methods}
-\framesubtitle{constraints}
-\logoCSIPCPL\mypagenum
-	\begin{itemize}
-		\item proximity
-		\item max velocity
-		\item path coherence
-			\begin{itemize}
-				\item no abrupt motion change
-			\end{itemize}
-		\item motion smoothness
-			\begin{itemize}
-				\item path coherence over long durations
-			\end{itemize}			
-		\item rigidity
-	\end{itemize}
-\end{frame}
 
 
-\begin{frame}
-\frametitle{Particle Filter}
-\framesubtitle{multi-modal PDF}
-\logoCSIPCPL\mypagenum
-	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
-	\end{figure}	
-\end{frame}
+
 
 
 
@@ -222,7 +176,7 @@
 	\begin{enumerate}
 		\item Template matching
 			\begin{itemize}
-				\item fixed templates: reliable over short durations \href{run:distribute/run_TRK_templateMatching.bat}{{\color{blue}\underline {demo}}}
+				\item fixed templates: reliable over short durations 
 			\end{itemize}
 		\item Subspace methods
 			\begin{itemize}
@@ -247,7 +201,7 @@
 
 
 %####################################################################################################
-\section{IV. RVQ}
+\section{RVQ}
 %####################################################################################################
 %===================================================
 \subsection{\ \ \ \ introduction}
@@ -261,8 +215,6 @@
 		\includegraphics[width=0.9\textwidth]{thesis/Quantization_MSE.pdf}
 	\end{figure}
 \end{frame}
-
-
 
 
 
@@ -433,10 +385,9 @@
 %\end{frame}
 
 
-%===================================================
+%--------------------------------------------------------
 \subsection{\ \ \ \ usage: image analysis}
-%===================================================
-
+%--------------------------------------------------------
 
 
 
@@ -467,7 +418,22 @@
 \end{frame}
 
 
+%####################################################################################################
+\section{RVQ tracking}
+%####################################################################################################
 
+\begin{frame}
+\frametitle{RVQ classification}
+\framesubtitle{$\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\begin{figure}[t]
+\subfigure[Uniform.]{\includegraphics[width=0.3\textwidth]{thesis/PCA_Uniform.pdf}}
+\subfigure[Gaussian.]{\includegraphics[width=0.3\textwidth]{thesis/PCA_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]{\includegraphics[width=0.3\textwidth]{thesis/PCA_GaussMarkov.pdf}}\hspace{0.55in}
+\subfigure[Dudek sequence.]{\includegraphics[width=0.3\textwidth]{thesis/PCA_Dudek.pdf}}
+\label{fig:PCA_results}
+\end{figure}
+\end{frame}
 
 %%===================================================
 %\subsection{\ \ \ \ usage: video analysis}
