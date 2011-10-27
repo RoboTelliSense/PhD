@@ -1,36 +1,22 @@
 \include{begin}
-%####################################################################################################
-\title{Target Tracking \\ Using \\Residual Vector Quantization}
-%####################################################################################################
-\begin{frame}[plain]\logoCSIPCPL\logoTechTower
-	\titlepage
-\end{frame}
 
 \begin{frame}
-\frametitle{Outline}
-\logoCSIPCPL\logoTechTower
-	\setcounter{tocdepth}{2}	
-	\tableofcontents
-\end{frame}
-
-%####################################################################################################
-\section{Background}
-%####################################################################################################
-\begin{frame}
-\frametitle{Milestones}
-\framesubtitle{}
+\frametitle{Comparison, }
+\framesubtitle{mean performance}
 \logoCSIPCPL\mypagenum
-\vspace{0.2in}
-\begin{itemize}
-\item 2005: Dr Altunbasak, hierarchical motion vector estimation, background modeling
-\item {\color{blue}Interest}: pattern recognition applied to images
-\item 2007: switched to Dr Bobick, robust computer vision on compressed video
-\item 2010: Dr Barnes + Dr Bobick, RVQ as a pattern recognition method extended to several images
-\end{itemize}
-\begin{figure}
-\includegraphics[width=0.8\textwidth]{thesis/professors.pdf}
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\input{thesis/results_final_2_mean}
+\subfigure[Mean tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
+\subfigure[\%age of datasets over which best mean tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
+\label{fig:results_final_2_mean}
 \end{figure}
 \end{frame}
+
+
+
+
 
 
 %####################################################################################################

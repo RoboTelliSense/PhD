@@ -9,32 +9,35 @@
 \begin{frame}
 \frametitle{Outline}
 \logoCSIPCPL\logoTechTower
-	\setcounter{tocdepth}{2}	
+	\setcounter{tocdepth}{1}	
 	\tableofcontents
 \end{frame}
 
 %####################################################################################################
-\section{Background}
+\section{I. Background}
 %####################################################################################################
 \begin{frame}
-\frametitle{Milestones}
+\frametitle{Background}
 \framesubtitle{}
 \logoCSIPCPL\mypagenum
 \vspace{0.2in}
 \begin{itemize}
 \item 2005: Dr Altunbasak, hierarchical motion vector estimation, background modeling
-\item {\color{blue}Interest}: pattern recognition applied to images
+\item {\color{blue}Interest}: pattern recognition, signal processing
 \item 2007: switched to Dr Bobick, robust computer vision on compressed video
 \item 2010: Dr Barnes + Dr Bobick, RVQ as a pattern recognition method extended to several images
 \end{itemize}
 \begin{figure}
-\includegraphics[width=0.8\textwidth]{thesis/professors.pdf}
+\includegraphics[width=0.73\textwidth]{thesis/professors.pdf}
 \end{figure}
 \end{frame}
 
-%####################################################################################################
-\section{Tracking}
-%####################################################################################################
+%==================================
+\section{II. Tracking}
+%==================================
+%---------------------------------------------------------
+\subsection{(a) overview}
+%---------------------------------------------------------
 \begin{frame}
 \frametitle{Tracking}
 \framesubtitle{definition}
@@ -92,7 +95,9 @@
 \end{frame}
 
 
-
+%---------------------------------------------------------
+\subsection{(b) radars}
+%---------------------------------------------------------
 \begin{frame}
 \frametitle{Tracking}
 \framesubtitle{update}
@@ -135,6 +140,22 @@
 
 
 \begin{frame}
+\frametitle{Tracking}
+\framesubtitle{definition}
+\logoCSIPCPL\mypagenum
+\begin{figure}[t]
+\center
+\includegraphics[width=1.0\textwidth]{thesis/2006_JNL_TRKsurvey_Shah_fig1.png}
+\caption{Target representations.  (a) Centroid, (b) multiple points,(c) rectangular bounding box, (d) elliptical bounding region, (e) articulated shape model, (f) skeleton, (g) contour control points, (h) contour, (i) silhouette \cite{2006_JNL_SURVEYtrk_Yilmaz}.}
+\label{fig:TRK_objectRepresentations}
+\end{figure}
+\end{frame}
+
+
+%---------------------------------------------------------
+\subsection{(c) computer vision}
+%---------------------------------------------------------
+\begin{frame}
 \frametitle{Pre-processing}
 \logoCSIPCPL\mypagenum
 	{\color{red}Steps}
@@ -166,9 +187,6 @@
 
 
 
-%===================================================
-\subsection{\ \ \ \ region}
-%===================================================
 \begin{frame}
 \frametitle{Region tracking}
 \framesubtitle{overview}
@@ -201,11 +219,11 @@
 
 
 %####################################################################################################
-\section{RVQ}
+\section{III. RVQ}
 %####################################################################################################
-%===================================================
-\subsection{\ \ \ \ introduction}
-%===================================================
+%--------------------------------------
+\subsection{(a) introduction}
+%--------------------------------------
 
 \begin{frame}
 \frametitle{Quantization}
@@ -233,27 +251,27 @@
 
 
 
-\begin{frame}
-\frametitle{Lloyd Max conditions}
-\framesubtitle{Optimal partitions}
-\logoCSIPCPL\mypagenum
-	\begin{figure}				
-		\includegraphics[width=1.0\textwidth]{thesis/Quantization_optimalPartitions.pdf}
-	\end{figure}
-\end{frame}
-
-
-
-\begin{frame}[plain]
-\frametitle{Lloyd Max conditions}
-\framesubtitle{Optimal partitions (cont.)}
-\logoCSIPCPL\mypagenum
-	\begin{changemargin}{-1.3in}{0in}
-		\begin{figure}				
-			\includegraphics[height=0.8\textheight]{thesis/Quantization_optimalPartitions2.pdf}
-		\end{figure}
-	\end{changemargin}
-\end{frame}
+%\begin{frame}
+%\frametitle{Lloyd Max conditions}
+%\framesubtitle{Optimal partitions}
+%\logoCSIPCPL\mypagenum
+%	\begin{figure}				
+%		\includegraphics[width=1.0\textwidth]{thesis/Quantization_optimalPartitions.pdf}
+%	\end{figure}
+%\end{frame}
+%
+%
+%
+%\begin{frame}[plain]
+%\frametitle{Lloyd Max conditions}
+%\framesubtitle{Optimal partitions (cont.)}
+%\logoCSIPCPL\mypagenum
+%	\begin{changemargin}{-1.3in}{0in}
+%		\begin{figure}				
+%			\includegraphics[height=0.8\textheight]{thesis/Quantization_optimalPartitions2.pdf}
+%		\end{figure}
+%	\end{changemargin}
+%\end{frame}
 
 
 \begin{frame}
@@ -329,9 +347,9 @@
 \end{frame}
 
 
-%===================================================
-\subsection{\ \ \ \ comparisons}
-%===================================================
+%--------------------------------------
+\subsection{(b) comparisons}
+%--------------------------------------
 \begin{frame}
 \frametitle{RVQ comparison}\logoCSIPCPL\mypagenum
 \framesubtitle{1. with ESVQ}
@@ -386,7 +404,7 @@
 
 
 %--------------------------------------------------------
-\subsection{\ \ \ \ usage: image analysis}
+\subsection{(c) image classification}
 %--------------------------------------------------------
 
 
@@ -418,22 +436,105 @@
 \end{frame}
 
 
-%####################################################################################################
-\section{RVQ tracking}
-%####################################################################################################
+%=======================================
+\section{IV. RVQ tracking}
+%=======================================
+%------------------------------------------------------
+\subsection{(a) Appearance model}
+%------------------------------------------------------
 
+%PCA
 \begin{frame}
-\frametitle{RVQ classification}
-\framesubtitle{$\mathbb{R}^{1089}$}
+\frametitle{PCA}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
 \logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
 \begin{figure}[t]
-\subfigure[Uniform.]{\includegraphics[width=0.3\textwidth]{thesis/PCA_Uniform.pdf}}
-\subfigure[Gaussian.]{\includegraphics[width=0.3\textwidth]{thesis/PCA_Gaussian.pdf}}
-\subfigure[Gauss-Markov.]{\includegraphics[width=0.3\textwidth]{thesis/PCA_GaussMarkov.pdf}}\hspace{0.55in}
-\subfigure[Dudek sequence.]{\includegraphics[width=0.3\textwidth]{thesis/PCA_Dudek.pdf}}
+\subfigure[Uniform.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Uniform.pdf}}
+\subfigure[Gaussian.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_GaussMarkov.pdf}}
+\subfigure[Dudek sequence.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Dudek.pdf}}
 \label{fig:PCA_results}
 \end{figure}
 \end{frame}
+
+%RVQ appearance model (varying P)
+\begin{frame}
+\frametitle{RVQ, $M=4$, varying $P$}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}
+\subfigure[Uniform.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Uniform.pdf}}
+\subfigure[Gaussian.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_GaussMarkov.pdf}}
+\subfigure[Dudek sequence.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Dudek.pdf}}
+\end{figure}
+\end{frame}
+
+
+%TSVQ
+\begin{frame}
+\frametitle{TSVQ (binary, balanced-tree)}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\subfigure[Uniform.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Uniform.pdf}}
+\subfigure[Gaussian.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_GaussMarkov.pdf}}
+\subfigure[Dudek sequence.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Dudek.pdf}}
+\label{fig:TSVQ_results}
+\end{figure}
+\end{frame}
+
+
+
+
+%RVQ appearance model (varying M)
+\begin{frame} 
+\frametitle{RVQ, $P=8$, varying $M$}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\subfigure[Uniform.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_uniform.pdf}}
+\subfigure[Gaussian.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_GaussMarkov.pdf}}
+\subfigure[Dudek sequence.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Dudek.pdf}}
+\label{fig:RVQ_results_varyingM}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------------
+\subsection{(b) Observation model}
+%------------------------------------------------------
+
+
+%------------------------------------------------------
+\subsection{(c) Representation model}
+%------------------------------------------------------
+
+
+%------------------------------------------------------
+\subsection{(d) Motion model}
+%------------------------------------------------------
+
+
+%------------------------------------------------------
+\subsection{(e) Inference model}
+%------------------------------------------------------
+
+
 
 %%===================================================
 %\subsection{\ \ \ \ usage: video analysis}
@@ -491,8 +592,46 @@
 %	\end{figure}
 %\end{frame}
 
+%=======================================
+\section{V. Results}
+%=======================================
+
+\begin{frame}
+\frametitle{Comparison}
+\framesubtitle{best tracking performance}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\scriptsize
+\input{thesis/results_final_1_best}
+\subfigure[Best tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}
+\subfigure[\%age of datasets over which best tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
+\end{figure}
+\end{frame}
 
 
+\begin{frame}
+\frametitle{Comparison, }
+\framesubtitle{mean performance}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\input{thesis/results_final_2_mean}
+\subfigure[Mean tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}
+\subfigure[\%age of datasets over which best mean tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
+\label{fig:results_final_2_mean}
+\end{figure}
+\end{frame}
+
+%=======================================
+\section{VI. Conclusions}
+%=======================================
+
+%=======================================
+\section{VII. Future work}
+%=======================================
 
 
 \begin{frame}
