@@ -9,14 +9,14 @@
 \newcommand{\condp}{p(X_t=x_t | X_{t-1}=x_{t-1})}
 \newcommand{\jointp}{p(X_t=x_t, X_{t-1}=x_{t-1})}
 \newcommand{\KmeansOuterSum}{\sum\limits_{k=1}^K}
-\newcommand{\KmeansInnerSum}{\sum\limits_{{i=1 \atop x_i \in \mathcal{K}_k}}^N}
+\newcommand{\KmeansInnerSum}{\sum\limits_{{i=1 \atop x_i \in \mathcal{C}_k}}^N}
 \newcommand{\KmeansSum}{\KmeansOuterSum \KmeansInnerSum}
 \newcommand{\RVQInnerSum}{\sum\limits_{{i=1 \atop g_i \mapsto m_{\tau, s}}}^N}
 \newcommand{\RVQOuterSum}{\sum_{s=1}^S}
-\newcommand{\RVQsum}{\KmeansOuterSum \sum\limits_{{i=1 \atop g_i \in \mathcal{K}_k}}^N}
+\newcommand{\RVQsum}{\KmeansOuterSum \sum\limits_{{i=1 \atop g_i \in \mathcal{C}_k}}^N}
 \newcommand{\KmeansInner}{{(x_i - \mu_k)}^2}
 \newcommand{\RVQinner}{            {(x_i  - \hat{\mu}^{(k)})}^2}
-\newcommand{\RVQinneralternate}{{(g_i - m_\tau^{(k)})}^2}
+\newcommand{\RVQinneralternate}{{(g_i - \mu_\rho^{(k)})}^2}
 \newcommand{\RVQinneralternatealternate}{{(g_i - m_{\tau, s})}^2}
 \newcommand{\KmeansError}{\KmeansSum \KmeansInner}
 \newcommand{\RVQerror}     {\KmeansSum \RVQinner}
@@ -26,7 +26,7 @@
 \newcommand{\RVQequivalentCodevectorBroken}{\sum_{t=1 \atop t \neq \tau}^Tm^{(k)}_t+ m^{(k)}_\tau}
 \newcommand{\RVQmultipleKmeans}{x_i -\bigg(\RVQequivalentCodevectorBroken\bigg)}
 \newcommand{\RVQmultipleKmeansone}{x_i -\sum_{t=2}^Tm^{(k)}_t+ m^{(k)}_1\bigg)}
-\newcommand{\RVQmultipleKmeansonealternate}{\bigg(x_i -\sum_{t=1 \atop t \neq \tau}^Tm^{(k)}_t\bigg) - m^{(k)}_\tau}
+\newcommand{\RVQmultipleKmeansonealternate}{\bigg(x_i -\sum_{p=1 \atop p \neq \rho}^P\mu^{(k)}_p\bigg) - \mu^{(k)}_\rho}
 \newcommand{\RVQmultipleKmeanstwo}{x_i -\bigg(\sum_{t=1 \atop t \neq 2}^Tm^{(k)}_t+ m^{(k)}_2\bigg)}
 \newcommand{\RVQmultipleKmeansT}{x_i -\bigg(\sum_{t=1}^{T-1}m^{(k)}_t+ m^{(k)}_2\bigg)}
 \newcommand{\EucMatrix}

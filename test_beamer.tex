@@ -4,13 +4,74 @@
 
 
 
+\begin{frame}[plain]
+\frametitle{Linear Gaussian Model\footnote{Roweis 1999, Tipping, 1999}}
+\framesubtitle{Unifying PCA, PPCA, FA, and VQ.}
+\logoCSIPCPL\mypagenum
+
+\begin{changemargin}{-1.3in}{0in}
+\begin{equation}
+\begin{array}{llllllllllllll}
+\mathbf{x}_{t+1} &=  \mathbf{A}\mathbf{x}_{t} +  \mathbf{w}_t   & & & \mathbf{w}_t \sim \mathcal{N}(0, \mathbf{Q})\\
+\mathbf{y}_t 		 &=  \mathbf{C}\mathbf{x}_{t} +  \mathbf{v}_t    & & & \mathbf{v}_t \sim \mathcal{N}(0, \mathbf{R})
+\end{array}
+\label{LGM}
+\end{equation}
+\small
+\begin{table}[t]
+\centering
+\begin{tabular}{| c | c | c | c | c |}\hline
+ 				 	&\textbf{A}	 	&	\textbf{C}  									& \textbf{Q} 	&  \textbf{R}                                                                		\\\hline
+\textbf{PCA} 	&\textbf{0}		&	principal eigenvectors of $\boldsymbol\Sigma$	& \textbf{I}  	&  $\lim\limits_{\sigma^2 \rightarrow 0} \sigma^2\mathbf{I}$ 	\\\hline
+\textbf{PPCA} &\textbf{0}		& 	scaled principal eigenvectors of $\boldsymbol\Sigma$	& \textbf{I}	&										      $\sigma^2 \mathbf{I}$	 \\\hline
+\textbf{FA}   	&\textbf{0}		&	-												& \textbf{I} 	&  diagonal matrix 																\\\hline
+\textbf{VQ}	 	&\textbf{0} 	&	cluster means								& \textbf{I}	& 	-																					\\\hline
+\end{tabular}
+\label{table:LGM_unifying}
+\end{table}
+\begin{equation}
+\begin{array}{llllllllllllll}
+\mathbf{x} &= \mathbf{WTA}(\mathbf{w}) 						& & & \mathbf{w} &\sim \mathcal{N}(\mathbf{\boldsymbol\mu}, \mathbf{Q})\\
+\mathbf{y} &=  \mathbf{C}\mathbf{x} +  \mathbf{v} 		& & & \mathbf{v} & \sim \mathcal{N}(0, \mathbf{R})
+\end{array}
+\label{LGM2}
+\end{equation}
+\end{changemargin}
+\end{frame}
 
 
 
 
-
-
-
+\begin{frame}
+\scriptsize
+\begin{table}[htp]
+\begin{tabular}{| c ||c | c| c|}
+\hline
+											&ESVQ						&TSVQ																&RVQ								\\ 
+\hline
+\# data points								&$N$						&same																&same								\\ 
+\hline
+Vertical dimension, $T$					&-							&depth																&\# stages							\\
+Horizontal dimension, $M$					&-							&breadth															&\# templates						\\
+Encoding indeces							&-							&path map	(T-tuple)												&XDR (T-tuple)						\\ 
+\hline
+Input dimension							&$D$						&same																&same								\\
+Rate, $r$ (bits/vector component)			&$(\log_2K)/D$			&same																&same								\\ 
+\hline
+\# non-terminal codevectors, $N_{ntc}$	&0							&$1+M+M^2+ \ldots + M^{T-1}=\frac{M^T-1}{M-1}$			&$MT$								\\
+\# terminal codevectors, $K$				&$2^{rD}$					&$2^{rD}=M^T$													&same as TSVQ					\\
+\hline
+computations: search ops/stage			&1 stage, $O(2^{rD})$	&$M$																&same as TSVQ					\\
+computations: search complexity 			&$O(2^{rD})$				&O($MT$)															&same  as TSVQ					\\ 
+memory 									&$2^{rD}$					&$MN_{ntc} = M\frac{M^T-1}{M-1}\approx\frac{M}{M-1}M^T$ &$MT$								\\ 
+\hline
+\# Input data at stage $t$					&1 stage, $N$				&$\frac{N}{M^t}$													&$N$								\\
+\hline
+\end{tabular}
+\caption{Comparison of ESVQ, TSVQ and RVQ}
+\label{tab:comparison_ESVQ_TSVQ_RVQ}
+\end{table}
+\end{frame}
 
 %####################################################################################################
 \include{end}

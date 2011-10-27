@@ -86,8 +86,8 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 %-------------------------------------------------------------
 								\begin{figure}[h!]
 								\centering
-								\subfigure[3x2 RVQ codebook.  The reconstruction path taken through the codebook by the integer 8 is shaded dark.  Notice that monR is the only method unable to correctly decode the integer 8 and produces a 7 instead.  monR also incorrectly decodes 6, 8, 23 and 24.]{\includegraphics[width=0.5\textwidth]{thesis2/RVQ_CAC_toyExample_3x2.pdf}}
-						\subfigure[3x2 TSVQ codebook and reconstruction path taken by the number 8.]{\includegraphics[width=0.85\textwidth]{thesis2/TSVQ_toyExample_3x2.pdf}}
+								\subfigure[3x2 RVQ codebook.  The reconstruction path taken through the codebook by the integer 8 is shaded dark.  Notice that monR is the only method unable to correctly decode the integer 8 and produces a 7 instead.  monR also incorrectly decodes 6, 8, 23 and 24.]{\includegraphics[width=0.5\textwidth]{thesis/RVQ_CAC_toyExample_3x2.pdf}}
+						\subfigure[3x2 TSVQ codebook and reconstruction path taken by the number 8.]{\includegraphics[width=0.85\textwidth]{thesis/TSVQ_toyExample_3x2.pdf}}
 								\caption{RVQ and TSVQ codebooks generated using the training data $S_{trg}~=~\{4, 6, 8, 10, 20, 22, 24, 26\}$.}
 								\end{figure}
 															
@@ -95,7 +95,7 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 
 								\begin{table}[h]
 								\centering
-								\input{thesis2/aRVQ_4_6_8_10_20_22_24_26.tex}
+								\input{thesis/aRVQ_4_6_8_10_20_22_24_26.tex}
 								\caption{RVQ reconstruction rms errors.  The training set is $S_{\textrm{trg}}=S_{\textrm{tst}}=\{4, 6, 8, 10, 20, 22, 24, 26\}$.  As the number of templates per stage $m$ is increased, less and less stages are needed for perfect reconstruction.}
 								\label{fig:aRVQ_4_6_8_10_20_22_24_26}
 								\end{table}
@@ -105,10 +105,10 @@ Over the spectrum of low and high dimensional deterministic or random data, nulE
 %------------------------------------------------
 								\begin{figure}[h]
 								\centering
-								\subfigure[8x2 RVQ codebook.  The reconstruction path taken through the codebook by the integer 13 is shaded dark.  Notice that monR is the only method unable to correctly decode the integer 13 and produces 16.5 instead.]{\includegraphics[height=3in]{thesis2/RVQ_CAC_toyExample_8x2.pdf}}\hspace{0.1in}
-								\subfigure[For the 8x2 RVQ codebook, input and decoded outputs produced by monR.  Notice quite a few incorrect reconstructions.  In contrast, maxP, RofE and nulE all produce perfect reconstructions.]{\includegraphics[height=2in]{thesis2/RVQ_CAC_toyExample_8x2_monR.pdf}}
-								\subtable{\input{thesis2/aRVQ_1_to_256.tex}}
-								\subfigure{\includegraphics[width=0.5\textwidth]{thesis2/aRVQ_1_to_256.pdf}}
+								\subfigure[8x2 RVQ codebook.  The reconstruction path taken through the codebook by the integer 13 is shaded dark.  Notice that monR is the only method unable to correctly decode the integer 13 and produces 16.5 instead.]{\includegraphics[height=3in]{thesis/RVQ_CAC_toyExample_8x2.pdf}}\hspace{0.1in}
+								\subfigure[For the 8x2 RVQ codebook, input and decoded outputs produced by monR.  Notice quite a few incorrect reconstructions.  In contrast, maxP, RofE and nulE all produce perfect reconstructions.]{\includegraphics[height=2in]{thesis/RVQ_CAC_toyExample_8x2_monR.pdf}}
+								\subtable{\input{thesis/aRVQ_1_to_256.tex}}
+								\subfigure{\includegraphics[width=0.5\textwidth]{thesis/aRVQ_1_to_256.pdf}}
 								\caption{Training set  $S_{\textrm{trg}}=\{1, 2, \ldots 256\}$, , the test set $S_{\textrm{tst}}$ is the same as the training set.}
 								\label{fig:aRVQ_1_to_256}
 								\end{figure}
@@ -201,7 +201,7 @@ Training snippets are similar to the ones in Figure~\ref{fig:aRVQ_dudek_first_10
 
 								\begin{figure}[h!]
 								\centering
-								\includegraphics[width=0.55\textwidth]{figs/aRVQ_dudek_first_100_to_105_snippets.pdf}
+								\includegraphics[width=0.55\textwidth]{thesis/aRVQ_dudek_first_100_to_105_snippets.pdf}
 								\caption{Test snippts.}
 								\label{fig:aRVQ_Dudek_first_100_rand}
 								\end{figure}
@@ -209,8 +209,8 @@ Training snippets are similar to the ones in Figure~\ref{fig:aRVQ_dudek_first_10
 
 								\begin{figure}[h]
 								\centering
-								\subtable{\begin{tiny}\input{thesis2/aRVQ_dudek_first_100rand_5test.tex}\end{tiny}}
-								\subfigure{\includegraphics[width=0.6\textwidth]{figs/aRVQ_dudek_first_100rand_5test.pdf}}
+								\subtable{\begin{tiny}\input{thesis/aRVQ_dudek_first_100rand_5test.tex}\end{tiny}}
+								\subfigure{\includegraphics[width=0.6\textwidth]{thesis/aRVQ_dudek_first_100rand_5test.pdf}}
 								\caption{Reconstruction rms errors for different values of RVQ code-vectors per stage, $m$ with first 100 target snippets in the Dudek sequence randomized with zero-mean gaussian noise with 0.1 standard deviation.  The training snippets can be seen in Figure~\ref{fig:aRVQ_dudek_first_100rand_snippets}.}
 								\label{fig:aRVQ_Dudek_first_100_rand}
 								\end{figure}

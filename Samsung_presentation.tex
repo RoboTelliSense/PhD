@@ -33,19 +33,6 @@
 \end{figure}
 \end{frame}
 
-
-\begin{frame}
-\frametitle{Background}
-\framesubtitle{}
-\logoCSIPCPL\mypagenum
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
-\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
-\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
-\end{figure}
-\end{frame}
-
 %==================================
 \section{II. Tracking}
 %==================================
@@ -60,25 +47,6 @@
 	\begin{figure}
 		\includegraphics[width=1.0\textwidth]{thesis/TRK_overviewDiagram.pdf}
 	\end{figure}
-\end{frame}
-
-
-\begin{frame}[plain]
-\frametitle{Tracking}
-\framesubtitle{overview\tiny{\footnote {Yilmaz et.al., 2006}}}
-\logoCSIPCPL\mypagenum
-	\begin{changemargin}{-1.3in}{0in}
-		\begin{figure}
-			\includegraphics[width=1.3\textwidth]{thesis/TRK_overview.pdf}
-		\end{figure}	
-	\end{changemargin}
-	\begin{block}{Tracking methods}
-		\begin{itemize}
-			\item Point
-			\item Region
-			\item Contour
-		\end{itemize}
-	\end{block}
 \end{frame}
 
 
@@ -158,32 +126,23 @@
 
 
 
-\begin{frame}
-\frametitle{Particle Filter}
-\framesubtitle{multi-modal PDF}
-\logoCSIPCPL\mypagenum
-	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
-	\end{figure}	
-\end{frame}
-
-
+%---------------------------------------------------------
+\subsection{(c) Computer vision}
+%---------------------------------------------------------
 \begin{frame}
 \frametitle{Tracking}
-\framesubtitle{definition}
+\framesubtitle{target representations\footnote{Yilmaz, 2006}}
 \logoCSIPCPL\mypagenum
 \begin{figure}[t]
 \center
-\includegraphics[width=1.0\textwidth]{thesis/2006_JNL_TRKsurvey_Shah_fig1.png}
+\includegraphics[width=0.8\textwidth]{thesis/2006_JNL_TRKsurvey_Shah_fig1.png}
 \caption{Target representations.  (a) Centroid, (b) multiple points,(c) rectangular bounding box, (d) elliptical bounding region, (e) articulated shape model, (f) skeleton, (g) contour control points, (h) contour, (i) silhouette \cite{2006_JNL_SURVEYtrk_Yilmaz}.}
 \label{fig:TRK_objectRepresentations}
 \end{figure}
 \end{frame}
 
 
-%---------------------------------------------------------
-\subsection{(c) Computer vision}
-%---------------------------------------------------------
+
 \begin{frame}
 \frametitle{Pre-processing}
 \logoCSIPCPL\mypagenum
@@ -195,7 +154,7 @@
 		\item Background modeling
 		\item Feature Extraction
 	\end{enumerate}
-	\vspace{0.3in}
+	\vspace{0.1in}
 	{\color{red}Features}
 	\begin{enumerate}
 		\item Color
@@ -211,7 +170,16 @@
 
 
 
-
+\begin{frame}[plain]
+\frametitle{Visual tracking}
+\framesubtitle{overview\tiny{\footnote {Yilmaz et.al., 2006}}}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+\begin{figure}
+\includegraphics[width=1.1\textwidth]{thesis/TRK_overview.pdf}
+\end{figure}	
+\end{changemargin}
+\end{frame}
 
 
 
@@ -245,6 +213,9 @@
 			\end{itemize}
 	\end{enumerate}
 \end{frame}
+
+
+
 
 
 %####################################################################################################
@@ -366,13 +337,36 @@
 
 \begin{frame}[plain]
 \frametitle{RVQ}
-\framesubtitle{derivation}
+\framesubtitle{coupled K-means}
 \logoCSIPCPL\mypagenum
+	\begin{itemize}
+	\item $M$: number of code-vectors per stage
+	\item $P$: number of stages
+	\item $x_i$: input data point
+	\item $\mu_\rho^k$: stage code-vector at $\rho$-th stage that maps to $k$-th equivalent code-vector
+	\end{itemize}
 	\begin{changemargin}{-1.3in}{0in}
-		\begin{figure}				
-			\includegraphics[width=1.3\textwidth]{thesis/RVQ_CAC_derivation.pdf}
-		\end{figure}
+	\begin{align}
+	\label{Eq:RVQmeans}
+	e&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, \ldots P\}\notag\\
+	&={\RVQerroralternate}, \ \ \rho=\{1, 2, \ldots P\}
+	\end{align}
+%		\begin{figure}				
+%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_CAC_derivation.pdf}
+%		\end{figure}
 	\end{changemargin}
+\end{frame}
+
+\begin{frame}[plain]
+\frametitle{RVQ}
+\framesubtitle{Decoding methods.}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+\begin{figure}[h]
+\centering
+\subfigure{\includegraphics[width=0.6\textwidth]{thesis/RVQ_CAC_toyExample_3x2.pdf}}				\subfigure{\includegraphics[width=0.6\textwidth]{thesis/RVQ_CAC_toyExample_8x2.pdf}}
+\end{figure}
+\end{changemargin}
 \end{frame}
 
 
@@ -381,18 +375,18 @@
 %--------------------------------------
 \begin{frame}
 \frametitle{RVQ comparison}\logoCSIPCPL\mypagenum
-\framesubtitle{1. with ESVQ}
+\framesubtitle{RVQ vs ESVQ}
 	\begin{itemize}
 		\item ESVQ
 			\begin{itemize}
-				\item $N=2^{rk}$ code-vectors
-				\item Computations: $O(2^{rk})$
-				\item Memory: $O(2^{rk})$
+				\item $K=2^{rD}$ code-vectors
+				\item Computations: $O(2^{rD})$
+				\item Memory: $O(2^{rD})$
 				\item Exponential in computations and memory
 			\end{itemize}
 		\item RVQ
 			\begin{itemize}
-				\item $N={M^P}$ code-vectors
+				\item $D={M^P}$ code-vectors
 				\item M code-vectors for each of P stages
 				\item Computations: $O(MP)$
 				\item Memory: $O(MP)$
@@ -407,16 +401,16 @@
 \end{frame}
 
 
-\begin{frame}[plain]
-\frametitle{RVQ comparison}
-\framesubtitle{2. with TSVQ}
-\logoCSIPCPL\mypagenum
-%	\begin{changemargin}{-1.3in}{0in}
-%		\begin{figure}				
-%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithTSVQ.pdf}
-%		\end{figure}
-%	\end{changemargin}
-\end{frame}
+%\begin{frame}[plain]
+%\frametitle{RVQ comparison}
+%\framesubtitle{2. with TSVQ}
+%\logoCSIPCPL\mypagenum
+%%	\begin{changemargin}{-1.3in}{0in}
+%%		\begin{figure}				
+%%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithTSVQ.pdf}
+%%		\end{figure}
+%%	\end{changemargin}
+%\end{frame}
 
 
 
@@ -433,12 +427,8 @@
 
 
 %--------------------------------------------------------
-\subsection{(c) Image classification}
+\subsection{(c) Image classification (Barnes, 2007)}
 %--------------------------------------------------------
-
-
-
-
 \begin{frame}
 \frametitle{RVQ classification}
 \framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka \\(training phase)}
@@ -593,14 +583,54 @@
 %------------------------------------------------------
 \subsection{(b) Observation model}
 %------------------------------------------------------
+\begin{frame}
+\frametitle{Observation model}
+\framesubtitle{PCA}
+\logoCSIPCPL\mypagenum
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{thesis/PRML_PCA_problem.pdf}
+\caption{In $\mathbb{R}^2$, a reduced eigenspace means that eigenvector $u_2$ is discarded.  Vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ have the same projection error on eigenvector $u_1$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ of the training data $\mathbf{x}_i$.}
+\label{fig:PRML_PCA_problem}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Observation model}
+\framesubtitle{PCA}
+\logoCSIPCPL\mypagenum
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
+\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
+\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Observation model}
+\framesubtitle{PCA, RVQ, TSVQ}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item PCA and RVQ both do not define a proper density in the observation space
+\item For PCA, we use DFFS
+\item For RVQ, we use
+\begin{equation}
+p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\dr\big)}}
+\end{equation}
+\item For TSVQ, the observation model is the same as RVQ with $\lambda=0$
+\end{itemize}
+\end{frame}
 
 
 %------------------------------------------------------
 \subsection{(c) Representation model}
 %------------------------------------------------------
 \begin{frame}[plain]
-\frametitle{RVQ, $P=8$, varying $M$}
-\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\frametitle{Affine warping}
+\framesubtitle{}
 \logoCSIPCPL\mypagenum
 \scriptsize
 \begin{changemargin}{-1.3in}{0in}
@@ -700,6 +730,22 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 %------------------------------------------------------
 \subsection{(e) Inference model}
 %------------------------------------------------------
+\begin{frame}
+\frametitle{Particle filter}
+\framesubtitle{Sequential Importance Resampling Filter}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item sampling is done in 6-D affine space
+\item to avoid curse of dimensionality, each parameter is considered independent
+\item moreover, MCMC not required
+\end{itemize}
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
+\end{figure}	
+\end{frame}
+
+
+
 
 
 
@@ -863,15 +909,20 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 
 
 %=======================================
-\section{VI. Conclusions}
+\section{VI. Future work}
 %=======================================
-
-%=======================================
-\section{VII. Future work}
-%=======================================
+\begin{frame}
+\frametitle{Comparison}
+\framesubtitle{over all configurations}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
 \begin{enumerate}
-\item 
+\item Compare with non-linear manifold learning methods
+\item Relationship to Ding and He, 2004
+\item Multi-spectral data
 \end{enumerate}
+\end{frame}
+
 %=======================================
 \section{Questions}
 %=======================================
