@@ -1,0 +1,27 @@
+\include{begin_article}
+\title{TSVQ}
+\date{}
+\begin{document}
+\maketitle
+\rule[0pt]{\textwidth}{1pt}
+\tableofcontents
+\rule[0pt]{\textwidth}{1pt}
+%=========================
+\section{Introduction}
+%=========================
+
+The Tree Structured Vector Quantizer (TSVQ) has received a lot of attention in the literature~\cite{1991_BOOK_VQ_GershoGray}.  The reason is that the codebook produced by a TSVQ approximates the codebook produced by an Exhaustive Search Vector (ESVQ) but the run-time computational cost is logarithmic in the number of code-vectors.  The storage requirements however are greater.  A comparison of ESVQ, TSVQ and RVQ can be seen in Table~\ref{tab:comparison_ESVQ_TSVQ_RVQ}.
+
+In TSVQ design, the first step is to compute the mean of the data.  All the data is mapped to this mean.  The mean is then split off into $M_{TSVQ}$ centroids (code-vectors).  For a binary TSVQ, $M=2$.  The data is mapped to these centroids using the Nearest Neighbor rule.  Each of these $M_{TSVQ}$ parent centroids is then again split into $M_{TSVQ}$ child centroids.  Splitting can be achieved by multiple iterations of the K-means algorithm to get centroids that give low mean squared error.  At every stage of the tree, data belonging to a parent code-vector is mapped to the child code-vectors after the splitting occurs.  Notice that the important code-vectors are the last stage children code-vectors, i.e. the terminal leaves of the tree.  However, during run-time, the parent code-vectors, i.e., the non-terminal nodes of the tree have to be stored in order to be able to traverse the tree to get to the terminal code-vectors.  The process of mapping data at run-time to the terminal code-vectors is quite straightforward.  The data is first mapped to the mean, which is a trivial step, since all data starts at the top of the tree, i.e., the mean.  Each data-point is then mapped to one of the two children nodes at the first stage using the Nearest Neighbor method.  This process continues till a terminal code-vector is reached which is then used as an approximation to the input data-point.
+
+In this work, we use a binary and balanced TSVQ.  In the binary case, the storage requirements are double the storage requirements for an equivalent ESVQ.  However, the run-time savings decrease logarithmically.  For instance, a codebook size of $K=256$ requires 256 matches for ESVQ but only 8 matches for a binary TSVQ.  
+
+During tracking, a TSVQ codebook is designed every $N_B=5$ frames using $N_w$ images in the training buffer.  The particle filter candidate target regions in the current frame are tested against this code-book, i.e., for each candidate region, the terminal code-vector  to the mean squared error between that region and the terminal code-vector in the tree that 
+
+
+\clearpage
+\newpage
+\normalsize
+\bibliographystyle{ieee}
+\bibliography{MyCitations}
+\end{document}
