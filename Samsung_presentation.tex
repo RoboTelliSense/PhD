@@ -869,7 +869,7 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 \subsection{(a) Best performance}
 %-------------------------------------------------
 \begin{frame}
-\frametitle{Comparison}
+\frametitle{Results}
 \framesubtitle{best tracking performance}
 \logoCSIPCPL\mypagenum
 \setcounter{subfigure}{0}
@@ -887,7 +887,7 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 %-------------------------------------------------
 
 \begin{frame}
-\frametitle{Comparison}
+\frametitle{Results}
 \framesubtitle{mean performance}
 \logoCSIPCPL\mypagenum
 \setcounter{subfigure}{0}
@@ -906,7 +906,7 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 %-------------------------------------------------
 
 \begin{frame}
-\frametitle{Comparison}
+\frametitle{Results}
 \framesubtitle{memory=16 vectors}
 \logoCSIPCPL\mypagenum
 \setcounter{subfigure}{0}
@@ -925,7 +925,7 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 \subsection{(d) Memory=32 vectors}
 %-------------------------------------------------
 \begin{frame}
-\frametitle{Comparison}
+\frametitle{Results}
 \framesubtitle{memory=32 vectors}
 \logoCSIPCPL\mypagenum
 \setcounter{subfigure}{0}
@@ -944,7 +944,7 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 \subsection{(e) Over all configurations}
 %-------------------------------------------------
 \begin{frame}
-\frametitle{Comparison}
+\frametitle{Results}
 \framesubtitle{over all configurations}
 \logoCSIPCPL\mypagenum
 \setcounter{subfigure}{0}
@@ -963,13 +963,37 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 \end{figure}
 \end{frame}
 
-
 %=======================================
-\section{VI. Future work}
+\section{VI. Conclusions}
 %=======================================
 \begin{frame}
-\frametitle{Comparison}
-\framesubtitle{over all configurations}
+\frametitle{Conclusions}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item \underline{Best possible performance}.  PCA and RVQ performed best in half the times each.  TSVQ never performed best.  However, of the 3 times that PCA performed best, in 2 cases, the performance difference was not significantly better than RVQ.  Moreover, and perhaps more importantly, RVQ performed best in the two most challenging datasets, Dudek and davidin300 since they both have multiple sources of noise.
+\item \underline{Best mean performance}.  Here, RVQ performed best in twice the number of scenarios as PCA.  TSVQ had the worst mean performance.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Conclusions}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item \underline{Memory cost=16 vectors}.  Here PCA performed best in twice the number of scenarios as RVQ .
+\item \underline{Memory cost=32 vectors}.  Here RVQ completely outperformed PCA and TSVQ.  This is understandable since the capacity of RVQ to explain an underlying distribution grows exponentially as $M^P$.  Moreover, we have used $M=2, 4, 8$ ensuring that we do not increase our VC dimension too much so as to start over-fitting
+\item \underline{Lost tracks}.  There was only one lost track for monR.  This is understandable since monR is a greedy approach.  The lost track was in davidin300 which is a challenging dataset.
+\end{itemize}
+\end{frame}
+
+
+%=======================================
+\section{VII. Future work}
+%=======================================
+\begin{frame}
+\frametitle{Future work}
+\framesubtitle{}
 \logoCSIPCPL\mypagenum
 \setcounter{subfigure}{0}
 \begin{enumerate}

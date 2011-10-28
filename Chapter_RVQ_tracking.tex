@@ -582,7 +582,7 @@ The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_tllpxy_to_abc
 
 								\begin{figure}[t]
 								\centering
-								\subfigure[User defined bounding box and feature points.]{\includegraphics[width=0.65\textwidth]{figs/dataset_Dudek_with_feature_points_00001.pdf}}\\
+								\subfigure[User defined bounding box and feature points.]{\includegraphics[width=0.65\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}}\\
 								\subfigure[Desired output.]{\includegraphics[width=0.25\textwidth]{figs/dataset_Dudek_desired_00001.pdf}}
 								\caption{The goal is to scale and warp a user defined object of interest and corresponding feature points to an upright position.}
 								\label{Fig:overall}
@@ -596,7 +596,7 @@ Before we explain the experiments in detail, we discuss the overall idea.  Ideal
 
 								\begin{figure}[t]
 								\centering
-								\fbox{\includegraphics[width=0.85\textwidth]{figs/dataset_Dudek_00001_forwardAffine.pdf}}
+								\fbox{\includegraphics[width=0.85\textwidth]{thesis/dataset_Dudek_00001_forwardAffine.pdf}}
 								\caption{Experiment 1, Dudek dataset, frame 1, application of the forward affine transform.  In this experiment, we warp an arbitrary zero-centered grid to a grid covering the object of interest.  The dimensions of the object of interest, the face, are 110x130 (width x height).  The dimensions of the warped output grid are 33x33.  Notice that the density of grid points is greater in the horizontal direction.}
 								\label{Fig:affine_warping}
 								\end{figure}
@@ -631,7 +631,7 @@ An object of interest in an image can be manually specified by drawing a boundin
 
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=0.65\textwidth]{figs/affineCandidates.pdf}
+								\includegraphics[width=0.65\textwidth]{thesis/affineCandidates.pdf}
 								\caption{Different affine parameters will produce different 33x33 outputs.}
 								\label{Fig:affine_candidates}
 								\end{figure}
@@ -658,7 +658,7 @@ y
 
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=0.75\textwidth]{figs/dataset_Dudek_00001_inverseAffine.pdf}
+								\includegraphics[width=0.75\textwidth]{thesis/dataset_Dudek_00001_inverseAffine.pdf}
 								\caption{Experiment 2, Dudek dataset, frame 1, application of inverse affine transform.  In this experiment, we apply the inverse affine transform to warp a set of given feature points and place them on Grid B from Figure~\ref{Fig:affine_warping}.}
 								\label{fig:original_feature_points}
 								\end{figure}
@@ -838,7 +838,7 @@ In such cases, One such example is given in Figure~\ref{TRK_overviewDiagram}.
 
 								\begin{figure}[t]
 								\center
-								\includegraphics[width=1.0\textwidth]{figs/TRK_LinearEstimator_blockDiagram.pdf}
+								\includegraphics[width=1.0\textwidth]{thesis/TRK_LinearEstimator_blockDiagram.pdf}
 								\caption{Linear estimator.}
 								\label{TRK_overviewDiagram}
 								\end{figure}
@@ -934,15 +934,15 @@ A variety of particle filters have now been introduced.   According to~\cite{200
 The density to be resampled is called the test density.
 
 
-								\begin{figure}[t]
-								\centering
-								\subfigure[Reference (uniform) density and test PDF.]{\includegraphics[width=0.4\textwidth]{figs/particle_filter_pdfs.pdf}}
-								\subfigure[Comparing CDFs.]{\includegraphics[width=0.4\textwidth]{figs/particle_filter_resampling.pdf}}
-								\subfigure[Particles 4, 7 and 9 are picked repeatedly since they have higher weight.]{\includegraphics[width=0.45\textwidth]{figs/particle_filter_particles.pdf}}
-								\subfigure[Resampled PDF.]{\includegraphics[width=0.45\textwidth]{figs/particle_filter_resampled_density.pdf}}
-								\caption{Particle filter, resampling.  Source code for this is given in Listing~\ref{lst:main_TRK_particle_filter_resampling} and~\ref{lst:TRK_particle_filter_resampling}}.   
-								\label{fig:particle_filter_resampling}
-								\end{figure}
+%								\begin{figure}[t]
+%								\centering
+%								\subfigure[Reference (uniform) density and test PDF.]{\includegraphics[width=0.4\textwidth]{thesis/particle_filter_pdfs.pdf}}
+%								\subfigure[Comparing CDFs.]{\includegraphics[width=0.4\textwidth]{thesis/particle_filter_resampling.pdf}}
+%								\subfigure[Particles 4, 7 and 9 are picked repeatedly since they have higher weight.]{\includegraphics[width=0.45\textwidth]{thesis/particle_filter_particles.pdf}}
+%								\subfigure[Resampled PDF.]{\includegraphics[width=0.45\textwidth]{thesis/particle_filter_resampled_density.pdf}}
+%								\caption{Particle filter, resampling.  Source code for this is given in Listing~\ref{lst:main_TRK_particle_filter_resampling} and~\ref{lst:TRK_particle_filter_resampling}}.   
+%								\label{fig:particle_filter_resampling}
+%								\end{figure}
 								
 
 \subsection{Resampling}
