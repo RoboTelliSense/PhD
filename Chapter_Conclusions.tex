@@ -2,37 +2,10 @@
 \chapter{Conclusions}
 \label{chap_conclusions}	
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-The results in the previous chapter show:
 
-\begin{enumerate}
-\item 
-\end{enumerate}
+In this thesis, we demonstrated successful application of RVQ for visual tracking over a variety of datasets, and compared our results with PCA and TSVQ based tracking.  We have based our design on a well-known method for visual tracking~\cite{2008_JNL_subspaceTRK_Ross}.  The advantage of using an existing tracking framework is that it allows our newer RVQ based tracking method to be compared more easily with existing methods in the literature.
 
-%#################################
-\section{Summary of work}
-%#################################
-The following is a summary of the work in this thesis:
-
-\begin{enumerate}
-\item Successful application of RVQ for 2 forms of video analysis: (a) human action recognition, and (b) visual tracking
-\item For human action recognition, RVQ was used as a transform to represent an image as a $T$-tuple.  Every action sequence for every user was Each user's action One HMM per action sequence was trained on the RVQ $T$-tuple
-\end{enumerate}
-%#################################
-\section{Contributions}
-%#################################
-This work has 2 contributions:
-
-\begin{enumerate}
-\item A demonstration that RVQ can be used effectively for visual tracking under a variety of appearance changes
-\item Comparison of RVQ tracking with PCA and TSVQ tracking
-\end{enumerate} 
-
-%#################################
-\section{Rationale}
-%#################################
-We have based our design on a well-known method for visual tracking~\cite{2008_JNL_subspaceTRK_Ross}.  The advantage of using an existing tracking framework is that it allows this approach is that since RVQ has never been used for visual tracking, the tracking framework is 
-
-Based on the experiments conducted in this report, we draw the following conclusions:
+Based on our work, we draw the following conclusions:
 
 \begin{enumerate}
 \item \underline{Performance comparison}.  We chose three metrics to compare PCA, TSVQ and RVQ.  A fourth metric is added which counts number of lost drifts.
@@ -48,6 +21,5 @@ Based on the experiments conducted in this report, we draw the following conclus
 \end{enumerate}
 
 Overall, PCA and RVQ outperform TSVQ completely.  Between PCA and RVQ, RVQ outperforms PCA in more areas.  In a tracking scenario, it is desirable to try different algorithms to get a feel for the dynamics of the underlying distribution.  Specifically, it is desired to understand how many DoFs are needed for a given algorithm to explain the distribution.  Our experiments show that averaged over all distributions and over all algorithms and their parameters, 8x4 RofE performs the best.  The reason is that 8x4 has a moderate VC dimension and that RofE is resistant to noise since it will penalize candidate snippets that have not appeared before.  In this sense, it allows the RVQ codebook to adapt gradually to the changing underlying distribution as tracking progresses over time.
-%#################################
-\section{Next steps}
-%#################################
+
+Our next step is to explore multiple targets, multi-spectral inputs, comparison with non-linear manifold learning methods such as LLE (locally linear embedding) and MDS (multidimensional scaling), using higher stage refinement for RVQ, and an investigation into the relation of RVQ with PCA using the subspace based approach given in~\cite{2004_CNF_KmeansVsPCA_DingHe}.
