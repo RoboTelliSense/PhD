@@ -1,3 +1,11 @@
+\include{Chapter0_begin}
+\include{inkscapeLatex}
+\begin{document}
+\begin{FrontMatter}
+\contents %generates the TOC, LOF, and LOT
+\end{FrontMatter}
+\begin{Body}
+
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 \chapter{Visual Tracking Using RVQ}
 \label{chap_RVQ_TRK}	
@@ -301,8 +309,8 @@ In many situations, it is necessary to track a visual target that is undergoing 
 
 								\begin{figure}
 								\centering
-								\subfigure[Frame 770.]{\includegraphics[width=0.45\textwidth]{figs/PETS2001_00770.jpg}}
-								\subfigure[Frame 1770.]{\includegraphics[width=0.45\textwidth]{figs/PETS2001_01770.jpg}}
+								\subfigure[Frame 770.]{\includegraphics[width=0.45\textwidth]{thesis/PETS2001_00770.jpg}}
+								\subfigure[Frame 1770.]{\includegraphics[width=0.45\textwidth]{thesis/PETS2001_01770.jpg}}
 								\caption{Over time, even rigid objects can undergo severe deformations such as the car in these images from the PETS2001 dataset.}
 								\label{Fig:PETS2001_deformation}
 								\end{figure}
@@ -449,7 +457,7 @@ d &= (\lambda_2)q + (\lambda_1) p
 								\begin{figure}
 								\centering
 								\fbox{
-								\includegraphics[width=0.75\textwidth]{figs/GRAPHICS_2D_left_turn.pdf}
+								\includegraphics[width=0.75\textwidth]{thesis/GRAPHICS_2D_left_turn.pdf}
 								}
 								\caption{Turning clockwise (left turn) in $\mathbb{R}^2$.}
 								\label{fig:left_turn}
@@ -485,7 +493,7 @@ The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_tllpxy_to_abc
 								\begin{figure}[t]
 								\centering
 								\subfigure[User defined bounding box and feature points.]{\includegraphics[width=0.65\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}}\\
-								\subfigure[Desired output.]{\includegraphics[width=0.25\textwidth]{figs/dataset_Dudek_desired_00001.pdf}}
+								\subfigure[Desired output.]{\includegraphics[width=0.25\textwidth]{thesis/dataset_Dudek_desired_00001.pdf}}
 								\caption{The goal is to scale and warp a user defined object of interest and corresponding feature points to an upright position.}
 								\label{Fig:overall}
 								\end{figure}
@@ -906,6 +914,13 @@ Finally, in Figure~\ref{fig:results_final_5_configs}, we plot tracking performan
 For the interested reader, the appendix contains detailed results for tracking errors for all 6 datasets, for all RVQ types (maxQ, RofE, nulE, monR), over several RVQ configurations (8x2, 8x4, 8x8, 8x12, 8x16).  Also, detailed graphical results for all 6 datasets, for all RVQ types, for the 8x4 configuration are also presented.
 
 
+\end{Body}
+%##############################################################################################################
+\begin{EndMatter}
+\references 				%generates the bibliography page
+\end{EndMatter}
+\end{document}
+%##############################################################################################################
 
 
 

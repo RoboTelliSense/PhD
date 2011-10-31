@@ -1,3 +1,11 @@
+\include{Chapter0_begin}
+\include{inkscapeLatex}
+\begin{document}
+\begin{FrontMatter}
+\contents %generates the TOC, LOF, and LOT
+\end{FrontMatter}
+\begin{Body}
+
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 \chapter{RVQ in computer vision (recognition)}
 \label{chap_RVQ_CV_recog}	
@@ -357,9 +365,9 @@ p \bigg (\mathbf{i}_i(1) \ | \ \mathcal{C}_c \bigg ) \\
 \end{equation}
 									\begin{figure}[t]
 									\centering
-									\subfigure[8x2]{\includegraphics[width=0.20\textwidth]{figs/new/RVQ_yaleFaces_dcbk_M_2-8.jpg}}
-									\subfigure[8x3]{\includegraphics[width=0.30\textwidth]{figs/new/RVQ_yaleFaces_dcbk_M_3-8.jpg}}
-									\subfigure[8x4]{\includegraphics[width=0.40\textwidth]{figs/new/RVQ_yaleFaces_dcbk_M_4-8.jpg}}
+									\subfigure[8x2]{\includegraphics[width=0.20\textwidth]{f:/salman/PhDold/figs/new/RVQ_yaleFaces_dcbk_M_2-8.jpg}}
+									\subfigure[8x3]{\includegraphics[width=0.30\textwidth]{f:/salman/PhDold/figs/new/RVQ_yaleFaces_dcbk_M_3-8.jpg}}
+									\subfigure[8x4]{\includegraphics[width=0.40\textwidth]{f:/salman/PhDold/figs/new/RVQ_yaleFaces_dcbk_M_4-8.jpg}}
 									\caption{RVQ codebooks for the Yale face dataset, number of code-vectors per stage is much less than the number of classes, $S << C$}
 									\label{fig:RVQ_codebooks_smallS_Yale}	
 									\end{figure}
@@ -375,7 +383,7 @@ This is shown graphically in Figure~\ref{fig:RVQ_bayesNet.pdf}.  The class with 
 %===========================
 									\begin{figure}[t]
 									\centering
-									\includegraphics[width=1.0\textwidth]{figs/new/RVQ_yaleFaces_dcbk_M_15-8.png}
+									\includegraphics[width=1.0\textwidth]{f:/salman/PhDold/figs/new/RVQ_yaleFaces_dcbk_M_15-8.png}
 									\caption{RVQ codebooks for the Yale face dataset, number of code-vectors per stage is equal to the number of classes, $S=C$}
 									\label{fig:RVQ_codebooks_largeS_Yale}	
 									\end{figure}
@@ -418,7 +426,7 @@ For SVM, the software library \emph{libSVM} was used \cite{2011_JNL_libSVM_Chang
 
 											\begin{figure}[t]
 											\centering
-											\subtable[tabular results]{\input{tables/RVQ_yaleFaces_dcbk_dSNR_achieved} }
+											\subtable[tabular results]{\input{f:/salman/PhDold/tables/RVQ_yaleFaces_dcbk_dSNR_achieved} }
 											\subfigure[results above shown 2D graphically]{\includegraphics[width=0.45\textwidth]{figs/RVQ_faceRecognition_dSNR_2D.pdf}\label{fig:RVQ_faceRecognition_dSNR_2D}}
 											\subfigure[results above shown 3D graphically]{\includegraphics[width=0.45\textwidth]{figs/RVQ_faceRecognition_dSNR_3D.pdf}\label{fig:RVQ_faceRecognition_dSNR_3D}}
 											\caption{RVQ training on the Yale face dataset, training set reconstruction SNR (dB).}
@@ -429,7 +437,7 @@ A grid search was done over values of the cost parameter $C_{svm}$ and kernel pa
 
 											\begin{figure}[t]
 											\centering
-											\subtable[tabular results]{\input{tables/RVQ_yaleFaces_final}}
+											\subtable[tabular results]{\input{f:/salman/PhDold/tables/RVQ_yaleFaces_final}}
 											\subfigure[graphical results]{\includegraphics[width=0.5\textwidth]{figs/RVQ_yaleFace_classifications2.pdf}}
 											\caption{RVQ face recognition results}
 											\label{fig:RVQ_yaleface_results}
@@ -667,3 +675,11 @@ For both our method and the method in \cite{2007_JNL_SpaceTimeShapes_Gorelick}, 
 Overall, it is encouraging that a straightforward application of HMM on RVQ processed image sequences produces such high recognition rates.  It is expected that better recognition rates can be achieved with using more stages or number of code-vectors per stage.  Moreover, more research into better RVQ codebook design methods is expected to further improve recognition rates.  
 
 In this chapter, we focused on understanding the usage of RVQ in computer vision in face and action recognition applications.  We transitioned from using images to image sequences.  The usage of image sequences is particularly important since this is the first reported application of RVQ on image sequences.  However, in both cases discussed in this chapter, the RVQ codebook is static.  In the next chapter, we further our application and understanding of RVQ by allowing the codebook itself to evolve dynamically.
+
+\end{Body}
+%##############################################################################################################
+\begin{EndMatter}
+\references 				%generates the bibliography page
+\end{EndMatter}
+\end{document}
+%##############################################################################################################

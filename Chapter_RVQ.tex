@@ -1,108 +1,110 @@
+\include{Chapter0_begin}
+\include{inkscapeLatex}
+\begin{document}
+\begin{FrontMatter}
+\contents %generates the TOC, LOF, and LOT
+\end{FrontMatter}
+\begin{Body}
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-\chapter{RVQ (Residual Vector Quantization)}
+\chapter{Residual Vector Quantization (RVQ)}
 \label{chap_RVQ}	
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+%==========================
+\section{Introduction}
+\label{sec:introduction}
+%==========================
+Our main emphasis in this chapter is on Residual Vector Quantization (RVQ).  However, in order to understand RVQ, certain definitions need to be presented.  Also, an understanding of quantization, types of vector quantization and a comparison of different types of vector quantization is important.  This chapter is therefore organized as follows:
 
-\begin{figure}[htp]			
-	\includegraphics[width=1\textwidth]{thesis/Quantization_blockDiagram.pdf}
-	\caption{A quantizer $Q$ maps symbols from a source alphabet $\mathcal{X}$ to symbols from a reconstruction alphabet $\mathcal{C}$, where in general, the number of elements in $\mathcal{C}$, $|\mathcal{C}| << |\mathcal{X}|$, the number of elements in $\mathcal{X}$ }
-	\label{fig:Quantization_block_diagram}
-\end{figure}
+\begin{enumerate}
+\item \underline{Definitions}.  In Section~\ref{sec:definitions}, various definitions related to the study of quantization are presented.
+\item \underline{Optimality} In Section~\ref{sec:quantization_optimality}, we discuss optimality issues in quantization.
+\item \underline{Types of vector quantization (VQ)}.  In Section~\ref{sec:types_VQ}, we discuss different types of VQ, including exhaustive search vector quantization (ESVQ),  tree structured vector quantization (TSVQ) and residual vector quantization (RVQ).
+\item \underline{Comparison of different types of VQ}.  In Section~\ref{sec:comparison_VQ}, we present a comparison of ESVQ, TSVQ and RVQ.
+\end{enumerate}
 
-%####################
-\section{Quantization}
-%####################
-%====================
-\subsection{Introduction}
-\label{sec:quantization}
-%====================
-
-The main mechanism for achieving lossy compression in images and videos is the process of \emph{quantization}.  For instance, all current video standards, MPEG-1, MPEG-2, MPEG-4, H.261, H.263 and H.264 rely on a special form quantization called \emph{transform vector quantization}, for compression.  Quantization is the process of representing a large, possibly infinite, set of values with a smaller set of values.  Figure~\ref{fig:Quantization_block_diagram} shows a quantizer $Q$ that takes values from a source alphabet $\mathcal{X}$,
-
-\begin{equation}
-\mathcal{X}=\{x \in \mathcal{R}^D\}
-\end{equation}
-
-and maps them to a reconstruction alphabet $\mathcal{C}$, 
-
-\begin{equation}
-\mathcal{C}=\{\mu_k \in \mathcal{R}^D | k=1,2, \ldots K\}
-\end{equation}
-
-The $K$ partitions $P_k, k = 1, 2, \ldots, K$ created in the input space $R^D$, 
-
-\begin{equation}
-P_k = \{x \in R^D | Q(x) = \mu_k\}
-\end{equation}   
-
-are mutually exclusive,
-
-\begin{equation}
-P_i \bigcap P_j = \emptyset, \ i \neq j
-\end{equation}
-
-and the union of these partitions covers the entire input space,
-
-\begin{equation}
-\bigcup\limits_{k=1}^{K} P_k=\mathcal{R}^D
-\end{equation}
-
-The reconstruction alphabet is also known as the \emph{codebook}.  Members of this set, $\mu_k$ are called \emph{codevectors}.  If the input is scalar, i.e. $D=1$, the quantizer is called a \emph{scalar quantizer} (SQ).  For $D>1$, the quantizer is called a \emph{vector quantizer} (VQ).  The \emph{resolution}, \emph{code rate}, or simply the \emph{rate} $r$ of a quantizer, 
-
-
-\begin{figure}[t]			
-	\includegraphics[width=1\textwidth]{thesis/Quantization_MSE.pdf}
-	\caption{Computing optimal centroids.}
-	\label{fig:computing_optimal_centroids}	
-\end{figure}
-
-\begin{equation}
-r=\frac{\log_2 K}{D}
-\end{equation}  
-
-is proportional to the number of bits required to represent the total number of codevectors, $K$ and inversely proportional to the dimensionality of the data.  This shows that for the same number of codevectors $K$, the rate increases linearly with the dimensionality of the data.  VQ is therefore able to achieve higher rates than SQ.  However, for a given error metric $d(.)$, a common one being the squared error criterion, 
-
-\begin{equation}
-d(x,y)=(x-y)^2 
-\end{equation}
-
-higher rates can increase distortion $\mathcal{D}$,
-
-\begin{equation}
-\mathcal{D(\mathcal{X}, \mathcal{C})} =E\left[d(x, Q(x)) \right]
-\end{equation}
-
-This tradeoff between rate and distortion can be plotted to create a \emph{rate-distortion} curve.  A fundamental result of Shannon's rate-distortion theory is that VQ will always achieve equal better or equal compression rates than SQ, even if the source is memoryless, i.e., emits a sequence of IID random variables \cite{1984_JNL_VQ_Gray}.   The reason is that SQ quantizes each dimension separately and cannot therefore exploit statistical correlation between the different dimensions of the data.  The result is rectangular partitions $P_k$ in $R^D$.  On the other hand, VQ can carve up the input space into arbitrary shapes.
-
-\begin{figure}[t]		
-	\center	
-	\includegraphics[height=0.4\textheight]{thesis/MPEG4_VTK.png}
-	\caption{Scalar quantization in the transform domain for MPEG-4.  The image on the left shows the 3 intensity channels of an input image patch drawn in the YUV color space.  The vertical dimension is the luma (Y) axis.  The right image shows the quantized reconstruction of the input image patch.  No deblocking filter has been used, and so the loss of information is entirely due to quantization.  Notice the straight lines along which the output pixels are aligned due to the quantization process.  The visualization was created using the Visualization Toolkit (VTK) \cite{VTK} in C.}
-	\label{fig:MPEG4_VTK}
-\end{figure}
+								\begin{figure}[t]	
+								\centering		
+								\fbox{
+								\includegraphics[width=0.6\textwidth]{thesis/Quantization_blockDiagram.pdf}}
+								\caption{A quantizer $\mathcal{Q}$ maps symbols from a source alphabet $\mathcal{X}$ to symbols from a reconstruction alphabet $\mathcal{C}$, where in general, the number of elements in $\mathcal{X}$, $N >> K$, the number of elements in $\mathcal{C}$.}
+								\label{fig:Quantization_block_diagram}
+								\end{figure}
 
 
 %====================
-\subsection{Optimality issues}
+\section{Definitions}
+\label{sec:definitions}
 %====================
-\begin{figure}[t]		
-	\center	
-	\includegraphics[height=0.5\textheight]{thesis/Quantization_optimalPartitions2.pdf}
-	\caption{Computing optimal partitions}
-	\label{fig:computing_optimal_partitions}
-\end{figure}
+In this section, we present the following definitions before getting into the details of optimality issues in quantization and its different types:
 
-So far, no mention has been made about optimality of the codevectors or partitions.  A widely used algorithm to compute optimal codevectors and partitions is the Generalized Lloyd Algorithm (GLA) \cite{1991_BOOK_VQ_GershoGray}, also known as the Linde Buzo Gray (LBG) algorithm \cite{1982_JNL_LeastSquaresQuantization_Lloyd} or K-means clustering \cite{1967_CNF_Kmeans_Macqueen}.  Figure~\ref{fig:computing_optimal_centroids} illustrates the SQ case for an input $X$ with distribution $f_X(x)$ and squared error criterion, 
+\begin{enumerate}
+\item \underline{Quantization}.  Quantization is the process of representing a large, possibly infinite, set of values with a smaller set of values~\cite{2005_BOOK_DataCompression_Sayood}.  Figure~\ref{fig:Quantization_block_diagram} shows a quantizer $\mathcal{Q}$ that takes values from a source alphabet $\mathcal{X}=\{\mathbf{x} \in \mathbb{R}^D\}$ and maps them to a reconstruction alphabet $\mathcal{C}=\{\mathbf{y}_k \in \ \mathbb{R}^D \ | \ k=1,2, \ldots K\}$.  If the input is scalar, i.e. $D=1$, the quantizer is called a \emph{scalar quantizer}.  For $D>1$, the quantizer is called a \emph{vector quantizer}.  Quantization is used widely for achieving lossy compression in images and videos.  For instance, all current video standards, MPEG-1, MPEG-2, MPEG-4, H.261, H.263 and H.264 rely on a special form of quantization called \emph{transform vector quantization}.
+
+\item \underline{Parititions}.  Quantization creates $K$ partitions $\mathcal{P}_k = \{\mathbf{x} \ \in \ \mathbb{R}^D \ | \ \mathcal{Q}(\mathbf{x}) = \mathbf{y}_k\}$ in the input space $\mathbb{R}^D$ which are mutually exclusive and exhaustive, i.e., $\mathcal{P}_i \bigcap \mathcal{P}_j = \emptyset, \ i \neq j$.  The union of these partitions covers the entire input space, $\bigcup\limits_{k=1}^{K} \mathcal{P}_k=\mathbb{R}^D$.
+
+\item \underline{Codebook}. The reconstruction alphabet $\mathcal{C}$ is known as the \emph{codebook}.  
+
+\item \underline{Code-vectors}.  The $K$ members $\mathbf{y}_k$ of the reconstruction alphabet $\mathcal{C}$ are called \emph{code-vectors}.    
+
+\item \underline{Rate}.  If we have $K$ code-vectors $\mathbf{y}_k$ in $\mathbb{R}^D$, $\log_2 K$ bits are required to represent each code-vector.   The \emph{resolution}, \emph{code rate}, or simply the \emph{rate} $r$ of a quantizer is the number of bits required to represent each sample, i.e., scalar element of $\mathbf{y}_k$.  Since there are $D$ samples, the rate $r=\frac{\log_2 K}{D}$.  
+
+\item \underline{Distortion}.  The difference between original input $\mathbf{x}$ and reconstructed output $\mathcal{Q}(\mathbf{x})=\mathbf{y}$ is known as \emph{distortion} $d(\mathbf{x}, \mathbf{y})$~\cite{2005_BOOK_DataCompression_Sayood}.  A commonly used distortion measure is the squared error criterion, $d(\mathbf{x}, \mathbf{y})=(\mathbf{x}-\mathbf{y})^2$.  Average distortion is given by $\mathcal{D(\mathcal{X}, \mathcal{C})}~=~E\left[d(\mathbf{x}, \mathbf{y}) \right]$.  
+
+%This shows that for the same number of codevectors $K$ and for a given distortion, less rate is required to encode an input source for he rate decreases linearly as the dimensionality $D$ of the data is increased.  For this reason, vector quantization is able to achieve higher rates than scalar quantization.
+
+
+
+								\begin{figure}[t]			
+								\includegraphics[width=1\textwidth]{thesis/Quantization_MSE.pdf}
+								\caption{Computing optimal centroids.}
+								\label{fig:computing_optimal_centroids}	
+								\end{figure}
+
+
+
+
+\item \underline{Rate-distortion R(D) curve}.  The tradeoff between rate and distortion can be plotted as a \emph{rate-distortion} curve.  A fundamental result of Shannon's rate-distortion theory is that VQ is able to achieve equal or better compression rates than scalar quantization even if the source is memoryless, i.e., emits a sequence of IID random variables~\cite{1984_JNL_VQ_Gray}.   The reason is that VQ is able to take advantage of higher dimensionality using appropriate cell-shapes~\cite{1985_JNL_VQ_Makhoul}.  For instance, it is shown in~\cite{1985_JNL_VQ_Makhoul} that a hexagon quantizer will gain 0.028 bits over a square quantizer in $\mathbb{R}^2$ when the two random variables are independent.  On the other hand, if the source is not memoryless, 3 situations are possible:
+
+\begin{itemize}
+\item \underline{Linear correlation only}. Here, with proper rotation, any set of random variables can be rendered uncorrelated, i.e., they will no longer be linearly correlated~\cite{1985_JNL_VQ_Makhoul}.  In this case, since there is no non-linear correlation, the set of random variables after appropriate rotation will be independent.  Scalar quantization along each new dimension will produce lower bit rate than if the rotation had not been carried out.  However, VQ will reduce the bit-rate even more than scalar quantization since, as mentioned above, it can take advantage of appropriate cell-shapes.
+\item \underline{Non-linear correlation only}.  Here, rotation cannot be used to remove non-linear correlation and therefore scalar quantization on rotated axes will not improve bit rate.  Moreover, scalar quantization produces rectangular cells, irrespective of the input distribution.  VQ on the other hand is able to place centroids only in regions occupied by the input.  This property can be used to exploit non-linear correlations and lower bit-rate~\cite{1985_JNL_VQ_Makhoul}.  Note that this property is independent of the appropriate cell-shapes property.  Using the appropriate cell-shapes property will lead to further reduction in bit-rate.
+
+\item \underline{Linear and non-linear correlation}.  In this case, VQ can be used to reduce bit rates using all 3 methods mentioned above, rotation, placement of code-vectors in places where the input distribution exists, and using appropriate cell-shapes.
+\end{itemize}
+
+\end{enumerate}
+
+								\begin{figure}[t]		
+								\center	
+								\includegraphics[height=0.4\textheight]{thesis/MPEG4_VTK.png}
+								\caption{Scalar quantization in the transform domain for MPEG-4.  The image on the left shows the 3 intensity channels of an input image patch drawn in the YUV color space.  The vertical dimension is the luma (Y) axis.  The right image shows the quantized reconstruction of the input image patch.  No deblocking filter has been used, and so the loss of information is entirely due to quantization.  Notice the straight lines along which the output pixels are aligned due to the quantization process.  The visualization was created using the Visualization Toolkit (VTK) \cite{VTK} in C.}
+								\label{fig:MPEG4_VTK}
+								\end{figure}
+
+%====================
+\section{Quantization optimality}
+\label{sec:quantization_optimality}
+%====================
+
+
+								\begin{figure}[t]		
+								\center	
+								\includegraphics[height=0.5\textheight]{thesis/Quantization_optimalPartitions2.pdf}
+								\caption{Computing optimal partitions}
+								\label{fig:computing_optimal_partitions}
+								\end{figure}
+
+So far, no mention has been made about optimality of the codevectors or partitions.  A widely used algorithm to compute at least locally optimal codevectors and partitions is the Generalized Lloyd Algorithm (GLA) \cite{1991_BOOK_VQ_GershoGray}, also known as the Linde Buzo Gray (LBG) algorithm \cite{1982_JNL_LeastSquaresQuantization_Lloyd} or K-means clustering \cite{1967_CNF_Kmeans_Macqueen}.  Figure~\ref{fig:computing_optimal_centroids} illustrates the scalar quantization case for an input $X$ with distribution $f_X(x)$ and squared error distortion, 
 
 \begin{equation}
 e=\sum\limits_{k=1}^{N} \int\limits_{b_k}^{b_{k+1}}(x-\mu_k)^2f_X(x)
 \end{equation}
 
-If the partitions $P_k$,
+If the partitions $\mathcal{P}_k$,
 
 \begin{equation}
 \label{Eq:partitions}
-P_k =  \left\{x \ | \ (\mu_j-x)^2 < (\mu_k-x)^2, \ \forall \ j \neq k \right\}
+\mathcal{P}_k =  \left\{x \ | \ (\mu_j-x)^2 < (\mu_k-x)^2, \ \forall \ j \neq k \right\}
 \end{equation}
 
 are given, an optimal codevector $\mu_k$ can be computed by setting the derivative of the error $e$ with respect to $\mu_k$ equal to 0,
@@ -143,49 +145,37 @@ x - \frac{1}{2} \left(\mu_k + \mu_j \right) &> 0 \notag\\
 \Rightarrow x &> \frac{1}{2} \left(\mu_k + \mu_j \right)
 \end{align}
 
-The only way to satisfy both Equations~\ref{Eq:partitions3} and \ref{Eq:partitions4} is for the partition boundary to be half-way between the centroids, , i.e. $\frac{1}{2} \left(\mu_k + \mu_j \right)$.  This notion can be generalized to the vector case.
+The only way to satisfy both Equations~\ref{Eq:partitions3} and \ref{Eq:partitions4} is for the partition boundary to be half-way between the centroids, i.e. $\frac{1}{2} \left(\mu_k + \mu_j \right)$.  This notion can be generalized to the vector case.
 
-%=================
-\subsection{Types of VQ}
-%=================
-\begin{figure}[htp]				
-	\includegraphics[width=1.1\textwidth]{thesis/RVQ_comparisonWithESVQ_TSVQ.pdf}
-	\caption{Graphical comparison of ESVQ, TSVQ and RVQ, 16 codevectors}
-	\label{fig:comparison_ESVQ_TSVQ_RVQ}
-\end{figure}
+%====================
+\section{Types of VQ}
+\label{sec:types_VQ}
+%====================
 
-\begin{table}[htp]
-\begin{longtable}{| p{2.2in} || p{1in} | p{1.5in} | p{1.5in}|}
-\hline
-											&ESVQ						&TSVQ																&RVQ								\\ 
-\hline
-\# data points								&$N$						&same																&same								\\ 
-\hline
-Vertical dimension, $T$					&-							&depth																&\# stages							\\
-Horizontal dimension, $M$					&-							&breadth															&\# templates						\\
-Encoding indeces							&-							&path map	(T-tuple)												&XDR (T-tuple)						\\ 
-\hline
-Input dimension							&$D$						&same																&same								\\
-Rate, $r$ (bits/vector component)			&$(\log_2K)/D$			&same																&same								\\ 
-\hline
-\# non-terminal codevectors, $N_{ntc}$	&0							&$1+M+M^2+ \ldots + M^{T-1}=\frac{M^T-1}{M-1}$			&$MT$								\\
-\# terminal codevectors, $K$				&$2^{rD}$					&$2^{rD}=M^T$													&same as TSVQ					\\
-\hline
-computations: search ops/stage			&1 stage, $O(2^{rD})$	&$M$																&same as TSVQ					\\
-computations: search complexity 			&$O(2^{rD})$				&O($MT$)															&same  as TSVQ					\\ 
-memory 									&$2^{rD}$					&$MN_{ntc} = M\frac{M^T-1}{M-1}\approx\frac{M}{M-1}M^T$ &$MT$								\\ 
-\hline
-\# Input data at stage $t$					&1 stage, $N$				&$\frac{N}{M^t}$													&$N$								\\
-\hline
-\end{longtable}
-\caption{Comparison of ESVQ, TSVQ and RVQ}
-\label{tab:comparison_ESVQ_TSVQ_RVQ}
-\end{table}
-We now list the main types of VQ that appear in the literature.  The goal of VQ design is to have output distortion as close as possible to the rate-distortion curve.  However, in general, optimal coding of source vectors is not possible unless an exhaustive search over all code-vectors is carried out, as in structurally unconstrained \emph{Exhaustive Search Vector Quantizers} (ESVQs) \cite{1992_JNL_RVQ_Barnes}.  For a rate $r$ and dimension $D$, there are $K=2^{rD}$ code-vectors.  The computational costs of $EVSQ$, $C_{ESVQ}$, and memory requirements $M_{ESVQ}$ are $\approx 2^{rD}$.  A solution to this problem is to impose constraints on the VQ structure.  One possible solution is the Tree Structured VQ (TSVQ) proposed in \cite{1980_JNL_TSVQ_Buzo}.  A $T$-level, $m$-ary TSVQ has search complexity $C_{TSVQ} \approx mT$ but double storage requirements, $M_{TSVQ} \approx 2 M_{ESVQ}$.   So, although the $TVSQ$ solves the search complexity problem, it further aggravates the storage problem.  A method of reducing both computational and storage complexity is to use a product code VQ.  The basic idea in a product code VQ is to break a bigger problem into several smaller problems.  Examples include mean-residual VQ, gain-shape VQ and mean-gain-shape VQ \cite{1996_JNL_AdvancesRVQ_Barnes}.  Residual Vector Quantizers (RVQ) also fall under this category, and are of interest to us in this work.  A comparison of ESVQ, TSVQ and RVQ is given in Table~\ref{tab:comparison_ESVQ_TSVQ_RVQ}.  A graphical comparison with 16 codevectors is given in Figure~\ref{fig:comparison_ESVQ_TSVQ_RVQ}.
+								\begin{figure}[htp]				
+								\includegraphics[width=1.1\textwidth]{thesis/RVQ_comparisonWithESVQ_TSVQ.pdf}
+								\caption{Graphical comparison of ESVQ, TSVQ and RVQ, 16 codevectors}
+								\label{fig:comparison_ESVQ_TSVQ_RVQ}
+								\end{figure}
 
-%####################
-\section{RVQ}
-%####################
+
+We now list the main types of VQ that appear in the literature.  The goal of VQ design is to have output distortion as close as possible to the rate-distortion curve.  However, in general, optimal coding of source vectors is not possible unless an exhaustive search over all code-vectors is carried out, as in structurally unconstrained \emph{Exhaustive Search Vector Quantizers} (ESVQs) \cite{1992_JNL_RVQ_Barnes}.  For a rate $r$ and dimension $D$, there are $K=2^{rD}$ code-vectors.  The computational costs of $EVSQ$, $C_{ESVQ}$, and memory requirements $M_{ESVQ}$ are $\approx 2^{rD}$.  A solution to this problem is to impose constraints on the VQ structure.  One possible solution is the Tree Structured VQ (TSVQ) proposed in \cite{1980_JNL_TSVQ_Buzo}.  A $T$-level, $m$-ary TSVQ has search complexity $C_{TSVQ} \approx mT$ but double storage requirements, $M_{TSVQ} \approx 2 M_{ESVQ}$.   So, although the $TVSQ$ solves the search complexity problem, it further aggravates the storage problem.  A method of reducing both computational and storage complexity is to use a product code VQ~\cite{1991_BOOK_VQ_GershoGray}.  The basic idea in a product code VQ is to break a bigger problem into several smaller problems.  Examples include mean-residual VQ, gain-shape VQ and mean-gain-shape VQ \cite{1996_JNL_AdvancesRVQ_Barnes}.  Residual Vector Quantizers (RVQ) also fall under this category, and are of interest to us in this work.  A comparison of ESVQ, TSVQ and RVQ is given in Table~\ref{tab:comparison_ESVQ_TSVQ_RVQ}.  A graphical comparison with 16 codevectors is given in Figure~\ref{fig:comparison_ESVQ_TSVQ_RVQ}.
+
+%----------------------------------
+\subsection{TSVQ}
+%----------------------------------
+The Tree Structured Vector Quantizer (TSVQ) has received a lot of attention in the literature~\cite{1991_BOOK_VQ_GershoGray}.  The reason is that the codebook produced by a TSVQ approximates the codebook produced by an Exhaustive Search Vector (ESVQ) but the run-time computational cost is logarithmic in the number of code-vectors.  The storage requirements however are greater.  A comparison of ESVQ, TSVQ and RVQ can be seen in Table~\ref{tab:comparison_ESVQ_TSVQ_RVQ}.
+
+In TSVQ design, the first step is to compute the mean of the data.  All the data is mapped to this mean.  The mean is then split off into $M_{TSVQ}$ centroids (code-vectors).  For a binary TSVQ, $M=2$.  The data is mapped to these centroids using the Nearest Neighbor rule.  Each of these $M_{TSVQ}$ parent centroids is then again split into $M_{TSVQ}$ child centroids.  Splitting can be achieved by multiple iterations of the K-means algorithm to get centroids that give low mean squared error.  At every stage of the tree, data belonging to a parent code-vector is mapped to the child code-vectors after the splitting occurs.  Notice that the important code-vectors are the last stage children code-vectors, i.e. the terminal leaves of the tree.  However, during run-time, the parent code-vectors, i.e., the non-terminal nodes of the tree have to be stored in order to be able to traverse the tree to get to the terminal code-vectors.  The process of mapping data at run-time to the terminal code-vectors is quite straightforward.  The data is first mapped to the mean, which is a trivial step, since all data starts at the top of the tree, i.e., the mean.  Each data-point is then mapped to one of the two children nodes at the first stage using the Nearest Neighbor method.  This process continues till a terminal code-vector is reached which is then used as an approximation to the input data-point.
+
+In this work, we use a binary and balanced TSVQ.  In the binary case, the storage requirements are double the storage requirements for an equivalent ESVQ.  However, the run-time savings decrease logarithmically.  For instance, a codebook size of $K=256$ requires 256 matches for ESVQ but only 8 matches for a binary TSVQ.  
+
+During tracking, a TSVQ codebook is designed every $N_B=5$ frames using $N_w$ images in the training buffer.  The particle filter candidate target regions in the current frame are tested against this code-book, i.e., for each candidate region, the terminal code-vector  to the mean squared error between that region and the terminal code-vector in the tree that 
+
+
+%----------------------------------
+\subsection{RVQ}
+%----------------------------------
 Residual Vector Quantizers were introduced by Juang et al. \cite{1982_CNF_SpeechRVQ_JuangGray}.  The RVQ structure is shown in Figure \ref{fig:RVQ_block_diagram}.  Initially a crude quantization of the input vector is carried out using a small codebook.  Then a second stage quantizer operates on the error of the first quantizer.  A third quantizer may be used to quantize the second error vector, and so on.  In other words, RVQs are realized as a sequence of small ESVQs.  Each stage operates on the error vector or \emph{residual} of the preceding ESVQ \cite{1991_CNF_DesignPerformanceRVQ_Frost}.  This direct sum structure coupled with a sequential search procedure enables the RVQ to have linear rather than exponential complexity, both in computations and in memory.  Two alternate graphical representations of this direct sum structure are given in Figure~\ref{fig:RVQ_sigma_tree}.
 
 \begin{figure}				
@@ -194,7 +184,7 @@ Residual Vector Quantizers were introduced by Juang et al. \cite{1982_CNF_Speech
 	\label{fig:RVQ_block_diagram}
 \end{figure}
 
-An RVQ is different from a traditional VQ in the sense that it partitions the input space $R^D$ into $M$ cells.  The residual space, also in $R^D$, is then partitioned again into $M$ cells.  This process is repeated $T$ times.  The advantage of this approach is that in obtaining $M^T$ partitions, we need to run our partitioning algorithm $T$ times and generate $M$ partitions at each stage.  In traditional VQ, the partitioning algorithm would run once but have to create $M^T$ partitions.  For the binary case (two code-vectors per stage, $M=2$) and a total of 8 stages ($T$=8), RVQ only requires 16 searches.  In $ESVQ$, this would require 256.  The exponential complexity is reduced to linear complexity.  Moreover, even the distortion of an ESVQ can be attained.  In general, all structurally constrained quantizers cannot provide performance as good as ESVQ.  However, since they are able to more efficiently implement codes, larger and larger vector sizes can be used, and if carefully designed, can achieve better performance that ESVQ \cite{1996_JNL_AdvancesRVQ_Barnes}.
+An RVQ is different from a traditional VQ in the sense that it partitions the input space $\mathbb{R}^D$ into $M$ cells.  The residual space, also in $\mathbb{R}^D$, is then partitioned again into $M$ cells.  This process is repeated $T$ times.  The advantage of this approach is that in obtaining $M^T$ partitions, we need to run our partitioning algorithm $T$ times and generate $M$ partitions at each stage.  In traditional VQ, the partitioning algorithm would run once but have to create $M^T$ partitions.  For the binary case (two code-vectors per stage, $M=2$) and a total of 8 stages ($T$=8), RVQ only requires 16 searches.  In $ESVQ$, this would require 256.  The exponential complexity is reduced to linear complexity.  Moreover, even the distortion of an ESVQ can be attained.  In general, all structurally constrained quantizers cannot provide performance as good as ESVQ.  However, since they are able to more efficiently implement codes, larger and larger vector sizes can be used, and if carefully designed, can achieve better performance that ESVQ \cite{1996_JNL_AdvancesRVQ_Barnes}.
 
 \begin{figure}[ht]
 	\centering	
@@ -213,9 +203,9 @@ An RVQ is different from a traditional VQ in the sense that it partitions the in
 \end{figure}
 
 
-%=======================
-\subsection{Encoder}
-%=======================
+
+\subsubsection{Encoder}
+%----------------------------
 A vector quantizer with a direct sum codebook,
 
 \begin{itemize}
@@ -225,10 +215,10 @@ A vector quantizer with a direct sum codebook,
 
 Since the dual of the covering problem is the packing problem \cite{BOOK_spheres_Conway}, it is shown in \cite{1993_sigmaTrees_Barnes} that $\sigma$-tree structures exist that provide good packing.  The design of RVQ direct sum codebooks is therefore studied in the context of $\sigma$-trees.
 
-The set $\mathcal{S}$ of $K$ leaf nodes of a $T$-level $M$-ary $\sigma$-tree is the set of $M^T$ direct sums of $T$ vectors in $R^D$, one vector per level $t$ being picked from a \emph{constituent set} $G_t = \{m_{t,m} \in R^D \ | m=1, 2, \ldots M\}$ \cite{2002_JNL_SigmaTrees_Barnes},
+The set $\mathcal{S}$ of $K$ leaf nodes of a $T$-level $M$-ary $\sigma$-tree is the set of $M^T$ direct sums of $T$ vectors in $\mathbb{R}^D$, one vector per level $t$ being picked from a \emph{constituent set} $G_t = \{m_{t,m} \in \mathbb{R}^D \ | m=1, 2, \ldots M\}$ \cite{2002_JNL_SigmaTrees_Barnes},
 
 \begin{equation}
-\mathcal{S} = \{\hat{\mu}^{(k)} \in R^D \ | \ \hat{\mu}_k = \sum\limits_{t=1}^T m_t^{(k)}, k=1, 2, \ldots, K=M^T\}
+\mathcal{S} = \{\hat{\mu}^{(k)} \in \mathbb{R}^D \ | \ \hat{\mu}_k = \sum\limits_{t=1}^T m_t^{(k)}, k=1, 2, \ldots, K=M^T\}
 \end{equation}
 
 An example 3-level binary $\sigma$ tree is given in Figure~\ref{fig:RVQ_sigma_tree}.  The RVQ encoder can be designed in two major phases which are explained below and illustrated in Figure~\ref{fig:RVQ_encoder_flowDiagram}. 
@@ -281,11 +271,6 @@ In the equation above, $\mu_k$ is the cluster centroid for the $k$-th partition 
 \end{figure}
 
 
-
-
-
-\subsubsection{Causal Anti-causal condition}
-%---------------------------------------------------
 To understand CAC, it is beneficial to first introduce some notation:
 
 \begin{itemize}
@@ -423,15 +408,45 @@ d = \frac{(x_2 - a) + (x_4 - b)}{2}\\
 \end{array}
 \end{equation}
 
-%=======================
-\subsection{Decoder}
-%=======================
+
+\subsubsection{Decoder}
+%----------------------------
 The decoder has a DSSA (direct sum successive approximation) structure.  In other words, at the first stage, the best first stage codevector in the $L_2$ norm sense is picked.  This codevector is subtracted from the input signal to form a first stage residual signal.  This signal is fed as input to the second stage where again the best second stage codevector in the $L_2$ norm sense is picked.  The residual from this stage is fed as input to the third stage.  This process is repeated for all $T$ stages.  The final residual output from the $T$-th stage is the error signal.  The reconstructed output signal is a sum of the best codevectors at every stage.  This process is shown in detail in Figure~\ref{fig:RVQ_decoderFlowDiagram}.  In this diagram, the reconstructed signal is first initialized to the zero vector.  At every stage, the SNR of the reconstructed signal is computed.  The process of decoding is stopped when either the maximum number of stages have been achieved or if the SNR does not increase at any stage.  In other words, a monotonic SNR increase condition is imposed.  The computational complexity of this decoding process is $O(N)$.  
 
 
-%=======================
-\subsection{Toy example}
-%=======================
+%====================
+\section{Comparison of different types of VQ}
+\label{sec:comparison_VQ}
+%====================
+\begin{table}[htp]
+\begin{longtable}{| p{2.2in} || p{1in} | p{1.5in} | p{1.5in}|}
+\hline
+											&ESVQ						&TSVQ																&RVQ								\\ 
+\hline
+\# data points								&$N$						&same																&same								\\ 
+\hline
+Vertical dimension, $T$					&-							&depth																&\# stages							\\
+Horizontal dimension, $M$					&-							&breadth															&\# templates						\\
+Encoding indeces							&-							&path map	(T-tuple)												&XDR (T-tuple)						\\ 
+\hline
+Input dimension							&$D$						&same																&same								\\
+Rate, $r$ (bits/vector component)			&$(\log_2K)/D$			&same																&same								\\ 
+\hline
+\# non-terminal codevectors, $N_{ntc}$	&0							&$1+M+M^2+ \ldots + M^{T-1}=\frac{M^T-1}{M-1}$			&$MT$								\\
+\# terminal codevectors, $K$				&$2^{rD}$					&$2^{rD}=M^T$													&same as TSVQ					\\
+\hline
+computations: search ops/stage			&1 stage, $O(2^{rD})$	&$M$																&same as TSVQ					\\
+computations: search complexity 			&$O(2^{rD})$				&O($MT$)															&same  as TSVQ					\\ 
+memory 									&$2^{rD}$					&$MN_{ntc} = M\frac{M^T-1}{M-1}\approx\frac{M}{M-1}M^T$ &$MT$								\\ 
+\hline
+\# Input data at stage $t$					&1 stage, $N$				&$\frac{N}{M^t}$													&$N$								\\
+\hline
+\end{longtable}
+\caption{Comparison of ESVQ, TSVQ and RVQ}
+\label{tab:comparison_ESVQ_TSVQ_RVQ}
+\end{table}
+
+
 
 
 %\mbox{testing method 1} &&& \mbox{maximize log likelihood}\\
@@ -482,4 +497,11 @@ The decoder has a DSSA (direct sum successive approximation) structure.  In othe
 
 %Channel coding is sphere packing and rate distortion coding is sphere covering \cite{2006_BOOK_InformationTheory_Cover}. 
 
+\end{Body}
+%##############################################################################################################
+\begin{EndMatter}
+\references 				%generates the bibliography page
+\end{EndMatter}
+\end{document}
+%##############################################################################################################
 
