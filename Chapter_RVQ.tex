@@ -1,10 +1,10 @@
-\include{Chapter0_begin}
-\include{inkscapeLatex}
-\begin{document}
-\begin{FrontMatter}
-\contents %generates the TOC, LOF, and LOT
-\end{FrontMatter}
-\begin{Body}
+%\include{Chapter0_begin}
+%\include{inkscapeLatex}
+%\begin{document}
+%\begin{FrontMatter}
+%\contents %generates the TOC, LOF, and LOT
+%\end{FrontMatter}
+%\begin{Body}
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 \chapter{Residual Vector Quantization (RVQ)}
 \label{chap_RVQ}	
@@ -24,7 +24,7 @@ Our main emphasis in this chapter is on Residual Vector Quantization (RVQ).  How
 								\begin{figure}[t]	
 								\centering		
 								\fbox{
-								\includegraphics[width=0.6\textwidth]{thesis/Quantization_blockDiagram.pdf}}
+								\includegraphics[width=0.4\textwidth]{thesis/Quantization_blockDiagram.pdf}}
 								\caption{A quantizer $\mathcal{Q}$ maps symbols from a source alphabet $\mathcal{X}$ to symbols from a reconstruction alphabet $\mathcal{C}$, where in general, the number of elements in $\mathcal{X}$, $N >> K$, the number of elements in $\mathcal{C}$.}
 								\label{fig:Quantization_block_diagram}
 								\end{figure}
@@ -37,7 +37,11 @@ Our main emphasis in this chapter is on Residual Vector Quantization (RVQ).  How
 In this section, we present the following definitions before getting into the details of optimality issues in quantization and its different types:
 
 \begin{enumerate}
-\item \underline{Quantization}.  Quantization is the process of representing a large, possibly infinite, set of values with a smaller set of values~\cite{2005_BOOK_DataCompression_Sayood}.  Figure~\ref{fig:Quantization_block_diagram} shows a quantizer $\mathcal{Q}$ that takes values from a source alphabet $\mathcal{X}=\{\mathbf{x} \in \mathbb{R}^D\}$ and maps them to a reconstruction alphabet $\mathcal{C}=\{\mathbf{y}_k \in \ \mathbb{R}^D \ | \ k=1,2, \ldots K\}$.  If the input is scalar, i.e. $D=1$, the quantizer is called a \emph{scalar quantizer}.  For $D>1$, the quantizer is called a \emph{vector quantizer}.  Quantization is used widely for achieving lossy compression in images and videos.  For instance, all current video standards, MPEG-1, MPEG-2, MPEG-4, H.261, H.263 and H.264 rely on a special form of quantization called \emph{transform vector quantization}.  See Figure~\ref{fig:MPEG4_VTK} for an example of quantization in MPEG-4.
+\item \underline{Quantization}.  Quantization is the process of representing a large, possibly infinite, set of values with a smaller set of values~\cite{2005_BOOK_DataCompression_Sayood}.  Figure~\ref{fig:Quantization_block_diagram} shows a quantizer $\mathcal{Q}$ that takes values from a source alphabet $\mathcal{X}=\{\mathbf{x} \in \mathbb{R}^D\}$ and maps them to a reconstruction alphabet $\mathcal{C}=\{\mathbf{y}_k \in \ \mathbb{R}^D \ | \ k=1,2, \ldots K\}$.  If the input is scalar, i.e. $D=1$, the quantizer is called a \emph{scalar quantizer}.  For $D>1$, the quantizer is called a \emph{vector quantizer}.  Quantization is used widely for achieving lossy compression in images and videos.  For instance, all current video standards, MPEG-1, MPEG-2, MPEG-4, H.261, H.263 and H.264 rely on a special form of quantization called \emph{transform vector quantization}.  See Figure~\ref{fig:MPEG4_VTK} for an example of quantization in MPEG-4.  In practice, quantization can be carried out as a sequence of two operations, \emph{encoding} and \emph{decoding}.
+
+\item \underline{Encoding}.  During this process, the input $\mathbf{x}$ to be quantized is represented by an index $m$, usually a scalar, that corresponds to the code-vector $\mathbf{y}_k$ that $\mathbf{x}$ is mapped to.
+
+\item \underline{Decoding}.  During this process, the index $m$ is used to look up code-vector $\mathbf{y}_k$.  
 
 \item \underline{Parititions}.  Quantization creates $K$ partitions $\mathcal{P}_k = \{\mathbf{x} \ \in \ \mathbb{R}^D \ | \ \mathcal{Q}(\mathbf{x}) = \mathbf{y}_k\}$ in the input space $\mathbb{R}^D$ which are mutually exclusive and exhaustive, i.e., $\mathcal{P}_i \bigcap \mathcal{P}_j = \emptyset, \ i \neq j$.  The union of these partitions covers the entire input space, $\bigcup\limits_{k=1}^{K} \mathcal{P}_k=\mathbb{R}^D$.
 
@@ -51,7 +55,11 @@ In this section, we present the following definitions before getting into the de
 
 \item \underline{Codebook}. The reconstruction alphabet $\mathcal{C}$ is known as the \emph{codebook}.  
 
-\item \underline{Code-vectors}.  The $K$ members $\mathbf{y}_k$ of the reconstruction alphabet $\mathcal{C}$ are called \emph{code-vectors}.    
+\item \underline{Code-vectors}.  The $K$ members $\mathbf{y}_k$ of the reconstruction alphabet $\mathcal{C}$ are called \emph{code-vectors}.  The term \emph{centroid} is used interchangeably with code-vector.
+
+\item \underline{Design-time}.  In the context of quantization, design-time refers to the process of generating the codebook.
+
+\item \underline{Run-time}.  In the context of quantization, run-time refers to the process of mapping an input $\mathbf{x}$ to a code-vector $\mathbf{y}$, i.e., the process of encoding followed by the process of decoding.
 
 \item \underline{Rate}.  If we have $K$ code-vectors $\mathbf{y}_k$ in $\mathbb{R}^D$, $\log_2 K$ bits are required to represent each code-vector.   The \emph{resolution}, \emph{code rate}, or simply the \emph{rate} $r$ of a quantizer is the number of bits required to represent each sample, i.e., scalar element of $\mathbf{y}_k$.  Since there are $D$ samples, the rate $r=\frac{\log_2 K}{D}$.  
 
@@ -71,10 +79,15 @@ In this section, we present the following definitions before getting into the de
 \begin{itemize}
 \item \underline{Linear correlation only}.  With proper rotation, any set of random variables can be rendered uncorrelated, i.e., they will no longer be linearly correlated~\cite{1985_JNL_VQ_Makhoul}.  In this case, since there is no non-linear correlation, the set of random variables after appropriate rotation will be independent.  Scalar quantization along each new dimension will produce lower bit rate than if the rotation had not been carried out.  However, VQ will reduce the bit-rate even more than scalar quantization since, as mentioned above, it can take advantage of appropriate cell-shapes.
 
+
 \item \underline{Non-linear correlation only}.  Here, rotation cannot be used to remove non-linear correlation and therefore scalar quantization on rotated axes will not improve bit rate.  Moreover, scalar quantization produces rectangular cells, irrespective of the input distribution.  VQ on the other hand is able to place centroids only in regions occupied by the input.  This property can be used to exploit non-linear correlations and lower bit-rate~\cite{1985_JNL_VQ_Makhoul}.  Note that this property is independent of the appropriate cell-shapes property.  Using the appropriate cell-shapes property will lead to further reduction in bit-rate.
 
 \item \underline{Linear and non-linear correlation}.  In this case, VQ can be used to reduce bit rates using all 3 methods mentioned above, rotation, placement of code-vectors in places where the input distribution exists, and using appropriate cell-shapes.
 \end{itemize}
+
+\item \underline{Sigma ($\sigma$) tree}.  A $\sigma$-tree is shown in Figure~\ref{fig:RVQ_sigma_tree}.  Each node of this tree, $\mu_{m,p}$ is called a \emph{stage code-vector} and is the $m$-th node at the $p$-th stage.  In Figure~\ref{fig:RVQ_sigma_tree}, there are 6 stage-code-vectors, 2 at the first stage, 2 at the second stage, and 3 at the third stage.  The leaf nodes of this tree, also called \emph{equivalent code-vectors}~\cite{2007_JNL_IDDM_Barnes} constitute the RVQ code-book~\cite{2002_JNL_SigmaTrees_Barnes}.  Each equivalent code-vector is created using a \emph{direct sum}, i.e., by adding one stage code-vector from each stage.  There are $K=M^P$ possible unique direct sums, and therefore $K=M^P$ possible equivalent code-vectors.
+
+%The set $\mathcal{S}$ of $K$ leaf nodes of a $P$-level $M$-ary $\sigma$-tree is the set of $M^P$ direct sums of $P$ vectors in $\mathbb{R}^D$, one vector per level $p$ being picked from a \emph{constituent set} $G_p = \{y_{p,m} \in \mathbb{R}^D \ | m=1, 2, \ldots M\}$~\cite{2002_JNL_SigmaTrees_Barnes}.
 
 \end{enumerate}
 
@@ -143,255 +156,280 @@ The only way to satisfy both Equations~\ref{Eq:partitions3} and \ref{Eq:partitio
 
 								\begin{figure}[t]				
 								\includegraphics[width=1.1\textwidth]{thesis/RVQ_comparisonWithESVQ_TSVQ.pdf}
-								\caption{Comparison of ESVQ, TSVQ and RVQ.  In the top figure, $M=2$ for RVQ and TSVQ, and 16 code-vectors are displayed for each quantization type.  The term path map is used in~\cite{1991_BOOK_VQ_GershoGray} to denote the $P$ encoding indeces.  An equivalent term for RVQ, XDR (expanded digital representation) is used in~\cite{2007_JNL_IDDM_Barnes}.}
+								\caption{Comparison of ESVQ, TSVQ and RVQ.  In the top figure, $M=2$ for RVQ and TSVQ, and 16 code-vectors are displayed for each quantization type.  The term \emph{path map} is used in~\cite{1991_BOOK_VQ_GershoGray} to denote the $P$ encoding indeces.  An equivalent term for RVQ, \emph{expanded digital representation} (XDR) is used in~\cite{2007_JNL_IDDM_Barnes}.}
 								\label{fig:comparison_ESVQ_TSVQ_RVQ}
 								\end{figure}
 
 
-We now list the main types of VQ that appear in the literature.  The goal of VQ design is to have output distortion as close as possible to the rate-distortion curve.  However, in general, optimal coding of source vectors is not possible unless an exhaustive search over all code-vectors is carried out, as in structurally unconstrained \emph{Exhaustive Search Vector Quantizers} (ESVQs) \cite{1992_JNL_RVQ_Barnes}.  For a rate $r$ and dimension $D$, there are $K=2^{rD}$ code-vectors.  The computational cost of ESVQ, $C_{ESVQ}$, and memory requirements $M_{ESVQ}$ are $\approx 2^{rD}$.  A solution to this problem is to impose constraints on the VQ structure.  One possible solution is the Tree Structured VQ (TSVQ) proposed in \cite{1980_JNL_TSVQ_Buzo}.  A $T$-level, $m$-ary TSVQ has search complexity $C_{TSVQ} \approx mT$ but double storage requirements, $M_{TSVQ} \approx 2 M_{ESVQ}$.   So, although the $TVSQ$ solves the search complexity problem, it further aggravates the storage problem.  A method of reducing both computational and storage complexity is to use a product code VQ~\cite{1991_BOOK_VQ_GershoGray}.  The basic idea in a product code VQ is to break a bigger problem into several smaller problems.  Examples include mean-residual VQ, gain-shape VQ and mean-gain-shape VQ \cite{1996_JNL_AdvancesRVQ_Barnes}.  Residual Vector Quantizers (RVQ) also fall under this category, and are of interest to us in this work.  A comparison of ESVQ, TSVQ and RVQ is given in Figure~\ref{fig:comparison_ESVQ_TSVQ_RVQ}.
+
+We now list the main types of VQ that appear in the literature.  The goal of VQ design is to have output distortion as close as possible to the rate-distortion curve.  However, in general, optimal coding of source vectors is not possible unless an exhaustive search over all code-vectors is carried out, as in structurally unconstrained \emph{Exhaustive Search Vector Quantizers} (ESVQs) \cite{1992_JNL_RVQ_Barnes}.  For a rate $r$ and dimension $D$, there are $K=2^{rD}$ code-vectors.  Therefore, the computational cost of ESVQ, $C_{ESVQ}$, and memory requirements $M_{ESVQ}$ are $\approx 2^{rD}$.  A solution to this problem is to impose constraints on the VQ structure.  
+
+One possible solution is the tree structured vector quantizer (TSVQ) proposed in~\cite{1980_JNL_TSVQ_Buzo}.  A $P$-level binary TSVQ has run-time search complexity which is only $C_{TSVQ} \approx 2P$ but double storage requirements, $M_{TSVQ} \approx 2 M_{ESVQ}$~\cite{1996_JNL_AdvancesRVQ_Barnes}.   So, although $TVSQ$ solves the search complexity problem, it further aggravates the storage problem.  A method of reducing both run-time computational and storage complexity is to use a product code VQ~\cite{1991_BOOK_VQ_GershoGray}.  The basic idea in a product code VQ is to break a bigger problem into several smaller problems.  Examples include mean-residual VQ, gain-shape VQ and mean-gain-shape VQ \cite{1996_JNL_AdvancesRVQ_Barnes}.  Residual Vector Quantizers (RVQ) also fall under this category, and are of interest to us in this work.  A comparison of ESVQ, TSVQ and RVQ is given in Figure~\ref{fig:comparison_ESVQ_TSVQ_RVQ}.
+
 
 %----------------------------------
 \subsection{TSVQ}
 %----------------------------------
-The Tree Structured Vector Quantizer (TSVQ) has received a lot of attention in the literature~\cite{1991_BOOK_VQ_GershoGray}.  The reason is that the codebook produced by a TSVQ approximates the codebook produced by ESVQ but the run-time computational cost is logarithmic in the number of code-vectors.  The storage requirements however are greater.
+The Tree Structured Vector Quantizer (TSVQ) has received a lot of attention in the literature~\cite{1991_BOOK_VQ_GershoGray}.  The reason is that the codebook produced by TSVQ approximates the codebook produced by ESVQ but the run-time computational cost is logarithmic in the number of code-vectors.   For instance, a codebook size of $K=256$ requires 256 matches for ESVQ but only 8 matches for binary TSVQ.  However, as mentioned earlier, the storage requirements are greater for TSVQ as compared to ESVQ (see Figure~\ref{fig:comparison_ESVQ_TSVQ_RVQ}).   We next talk about design-time and run-time in TSVQ.
 
-In TSVQ design, the first step is to compute the mean of the data.  All the data is mapped to this mean.  The mean is then split off into $M_{TSVQ}$ centroids (code-vectors).  For a binary TSVQ, $M=2$.  The data is mapped to these centroids using the Nearest Neighbor rule.  Each of these $M_{TSVQ}$ parent centroids is then again split into $M_{TSVQ}$ child centroids.  Splitting can be achieved by multiple iterations of the K-means algorithm to get centroids that give low mean squared error.  At every stage of the tree, data belonging to a parent code-vector is mapped to the child code-vectors after the splitting occurs.  Notice that the important code-vectors are the last stage children code-vectors, i.e. the terminal leaves of the tree.  However, during run-time, the parent code-vectors, i.e., the non-terminal nodes of the tree have to be stored in order to be able to traverse the tree to get to the terminal code-vectors.  The process of mapping data at run-time to the terminal code-vectors is quite straightforward.  The data is first mapped to the mean, which is a trivial step, since all data starts at the top of the tree, i.e., the mean.  Each data-point is then mapped to one of the children nodes at the first stage using the Nearest Neighbor method.  This process continues till a terminal code-vector is reached which is then used as an approximation to the input data-point.
+\begin{enumerate} 
+\item \underline{Design-time}.  The goal here is to design the TSVQ codebook which comprises the terminal code-vectors, i.e., the leaf nodes, in the TSVQ tree.  The first step is to compute the mean of the training data.  The mean is then split off into $M_{TSVQ}$ child centroids (code-vectors).  The training data is then mapped to these child centroids using the nearest neighbor rule.  Each of these $M_{TSVQ}$ child centroids are then again split into $M_{TSVQ}$ centroids and the process continues until terminal code-vectors are obtained.  
 
-For the binary TSVQ, storage requirements are double the storage requirements for an equivalent ESVQ.  However, the run-time savings decrease logarithmically.  For instance, a codebook size of $K=256$ requires 256 matches for ESVQ but only 8 matches for a binary TSVQ.  
+\item \underline{Run-time}.  During run-time, the encoding process involves mapping a test vector to the nearest centroid at each level of the tree.  The index of the terminal code-vector is used to decode the test vector if no successive approximation is required.  Note that in this case,  only the terminal code-vectors need to be stored at the decoder.  However, if successive approximation behavior is desired, then the entire tree needs to be stored and the stage map is used to successively approximate the input vector~\cite{1991_BOOK_VQ_GershoGray}.
+\end{enumerate}
 
-%----------------------------------
-\subsection{RVQ}
-%----------------------------------
-Residual Vector Quantizers were introduced by Juang et al. \cite{1982_CNF_SpeechRVQ_JuangGray}.  The RVQ structure is shown in Figure \ref{fig:RVQ_block_diagram}.  Initially a crude quantization of the input vector is carried out using a small codebook.  Then a second stage quantizer operates on the error of the first quantizer.  A third quantizer may be used to quantize the second error vector, and so on.  In other words, RVQs are realized as a sequence of small ESVQs.  Each stage operates on the error vector or \emph{residual} of the preceding ESVQ \cite{1991_CNF_DesignPerformanceRVQ_Frost}.  This direct sum structure coupled with a sequential search procedure enables the RVQ to have linear rather than exponential complexity, both in computations and in memory.  Two alternate graphical representations of this direct sum structure are given in Figure~\ref{fig:RVQ_sigma_tree}.
-
-\begin{figure}				
-	\includegraphics[width=1\textwidth]{thesis/RVQ_blockDiagram.pdf}
-	\caption{RVQ: block diagram}
-	\label{fig:RVQ_block_diagram}
-\end{figure}
-
-An RVQ is different from a traditional VQ in the sense that it partitions the input space $\mathbb{R}^D$ into $M$ cells.  The residual space, also in $\mathbb{R}^D$, is then partitioned again into $M$ cells.  This process is repeated $P$ times.  The advantage of this approach is that in obtaining $M^P$ partitions, we need to run our partitioning algorithm $P$ times and generate $M$ partitions at each stage.  In traditional VQ, the partitioning algorithm would run once but have to create $M^P$ partitions.  For the binary case (two code-vectors per stage, $M=2$) and a total of 8 stages ($P$=8), RVQ only requires 16 searches.  In $ESVQ$, this would require 256.  The exponential complexity is reduced to linear complexity.  In general, structurally constrained quantizers cannot provide performance as good as ESVQ.  However, since they are able to more efficiently implement codes, larger and larger vector sizes can be used, and if carefully designed, can achieve better performance that ESVQ for a given computational cost~\cite{1996_JNL_AdvancesRVQ_Barnes}.
-
-								\begin{figure}[ht]
+								\begin{figure}[t]
 								\centering	
-								\subfigure[]{
-								\includegraphics[width=0.65\textwidth]{thesis/RVQ_graphicalReconstruction.pdf}}
-								\subfigure[]{\includegraphics[width=0.65\textwidth]{thesis/RVQ_trellis.pdf}}
-								\caption{RVQ $\sigma$-tree, $P$=3, $M=2$, two alternate representations} 
+								\includegraphics[width=0.65\textwidth]{thesis/RVQ_trellis.pdf}
+								\caption{RVQ $\sigma$-tree, 3 stages, 2 code-vectors per stage, i.e., $P$=3, $M=2$.  This is a 3x2 $\sigma$-tree.} 
 								\label{fig:RVQ_sigma_tree}				
 								\end{figure}
 
 
-
-\subsubsection{Encoder}
-%----------------------------
-A vector quantizer with a direct sum codebook,
-
-\begin{itemize}
-\item is the source coding dual of a $\sigma$-tree structure \cite{1993_sigmaTrees_Barnes}, and
-\item its design is the covering design problem
-\end{itemize}
-
-Since the dual of the covering problem is the packing problem \cite{BOOK_spheres_Conway}, it is shown in \cite{1993_sigmaTrees_Barnes} that $\sigma$-tree structures exist that provide good packing.  The design of RVQ direct sum codebooks is therefore studied in the context of $\sigma$-trees.
-
-The set $\mathcal{S}$ of $K$ leaf nodes of a $T$-level $M$-ary $\sigma$-tree is the set of $M^T$ direct sums of $T$ vectors in $\mathbb{R}^D$, one vector per level $t$ being picked from a \emph{constituent set} $G_t = \{m_{t,m} \in \mathbb{R}^D \ | m=1, 2, \ldots M\}$ \cite{2002_JNL_SigmaTrees_Barnes},
+								\begin{figure}[t]	
+								\centering			
+								\subfigure[Encoder.]{\includegraphics[width=1.1\textwidth]{thesis/RVQ_encoder_blockDiagram.pdf}}
+								\subfigure[Decoder.]{\includegraphics[width=0.8\textwidth]{thesis/RVQ_decoder_blockDiagram.pdf}}
+								\caption{RVQ encoding and decoding.}
+								\label{fig:RVQ_encoding_decoding}
+								\end{figure}
+%----------------------------------
+\subsection{RVQ}
+%----------------------------------
+Residual Vector Quantizers were introduced by Juang et al.~\cite{1982_CNF_SpeechRVQ_JuangGray} in 1982.  As with ESVQ and TSVQ, the K-means, or GLA, objective function to be minimized for RVQ for the discrete case can be written as,
 
 \begin{equation}
-\mathcal{S} = \{\hat{y}^{(k)} \in \mathbb{R}^D \ | \ \hat{y}_k = \sum\limits_{t=1}^T m_t^{(k)}, k=1, 2, \ldots, K=M^T\}
-\end{equation}
-
-An example 3-level binary $\sigma$ tree is given in Figure~\ref{fig:RVQ_sigma_tree}.  The RVQ encoder can be designed in two major phases which are explained below and illustrated in Figure~\ref{fig:RVQ_encoder_flowDiagram}. 
- 
-
-
- 
-
-\begin{figure}[ht]
-\centering
-\includegraphics[height=0.6\textheight]{thesis/RVQ_encoder_flowDiagram.pdf}
-\caption{Encoder flow diagram, generating codebooks $\Phi$}
-\label{fig:RVQ_encoder_flowDiagram}
-\end{figure}
-
-
-\begin{enumerate}
-\item \underline{Generating the $\sigma$ tree}.  The first design step is to generate the RVQ $\sigma$-tree by repeated application of the K-means algorithm to every stage in the following manner:  
-\begin{enumerate}
-\item \underline{First stage}. As in the K-means algorithm, standard practice is to generate several arbitrary partitionings and to retain the partition that results in least error as given by Equation~\ref{Eq:computingClusterCentroids}.  The objective function for the discrete case is,
-
-\begin{equation}
-\label{Eq:KmeansError}
 e = \KmeansError
+\label{eqn:RVQ_Kmeans_1}
 \end{equation}
 
-The means of this partitioned data constitute the first stage codevectors.  In effect, this step generates $S$ stage codevectors, where typically, $S << K$.  For instance, if $K=16$ clusters are desired in ESVQ, RVQ can attain that many clusters with say $T=4$ stages and $S=2$ codevectors per stage.  Notice that in this equation, it is implicit that the partitions are known.  The outer summation that sums over the $K$ clusters is what makes this an NP hard problem, otherwise this would be a standard least squares problem.  Once the partitions are fixed, this can be solved as a standard least squares problem by setting the derivatives equal to 0.  
+Notice that in this equation, it is implicit that the partitions, i.e., Voronoi regions, are known.  Computing both optimal partitions and optimal centroids is an NP hard problem.  However, once the partitions are known, computing the optimal centroids is a convex least squares problem and can be solved by setting the derivative of the objective function with respect to the required code-vector equal to 0.  As in the continuous case mentioned earlier, the optimal code-vectors are the centroids of the Vornoi regions.  
 
-\begin{align}
-\frac{\partial{e}}{\partial{y_k}} &= 0\notag\\
-\KmeansInnerSum 2 \KmeansInner &= 0\notag\\
-\KmeansInnerSum x_i - \KmeansSum y_k &= 0\notag\\
-\KmeansInnerSum x_i - N_k y_k &= 0\notag\\
-y_k &= \frac{\KmeansInnerSum x_i}{N_k}
-\label{Eq:computingClusterCentroids}
-\end{align}
-
-In the equation above, $y_k$ is the cluster centroid for the $k$-th partition $\mathcal{K}_k$.  Once the $K$ cluster centroids have been computed, the data is repartitioned.  In other words, data points are mapped to the nearest new cluster centroids.  The cluster centroids are recomputed using Equation~\ref{Eq:computingClusterCentroids}.  This process of partitioning followed by centroid computation followed by repartitioning followed by centroid computation is repeated till the centroids converge.
-
-\item \underline{Generating residual stages}.  In the step above, stage codevectors are subtracted from the data points that map to them.  This step generates a new set of data points, the first stage \emph{residual} data points.  The data at the output of stage $t$ is called the $t$-th residual data.  This causes each cluster in the first stage to be centered around the origin and also causes each data point to move closer to the origin.  These residual data points are now input into the K-means algorithm which generates a new set of partitions and new cluster centroids.  Using the same procedure discussed earlier, second stage residuals are generated and input to the third stage.  This process is repeated till the desired number of stages.  This Markovian style design process generates the initial RVQ $\sigma$-tree trellis.  
-\end{enumerate}
-\item \underline{Applying the CAC condition}.  The above step generates cluster centroids that are locally optimal at every stage.  Morever, the design of each stage depends on the previous or causal stage designs but does not depend on subsequent or anti-casual stage designs.   This can lead to a propagation of reconstruction error.  No optimality claims can be made regarding this design process.  An attempt to address this is a joint design strategy, also known as the Causal Anti-causal (CAC) condition.  This is explained next.
-\end{enumerate}
-
-\begin{figure}
-\center
-\includegraphics[width=0.5\textwidth]{thesis/RVQ_CAC_toyExample2_2x2.pdf}
-\caption{2x2 RVQ example}
-\label{fig:Figure1}
-\end{figure}
-
-
-To understand CAC, it is beneficial to first introduce some notation:
-
-\begin{itemize}
-\item \emph{Path}.  A finite directed path through the RVQ $\sigma$-tree has as its vertices one stage codevector from every stage.  For $T$ stages and $S$ codevectors per stage, there are a total of $K = S^T$ possible paths.
-\item \emph{Stage codevector}.  A stage codevector $m_{t, s}$ is the $s$-th codevector at the $t$-th stage.  An alternate notation used is $m^{(k)}_t$ which denotes the stage codevector at the $t$-th stage for the $k$-th path.
-\item \emph{Optimal reconstruction}.  There are $K=S^T$ possible paths through the RVQ $\sigma$-tree.  Each data point $x_i$ propagates through the $\sigma$-tree on one of these $K$ paths.  If $x_i \mapsto \mathcal{K}_k$, then for optimal reconstruction, the following condition must hold true,
-
-\begin{equation*}
-\RVQunit = 0, \ \ \forall x_i \mapsto \mathcal{K}_k, \ \ i =1, 2, \ldots N\\
-\end{equation*}
-
-where $m^{(k)}_t$ is the stage codevector at the $t$-th stage of the $k$-th path through the $\sigma$-tree.  The above condition shows that
-
-\begin{itemize} 
-\item There are at most $K=S^T$ distinct data points that can result in 0 reconstruction error, irrespective of the dimensionality $D$ of the data. 
-\item The non-Markovian reconstruction function produces a Direct Sum Successive Approximation (DSSA) of the input.
-\end{itemize}\item \emph{Equivalent codevector}.  For every path through the RVQ $\sigma$-tree, we have an equivalent codevector $\hat{y}^{(k)}$ given by,
-\begin{equation}
-\hat{y}^{(k)} = \RVQequivalentCodevector, \ \ \ k=\{1, 2, \ldots, K\}
-\end{equation}
-In general, the $K$ equivalent codevectors and the accompanying $K$ partitions will approximate the $K$ cluster centroids and $K$ partitions produced by ESVQ.  The equivalent codevector can also be written as,
-\begin{equation}
-\label{Eq:RVQequivalentCodevectorBroken}
-\hat{y}^{(k)} = \RVQequivalentCodevectorBroken
-\end{equation}
-\item \emph{RVQ objective function}.  The ESVQ objective function in Equation~\ref{Eq:KmeansError} can now be re-written in terms of the equivalent codevectors as 
-\begin{equation}
-e = \RVQerror
-\end{equation}
-\end{itemize}
-
-Substituting for the equivalent codevector from Equation~\ref{Eq:RVQequivalentCodevectorBroken} gives
+For RVQ, the $k$-th equivalent code-vector is a direct sum of $P$ stage code-vectors, 
 
 \begin{equation}
-e=\KmeansSum{\bigg[\RVQmultipleKmeans\bigg]}^2, \ \ \tau=\{1, 2, \ldots T\}
-\label{Eq:RVQmultipleKmeans}
+y_k = \mu_1^{(k)} + \mu_2^{(k)} + \ldots + \mu_P^{(k)}
 \end{equation}
 
-This equation states that for RVQ, the original objective function can be written as a series of coupled K-means equations, one equation per stage.    
+Substituting this notation in Equation~\ref{eqn:RVQ_Kmeans_1} and grouping all stage code-vectors except for the stage code-vector at the $\rho$-th stage gives us a series of equivalent equations, one equation per stage,
  
 \begin{align}
-e&= \KmeansSum{\bigg[\RVQmultipleKmeansone\bigg]}^2, \ \ \tau=1\notag\\
-&= \KmeansSum{\bigg[\RVQmultipleKmeanstwo\bigg]}^2, \ \ \tau=2\notag\\
+e&= \KmeansSum{\bigg[\RVQmultipleKmeansone\bigg]}^2, \ \ \rho=1\notag\\
+&= \KmeansSum{\bigg[\RVQmultipleKmeanstwo\bigg]}^2, \ \ \rho=2\notag\\
 &\ \ \ \  \ \ \ \vdots\notag\\
-&=\KmeansSum{\bigg[\RVQmultipleKmeansT\bigg]}^2, \ \ \tau=T
+&=\KmeansSum{\bigg[\RVQmultipleKmeansT\bigg]}^2, \ \ \rho=P
+\label{eqn:RVQ_Kmeans_2}
 \end{align}
 
-Equation~\ref{Eq:RVQmultipleKmeans} can now be regrouped as,
+
+Equation~\ref{eqn:RVQ_Kmeans_2} can be regrouped and written in compact notation as,
 
 \begin{align}
-\label{Eq:RVQmeans}
-e&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \tau=\{1, 2, \ldots T\}\notag\\
-&={\RVQerroralternate}, \ \ \tau=\{1, 2, \ldots T\}
+e&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, \ldots P\}\notag\\
+&={\RVQerroralternate}, \ \ \rho=\{1, 2, \ldots P\}
+\label{eqn:RVQ_Kmeans_3}
 \end{align}
 
-where $g_i$ is the \emph{graft residual} and is formed using the following steps,
+where $g_i$ is the \emph{graft residual}~\cite{1993_JNL_RVQDSC_Barnes}.   As can be seen in Equation~\ref{eqn:RVQ_Kmeans_3}, the graft residual $g_i$ for a data-point $x_i$ is formed by subtracting from $x_i$, all stage codevectors that are used to reconstruct $x_i$ except the stage codevector at the $\rho$-th stage.  In this sense, $g_i$ is a causal anti-causal (CAC) residual~\cite{1993_JNL_RVQDSC_Barnes}.  The code-vectors at the $\rho$-th stage are computed using the K-means objective function for that particular stage.  The implication of this step is that the RVQ objective function is now a coupled K-means objective function where the design of each stage code-vector depends on stage code-vectors from all other stages, and not just prior stages, hence the name causal anti-causal.    A challenge in this coupled K-means setup is that computing the centroids for one stage changes the centroids for all other stages.  
 
-\begin{itemize}
-\item \emph{List all reconstruction stage codevectors in path}.  For a data point $x_i$, list all stage codevectors that are used to reconstruct it
-\item \emph{Find graft residual at stage $\tau$}.  Subtract all stage codevectors in above step from $x_i$ except the stage codevector at the $\tau$-th stage  
- \end{itemize}
+An RVQ is different from a traditional VQ in the sense that it partitions the input space $\mathbb{R}^D$ into $M$ cells.  The residual space, also in $\mathbb{R}^D$, is then partitioned again into $M$ cells.  This process is repeated $P$ times.  The advantage of this approach is that in obtaining $M^P$ partitions, we need to run our partitioning algorithm $P$ times and generate $M$ partitions at each stage.  In traditional VQ, the partitioning algorithm would run once but have to create $M^P$ partitions.  For the binary case (two code-vectors per stage, $M=2$) and a total of 8 stages ($P$=8), RVQ only requires 16 searches.  In $ESVQ$, this would require 256.  The exponential complexity is reduced to linear complexity.  In general, structurally constrained quantizers cannot provide performance as good as ESVQ.  However, since they are able to more efficiently implement codes, larger and larger vector sizes can be used, and if carefully designed, can achieve better performance that ESVQ for a given computational cost~\cite{1996_JNL_AdvancesRVQ_Barnes}.
 
-Equation~\ref{Eq:RVQmeans} is now quite clearly a K-means objective function for the $\tau$-th stage.  Here, $m_{\tau}^{(k)}$ is a single codevector at the $\tau$-th stage even though it has a superscript $k$ which tends to indicate that it might correspond to several codevectors.  The superscript $k$ refers to the fact that there are $K$ possible paths, but for a particular $g_i$, we choose the $m_{\tau}^{(k)}$ that lies in the reconstruction path of the corresponding $x_i$.  We can therefore rewrite Equation~\ref{Eq:RVQmeans} as,
+Below, we give one method of designing an RVQ codebook.  Refer to~\cite{1991_CNF_DesignPerformanceRVQ_Frost,1992_JNL_RVQ_Barnes,1992_CNF_ImageCodingRVQ_Kossentini,1993_sigmaTrees_Barnes,1993_JNL_RVQDSC_Barnes,1995_JNL_OptimalityRVQ_Kossentini,1996_CNF_VQclassification_Barnes,1996_JNL_AdvancesRVQ_Barnes,2002_JNL_SigmaTrees_Barnes,2004_CNF_DSSAdataMining_Barnes,2007_JNL_Katrina_Barnes,2007_JNL_IDDM_Barnes} for details on other methods as well as a discussion on sequential and joint optimality.  
 
-\begin{equation}
-e = \RVQOuterSum\RVQInnerSum\RVQinneralternatealternate
-\end{equation} 
+\begin{enumerate} 
+\item \underline{Design-time}.  The following steps are taken:
+\begin{enumerate}
+\item \underline{Generating the $\sigma$-tree}.  The K-means algorithm is used to design first stage code-vectors.  This is a standard application of the K-means algorithm as in ESVQ or in TSVQ.  First stage code-vectors are then subtracted from the data points that map to them to generate a set of residual data points.  The K-means algorithm is run on these residual data points and a set of second stage code-vectors is obtained.  This process is repeated till the desired number of $P$ stages.
 
-Now, to compute a particular stage codevector $m_{\tau, s}$, we use the standard GLA algorithm as in Equation~\ref{Eq:computingClusterCentroids} to get
-
-\begin{equation}
-m_{\tau, s} = \frac{\RVQInnerSum g_i}{N_{g_i \mapsto m_{\tau, s}}}
-\label{Eq:finalCAC}
-\end{equation}
-
-\begin{figure}[ht]
-\centering
-\includegraphics[height=0.6\textheight]{thesis/RVQ_explorer_flowDiagram.pdf}
-\caption{Decoder flow diagram}
-\label{fig:RVQ_decoderFlowDiagram}
-\end{figure}
+								\begin{figure}[t]
+								\centering
+								\includegraphics[height=0.6\textheight]{thesis/RVQ_encoder_flowDiagram.pdf}
+								\caption{RVQ, design-time.}
+								\label{fig:RVQ_design_time}
+								\end{figure}
 
 
-Equation~\ref{Eq:finalCAC} can now be used to compute the $S$ stage codevectors at the $\tau$-th stage.  $N_{g_i \mapsto m_{\tau, s}}$ is the number of graft residuals $g_i$ whose corresponding data points $x_i$ contain $m_{\tau, s}$ in their reconstruction path.  Recall that in ordinary K-means, computation of the centroids is followed by a repartitioning which is followed by a centroid computation and so on.  This process is repeated till convergence.  However, in this case of coupled K-means, two issues arise:
-
-\begin{itemize}
-\item repartitioning affects all stages.  
-\item Moreover, recomputing the centroids for one stage changes the graft residuals for all other stages, since each graft residual depends on $S-1$ stage codevectors.  
-\end{itemize}
-
-Since RVQ update strategies are not the focus of this research, the reader is referred to  \cite{1996_JNL_AdvancesRVQ_Barnes} for more details.  The result of these steps is an RVQ codebook with $K$ codevectors,
-
-\begin{equation}
-\mathcal{M} = \{\hat{y}_1, \hat{y}_2, \ldots, \hat{y}_K\}
-\end{equation}
-
-Figure~\ref{fig:Figure1} shows a simple example of a 2x2 RVQ with 4 input data points.  The error is given by
+\item \underline{Applying the CAC condition}.  The above step generates cluster centroids that are locally optimal at every stage.  Morever, the design of each stage depends on the previous or causal stage designs but does not depend on subsequent or anti-casual stage designs.   This can lead to a propagation of reconstruction error.  However, as mentioned earlier, we would like to compute stage code-vectors using not just causal residuals, but causal and anti-causal residuals.  For this, Equation~\ref{eqn:RVQ_Kmeans_3} is repeatedly applied to all stages as shown in Figure~\ref{fig:RVQ_design_time}.
+\end{enumerate}
 
 
+								\begin{figure}[h!]
+								\centering
+								\includegraphics[height=0.8\textheight]{thesis/RVQ_explorer_flowDiagram.pdf}
+								\caption{RVQ, run-time.}
+								\label{fig:RVQ_run_time}
+								\end{figure}
 
-\begin{equation}
-\begin{array}{lllll}
-e &=& \KmeansError \\
-&=& {(x_1 - a - c)}^2 + {(x_2- a - d)}^2 + {(x_3 - b - c)}^2 + {(x_4 - b - d)}^2\\
-&=& {e_1}^2 + {e_2}^2 + {e_3}^2 + {e_4}^2
-\end{array}
-\end{equation}
+\item \underline{Run-time}.  The RVQ run-time process is shown in Figure~\ref{fig:RVQ_run_time}.  At the first stage, the stage codevector with the least $L_2$ norm error is picked.  This codevector is subtracted from the input signal to form a first stage residual signal.  This signal is fed as input to the second stage where again the best second stage codevector in the $L_2$ norm sense is picked.  The residual from this stage is fed as input to the third stage.  This process is repeated for all $P$ stages.  The final residual output from the $P$-th stage is the error signal.  The reconstructed output signal is a sum of the selected stage code-vectors at every stage.  The computational complexity of this process is linear in the number of data-points, i.e., $O(N)$.  
 
-Applying the CAC condition to optimize stage 1, we get the following equations by grouping all input data points with stage codevectors that do not belong to stage 1,
-
-\begin{equation}
-\begin{array}{lllll}
-e &=& {((x_1 - c) - a)}^2 + {((x_2- d) - a)}^2 + {((x_3 - c) - b)}^2 + {((x_4 - d) - b)}^2
-\end{array}
-\label{Eqn:2x2RVQ_stage1}
-\end{equation}
-
-And similarly, to optimize stage 2, we get,
-
-\begin{equation}
-\begin{array}{lllll}
-e &=& {((x_1 - a) - c)}^2 + {((x_2- a) - d)}^2 + {((x_3 - b) - c)}^2 + {((x_4 - b) - d)}^2
-\end{array}
-\label{Eqn:2x2RVQ_stage2}
-\end{equation}
-
-which leads to the optimal stage codevectors,
-
-\begin{equation}
-\begin{array}{lllll}
-a = \frac{(x_1 - c) + (x_2 - d)}{2}\\
-b = \frac{(x_3 - c) + (x_4 - d)}{2}\\
-c = \frac{(x_1 - a) + (x_3 - b)}{2}\\
-d = \frac{(x_2 - a) + (x_4 - b)}{2}\\
-\end{array}
-\end{equation}
+%Initially a crude quantization of the input vector is carried out using the first stage codebook.  Then a second stage quantizer operates on the error of the first quantizer.  A third quantizer may be used to quantize the second stage error vector, and so on.  In other words, RVQ runs as a sequence of small ESVQs.  Each stage operates on the error vector or \emph{residual} of the preceding ESVQ~\cite{1991_CNF_DesignPerformanceRVQ_Frost}.  
 
 
-\subsubsection{Decoder}
-%----------------------------
-The decoder has a DSSA (direct sum successive approximation) structure.  In other words, at the first stage, the best first stage codevector in the $L_2$ norm sense is picked.  This codevector is subtracted from the input signal to form a first stage residual signal.  This signal is fed as input to the second stage where again the best second stage codevector in the $L_2$ norm sense is picked.  The residual from this stage is fed as input to the third stage.  This process is repeated for all $T$ stages.  The final residual output from the $T$-th stage is the error signal.  The reconstructed output signal is a sum of the best codevectors at every stage.  This process is shown in detail in Figure~\ref{fig:RVQ_decoderFlowDiagram}.  In this diagram, the reconstructed signal is first initialized to the zero vector.  At every stage, the SNR of the reconstructed signal is computed.  The process of decoding is stopped when either the maximum number of stages have been achieved or if the SNR does not increase at any stage.  In other words, a monotonic SNR increase condition is imposed.  The computational complexity of this decoding process is $O(N)$.  
+\end{enumerate} 
 
+
+%\end{Body}
+%%##############################################################################################################
+%\begin{EndMatter}
+%\references 				%generates the bibliography page
+%\end{EndMatter}
+%\end{document}
+%%##############################################################################################################
+%
+
+
+
+
+
+
+
+
+
+
+%\begin{align}
+%\frac{\partial{e}}{\partial{y_k}} &= 0\notag\\
+%\KmeansInnerSum 2 \KmeansInner &= 0\notag\\
+%\KmeansInnerSum x_i - \KmeansSum y_k &= 0\notag\\
+%\KmeansInnerSum x_i - N_k y_k &= 0\notag\\
+%y_k &= \frac{\KmeansInnerSum x_i}{N_k}
+%\label{Eq:computingClusterCentroids}
+%\end{align}
+
+
+%Now, to compute a particular stage codevector $m_{\rho, s}$, we use the standard GLA algorithm as in Equation~\ref{Eq:computingClusterCentroids} to get
+%
+%\begin{equation}
+%m_{\rho, s} = \frac{\RVQInnerSum g_i}{N_{g_i \mapsto m_{\rho, s}}}
+%\label{Eq:finalCAC}
+%\end{equation}
+
+
+
+
+%Equation~\ref{Eq:finalCAC} can now be used to compute the $M$ stage codevectors at the $\rho$-th stage.  $N_{g_i \mapsto m_{\rho, s}}$ is the number of graft residuals $g_i$ whose corresponding data points $x_i$ contain $m_{\rho, s}$ in their reconstruction path.  Recall that in ordinary K-means, computation of the centroids is followed by a repartitioning which is followed by a centroid computation and so on.  This process is repeated till convergence.  
+
+
+%First we introduce some terminology specific to RVQ codebook design.
+
+%\begin{itemize}
+%\item \emph{Path}.  A finite directed path through the RVQ $\sigma$-tree has as its vertices one stage codevector from every stage.  For $P$ stages and $M$ code-vectors per stage, there are a total of $K = M^P$ possible paths.
+%%\item \emph{Stage code-vector}.  A stage codevector $\mu_{p,m}$ is the $M$-th codevector at the $P$-th stage.  An alternate notation used is $m^{(k)}_t$ which denotes the stage codevector at the $P$-th stage for the $k$-th path.
+%\item \emph{Optimal reconstruction}.  Each data point $x_i$ propagates through the $\sigma$-tree on one of $K$ paths.  If $x_i \mapsto \mathcal{K}_k$, then for optimal reconstruction, the following condition must hold true,
+%
+%\begin{equation*}
+%\RVQunit = 0, \ \ \forall x_i \mapsto \mathcal{K}_k, \ \ i =1, 2, \ldots N\\
+%\end{equation*}
+
+%where $m^{(k)}_t$ is the stage codevector at the $P$-th stage of the $k$-th path through the $\sigma$-tree.  The above condition shows that
+%
+%\begin{itemize} 
+%\item There are at most $K=S^T$ distinct data points that can result in 0 reconstruction error, irrespective of the dimensionality $D$ of the data. 
+%\item The non-Markovian reconstruction function produces a Direct Sum Successive Approximation (DSSA) of the input.
+%\end{itemize}\item \emph{Equivalent codevector}.  For every path through the RVQ $\sigma$-tree, we have an equivalent codevector $\hat{y}^{(k)}$ given by,
+%\begin{equation}
+%\hat{y}^{(k)} = \RVQequivalentCodevector, \ \ \ k=\{1, 2, \ldots, K\}
+%\end{equation}
+
+%In general, the $K$ equivalent codevectors and the accompanying $K$ partitions will approximate the $K$ cluster centroids and $K$ partitions produced by ESVQ.  The equivalent codevector can also be written as,
+%
+%\begin{equation}
+%\label{Eq:RVQequivalentCodevectorBroken}
+%\hat{y}^{(k)} = \RVQequivalentCodevectorBroken
+%\end{equation}
+%
+%\item \emph{RVQ objective function}.  The ESVQ objective function in Equation~\ref{Eq:KmeansError} can now be re-written in terms of the equivalent codevectors as 
+%
+%\begin{equation}
+%e = \RVQerror
+%\end{equation}
+
+%
+%Substituting for the equivalent codevector from Equation~\ref{Eq:RVQequivalentCodevectorBroken} gives
+%
+%\begin{equation}
+%e=\KmeansSum{\bigg[\RVQmultipleKmeans\bigg]}^2, \ \ \rho=\{1, 2, \ldots T\}
+%\label{Eq:RVQmultipleKmeans}
+%\end{equation}
+
+
+%Since RVQ update strategies are not the focus of this research, the reader is referred to  \cite{1996_JNL_AdvancesRVQ_Barnes} for more details.  The result of these steps is an RVQ codebook with $K$ codevectors,
+%
+%\begin{equation}
+%\mathcal{M} = \{\hat{y}_1, \hat{y}_2, \ldots, \hat{y}_K\}
+%\end{equation}
+
+%								\begin{figure}[t]
+%								\centering	
+%								\includegraphics[width=0.65\textwidth]{thesis/RVQ_graphicalReconstruction.pdf}
+%								\caption{RVQ $\sigma$-tree, $P$=3, $M=2$, two alternate representations} 
+%								\label{fig:RVQ_reconstruction}				
+%								\end{figure}
+
+
+
+%A vector quantizer with a direct sum codebook,
+%
+%\begin{itemize}
+%\item is the source coding dual of a $\sigma$-tree structure \cite{1993_sigmaTrees_Barnes}, and
+%\item its design is the covering design problem
+%\end{itemize}
+%
+%Since the dual of the covering problem is the packing problem \cite{BOOK_spheres_Conway}, it is shown in \cite{1993_sigmaTrees_Barnes} that $\sigma$-tree structures exist that provide good packing.  The design of RVQ direct sum codebooks is therefore studied in the context of $\sigma$-trees.
+
+%\begin{equation}
+%\mathcal{S} = \{\hat{y}^{(k)} \in \mathbb{R}^D \ | \ \hat{y}_k = \sum\limits_{t=1}^T m_t^{(k)}, k=1, 2, \ldots, K=M^T\}
+%\end{equation}
+
+%An example 3-level binary $\sigma$ tree is given in Figure~\ref{fig:RVQ_sigma_tree}.  
+
+								
+%								\begin{figure}
+%								\center
+%								\includegraphics[width=0.5\textwidth]{thesis/RVQ_CAC_toyExample2_2x2.pdf}
+%								\caption{2x2 RVQ example}
+%								\label{fig:Figure1}
+%								\end{figure}
+
+
+%Figure~\ref{fig:Figure1} shows a simple example of a 2x2 RVQ with 4 input data points.  The error is given by
+%
+%\begin{equation}
+%\begin{array}{lllll}
+%e &=& \KmeansError \\
+%&=& {(x_1 - a - c)}^2 + {(x_2- a - d)}^2 + {(x_3 - b - c)}^2 + {(x_4 - b - d)}^2\\
+%&=& {e_1}^2 + {e_2}^2 + {e_3}^2 + {e_4}^2
+%\end{array}
+%\end{equation}
+%
+%Applying the CAC condition to optimize stage 1, we get the following equations by grouping all input data points with stage codevectors that do not belong to stage 1,
+%
+%\begin{equation}
+%\begin{array}{lllll}
+%e &=& {((x_1 - c) - a)}^2 + {((x_2- d) - a)}^2 + {((x_3 - c) - b)}^2 + {((x_4 - d) - b)}^2
+%\end{array}
+%\label{Eqn:2x2RVQ_stage1}
+%\end{equation}
+%
+%And similarly, to optimize stage 2, we get,
+%
+%\begin{equation}
+%\begin{array}{lllll}
+%e &=& {((x_1 - a) - c)}^2 + {((x_2- a) - d)}^2 + {((x_3 - b) - c)}^2 + {((x_4 - b) - d)}^2
+%\end{array}
+%\label{Eqn:2x2RVQ_stage2}
+%\end{equation}
+%
+%which leads to the optimal stage codevectors,
+%
+%\begin{equation}
+%\begin{array}{lllll}
+%a = \frac{(x_1 - c) + (x_2 - d)}{2}\\
+%b = \frac{(x_3 - c) + (x_4 - d)}{2}\\
+%c = \frac{(x_1 - a) + (x_3 - b)}{2}\\
+%d = \frac{(x_2 - a) + (x_4 - b)}{2}\\
+%\end{array}
+%\end{equation}
+%
 
 %i took this and copied to RVQ_comparisonWithESVQ_TSVQ.svg
 %\begin{table}[t]
@@ -415,9 +453,6 @@ The decoder has a DSSA (direct sum successive approximation) structure.  In othe
 %\label{tab:comparison_ESVQ_TSVQ_RVQ}
 %\end{table}
 
-
-
-
 %\mbox{testing method 1} &&& \mbox{maximize log likelihood}\\
 %c^*_b&=& \mbox{arg}\max\limits_c & \log p(\mathcal{C}_c | \mathbf{Y})\\
 %&=& \mbox{arg}\max\limits_c & \log p(\mathbf{Y} | \mathcal{C}_c)\\
@@ -440,18 +475,12 @@ The decoder has a DSSA (direct sum successive approximation) structure.  In othe
 %\end{equation}
 
 %$
-%\mbox{- for an RVQ with $T$ stages, an SoC is a $T$-tuple containing reconstruction indeces for a block of source symbols} \\
+%\mbox{- for an RVQ with $P$ stages, an SoC is a $P$-tuple containing reconstruction indeces for a block of source symbols} \\
 %\mbox{- during training, each reconstruction index takes on values from the alphabet } \Phi_{trg}\\
 %\mbox{- during testing, each reconstruction index takes on values from the alphabet } \Phi_{tst}\\
-%\mbox{- for stage $t$, i.e. the $t$-th component of the SoC descriptor, the reconstruction index is the stage-codevector index $m$ for that stage as long as $m \leq M$} \\
-%\mbox{- during testing, $M+1$ and $M+2$ are used as fillers to make sure that the test SoC has length $T$}
+%\mbox{- for stage $P$, i.e. the $P$-th component of the SoC descriptor, the reconstruction index is the stage-codevector index $m$ for that stage as long as $m \leq M$} \\
+%\mbox{- during testing, $M+1$ and $M+2$ are used as fillers to make sure that the test SoC has length $P$}
 %$
-
-
-
-
-
-
 
 %Another question here concerns the optimality of RVQ.  An RVQ is said to be \emph{jointly optimal} if a local or global minimum value of the average distortion $\mathcal{D}(E,D) = E[m(X_1, D(E(X_1)))]$ is achieved.  Here, $E$ is the encoder, $D$ is the decoder, $m(.,.)$ is a distortion metric, and $E[.]$ is the expectation operator.  The necessary condition for joint decoder optimality is that the code-vectors $y_p(i)$  of the $p$-th stage must satisfy the following condition:
 %
@@ -465,12 +494,3 @@ The decoder has a DSSA (direct sum successive approximation) structure.  In othe
 
 
 %Channel coding is sphere packing and rate distortion coding is sphere covering \cite{2006_BOOK_InformationTheory_Cover}. 
-
-\end{Body}
-%##############################################################################################################
-\begin{EndMatter}
-\references 				%generates the bibliography page
-\end{EndMatter}
-\end{document}
-%##############################################################################################################
-

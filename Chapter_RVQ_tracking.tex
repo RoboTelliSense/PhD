@@ -1,10 +1,10 @@
-%\include{Chapter0_begin}
-%\include{inkscapeLatex}
-%\begin{document}
-%\begin{FrontMatter}
-%\contents %generates the TOC, LOF, and LOT
-%\end{FrontMatter}
-%\begin{Body}
+\include{Chapter0_begin}
+\include{inkscapeLatex}
+\begin{document}
+\begin{FrontMatter}
+\contents %generates the TOC, LOF, and LOT
+\end{FrontMatter}
+\begin{Body}
 
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 \chapter{Visual Tracking Using RVQ}
@@ -13,18 +13,16 @@
 %===================
 \section{Introduction}
 %===================
-A learning-based tracking framework builds the target model while it tracks, thus avoiding the costly step of building target models prior to tracking.  This has been demonstrated successfully for PCA based tracking using publicly-available challenging datasets.  In this work, we use Residual Vector Quantization in a learning-based tracking framework using the same datasets and show that RVQ performs as well as PCA.  Moreover, we introduce 2 new distance metrics for relative weighting of target candidates allowing RVQ to be used as a generative model, similar to the way probabilistic PCA converts PCA into a generative framework.
-
 In this chapter, we combine information on target representations presented in Chapter~\ref{chap_Introduction}, theoretical knowledge of RVQ presented in Chaper~\ref{chap_RVQ} and an overview of tracking methods presented in Chapter~\ref{chap_TRK} into a visual tracking framework using RVQ and compare it with visual tracking using PCA and TSVQ.  
 
-This work is significant since PCA is commonly used in the Pattern Recognition, Machine Learning and Computer Vision communities.  On the other hand, TSVQ is commonly used in the Signal Processing and data compression communities.  RVQ with more than two stages has not received much attention due to the difficulty in producing stable designs.  In this work, we bring together these different approaches and compare them in a combined visual tracking framework.  The result is a robust tracker for all 3 methods, but with RVQ performing the best according to certain defined criteria to be described later in the chapter.
+This work is significant since PCA is commonly used in the Pattern Recognition, Machine Learning and Computer Vision communities.  On the other hand, TSVQ is commonly used in the Signal Processing and data compression communities.  RVQ with more than two stages has not received much attention due to the difficulty in producing stable designs.  In this work, we bring together these different approaches and compare them in a combined visual tracking framework.  The result is a robust tracker for all 3 methods, but with RVQ performing the best according to certain defined criteria to be described later in the chapter.  Moreover, an advantage of our approach is a learning-based tracking framework that builds the target model while it tracks, thus avoiding the costly step of building target models prior to tracking~\cite{2004_JNL_SVMtracking_Avidan}.
 
 The approach we take in this work builds on work presented by Ross et. al. in 2008 \cite{2008_JNL_subspaceTRK_Ross}.  As a matter of fact, we have used part of their software with their permission~\cite{2008_SFT_Ross}.  In this spirit, we make our software available for download to the community at \url{https://github.com/SalmanAslamPhD/PhD}.  
 
 %----------------------------------------
 \subsection{Challenges}
 %----------------------------------------
-Visual tracking is the task of estimating a target's state over time.  In many cases, the state represents target position and a bounding box around it, or its contour.  However, this is a challenging problem due to the following reasons:
+Visual tracking is the task of estimating a target's state over time.  In many cases, the state represents target position and a bounding box, or its contour.  This is a challenging problem due to the following reasons:
 
 \begin{enumerate}
 \item \underline{Appearance and contour changes}:  A target of interest can undergo arbitrary change in appearance and contour.  This can be due to the following reasons:
@@ -34,14 +32,22 @@ Visual tracking is the task of estimating a target's state over time.  In many c
 \item \underline{Self occlusion}:  The target can be occluded or unoccluded by itself or its surroundings.
 \item \underline{Blur}:  Motion blur can severely distort a target's appearance.
 \item \underline{Structured noise}:  The target can change appearance in an orderly manner, for instance, a target of interest can put on or remove glasses or a hat.
-\item \underline{Random noise}:  Random noise is added to the light rays coming from a target of interest.  On the hardware side, this is caused by atmospheric effects in the optical channel.  On the receiving side, it is caused by sensor noise, electronics noise and EMI (electromagnetic interference).  On the software side, it can be caused by compression artefacts.
-\item \underline{Non-symmetic BRDF}:  The light reflected off of an object in all directions is modeled by the BRDF (Bidirectional Radiation Transfer Function).  Since this function may not be symmetric in all directions, the amount of light reflecting off of the object may be different in different directions.  Multiple cameras viewing the same point will receive different intensity levels.
+\item \underline{Random noise}:  This can be a result of atmospheric effects in the optical channel, sensor noise, electronics noise and EMI (electromagnetic interference).  On the software side, it can be caused by compression artefacts.
+\item \underline{Non-symmetic BRDF}:  The light reflected off of an object in all directions is modeled by the bidirectional radiation transfer function (BRDF)\footnote{BRDF is given by $\rho(\theta_o, \phi_o, \theta_i, \phi_i)=\frac{L_o(x, \theta_o, \phi_o)}{L_i(x, \theta_i, \phi_i)\cos\theta_i d\omega}$, where the angles ($\theta_o, \phi_o$) define the outgoing light direction and angles ($\theta_i, \phi_i$) define the incoming light direction.  A surface illuminated by radiance $L_i(x, \theta_i, \phi_i)$ coming in from a differential region of solid angle $d\omega$ at angles $\theta_i, \phi_i$ receives irradiance $L_i(x, \theta_i, \phi_i)\cos\theta_i d\omega$.  Irradiance is measured in $\mathrm{W/m^2}$, while the solid angle $d\omega$ is measured in steridians, sr.  The unit of BRDF is therefore $\mathrm{sr^{-1}}$~\cite{2002_BOOK_CV_Forsyth}.}.  Since this function may not be symmetric in all directions, the amount of light reflecting off of the object may be different in different directions.  Multiple cameras viewing the same point will receive different intensity levels.
 \end{enumerate}
 \item \underline{Lighting change}: Lighting changes can be caused by turning on or off lights in indoor environments, or moving into or out of shades in outdoor environments.
 \item \underline{Sudden motion (target or camera)}:  Besides motion blur, sudden motion by the target or camera can cause the target to exit the window in which the tracker looks for the target leading to incorrect track assignment.
 \end{enumerate}
 
-For a tracker that tries to learn the appearance and/or contour model of the target, inclusion of background pixels is an added problem that can cause drift.  If none of the problems mentioned above were present, a simple template matching stategy would suffice for robust tracking.  This has complexity $O(nm)$, where $n$ is the number of pixels in the target and $m$ is the number of locations at which the target is searched.  For most practical situations, this does not represent significant computational load and can be done in real time even while tracking several targets.
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=0.45\textwidth]{thesis/PRML_PCA_problem.pdf}
+								\caption{In $\mathbb{R}^2$, a reduced eigenspace means that eigenvector $u_2$ is discarded.  Vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ have the same projection error on eigenvector $u_1$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ of the training data $\mathbf{x}_i$.}
+								\label{fig:PRML_PCA_problem}
+								\end{figure}
+
+For a tracker that tries to learn the appearance and/or contour model of the target, inclusion of background pixels is an added problem that can cause drift.  If none of the problems mentioned above were present, a simple template matching stategy would suffice for robust tracking.  This has complexity $O(nm)$, where $n$ is the number of pixels in the target and $m$ is the number of locations at which the target is searched.  For most practical situations, this does not represent significant computational load and can be done in real time even while tracking several targets.  However, in the presence of several forms of noise, which is generally the case in tracking applications, more sophisticated methods are required.  In this chapter, we focus on methods involving compact representations of the target appearance model, i.e., PCA, TSVQ and RVQ.
+
 								\begin{figure}[t]
 								\centering
 								\includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
@@ -53,20 +59,20 @@ For a tracker that tries to learn the appearance and/or contour model of the tar
 %----------------------------------------
 \subsection{Brief history}
 %----------------------------------------
-In this work, we try to address single-target visual-tracking under several of the challenges mentioned above while trying to learn the appearance model of the target.  Seminal work here can be traced back to 1996 when Black and Jepson experimented with tracking using an eigenspace representation of the target appearance model~\cite{1998_JNL_Eigentracking_Black}.  The next notable work is by Moghaddam and Pentland, 1997~\cite{1997_JNL_EigenTRK_Moghaddam} in which they try to address a fundamental limitation of PCA.  In PCA, 2 vectors, $\mathbf{x}_1$ and $\mathbf{x}_2$ can have the same distance to a reduced eigenspace even if they have different distance to the mean of the data.  This is shown for a trivial case in $\mathbb{R}^2$ in Figure~\ref{fig:PRML_PCA_problem} where $\mathbf{e}_1=\mathbf{e}_2=\mathbf{e}$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ than $\mathbf{x}_2$.  They formulate the problem using DIFS (distance in feature space) and DFFS (distance from feature space) so that both projection error and distance to the mean of the data are used while trying to determine how well the subspace explains a new data-point.  The next breakthrough came with the work of Bishop and Tipping in 1999~\cite{1999_JNL_PPCA_Tipping} where they show that a probabilistic variation of PCA (PPCA) allows PCA to be used as a generative model.  The advantage in tracking is that this methodology allows an assignment of probabilities to new data-points.  This relative weighting can be used to determine best candidates.  All three works were combined into a tracking framework for the first time by Ross et. al. in 2008~\cite{2008_JNL_subspaceTRK_Ross}.  Moreover, they used incremental SVD to make their tracker run in real time.  
+In this work, we try to address single-target visual-tracking under several of the challenges mentioned above while trying to learn the appearance model of the target.  Seminal work here can be traced back to 1996 when Black and Jepson experimented with tracking using an eigenspace representation of the target appearance model~\cite{1998_JNL_Eigentracking_Black}.  The next notable work is by Moghaddam and Pentland, 1997~\cite{1997_JNL_EigenTRK_Moghaddam} in which they try to address a fundamental limitation of PCA.  In PCA, 2 vectors, $\mathbf{x}_1$ and $\mathbf{x}_2$ can have the same distance to a reduced eigenspace, i.e., projection error $\mathbf{e}_1$ and $\mathbf{e}_2$ respectively, even if they have different distance to the mean $\boldsymbol\mu$ of the data that was used to create the eigenspace.  This is shown for a trivial case in $\mathbb{R}^2$ in Figure~\ref{fig:PRML_PCA_problem} where $\mathbf{e}_1=\mathbf{e}_2=\mathbf{e}$ even though $\mathbf{x}_1$ is closer than $\mathbf{x}_2$ to the mean $\boldsymbol\mu$.  They formulate the problem using DIFS (distance in feature space) and DFFS (distance from feature space) so that both projection error and within-subspace distance to the mean of the data are used while trying to determine how well the subspace explains a new data-point.  The next breakthrough came with the work of Bishop and Tipping in 1999~\cite{1999_JNL_PPCA_Tipping} where they show that a probabilistic variation of PCA, probabilistic PCA (PPCA), allows PCA to be used as a generative model.  The advantage in tracking is that this methodology allows an assignment of probabilities to new data-points and therefore allows relative weighting of track candidates.  Ideas from these three works were combined into a tracking framework by Ross et. al. in 2008~\cite{2008_JNL_subspaceTRK_Ross}.  Moreover, they used incremental SVD to make their tracker run in real time.  
 
-Here, we extend this work using RVQ instead of PCA and introducing two new distance based measures for relative weighting of tracking candidates.  The result is a generative framework for RVQ that leads to robust tracking.  Whereas RVQ was first introduced by Juang and Gray in 1982~\cite{1982_CNF_SpeechRVQ_JuangGray}, subsequently greatly extended by the seminal work of Barnes~\cite{1991_CNF_DesignPerformanceRVQ_Frost,1992_JNL_RVQ_Barnes,1992_CNF_ImageCodingRVQ_Kossentini,1993_sigmaTrees_Barnes,1993_JNL_RVQDSC_Barnes,1995_JNL_OptimalityRVQ_Kossentini,1996_CNF_VQclassification_Barnes,1996_JNL_AdvancesRVQ_Barnes,2002_JNL_SigmaTrees_Barnes,2004_CNF_DSSAdataMining_Barnes,2007_JNL_Katrina_Barnes,2007_JNL_IDDM_Barnes} and widely known in the signal processing and information theory communities, relatively little attention has been given to this work in the computer vision and machine learning fields where a much simpler version, K-means, has been widely used.  Our goal is to remedy this situation and introduce RVQ in the context of an important and challenging problem, visual target tracking.
+Here, we extend the work in Ross et. al.~\cite{2008_JNL_subspaceTRK_Ross} using RVQ in a similar tracking framework and comparing it with PCA and TSVQ based tracking.  We also introduce 4 methods for relative weighting of track candidates for RVQ.  The result is a generative framework for RVQ that leads to robust tracking.  Whereas RVQ was first introduced by Juang and Gray in 1982~\cite{1982_CNF_SpeechRVQ_JuangGray} and subsequently greatly extended by the seminal work of Barnes~\cite{1991_CNF_DesignPerformanceRVQ_Frost,1992_JNL_RVQ_Barnes,1992_CNF_ImageCodingRVQ_Kossentini,1993_sigmaTrees_Barnes,1993_JNL_RVQDSC_Barnes,1995_JNL_OptimalityRVQ_Kossentini,1996_CNF_VQclassification_Barnes,1996_JNL_AdvancesRVQ_Barnes,2002_JNL_SigmaTrees_Barnes,2004_CNF_DSSAdataMining_Barnes,2007_JNL_Katrina_Barnes,2007_JNL_IDDM_Barnes}, this algorithm has received little attention outside the signal processing and data compression communities.  In this work our goal is to introduce RVQ in the computer vision and machine learning fields where a much simpler version, K-means, has been widely used~\cite{2008_JNL_PRML_Wu}.  We present RVQ in the context of an important and challenging problem, that of visual target tracking.
 
 								\begin{figure}[t]
 								\centering
 	\includegraphics[width=1.0\textwidth]{thesis/PhD_experimentalOverview.pdf}
-								\caption{Overview.}
+								\caption{Tracking framework, overview.}
 								\label{fig:overview}
 								\end{figure}
 
 								\begin{figure}[t]
 								\centering
-								\includegraphics[width=1\textwidth]{thesis/PhD_experimentalTemporalOverview.pdf}
+								\includegraphics[width=1.1\textwidth]{thesis/PhD_experimentalTemporalOverview.pdf}
 								\caption{Temporal overview.}
 								\label{fig:temporal_overview}
 								\end{figure}
@@ -76,13 +82,13 @@ Here, we extend this work using RVQ instead of PCA and introducing two new dista
 Our tracking framework is based on five components as shown in Figure~\ref{fig:overview} .  Each of these components is described in detail in later sections.  Here, we present an overview of each:
 
 \begin{enumerate}
-\item \underline{ Target appearance}.  Target appearance is modeled using a learned eigenspace, a trained $\sigma$-tree codebook or a binary balanced-tree TSVQ codebook for PCA, RVQ and TSVQ respectively.  Refer to Chapter~\ref{chap_RVQ} for a description of RVQ  $\sigma$-trees.
+\item \underline{ Target appearance}.  Target appearance is modeled using a learned eigenspace, a trained $\sigma$-tree codebook or a binary balanced-tree codebook for PCA, RVQ and TSVQ respectively.  Refer to Chapter~\ref{chap_RVQ} for a description of RVQ.
 
 \item \underline{Target representation}.  Several target representation methods are described in Chapter~\ref{chap_Introduction}.  We use the bounding quadrilateral method.  This quad encloses the pixels of a target of interest.  It is also allowed to warp affinely from frame to frame to minimize inclusion of background pixels as the target changes shape, size and orientation.
 
 \item \underline{Target motion}.  In order to keep our work general, we do not assume any deterministic target motion model.  The target is expected to move according to a Wiener process, i.e., brownian motion.  This allows for robust tracking under arbitrary target and camera motion.
 
-\item \underline{Target observations}.  For PCA, the likelihood of a target observation is assumed proportional to the DFFS (distance to feature space).  DFFS is explained in Chapter~\ref{chap_TRK}.  For RVQ, the likelihood of a target observation is assumed to be proportional to the Euclidean distance to the closest equivalent code-vector.  Equivalent code-vectors are explained in Chapter~\ref{chap_RVQ}.  For TSVQ, the likelihood of a target observation is assumed to be proportional to the Euclidean distance to the closest terminal code-vector.
+\item \underline{Target observations}.  For PCA, the likelihood of a target observation is assumed proportional to the DFFS (distance to feature space).  For RVQ, the likelihood of a target observation is assumed to be proportional to the Euclidean distance to the closest equivalent code-vector, as explained in Chapter~\ref{chap_RVQ}, or partially summed code-vector as explained later in this chapter.  We use 2 methods, maxP and RofE, to compute the equivalent code-vector, and 2 methods, nulE and monR to compute the partially summed code-vector.  These methods are also explained later in this chapter. For TSVQ, the likelihood of a target observation is assumed to be proportional to the Euclidean distance to the closest terminal code-vector.
 
 \item \underline{Target state inference}.  In tracking, the correspondence of observations in the current frame to existing targets in the previous frame is generally an ill-posed problem~\cite{2005_CNF_TRK_Yang}.  We use the particle filter to deal with this problem by propagating multiple hypotheses from frame to frame~\cite{1998_JNL_Condensation_IsardBlake}.
 
@@ -91,16 +97,16 @@ Our tracking framework is based on five components as shown in Figure~\ref{fig:o
 %----------------------------------------------
 \subsection{Overview of temporal process}
 %----------------------------------------------
-In the previous section, we described the five major components of our visual tracking framework.  In this section, we describe the temporal relationship between these components.  Refer to Figure~\ref{fig:temporal_overview} for a graphical overview.  A brief description of this temporal process is given below while detailed explanation is given in later sections in this chapter.
+In the previous section, we described the five major components of our visual tracking framework.  In this section, we describe the temporal relationship between these components.  Refer to Figure~\ref{fig:temporal_overview} for a graphical overview of this relationship.  A brief description of this temporal process is given below while detailed explanation is given in later sections in this chapter.
 
 \begin{enumerate}
-\item \underline{Manual initialization}.  The target is identified in the first frame by manually drawing a bounding box around it.
+\item \underline{Manual initialization}.  The target is identified in the first frame by manually drawing a bounding box around it and identifying certain feature points on it.  For instance, for the Dudek sequence in which a face is tracked, feature points include the outer edges of the eye and points on the lips.  For the car11 sequence in which a car is tracked from the read, feature points include the tail lights.
 
 %The box is allowed to be affinely deformed as discussed later in this chapter.  Template matching then allows a certain number of frames to be designated as initial training frames.  Currently this value is set to $N_B=5$. 
 
-\item \underline{Bootstrapping}.  A particle filter is run for $B$ frames.  The likelihood of observations is assumed to be proportional to the Euclidean distance from the manually segmented target in the first frame.  The $B$ MAP estimates, i.e. $B$ snippets, one from each of the $B$ frames is stored.
+\item \underline{Bootstrapping}.  A particle filter is run for $B$ frames.  The likelihood of observations is computed using the Euclidean distance from the manually segmented target in the first frame.  The $B$ MAP window-chip estimates, also called \emph{image snippets}~\cite{2007_JNL_IDDM_Barnes}, one from each of the $B$ frames are stored.
 
-  \item \underline{Run-time}.  During this step, the learning process and the particle run alternately.  For PCA, the learning process includes updating its eigenbasis with the MAP estimates of the particle filter.  For RVQ and TSVQ, the learning process includes updating their codebooks. 
+\item \underline{Run-time}.  During this step, the learning process and the particle run alternately.  For PCA, the learning process includes updating its eigenbasis with the MAP estimates of the particle filter.  For RVQ and TSVQ, the learning process includes updating their codebooks. 
 \end{enumerate}
 
 
@@ -115,125 +121,111 @@ The integration of the above-mentioned 5 components in the temporal process just
 \item  \underline{Target motion related}: Arbitrary camera and target motion.
 \end{itemize}
 
-We now discuss each component in our tracking framework (Figure~\ref{fig:overview}).  
+We now discuss each of the 5 components of our tracking framework (see Figure~\ref{fig:overview}).  
 
 %============================
 \section{Model 1: Appearance model}
 \label{Sec:RVQ_trk_appearance_model}
 %============================
-\begin{figure}[t]
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Uniform.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Gaussian.pdf}}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_GaussMarkov.pdf}}\hspace{0.55in}
-\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Dudek.pdf}}
-\caption{PCA, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
-\label{fig:PCA_results}
-\end{figure}
+								\begin{figure}[t]
+								\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Uniform.pdf}}
+								\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Gaussian.pdf}}
+								\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_GaussMarkov.pdf}}\hspace{0.55in}
+								\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Dudek.pdf}}
+								\caption{PCA, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
+								\label{fig:PCA_results}
+								\end{figure}
+								
+								\begin{figure}[t]
+								\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]
+								{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Uniform.pdf}}
+								\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]
+								{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Gaussian.pdf}}
+								\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]
+								{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_GaussMarkov.pdf}}\hspace{0.55in}
+								\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]
+								{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Dudek.pdf}}
+								\caption{RVQp, varying number of stages $P$ with number of code-vectors per stage held constant at $M=4$. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. A single test example in $\mathbb{R}^{1089}$ was reconstructed.}
+								\label{fig:RVQ_results_varyingP}
+								\end{figure}
+								
+								\begin{figure}[t]
+								\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]
+								{\includegraphics[width=0.45\textwidth]{thesis/RVQ_uniform.pdf}}
+								\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]
+								{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Gaussian.pdf}}
+								\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]
+								{\includegraphics[width=0.45\textwidth]{thesis/RVQ_GaussMarkov.pdf}}\hspace{0.55in}
+								\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]
+								{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Dudek.pdf}}
+								\caption{RVQm, experiments, varying number of code-vectors per stage $M$ with number of stages held constant at $P=8$. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
+								\label{fig:RVQ_results_varyingM}
+								\end{figure}
+								
+								\begin{figure}[t]
+								\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Uniform.pdf}}
+								\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Gaussian.pdf}}
+								\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_GaussMarkov.pdf}}\hspace{0.55in}
+								\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Dudek.pdf}}
+								\caption{TSVQ, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
+								\label{fig:TSVQ_results}
+								\end{figure}
 
-\begin{figure}[t]
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Uniform.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Gaussian.pdf}}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_GaussMarkov.pdf}}\hspace{0.55in}
-\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]
-{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Dudek.pdf}}
-\caption{RVQp, varying number of stages $P$ with number of code-vectors per stage held constant at $M=4$. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. A single test example in $\mathbb{R}^{1089}$ was reconstructed.}
-\label{fig:RVQ_results_varyingP}
-\end{figure}
-
-\begin{figure}[t]
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis/RVQ_uniform.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Gaussian.pdf}}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]
-{\includegraphics[width=0.45\textwidth]{thesis/RVQ_GaussMarkov.pdf}}\hspace{0.55in}
-\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]
-{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Dudek.pdf}}
-\caption{RVQm, experiments, varying number of code-vectors per stage $M$ with number of stages held constant at $P=8$. 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
-\label{fig:RVQ_results_varyingM}
-\end{figure}
-
-\begin{figure}[t]
-\subfigure[Uniform random variable $U\sim$ \texttt{[}0, 1\texttt{]} in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Uniform.pdf}}
-\subfigure[Gaussian random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Gaussian.pdf}}
-\subfigure[Gauss-Markov random variable $\mathcal{N}\sim$(0, 1) in $\mathbb{R}^{1089}$ with 0.9 correlation, 100 realizations.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_GaussMarkov.pdf}}\hspace{0.55in}
-\subfigure[Dudek sequence, 33x33 ($\mathbb{R}^{1089}$) face snippets were extracted from the first 100 images.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Dudek.pdf}}
-\caption{TSVQ, 100 training examples in $\mathbb{R}^{1089}$ were used for each of these experiments. Results were averaged over 10 cross-validation runs. For each run, 20\% of the data, i.e., 20 examples were randomly picked for testing while the remaining 80 examples were used for training.}
-\label{fig:TSVQ_results}
-\end{figure}
-
-Common appearance models include just the raw values of the pixel intensities~\cite{2000_CNF_TRK_Mallet, 1981_JNL_OpticalFlow_HornSchunck}, pixel intensity distributions~\cite{2002_JNL_MeanShiftFeatureSpaceAnalysis_Comaniciu, 1996_JNL_TRK_Zhu, 2002_JNL_TRK_Paragios, 2002_JNL_TRK_Elgammal}, templates\cite{1997_CNF_TRK_Fieguth}, active appearance models\cite{1998_CNF_ActiveModels_Edwards, 1995_JNL_ActiveModels_Cootes}, pixel intensity centroids~\cite{1997_CNF_TRK_Heisele} and subspace based methods~\cite{1997_JNL_EigenTRK_Moghaddam, 1998_JNL_Eigentracking_Black}.  
+Common appearance models include just the raw values of the pixel intensities~\cite{2000_CNF_TRK_Mallet, 1981_JNL_OpticalFlow_HornSchunck}, pixel intensity distributions~\cite{2002_JNL_MeanShiftFeatureSpaceAnalysis_Comaniciu, 1996_JNL_TRK_Zhu, 2002_JNL_TRK_Paragios, 2002_JNL_TRK_Elgammal}, templates\cite{1997_CNF_TRK_Fieguth}, active appearance models~\cite{1998_CNF_ActiveModels_Edwards, 1995_JNL_ActiveModels_Cootes}, pixel intensity centroids~\cite{1997_CNF_TRK_Heisele} and subspace based methods~\cite{1997_JNL_EigenTRK_Moghaddam, 1998_JNL_Eigentracking_Black}.  
 
 In order to understand appearance modeling, we conduct the following 4 experiments using PCA, RVQ and TSVQ to measure rms errors for target reconstruction:
 
 \begin{enumerate}
 \item PCA: varying number of eigenvectors, $Q$.
 \item RVQp: varying number of stages $P$ for RVQ while holding the number of code-vectors per stage constant at $M=4$.
-\item RVQm: varying number of code-vectors per stage for RVQ while holding the number of stages constant at $P=8$.
+\item RVQm: varying number of code-vectors per stage $M$ for RVQ while holding the number of stages constant at $P=8$.
 \item TSVQ: varying number of stages, $P$.
 \end{enumerate}
 
 It is hoped that investigating reconstruction errors will aid in understanding the behavior of these various algorithms when used to model target appearance in tracking applications.
 
-We use four datasets in $\mathbb{R}^{1089}$: (a) Uniform random variable, (c) Gaussian random variable, (c) Gauss-Markov random variable, and (d) images from the Dudek sequence. The reason for using $\mathbb{R}^{1089}$ is that our targets for all our tracking datasets are warped to a canonical size of 33-pixel height and 33-pixel width (33x33=1089). In all cases, we take 100 examples and split them up using an 80/20 rule, i.e. 80 training examples and 20 test examples. 10 cross-validation runs are used. In each cross-validation run, the training and test examples are picked randomly in the 80/20 ratio.
+We use four datasets in $\mathbb{R}^{1089}$: (a) Uniform random variable, (b) Gaussian random variable, (c) Gauss-Markov random variable, and (d) images from the Dudek sequence. The reason for using $\mathbb{R}^{1089}$ is that our targets for all our tracking datasets are warped to a canonical size of 33-pixel height and 33-pixel width (33x33=1089). In all cases, we take 100 examples and split them up using an 80/20 rule, i.e. 80 training examples and 20 test examples. 10 cross-validation runs are used. In each cross-validation run, the training and test examples are picked randomly in the 80/20 ratio.
 
-Results for PCA, RVQp, RVQm and TSVQ are shown in Appendix~\ref{App:plots} as Figures~\ref{fig:PCA_results}, \ref{fig:RVQ_results_varyingP} \ref{fig:RVQ_results_varyingM} and \ref{fig:TSVQ_results} respectively.
-We make the following observations from the results:
+Results for PCA, RVQp, RVQm and TSVQ are shown in Figures~\ref{fig:PCA_results}, \ref{fig:RVQ_results_varyingP} \ref{fig:RVQ_results_varyingM} and \ref{fig:TSVQ_results} respectively.  We make the following observations from these figures:
+
 \begin{enumerate}
 \item \textbf{Training error}. Training error is always less than test error, as expected. Also, for each of the algorithms individually, we observe,
 \begin{itemize}
-\item \underline{PCA}: Monotonic decrease with increasing $Q$. Training error becomes 0 when 80 eigenvectors are used, since there are 80 training examples.
-\item \underline{RVQp}: Monotonic decrease with increasing $P$.
-\item \underline{RVQm}: Can increase or decrease with increasing $M$, but slight variation.
-\item \underline{TSVQ}: Monotonic decrease with increasing $P$.
+\item \underline{PCA}: Monotonic decrease in rms reconstruction error with increasing $Q$. Training error becomes 0 when $Q=80$ since there are 80 training examples.
+\item \underline{RVQp}: Monotonic decrease in rms reconstruction error with increasing $P$.
+\item \underline{RVQm}: Monotonic decrease or approximately constant rms reconstruction error with increasing $M$.
+\item \underline{TSVQ}: Monotonic decrease in rms reconstruction error with increasing $P$.
 \end{itemize}
 \item \textbf{Test error}.
 \begin{itemize}
-\item \underline{Statistically independent data}: For the uniform and Gaussian random variables, test error for PCA and RVQp stays almost constant with increasing $Q$ and $P$ respectively. For RVQm and TSVQ, test error increases with increasing $P$. The reason is that PCA and RVQp use successive refinement when increasing $Q$ and $P$ respectively. Test error is therefore not expected to get better since it is not possible to better explain random data with increasing $Q$ and $P$.
-On the other hand, RVQm and TSVQ control generalization ability with increasing $Q$, as discussed in an earlier report on VC dimension. Therefore, when the number of code-vectors increases, they tend to explain the training data well and are unable to explain the test data. For both RVQm and TSVQ, notice that when training error falls off sharply, test error increases sharply. Also, when training error drop is gradual, so is test error increase rate. This confirms over-generalization behavior. Also, RVQ increase or decrease rates are more gradual than TSVQ. And finally, the over-generalization for both RVQm and TSVQ is less pronounced with uniform random data than with Gaussian random data since there is more uncertainty in the latter distribution.
-\item \underline{Statistically dependent data}: For the Gauss-Markov and Dudek cases, all 4 algorithms display decreasing test error with increasing $Q$ or $P$. The "knee" is visible in all cases.
+\item \underline{Statistically independent data}: For the uniform and Gaussian random variables, test error for PCA and RVQp stays almost constant with increasing $Q$ and $P$ respectively.  The reason is that PCA and RVQp use successive refinement when increasing $Q$ and $P$ respectively.  Test error is therefore not expected to get better since it is not possible to better explain random data with increasing $Q$ and $P$.
+
+For RVQm and TSVQ, test error increases with increasing $M$ and $P$ respectively.  For TSVQ, increasing $P$ controls its VC (Vapnik-Chervonenkis) dimension~\cite{1999_BOOK_PRML_Vapnik} and therefore its generalization ability~\cite{2003_JNL_PRML_Karacali}.  It appears that increasing $M$ in RVQm has a similar effect.  The reason is that with $P=1$, increasing $M$ in RVQ is equivalent to increasing $P$ in TSVQ.  Increasing $P$ in RVQ adds additional refinement to the equivalent code-vectors but $M$ controls the overall general placement of RVQ code-vectors in the decision space $\mathbb{R}^D$.  Therefore, in RVQ, it is $M$ more than $P$ that controls generalization ability.  Therefore, when $M$ in RVQm or $P$ in TSVQ increase, their generalization ability decreases , leading to better explanation of training data, but with less ability to explain the test data well. For both RVQm and TSVQ, notice that when training error falls off sharply, test error increases sharply. Also, when training error drop is gradual, so is test error increase rate. This confirms over-training behavior. Also, RVQ increase or decrease rates are more gradual than TSVQ.  The reason is that for RVQm, the number of equivalent code-vectors increase as $2^8, 3^8, 4^8, \ldots, 10^8$.  Even for small values of $M$, the number of equivalent code-vectors is already quite large.  For TSVQ, the terminal code-vectors increase as $2^1, 2^2, 2^3, \ldots, 2^8$ and therefore there is a rapid increase in the number of code-vectors from a very small value to a very large value.
+
+Finally, the rms reconstruction error is lower for uniform random data than for Gaussian random data.\footnote{It is may be tempting to explain this using an entropy argument.  The uniform distribution has the maximum entropy among all continuous distributions with finite support $[a,b]$ while the Gaussian distribution has maximum entropy among all distributions with infinite support~\cite{1982_JNL_MaxEntropy_Jaynes}.  However, due to the difference in support, it is difficult to compare entropies.} The reason is that the variance of the gaussian distribution is 1 while the variance of the uniform distribution with support $[0,1]$ is much lower at 1/12~\cite{1993_BOOK_RandomProcesses_Garcia}.
+\item \underline{Statistically dependent data}: For the Gauss-Markov and Dudek cases, all 4 algorithms display decreasing test error with increasing $Q$ or $P$. The leveling off of the test error, or the "knee-point"~\cite{2009_BOOK_PRML_Escolano}, is visible in all cases.
 \end{itemize}
 \end{enumerate}
-In general, the training and test errors for RVQ are less than TSVQ. This is due to the fact that RVQ has access to all data at every stage while designing codebooks, and can therefore better optimize stage code-vectors. In TSVQ, data is partitioned at every stage and can lead to data starvation.
-Training error of PCA is in general better than RVQ. This is expected since PCA can achieve perfect reconstruction when $Q$ comes close to the number of training examples $N$, $N<<D$. Test errors however are comparable.
-
-RVQ has 2 knobs, $P$ and $M$. In varying $P$, it acts like PCA in providing successive approximation. In varying $M$, it acts like TSVQ in changing its VC dimension, and therefore its generalization ability.
-Given this flexibility, it is expected that RVQ will perform well in tracking experiments.
+In these experiments, we see that training error of PCA is in general better than RVQ. This is expected since PCA can achieve perfect reconstruction when $Q$ comes close to the number of training examples $N$, $N<<D$.  Test errors however are comparable.  RVQ has 2 knobs, $P$ and $M$. In varying $P$, it acts like PCA in providing successive approximation. In varying $M$, it acts like TSVQ in changing its VC dimension, and therefore its generalization ability.  Given this flexibility, it is expected that RVQ will perform well in tracking experiments.
 
 %=======================		
 \section{Model 2: Observation model}
 %=======================
-An observation model $p(z_t|x_t)$ relates the state $x_t$ at time $t$ to the observation $z_t$ at time $t$.  Unfortunately, it is not possible to estimate it from the data and so reasonable assumptions must be made.  The observations are assumed to be independent of each other as well as of the dynamical process \cite{1998_JNL_Condensation_IsardBlake}. 
+An observation model $p(z_t|x_t)$ relates the state $x_t$ at time $t$ to the observation $z_t$ at time $t$.  Unfortunately, it is not possible to estimate the observation model from the data and so reasonable assumptions must be made.  The observations are assumed to be independent of each other as well as of the dynamical process \cite{1998_JNL_Condensation_IsardBlake}. 
 
-In this work, for PCA, the observation model assumes that the candidate window chips (snippets) in the image that can contain the target were generated from a subspace of the target $\mathbf{U}$ centered at $\mathbf{\mu}$.  For RVQ and TSVQ, the observation model assumes that the candidate snippets were generated from the RVQ and TSVQ codebooks respectively.  
+%In this work, for PCA, the observation model assumes that the candidate window chips (snippets) in the image that can contain the target were generated from a subspace of the target $\mathbf{U}$ centered at $\mathbf{\mu}$.  For RVQ and TSVQ, the observation model assumes that the candidate snippets were generated from the RVQ and TSVQ codebooks respectively.  
 
-								\begin{figure}
-								\centering
-								\includegraphics[width=0.45\textwidth]{thesis/PRML_PCA_problem.pdf}
-								\caption{In $\mathbb{R}^2$, a reduced eigenspace means that eigenvector $u_2$ is discarded.  Vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ have the same projection error on eigenvector $u_1$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ of the training data $\mathbf{x}_i$.}
-								\label{fig:PRML_PCA_problem}
-								\end{figure}
-		
-For PCA, it is assumed that an image $\mathbf{X}$ in $R^D$ is probabilistically generated from a subspace $\mathbf{U}$ spanned by earlier observed images.  The covariance matrix $\Sigma$ of the input training images can be written as follows,  
-
-\begin{equation}
-\Sigma = \mathbf{U}\mathbf{\Lambda} \mathbf{V}^T
-\end{equation}
-
-Here $\mathbf{\Lambda}$ is the matrix of eigenvalues.  The distribution is assumed to be Gaussian centered at $\mathbf{\mu}$.  The probability of an image being generated under this distribution is inversely proportional to its distance from $\mathbf{\mu}$.  This distance can be decomposed into two parts:
+For PCA, it is assumed that an image $\mathbf{x}$ in $\mathbb{R}^D$ is probabilistically generated from a subspace $\mathbf{U}$ spanned by earlier observed images.  The covariance matrix $\Sigma$ of the input training images can be written as $\Sigma = \mathbf{U}\mathbf{\Lambda} \mathbf{V}^T$.  Here $\mathbf{\Lambda}$ is the matrix of eigenvalues.  The distribution is assumed to be Gaussian centered at $\boldsymbol{\mu}$.  The probability of an image being generated under this distribution is inversely proportional to its distance from $\boldsymbol{\mu}$.  This distance can be decomposed into two parts:
 
 \begin{enumerate}
-\item DFFS (distance-from-feature-space):  In a partial KL expansion using $Q$ eigenvectors, the space spanned by these $Q$ eigenvectors is given by $\mathbf{F}$ and the signal residual $\epsilon^2$ is given by
+\item DFFS (distance-from-feature-space):  In a partial KL expansion using $Q$ eigenvectors, the space spanned by these $Q$ eigenvectors is given by $\mathbf{F}$\footnote{We use $\mathbf{U}$ interchangeably with $\mathbf{F}$ here.  Whereas the notation $\mathbf{U}$ is more widely used to represent a PCA eigenspace, we use $\mathbf{F}$ to remain compatible with Figure~\ref{fig:1997_JNL_DIFSDFFS_Moghaddam} taken from ~\cite{1997_JNL_EigenTRK_Moghaddam}.} and the signal residual $\epsilon^2$ is given by
 
 \begin{equation}
-\epsilon^2 = \Vert \tilde{\mathbf{X}} \Vert^2 - \sum\limits_{i=1}^M \mathbf{u}_i^2 = \sum\limits_{i=M+1}^D \mathbf{u}_i^2
+\epsilon^2 = \Vert \tilde{\mathbf{x}} \Vert^2 - \sum\limits_{i=1}^Q \mathbf{u}_i^2 = \sum\limits_{i=Q+1}^D \mathbf{u}_i^2
 \end{equation}
 
-where $\mathbf{u}_i$ are the eigenvectors of $\Sigma\Sigma^T$ and $\tilde{\mathbf{X}}$ is the mean removed input image.  This signal residual is referred to as DFFS.
-\item DIFS (distance-in-feature-space):  This is the component of $\mathbf{X}$ which lies in the feature space $\mathbf{F}$.  
+where $\tilde{\mathbf{x}}$ is the mean removed input image and $\mathbf{u}_i$ are the eigenvectors of the covariance matrix estimate, $\boldsymbol\Sigma=\tilde{\mathbf{x}}\tilde{\mathbf{x}}^T$  .  This signal residual is referred to as DFFS.
+\item DIFS (distance-in-feature-space):  This is the component of $\mathbf{x}$ which lies in the feature space $\mathbf{F}$.  
 \end{enumerate}
 
 DIFS and DFFS are illustrated graphically in Figure~\ref{fig:1997_JNL_DIFSDFFS_Moghaddam}.  In a gaussian distribution, the probability of a data point $\mathbf{x}$ in $\mathbb{R}^D$ depends on the Mahalanobis distance $d$.  The output of PCA, zero-centered $\mathbf{\tilde{y}}$ is decorrelated with variances along each dimension equal to the eigenvalues $\lambda_i$ of the covariance matrix $\boldsymbol\Sigma$,
@@ -270,20 +262,22 @@ This formulation, first presented in~\cite{1997_JNL_EigenTRK_Moghaddam} shows th
 
 %The candidate that gives least mean squared error is chosen as the most likely to find the terminal code-vector in the TSVQ tree that minimizes mean-squared error.  
 
-As mentioned earlier, VQ does not define a proper density in the observation space.  However, it is common to assign a probability measure to a new data point in proportion to the distance of the closest centroid~\cite{1999_JNL_Gaussian_roweis}
+As mentioned earlier, VQ, like PCA, does not define a proper density in the observation space~\cite{1999_JNL_Gaussian_roweis}.  However, it is common to assign a probability measure to a new data point in proportion to the distance of the closest centroid~\cite{1999_JNL_Gaussian_roweis},
 
 \begin{equation}
-p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\dr\big)}}
+p(\mathbf{x}_i|\boldsymbol\mu_k) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\dr\big)}}
 \end{equation}
 
-Here, $\boldsymbol\mu_k$ is closest centroid to $\mathbf{x}_i$, $Q_i$ is the number of stages required to decode $\mathbf{x}_i$, and $\lambda$ is a regularization parameter.  We use 4 different RVQ methods to compute which $\boldsymbol \mu_k$ $\mathbf{x}_i$ maps to,
+Here, $\boldsymbol\mu_k$ is the closest code-vector to test data-point to $\mathbf{x}_i$,  $P_{\textrm{max}}$ is the number of stages in the codebook, $P_i$ is the number of stages required to decode $\mathbf{x}_i$, and $\lambda$ is a regularization parameter.  We use 4 different RVQ methods to compute which $\boldsymbol \mu_k$ input data-point $\mathbf{x}_i$ maps to,
 
 \begin{enumerate}
 \item \underline{maxP}: In this method, RVQ decoding is carried out so that maximum stages $P$ are used.
 \item \underline{RofE}: In this method, realm of experience coding is used.  In other words, a test vector is decoded such that the decode path traversed belongs to the set of training decode paths.
-\item \underline{nulE}: In this method, null encoding is used.  Reconstruction rms error is checked at every stage.  If at any stage, rms error is not reduced, that stage is skipped until maximum stages are attained.
+\item \underline{nulE}: In this method, null encoding is used.  Reconstruction rms error is checked at every stage.  If at any stage, rms error is not reduced, that stage is skipped.
 \item \underline{monR}: In this method, monotonic rms error is a condition.  If this condition is not met, decoding stops.
 \end{enumerate}
+
+In our tracking framework, we use all 4 methods above and compare their performance. 
 
 %=======================		
 \section{Model 3: Representation model}
@@ -295,23 +289,14 @@ Here, $\boldsymbol\mu_k$ is closest centroid to $\mathbf{x}_i$, $Q_i$ is the num
 %\begin{itemize}
 %\item \underline{Perspective changes handled effectively with affine deformation}.  An affine transform in a tracking scenario can deal effectively with a large variety of target deformations, including some perspective effects.  We therefore choose the affine transform in favor of the less restrictive projective transform which can handle severe perspective effects.  A comparison of some 2D geometric transformations is given in Table~\ref{table:2Dtransformations}.
 %\end{itemize}		
-In this section, we discuss the representation model.  We refer back to Figure~\ref{fig:TRK_objectRepresentations} in the introductory chapter that shows different target representations.  
-
-								\begin{figure}[t]
-								\centering
-								\includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
-								\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
-								\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
-								\end{figure}
-
-In many situations, it is necessary to track a visual target that is undergoing deformations.  Several targets of interest fall in this category, particularly non-rigid targets such as humans.  Even rigid objects can undergo severe deformation in a matter of seconds as shown in Figure~\ref{Fig:PETS2001_deformation}.  
+In this section, we discuss the representation model.  See also Figure~\ref{fig:TRK_objectRepresentations} in the introductory chapter that shows different target representations.  In many situations, it is necessary to track a visual target that is undergoing deformations.  Several targets of interest fall in this category, particularly non-rigid targets such as humans.  Even rigid objects can undergo deformation in a matter of seconds as shown in Figure~\ref{Fig:PETS2001_deformation}.  
 
 
 								\begin{figure}
 								\centering
 								\subfigure[Frame 770.]{\includegraphics[width=0.45\textwidth]{thesis/PETS2001_00770.jpg}}
 								\subfigure[Frame 1770.]{\includegraphics[width=0.45\textwidth]{thesis/PETS2001_01770.jpg}}
-								\caption{Over time, even rigid objects can undergo severe deformations such as the car in these images from the PETS2001 dataset.}
+								\caption{Over time, even rigid objects can undergo deformations such as the car in these images from the PETS2001 dataset.}
 								\label{Fig:PETS2001_deformation}
 								\end{figure}
 
@@ -373,20 +358,10 @@ $t_x$ and $t_y$ are translations in the $x$ and $y$ directions respectively and 
 
 ${\color{blue}\mathbf{U}\mathbf{V}^t}$ is an orthogonal matrix since $({\color{blue}\mathbf{U}\mathbf{V}^t})^t =({\color{blue}\mathbf{U}\mathbf{V}^t})^{-1}$.  Therefore, without loss of generality, it can be written as a rotation matrix.  Of the possible 6 DOFs (degrees of freedom) of the affine transformation, the 4 DOFs in $\mathbf{A}$, i.e., ($a, b, c$, $d$) have been replaced with $(\theta, \lambda_1, \lambda_2, \phi)$.
 
-The affine matrix $\mathbf{A}$ can therefore be viewed as a succession of the following 4 steps:
+The affine matrix $\mathbf{A}$ can therefore be viewed as a succession of the following 4 steps: (a) Rotation by angle $\phi$, (b) scaling of $\lambda_1$ and $\lambda_2$ in the rotated $x$ and $y$ directions, (c) rotation by angle -$\phi$ which brings the scaled object back to its original orientation, and (d) rotation by angle $\theta$.  We now discuss how to convert between affine parameter representations.
 
 \begin{enumerate} 
-\item Rotation by angle $\phi$ 
-\item This rotation is followed by a scaling of $\lambda_1$ and $\lambda_2$ in the rotated $x$ and $y$ directions
-\item A rotation by angle -$\phi$ which brings the scaled object back to its original orientation
-\item A rotation by angle $\theta$
-\end{enumerate}
-
-\subsection{Converting $(a, b, c, d)$ to $(\theta, \lambda_1, \lambda_2, \phi)$}
-%-------------------------------------------------
-In several cases, the affine parameters are given in the form of $(a, b, c, d)$.  However, it is difficult to get a physical intuition when the parameterization is done in this form.  In such cases, converting to $(\theta, \lambda_1, \lambda_2, \phi)$ helps in getting an insight into how the object of interest is being deformed.  For this step, first compute the SVD decomposition $\mathbf{A}=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}$.  
-
-The first parameter, angle $\phi$, is computed as follows,
+\item \underline{Converting $(a, b, c, d)$ to $(\theta, \lambda_1, \lambda_2, \phi)$}.  In several cases, the affine parameters are given in the form of $(a, b, c, d)$.  However, it is difficult to get a physical intuition when the parameterization is done in this form.  In such cases, converting to $(\theta, \lambda_1, \lambda_2, \phi)$ helps in getting an insight into how the object of interest is being deformed.  Also, for the particle filter, it is more intuitive to specify expected variances for $(\theta, \lambda_1, \lambda_2, \phi)$ than for $(a, b, c, d)$.  The first step here is to compute the SVD decomposition $\mathbf{A}=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}$.  The first parameter, angle $\phi$, is computed as follows,
 
 %%%CAUTION: RECONCILE THIS WITH CODE%%%
 \begin{equation}
@@ -430,18 +405,13 @@ The fourth parameter, angle $\theta$, is computed as follows,
 \end{array}
 \end{equation}
 
-
 Therefore,
 
 \begin{equation}
 \boxed{\theta = \tan^{-1}\frac{u_{2,1}v_{1,1} + u_{2,2}v_{1,2}}{u_{1,1}v_{1,1} + u_{1,2}v_{1,2}}}
 \end{equation}
 
-The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_abcdxy_to_tllpxy}.
-
-\subsection{Converting  $(\theta, \lambda_1, \lambda_2, \phi)$ to $(a, b, c, d)$}
-%-------------------------------------------------
-In visual tracking, the initial target planar bounding region is more intuitively expressed in terms of $(\theta, \lambda_1, \lambda_2, \phi)$ than in terms of $(a, b, c, d)$.  However, the actual affine warp is more easily carried out using matrix multiplication for which we need $(a, b, c, d)$.  This can be done by multiplying out all the terms in Equation~\ref{Eq:AffineDecomposition} to get
+\item \underline{Converting  $(\theta, \lambda_1, \lambda_2, \phi)$ to $(a, b, c, d)$}.  In visual tracking, the initial target planar bounding region is more intuitively expressed in terms of $(\theta, \lambda_1, \lambda_2, \phi)$ than in terms of $(a, b, c, d)$.  However, the actual affine warp is more easily carried out using matrix multiplication for which we need $(a, b, c, d)$.  This can be done by multiplying out all the terms in Equation~\ref{Eq:AffineDecomposition} to get
 
 \begin{equation}
 \boxed{
@@ -454,24 +424,7 @@ d &= (\lambda_2)q + (\lambda_1) p
 \label{Eqn:tllpxy_to_abcdxy}
 \end{equation}
 
-								\begin{figure}
-								\centering
-								\fbox{
-								\includegraphics[width=0.75\textwidth]{thesis/GRAPHICS_2D_left_turn.pdf}
-								}
-								\caption{Turning clockwise (left turn) in $\mathbb{R}^2$.}
-								\label{fig:left_turn}
-								\end{figure}
-
-
-%\begin{equation}
-%\begin{array}{llll}
-%\mathbf{A} &= \left[\begin{array}{lll}a & b \\ c & d\\ \end{array}\right]\\
-%&=\bigMatrixTwo
-%\end{array}
-%\end{equation}
-
-where temporary variables $p, q, r, s$ are computed from angles $\theta$ and $\phi$ using,
+where temporary variables $p, q, r, s$ are computed from angles $\theta$ and $\phi$ using~\cite{2008_JNL_subspaceTRK_Ross},
 
 \begin{equation*}
 \begin{array}{llll}
@@ -487,8 +440,8 @@ r   &= \mathrm{ccs} + \mathrm{sss}\\
 s   &=  \mathrm{ccs} - \mathrm{scc}\\
 \end{array}
 \end{equation*}
+\end{enumerate}
 
-The code for this step is given in Listing~\ref{lst:UTIL_2D_affine_tllpxy_to_abcdxy}.
 
 								\begin{figure}[t]
 								\centering
@@ -811,7 +764,7 @@ For the Dudek and davidin300 sequences which consist of tracking a face, we look
 
 \begin{enumerate}
 \item \underline{Face reconstruction}.  It has been shown that 40 eigenfaces can be used to reconstruct a face with 3\% error~\cite{1987_JNL_Faces_Sirovich}.
-\item \underline{Face recognition}.  Face recognition performance levels off at about 25 principal components, or 45 principal components if the first 3 principal components are dropped~\cite{1997_JNL_EigenVsFisherFaces_Bel}.  The reason for dropping 3 principal components is that~\cite{1992_THE_GeoPhoto_Shashua} showed that for a fixed viewpoint, images of a Lambertian surface\footnote{A Lambertian surface, or informally a matte surface, is a surface that has constant BRDF (bidirectional reflectance distribution function) $\rho(\theta_o, \phi_o, \theta_i, \phi_i)=\frac{L_o(x, \theta_o, \phi_o)}{L_i(x, \theta_i, \phi_i)\cos\theta_i d\omega}$, where the angles ($\theta_o, \phi_o$) define the outgoing light direction and angles ($\theta_i, \phi_i$) define the incoming light direction.  A surface illuminated by radiance $L_i(x, \theta_i, \phi_i)$ coming in from a differential region of solid angle $d\omega$ at angles $\theta_i, \phi_i$ receives irradiance $L_i(x, \theta_i, \phi_i)\cos\theta_i d\omega$.  Irradiance is measured in $\mathrm{W/m^2}$, while the solid angle $d\omega$ is measured in steridians, sr.  The unit of BRDF is therefore $\mathrm{sr^{-1}}$~\cite{2002_BOOK_CV_Forsyth}.} under varying lighting conditions lie in a 3D linear subspace of the high-dimensional image space.
+\item \underline{Face recognition}.  Face recognition performance levels off at about 25 principal components, or 45 principal components if the first 3 principal components are dropped~\cite{1997_JNL_EigenVsFisherFaces_Bel}.  The reason for dropping 3 principal components is that~\cite{1992_THE_GeoPhoto_Shashua} showed that for a fixed viewpoint, images of a Lambertian surface\footnote{A Lambertian surface, or informally a matte surface, is a surface that has constant BRDF (bidirectional reflectance distribution function).  BRDF has been explained earlier.} under varying lighting conditions lie in a 3D linear subspace of the high-dimensional image space.
 \item \underline{Accounting for lighting changes in face recognition}.  As mentioned above, the first 3 principal components account for lighting changes in faces.  However, these components are unlikely to only account for lighting variation and removing them may result in loss of important information~\cite{1997_JNL_EigenVsFisherFaces_Bel}.
 \end{enumerate}
 
@@ -914,14 +867,14 @@ Finally, in Figure~\ref{fig:results_final_5_configs}, we plot tracking performan
 For the interested reader, the appendix contains detailed results for tracking errors for all 6 datasets, for all RVQ types (maxQ, RofE, nulE, monR), over several RVQ configurations (8x2, 8x4, 8x8, 8x12, 8x16).  Also, detailed graphical results for all 6 datasets, for all RVQ types, for the 8x4 configuration are also presented.
 
 
-%\end{Body}
-%%##############################################################################################################
-%\begin{EndMatter}
-%\references 				%generates the bibliography page
-%\end{EndMatter}
-%\end{document}
-%%##############################################################################################################
-%
+\end{Body}
+%##############################################################################################################
+\begin{EndMatter}
+\references 				%generates the bibliography page
+\end{EndMatter}
+\end{document}
+%##############################################################################################################
+
 
 
 

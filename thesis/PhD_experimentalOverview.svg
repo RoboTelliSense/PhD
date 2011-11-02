@@ -96,15 +96,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="300.91824"
+     inkscape:cx="205.91824"
      inkscape:cy="134.87007"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1108"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1600"
+     inkscape:window-height="825"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -120,7 +120,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -137,109 +137,109 @@
        x="44.163212"
        y="94.074593" />
     <rect
-       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:0.85336637;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4419-1"
-       width="472.20459"
-       height="104.07143"
+       width="326.92297"
+       height="109.46803"
        x="67.996033"
-       y="230.78459" />
+       y="236.78459" />
     <rect
-       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1.01473248;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1.24332011;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4419"
-       width="346.78571"
-       height="104.07143"
+       width="472.8804"
+       height="114.5788"
        x="67.996033"
-       y="111.03459" />
+       y="109.03459" />
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.14288"
-       y="184.61386"
+       y="263.8996"
        id="text3816"><tspan
          sodipodi:role="line"
          id="tspan3818"
          x="271.14288"
-         y="184.61386"
+         y="263.8996"
          style="font-size:12px">Bounding quadrilateral</tspan><tspan
          sodipodi:role="line"
          x="271.14288"
-         y="199.61386"
+         y="278.8996"
          id="tspan3820"
          style="font-size:12px">with affine deformation</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.01984"
-       y="260.4389"
+       y="320.1532"
        id="text3822"><tspan
          sodipodi:role="line"
          id="tspan3824"
          x="271.01984"
-         y="260.4389"
+         y="320.1532"
          style="font-size:12px">Brownian</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.01984"
-       y="294.56277"
+       y="184.56277"
        id="text3826"><tspan
          sodipodi:role="line"
          id="tspan3828"
          x="271.01984"
-         y="294.56277"
+         y="184.56277"
          style="font-size:12px">PCA: DFFS (distance to feature space)</tspan><tspan
          sodipodi:role="line"
          x="271.01984"
-         y="309.56277"
+         y="199.56277"
          id="tspan3830"
          style="font-size:12px">RVQ: 1NN (distance to nearest neighbor, i.e., centroid)</tspan><tspan
          sodipodi:role="line"
          x="271.01984"
-         y="324.56277"
+         y="214.56277"
          id="tspan3832"
          style="font-size:12px">TSVQ: 1NN (same as RVQ)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.01984"
-       y="125.69605"
+       y="123.69605"
        id="text3834"><tspan
          sodipodi:role="line"
          id="tspan3836"
          x="271.01984"
-         y="125.69605"
+         y="123.69605"
          style="font-size:12px">PCA: eigenspace</tspan><tspan
          sodipodi:role="line"
          x="271.01984"
-         y="140.69606"
+         y="138.69606"
          id="tspan3838"
          style="font-size:12px">RVQ: centroids</tspan><tspan
          sodipodi:role="line"
          x="271.01984"
-         y="155.69606"
+         y="153.69606"
          id="tspan3840"
          style="font-size:12px">TSVQ: centroids</tspan></text>
     <rect
-       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1.09312475;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4419-1-5"
-       width="273.37564"
-       height="68.361427"
-       x="67.996033"
-       y="350.21317" />
+       width="326.66187"
+       height="68.361542"
+       x="67.995972"
+       y="360.2131" />
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.01984"
-       y="387.08899"
+       y="397.08899"
        id="text3842"><tspan
          sodipodi:role="line"
          id="tspan3844"
          x="271.01984"
-         y="387.08899"
+         y="397.08899"
          style="font-size:12px">Particle filter</tspan></text>
     <g
        id="g4395"
-       transform="translate(0,0.22576085)">
+       transform="translate(0,79.51148)">
       <rect
          y="169.48883"
          x="77.781746"
@@ -257,7 +257,7 @@
            y="191.40764"
            x="81.518738"
            id="tspan2989"
-           sodipodi:role="line">2. Target representation</tspan></text>
+           sodipodi:role="line">3. Target representation</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886"
@@ -266,7 +266,7 @@
     </g>
     <g
        id="g4401"
-       transform="translate(0,17.250556)">
+       transform="translate(0,76.96484)">
       <rect
          y="220.78908"
          x="77.781746"
@@ -284,7 +284,7 @@
            y="244.20935"
            x="82.954285"
            id="tspan2989-8"
-           sodipodi:role="line">3. Target motion</tspan></text>
+           sodipodi:role="line">4. Target motion</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886-6"
@@ -293,7 +293,7 @@
     </g>
     <g
        id="g4407"
-       transform="translate(0,16.275382)">
+       transform="translate(0,-93.72462)">
       <rect
          y="272.08929"
          x="77.781746"
@@ -311,7 +311,7 @@
            y="295.49857"
            x="82.66864"
            id="tspan2989-9"
-           sodipodi:role="line">4. Target observations</tspan></text>
+           sodipodi:role="line">2. Target observations</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886-0"
@@ -320,7 +320,7 @@
     </g>
     <g
        id="g4389"
-       transform="translate(0,2.2321777e-5)">
+       transform="translate(0,-1.9999777)">
       <rect
          y="119.38953"
          x="77.781746"
@@ -347,7 +347,7 @@
     </g>
     <g
        id="g4413"
-       transform="translate(0,44)">
+       transform="translate(0,54)">
       <rect
          y="320.68973"
          x="77.781746"
