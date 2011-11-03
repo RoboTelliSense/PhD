@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="518.84375"
-   height="347.9375"
+   width="522.90674"
+   height="347.94138"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.1 "
@@ -96,8 +96,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="255.06602"
-     inkscape:cy="134.85902"
+     inkscape:cx="171.27538"
+     inkscape:cy="186.42602"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -120,7 +120,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -128,118 +128,118 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-53.1875,-93.5625)">
+     transform="translate(-43.658295,-93.569675)">
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.01264441;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4457"
-       width="517.83875"
-       height="346.93155"
-       x="53.694477"
+       width="521.89691"
+       height="348.86505"
+       x="44.163212"
        y="94.074593" />
     <rect
-       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1.04595828;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4419-1"
-       width="326.92297"
-       height="109.46803"
+       width="472.20459"
+       height="113.85714"
        x="67.996033"
-       y="236.78459" />
+       y="230.78459" />
     <rect
-       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1.015;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4419"
-       width="488.45551"
-       height="114.5788"
+       width="346.78571"
+       height="104.07143"
        x="67.996033"
-       y="109.03459" />
+       y="111.03459" />
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.14288"
-       y="263.8996"
+       y="136.61386"
        id="text3816"><tspan
          sodipodi:role="line"
          id="tspan3818"
          x="271.14288"
-         y="263.8996"
+         y="136.61386"
          style="font-size:12px">Bounding quadrilateral</tspan><tspan
          sodipodi:role="line"
          x="271.14288"
-         y="278.8996"
+         y="151.61386"
          id="tspan3820"
          style="font-size:12px">with affine deformation</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.01984"
-       y="320.1532"
+       y="190.4389"
        id="text3822"><tspan
          sodipodi:role="line"
          id="tspan3824"
          x="271.01984"
-         y="320.1532"
+         y="190.4389"
          style="font-size:12px">Brownian</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.01984"
-       y="184.56277"
+       y="302.56277"
        id="text3826"><tspan
          sodipodi:role="line"
          id="tspan3828"
          x="271.01984"
-         y="184.56277"
+         y="302.56277"
          style="font-size:12px">PCA: DFFS (distance to feature space)</tspan><tspan
          sodipodi:role="line"
          x="271.01984"
-         y="199.56277"
+         y="317.56277"
          id="tspan3830"
-         style="font-size:12px">RVQ: 1NN (distance to nearest neighbor, i.e. code-vector)</tspan><tspan
+         style="font-size:12px">RVQ: 1NN (distance to nearest neighbor, i.e., centroid)</tspan><tspan
          sodipodi:role="line"
          x="271.01984"
-         y="214.56277"
+         y="332.56277"
          id="tspan3832"
          style="font-size:12px">TSVQ: 1NN (same as RVQ)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.01984"
-       y="123.69605"
+       y="246.41032"
        id="text3834"><tspan
          sodipodi:role="line"
          id="tspan3836"
          x="271.01984"
-         y="123.69605"
+         y="246.41032"
          style="font-size:12px">PCA: eigenspace</tspan><tspan
          sodipodi:role="line"
          x="271.01984"
-         y="138.69606"
+         y="261.41034"
          id="tspan3838"
          style="font-size:12px">RVQ: centroids</tspan><tspan
          sodipodi:role="line"
          x="271.01984"
-         y="153.69606"
+         y="276.41034"
          id="tspan3840"
          style="font-size:12px">TSVQ: centroids</tspan></text>
     <rect
        style="fill:#cccccc;fill-opacity:1;stroke:#ff0000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4419-1-5"
-       width="326.66187"
-       height="68.361542"
-       x="67.995972"
-       y="360.2131" />
+       width="273.37564"
+       height="68.361427"
+       x="67.996033"
+       y="358.21317" />
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
        x="271.01984"
-       y="397.08899"
+       y="395.08899"
        id="text3842"><tspan
          sodipodi:role="line"
          id="tspan3844"
          x="271.01984"
-         y="397.08899"
+         y="395.08899"
          style="font-size:12px">Particle filter</tspan></text>
     <g
        id="g4395"
-       transform="translate(0,79.51148)">
+       transform="translate(0,-47.774239)">
       <rect
          y="169.48883"
          x="77.781746"
@@ -257,7 +257,7 @@
            y="191.40764"
            x="81.518738"
            id="tspan2989"
-           sodipodi:role="line">3. Representation model</tspan></text>
+           sodipodi:role="line">1. Representation model</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886"
@@ -266,7 +266,7 @@
     </g>
     <g
        id="g4401"
-       transform="translate(0,76.96484)">
+       transform="translate(0,-52.749444)">
       <rect
          y="220.78908"
          x="77.781746"
@@ -284,7 +284,7 @@
            y="244.20935"
            x="82.954285"
            id="tspan2989-8"
-           sodipodi:role="line">4. Motion model</tspan></text>
+           sodipodi:role="line">2. Motion model</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886-6"
@@ -293,7 +293,7 @@
     </g>
     <g
        id="g4407"
-       transform="translate(0,-93.72462)">
+       transform="translate(0,24.275382)">
       <rect
          y="272.08929"
          x="77.781746"
@@ -311,7 +311,7 @@
            y="295.49857"
            x="82.66864"
            id="tspan2989-9"
-           sodipodi:role="line">2. Observation model</tspan></text>
+           sodipodi:role="line">4. Observation model</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886-0"
@@ -320,7 +320,7 @@
     </g>
     <g
        id="g4389"
-       transform="translate(0,-1.9999777)">
+       transform="translate(0,120.71431)">
       <rect
          y="119.38953"
          x="77.781746"
@@ -338,7 +338,7 @@
            y="141.30832"
            x="83.042175"
            id="tspan2989-3"
-           sodipodi:role="line">1. Appearance model</tspan></text>
+           sodipodi:role="line">3. Appearance model</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886-4"
@@ -347,7 +347,7 @@
     </g>
     <g
        id="g4413"
-       transform="translate(0,54)">
+       transform="translate(0,52)">
       <rect
          y="320.68973"
          x="77.781746"
