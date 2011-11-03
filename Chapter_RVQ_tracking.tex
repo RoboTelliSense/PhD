@@ -39,14 +39,19 @@ Visual tracking is the task of estimating a target's state over time.  In many c
 \item \underline{Sudden motion (target or camera)}:  Besides motion blur, sudden motion by the target or camera can cause the target to exit the window in which the tracker looks for the target leading to incorrect track assignment.
 \end{enumerate}
 
+For a tracker that tries to learn the appearance and/or contour model of the target, inclusion of background pixels is an added problem that can cause drift.  If none of the problems mentioned above were present, a simple template matching stategy would suffice for robust tracking.  This has complexity $O(nm)$, where $n$ is the number of pixels in the target and $m$ is the number of locations at which the target is searched.  For most practical situations, this does not represent significant computational load and can be done in real time even while tracking several targets.  However, in the presence of several forms of noise, which is generally the case in tracking applications, more sophisticated methods are required.  In this chapter, we focus on methods involving compact representations of the target appearance model, i.e., PCA, TSVQ and RVQ.
+
+
+
+%----------------------------------------
+\subsection{Brief history}
+%----------------------------------------
 								\begin{figure}[t]
 								\centering
 								\includegraphics[width=0.45\textwidth]{thesis/PRML_PCA_problem.pdf}
 								\caption{In $\mathbb{R}^2$, a reduced eigenspace means that eigenvector $u_2$ is discarded.  Vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ have the same projection error on eigenvector $u_1$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ of the training data $\mathbf{x}_i$.}
 								\label{fig:PRML_PCA_problem}
 								\end{figure}
-
-For a tracker that tries to learn the appearance and/or contour model of the target, inclusion of background pixels is an added problem that can cause drift.  If none of the problems mentioned above were present, a simple template matching stategy would suffice for robust tracking.  This has complexity $O(nm)$, where $n$ is the number of pixels in the target and $m$ is the number of locations at which the target is searched.  For most practical situations, this does not represent significant computational load and can be done in real time even while tracking several targets.  However, in the presence of several forms of noise, which is generally the case in tracking applications, more sophisticated methods are required.  In this chapter, we focus on methods involving compact representations of the target appearance model, i.e., PCA, TSVQ and RVQ.
 
 								\begin{figure}[t]
 								\centering
@@ -55,30 +60,20 @@ For a tracker that tries to learn the appearance and/or contour model of the tar
 					\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
 								\end{figure}
 
-
-%----------------------------------------
-\subsection{Brief history}
-%----------------------------------------
 In this work, we try to address single-target visual-tracking under several of the challenges mentioned above while trying to learn the appearance model of the target.  Seminal work here can be traced back to 1996 when Black and Jepson experimented with tracking using an eigenspace representation of the target appearance model~\cite{1998_JNL_Eigentracking_Black}.  The next notable work is by Moghaddam and Pentland, 1997~\cite{1997_JNL_EigenTRK_Moghaddam} in which they try to address a fundamental limitation of PCA.  In PCA, 2 vectors, $\mathbf{x}_1$ and $\mathbf{x}_2$ can have the same distance to a reduced eigenspace, i.e., projection error $\mathbf{e}_1$ and $\mathbf{e}_2$ respectively, even if they have different distance to the mean $\boldsymbol\mu$ of the data that was used to create the eigenspace.  This is shown for a trivial case in $\mathbb{R}^2$ in Figure~\ref{fig:PRML_PCA_problem} where $\mathbf{e}_1=\mathbf{e}_2=\mathbf{e}$ even though $\mathbf{x}_1$ is closer than $\mathbf{x}_2$ to the mean $\boldsymbol\mu$.  They formulate the problem using DIFS (distance in feature space) and DFFS (distance from feature space) so that both projection error and within-subspace distance to the mean of the data are used while trying to determine how well the subspace explains a new data-point.  The next breakthrough came with the work of Bishop and Tipping in 1999~\cite{1999_JNL_PPCA_Tipping} where they show that a probabilistic variation of PCA, probabilistic PCA (PPCA), allows PCA to be used as a generative model.  The advantage in tracking is that this methodology allows an assignment of probabilities to new data-points and therefore allows relative weighting of track candidates.  Ideas from these three works were combined into a tracking framework by Ross et. al. in 2008~\cite{2008_JNL_subspaceTRK_Ross}.  Moreover, they used incremental SVD to make their tracker run in real time.  
 
 Here, we extend the work in Ross et. al.~\cite{2008_JNL_subspaceTRK_Ross} using RVQ in a similar tracking framework and comparing it with PCA and TSVQ based tracking.  We also introduce 4 methods for relative weighting of track candidates for RVQ.  The result is a generative framework for RVQ that leads to robust tracking.  Whereas RVQ was first introduced by Juang and Gray in 1982~\cite{1982_CNF_SpeechRVQ_JuangGray} and subsequently greatly extended by the seminal work of Barnes~\cite{1991_CNF_DesignPerformanceRVQ_Frost,1992_JNL_RVQ_Barnes,1992_CNF_ImageCodingRVQ_Kossentini,1993_sigmaTrees_Barnes,1993_JNL_RVQDSC_Barnes,1995_JNL_OptimalityRVQ_Kossentini,1996_CNF_VQclassification_Barnes,1996_JNL_AdvancesRVQ_Barnes,2002_JNL_SigmaTrees_Barnes,2004_CNF_DSSAdataMining_Barnes,2007_JNL_Katrina_Barnes,2007_JNL_IDDM_Barnes}, this algorithm has received little attention outside the signal processing and data compression communities.  In this work our goal is to introduce RVQ in the computer vision and machine learning fields where a much simpler version, K-means, has been widely used~\cite{2008_JNL_PRML_Wu}.  We present RVQ in the context of an important and challenging problem, that of visual target tracking.
 
+%----------------------------------------------------
+\subsection{Overview of approach used}
+%----------------------------------------------------
 								\begin{figure}[t]
 								\centering
-	\includegraphics[width=1.0\textwidth]{thesis/PhD_experimentalOverview.pdf}
+								\includegraphics[width=1.0\textwidth]{thesis/PhD_experimentalOverview.pdf}
 								\caption{Tracking framework, overview.}
 								\label{fig:overview}
 								\end{figure}
 
-								\begin{figure}[t]
-								\centering
-								\includegraphics[width=1.1\textwidth]{thesis/PhD_experimentalTemporalOverview.pdf}
-								\caption{Temporal overview.}
-								\label{fig:temporal_overview}
-								\end{figure}
-%----------------------------------------------------
-\subsection{Overview of approach used}
-%----------------------------------------------------
 Our tracking framework is based on five components as shown in Figure~\ref{fig:overview} .  Each of these components is described in detail in later sections.  Here, we present an overview of each:
 
 \begin{enumerate}
@@ -97,6 +92,13 @@ Our tracking framework is based on five components as shown in Figure~\ref{fig:o
 %----------------------------------------------
 \subsection{Overview of temporal process}
 %----------------------------------------------
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=1.1\textwidth]{thesis/PhD_experimentalTemporalOverview.pdf}
+								\caption{Temporal overview.}
+								\label{fig:temporal_overview}
+								\end{figure}
+
 In the previous section, we described the five major components of our visual tracking framework.  In this section, we describe the temporal relationship between these components.  Refer to Figure~\ref{fig:temporal_overview} for a graphical overview of this relationship.  A brief description of this temporal process is given below while detailed explanation is given in later sections in this chapter.
 
 \begin{enumerate}
@@ -291,21 +293,6 @@ In our tracking framework, we use all 4 methods above and compare their performa
 %\end{itemize}		
 In this section, we discuss the representation model.  See also Figure~\ref{fig:TRK_objectRepresentations} in the introductory chapter that shows different target representations.  In many situations, it is necessary to track a visual target that is undergoing deformations.  Several targets of interest fall in this category, particularly non-rigid targets such as humans.  Even rigid objects can undergo deformation in a matter of seconds as shown in Figure~\ref{Fig:PETS2001_deformation}.  
 
-
-								\begin{figure}
-								\centering
-								\subfigure[Frame 770.]{\includegraphics[width=0.45\textwidth]{thesis/PETS2001_00770.jpg}}
-								\subfigure[Frame 1770.]{\includegraphics[width=0.45\textwidth]{thesis/PETS2001_01770.jpg}}
-								\caption{Over time, even rigid objects can undergo deformations such as the car in these images from the PETS2001 dataset.}
-								\label{Fig:PETS2001_deformation}
-								\end{figure}
-
-In such cases, using a rigid rectangular bounding box to represent the target will inevitably lead to inclusion of background pixels in the matching process.  This can easily lead to tracker drift, particularly if the tracker is also trying to learn the appearance model of the target.
-
-We now show how to use affine warping of the rectangular bounding box so that it more closely captures the outline of the target of interest.  This minimizes inclusion of background pixels in the matching process and leads to more robust tracking.
-
-Table \ref{table:2Dtransformations} shows different kinds of 2D linear transformations.  Every transformation generalizes the transformation below it in the table.  In this report, we are interested in the 2D affine transform since it is flexible enough to account for most distortions in real images.
-
 								\begin{table}[t]
 								\centering
 								\begin{tabular}{| l | c | c | p{2.5in} |}
@@ -319,6 +306,35 @@ Table \ref{table:2Dtransformations} shows different kinds of 2D linear transform
 								\caption{2D transformations}
 								\label{table:2Dtransformations}
 								\end{table}
+
+								\begin{figure}[t]
+								\centering
+								\subfigure[Frame 770.]{\includegraphics[width=0.45\textwidth]{thesis/PETS2001_00770.jpg}}
+								\subfigure[Frame 1770.]{\includegraphics[width=0.45\textwidth]{thesis/PETS2001_01770.jpg}}
+								\caption{Over time, even rigid objects can undergo deformations such as the car in these images from the PETS2001 dataset.}
+								\label{Fig:PETS2001_deformation}
+								\end{figure}
+
+								\begin{figure}[t]
+								\centering
+								\subfigure[Affine parameters $(\theta, \lambda_1, \lambda_2, \phi, t_x, t_y)$ corresponding to the bounding box and a few feature points are manually selected.]{\includegraphics[width=0.65\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}}\\
+								\subfigure[Reference position of feature points.]{\includegraphics[width=0.25\textwidth]{thesis/dataset_Dudek_desired_00001.pdf}}
+								\caption{Manual target initialization in the first frame.  The manually selected target and manually selected feature points (top image) are warped to an upright reference position using $(\theta, \lambda_1, \lambda_2, \phi, t_x, t_y)$.  The position of these feature points (lower figure) is kept as reference throughout the tracking process.}
+								\label{Fig:affine_frame_1}
+								\end{figure}
+
+								\begin{figure}[t]
+								\centering
+								\fbox{\includegraphics[width=0.85\textwidth]{thesis/dataset_Dudek_00001_forwardAffine.pdf}}
+								\caption{Run-time processing.  A zero-centered grid is warped using a given set of affine parameters to cover the object of interest.  Pixel intensities at the warped grid points are computed using bilinear interpolation.}
+								\label{Fig:affine_runtime}
+								\end{figure}
+
+In such cases, using a rigid rectangular bounding box to represent the target will inevitably lead to inclusion of background pixels in the matching process.  This can easily lead to tracker drift, particularly if the tracker is also trying to learn the appearance model of the target.
+
+We now show how to use affine warping of the rectangular bounding box so that it more closely captures the outline of the target of interest.  This minimizes inclusion of background pixels in the matching process and leads to more robust tracking.
+
+Table \ref{table:2Dtransformations} shows different kinds of 2D linear transformations.  Every transformation generalizes the transformation below it in the table.  In this report, we are interested in the 2D affine transform since it is flexible enough to account for most distortions in real images.
 
 The affine transform\footnote{The notation adopted by some books for the affine transform is,
 
@@ -361,54 +377,16 @@ ${\color{blue}\mathbf{U}\mathbf{V}^t}$ is an orthogonal matrix since $({\color{b
 The affine matrix $\mathbf{A}$ can therefore be viewed as a succession of the following 4 steps: (a) Rotation by angle $\phi$, (b) scaling of $\lambda_1$ and $\lambda_2$ in the rotated $x$ and $y$ directions, (c) rotation by angle -$\phi$ which brings the scaled object back to its original orientation, and (d) rotation by angle $\theta$.  We now discuss how to convert between affine parameter representations.
 
 \begin{enumerate} 
-\item \underline{Converting $(a, b, c, d)$ to $(\theta, \lambda_1, \lambda_2, \phi)$}.  In several cases, the affine parameters are given in the form of $(a, b, c, d)$.  However, it is difficult to get a physical intuition when the parameterization is done in this form.  In such cases, converting to $(\theta, \lambda_1, \lambda_2, \phi)$ helps in getting an insight into how the object of interest is being deformed.  Also, for the particle filter, it is more intuitive to specify expected variances for $(\theta, \lambda_1, \lambda_2, \phi)$ than for $(a, b, c, d)$.  The first step here is to compute the SVD decomposition $\mathbf{A}=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}$.  The first parameter, angle $\phi$, is computed as follows,
-
-%%%CAUTION: RECONCILE THIS WITH CODE%%%
-\begin{equation}
-\begin{array}{ccccll}
-&{\color{red}\mathbf{R}(\phi)}&=&{\color{red}\mathbf{V}^T}\\
-\Rightarrow &{\color{red}\RotMatrixPhi} &=& \left[\begin{array}{llll}v_{1,1} &v_{2,1}\\v_{1,2} & v_{2,2}\end{array}\right]\\
-\end{array}
-\end{equation}
-
-Therefore,
-
-\begin{equation}
-\boxed{\phi = \tan^{-1}\frac{v_{1,2}}{v_{1,1}}}
-\end{equation}
-
-The second and third parameters, scaling factors $\lambda_1$ and $\lambda_2$, are computed as follows,
-
-\begin{equation}
-\begin{array}{ccccc}
-&{\color{darkgreen}\EigenvalueMatrix} &=&{\color{darkgreen}\mathbf{S}}\\
-&&=&\left[\begin{array}{cccc}s_{1,1} & 0\\0 &s_{2,2}\end{array}\right]\\
-\end{array}
-\end{equation}
-
-Therefore,
+\item \underline{Converting $(a, b, c, d)$ to $(\theta, \lambda_1, \lambda_2, \phi)$}.  In several cases, the affine parameters are given in the form of $(a, b, c, d)$.  However, it is difficult to get a physical intuition when the parameterization is done in this form.  In such cases, converting to $(\theta, \lambda_1, \lambda_2, \phi)$ helps in getting an insight into how the object of interest is being deformed.  Also, for the particle filter, it is more intuitive to specify expected variances for $(\theta, \lambda_1, \lambda_2, \phi)$ than for $(a, b, c, d)$.  The first step here is to compute the SVD decomposition $\mathbf{A}=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}$.  The parameters $(\theta, \lambda_1, \lambda_2, \phi)$ are computed as follows,
 
 \begin{equation}
 \boxed{
-\begin{array}{cccc}
-\Rightarrow \lambda_1 &=&  s_{1,1}\\
-\Rightarrow \lambda_2 &=& s_{2,2}
+\begin{array}{llll}
+\phi &=& \tan^{-1}\frac{v_{1,2}}{v_{1,1}}\\
+\lambda_1 &=&  s_{1,1}\\
+\lambda_2 &=& s_{2,2}\\
+\theta &=& \tan^{-1}\frac{u_{2,1}v_{1,1} + u_{2,2}v_{1,2}}{u_{1,1}v_{1,1} + u_{1,2}v_{1,2}}
 \end{array}}
-\end{equation}
-
-The fourth parameter, angle $\theta$, is computed as follows,  
-
-\begin{equation}
-\begin{array}{ccccc}
-{\color{blue}\mathbf{R}(\theta)} &=&  {\color{blue}\mathbf{U}\mathbf{V}^T}\\
-{\color{blue}\RotMatrixTheta} &= &\left[\begin{array}{llll}u_{1,1} & u_{1,2}\\u_{2,1} & u_{2,2}\end{array}\right]\left[\begin{array}{llll}v_{1,1} & v_{2,1}\\v_{1,2} & v_{2,2}\end{array}\right] \\
-\end{array}
-\end{equation}
-
-Therefore,
-
-\begin{equation}
-\boxed{\theta = \tan^{-1}\frac{u_{2,1}v_{1,1} + u_{2,2}v_{1,2}}{u_{1,1}v_{1,1} + u_{1,2}v_{1,2}}}
 \end{equation}
 
 \item \underline{Converting  $(\theta, \lambda_1, \lambda_2, \phi)$ to $(a, b, c, d)$}.  In visual tracking, the initial target planar bounding region is more intuitively expressed in terms of $(\theta, \lambda_1, \lambda_2, \phi)$ than in terms of $(a, b, c, d)$.  However, the actual affine warp is more easily carried out using matrix multiplication for which we need $(a, b, c, d)$.  This can be done by multiplying out all the terms in Equation~\ref{Eq:AffineDecomposition} to get
@@ -426,215 +404,16 @@ d &= (\lambda_2)q + (\lambda_1) p
 
 where temporary variables $p, q, r, s$ are computed from angles $\theta$ and $\phi$ using~\cite{2008_JNL_subspaceTRK_Ross},
 
-\begin{equation*}
+\begin{equation}
 \begin{array}{llll}
-\mathrm{ccc} &= \cos(\theta) \cos^2(\phi)\\
-\mathrm{ccs} &= \cos(\theta) \cos(\phi) \sin(\phi)\\
-\mathrm{css} &= \cos(\theta) \sin^2(\phi)\\
-\mathrm{scc} &= \sin(\theta) \cos^2(\phi) \\
-\mathrm{scs} &= \sin(\theta) \cos(\phi) \sin(\phi)\\
-\mathrm{sss} &= \sin(\theta) \sin^2(\phi)\\
-p   &=  \mathrm{css} - \mathrm{scs}\\
-q   &=  \mathrm{ccc} + \mathrm{scs}\\
-r   &= \mathrm{ccs} + \mathrm{sss}\\
-s   &=  \mathrm{ccs} - \mathrm{scc}\\
+\mathrm{ccc} = \cos(\theta) \cos^2(\phi), \mathrm{ccs} = \cos(\theta) \cos(\phi) \sin(\phi), \mathrm{css} = \cos(\theta) \sin^2(\phi)\\
+\mathrm{scc} = \sin(\theta) \cos^2(\phi), \mathrm{scs} = \sin(\theta) \cos(\phi) \sin(\phi), \mathrm{sss} = \sin(\theta) \sin^2(\phi)\\
+p   =  \mathrm{css} - \mathrm{scs}, q   =  \mathrm{ccc} + \mathrm{scs}, r  = \mathrm{ccs} + \mathrm{sss}, s =  \mathrm{ccs} - \mathrm{scc}\\
 \end{array}
-\end{equation*}
-\end{enumerate}
-
-
-								\begin{figure}[t]
-								\centering
-								\subfigure[User defined bounding box and feature points.]{\includegraphics[width=0.65\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}}\\
-								\subfigure[Desired output.]{\includegraphics[width=0.25\textwidth]{thesis/dataset_Dudek_desired_00001.pdf}}
-								\caption{The goal is to scale and warp a user defined object of interest and corresponding feature points to an upright position.}
-								\label{Fig:overall}
-								\end{figure}
-
-
-
-For our experiments, consider Figure~\ref{Fig:overall}.  The goal is to scale and warp a user defined object of interest and corresponding feature points to an upright position.  To achieve our goal, we design 2 experiments.  The goal of the first experiment is to warp and scale the actual image and the goal of the second experiment is to warp and scale the feature points.
-
-Before we explain the experiments in detail, we discuss the overall idea.  Ideally, we could apply an inverse affine transform and be done with it.  There is one challenge though.  We do not know the pixel coordinates of every point inside the bounding region.  To deal with this, we design experiment 1 in which we take a rectangular grid whose coordinates we know, warp it using our affine parameters to cover the object of interest, interpolate image intensities on those points to create an upright scaled output image.  For the feature points, we do know their pixel coordinates and so in experiment 2, we straight away apply the inverse affine transform to compute their new positions in the output image.  So, in summary,
-
-								\begin{figure}[t]
-								\centering
-								\fbox{\includegraphics[width=0.85\textwidth]{thesis/dataset_Dudek_00001_forwardAffine.pdf}}
-								\caption{Experiment 1, Dudek dataset, frame 1, application of the forward affine transform.  In this experiment, we warp an arbitrary zero-centered grid to a grid covering the object of interest.  The dimensions of the object of interest, the face, are 110x130 (width x height).  The dimensions of the warped output grid are 33x33.  Notice that the density of grid points is greater in the horizontal direction.}
-								\label{Fig:affine_warping}
-								\end{figure}
-
-
-
-\begin{enumerate}
-\item Experiment 1: Forward affine transform to extract object of interest from original image
-\begin{enumerate}
-\item Warp user-defined grid using affine-parameter initialization to sample object of interest
-\item Interpolate pixel intensities at warped grid-points.
-\end{enumerate}
-\item Experiment 2: Inverse affine transform to warp feature points on original image to warped image
-\end{enumerate}
-
-
-Before explaining these experiments in detail, we take a brief digression to explain how to compute affine parameters of the object of interest.
-
-The source code for all these steps is given in Listing~\ref{lst:demo_UTIL_2D_coordinateAffineWarping_and_IntensityInterpolation}.
-
-%------------------------------------------------------------
-\subsection{Computing affine parameters of manually initialized object}
-%------------------------------------------------------------
-An object of interest in an image can be manually specified by drawing a bounding box around it, and then rotating the bounding box so that it reasonably encloses the object.  This step is relatively straightforward to do in standard image processing software.  In most cases, this rigid representation, as opposed to an affine representation, will suffice to reasonably enclose the object of interest for the purposes of initialization.  This requires 5 parameters for complete specification:
-
-\begin{enumerate}
-\item $t_x$, bounding box center x coordinate
-\item $t_y$, bounding box center y coordinate
-\item $w$, width of bounding box
-\item $h$, height of bounding box
-\item $\theta$, rotation angle of bounding box in radians.  In the cartesian coordinate system, a positive $\theta$ corresponds to counter-clockwise direction.  This can be verified quickly since a $90^{\circ}$ left turn for a vector $(x,y)^T$ in $\mathbb{R}^2$ is given by $(-y,x)^T$.  This is obtained using,
-
-								\begin{figure}[t]
-								\centering
-								\includegraphics[width=0.65\textwidth]{thesis/affineCandidates.pdf}
-								\caption{Different affine parameters will produce different 33x33 outputs.}
-								\label{Fig:affine_candidates}
-								\end{figure}
-\begin{equation}
-\left[\begin{array}{ccc}
--y 
-\\ 
-x
-\end{array}
-\right]=
-\left[
-\begin{array}{rrr}
-\cos(90^{\circ}) & -\sin(90^{\circ}) \\
-\sin(90^{\circ}) & \cos(90^{\circ})
-\end{array}
-\right]
-\left[\begin{array}{ccc}
-x 
-\\ 
-y
-\end{array}
-\right]
 \end{equation}
-
-								\begin{figure}[t]
-								\centering
-								\includegraphics[width=0.75\textwidth]{thesis/dataset_Dudek_00001_inverseAffine.pdf}
-								\caption{Experiment 2, Dudek dataset, frame 1, application of inverse affine transform.  In this experiment, we apply the inverse affine transform to warp a set of given feature points and place them on Grid B from Figure~\ref{Fig:affine_warping}.}
-								\label{fig:original_feature_points}
-								\end{figure}
-
-
-The term "left turn" is commonly used in computer graphics.  In  $\mathbb{R}^2$, it corresponds to a counter-clockwise rotation.  In images, where the $y$ coordinate normally decreases vertically downwards, a left turn is given by $(y,-x)^T$.  Notice that $(x,y)^T(-y,x) = (x,y)^T(y,-x) = 0$, and therefore both $ (-y,x)^T$ and $(y,-x)^T$ are orthogonal to $(x,y)^T$.  See Figure~\ref{fig:left_turn} for a graphical representation.
 \end{enumerate}
 
-As an example, consider Figure~\ref{Fig:affine_warping}.  We are interested in segmenting the face.  The initial parameters are: $t_x=188, t_y=192, w=110, h=130, \theta=-4.58^\circ$.  Note that we specify angles in radians.  $\theta$ is written here in degrees for clarity.  Moreover, notice that the bounding box is rotated in the counter-clockwise direction.  Since the y axis increases downwards, $\theta$ is negative.
-
-Once we have an initial rigid representation of the object of interest, we can transform this representation into an affine representation.  Since the affine representation allows for scaling, we can scale the object and obtain its segmentation in scaled form.  For instance, in Figure~\ref{Fig:affine_warping}, the dimensions of the object of interest are 110x130.  However, for computational efficiency, we want the dimensions to be 33x33.  The affine parameters then become $\theta=-4.58^\circ, \lambda_1=110/32=3.4375, \lambda_2=130/32=4.0625, \phi=0^\circ, t_x=188, t_y=192$.  \footnote{Notice that we have divided by 32 instead of 33.  The reason is that the grid used in~\cite{2008_JNL_subspaceTRK_Ross} is 32x32 and they have accordingly used a divisor of 32.  In our case, for RVQ we require an odd dimensional grid due to the way the closed source codebook encoding software, gen.exe is setup.  Therefore, we pick a 33x33 grid.  Not changing the divisor to 33 was an oversight but this omission is expected to have minimal effect on results.}
-
-
-%----------------------------------
-\subsection{Forward affine transform}
-%----------------------------------
-In this experiment, our goal is to extract an object of interest from an original image, scale it and make it upright.  We start with an arbitrary zero-centered grid, grid A as shown in Figure~\ref{Fig:affine_candidates}.  The forward affine transform is applied to this grid so that it covers the object of interest and is now called grid B.  Note that the dimensions of grid B are also 33x33.  Grid B is now placed at coordinates (1,1) so that its coordinates go from 1 to 33 in the horizontal direction and 1 to 33 in the vertical direction.  Note that this grid now samples the object of interest.  This grid is then placed at the origin as shown in Figure~\ref{fig:original_feature_points}.  
-
-\subsubsection{Warp user-defined grid}
-%------------------------------------------------------------
-In this step, the affine parameters $(\theta, \lambda_1, \lambda_2, \phi, t_x, t_y)$ computed above are changed to $(a, b, c, d, t_x, t_y)$ using Equation~\ref{Eqn:tllpxy_to_abcdxy}.  Affine matrix $\mathbf{H}_A$ is formed using Equation~\ref{Eqn:top_level}.  A reference $w$ x $h$ = 33x33 grid centered on the origin is transformed using these affine coordinates to a 33x33 grid centerd on the object of interest using the affine transformation also given in Equation~\ref{Eqn:top_level}.  This can be seen in Figure~\ref{Fig:affine_warping}.
-
-\subsubsection{Interpolate pixel intensities}
-%------------------------------------------------------------
-The final step is to read off the pixel intensity values at the affinely warped grid obtained in the step above.  Most of these grid points will not have integer values.  Rounding to integer values will create artefacts.  Some form of interpolation will be required to read sub-pixel intensities.  In our experiments, we use bilinear interpolation. 
-
-As a sidenote, we show the effects of applying different affine transform parameters in Figure~\ref{Fig:affine_candidates}.  This can be useful for instance to generate samples in the particle filter.
-
-
-%----------------------------------
-\subsection{Inverse affine transform}
-%----------------------------------
-Now, feature points on the original figure are inverse-affine-transformed and superimposed on grid B.  A feature point with coordinates $(X,Y)$ can be inverse affine mapped to $(x,y)$ using
-
-\begin{equation}
-\left[\begin{array}{ccc}
-x 
-\\ 
-y
-\end{array}
-\right]
-=
-\left[\begin{array}{ccc}
-a & b\\ 
-c & d
-\end{array}
-\right]^{-1}
-\left[\begin{array}{ccc}
-X - t_x  
-\\ 
-Y - t_y
-\end{array}
-\right]
-\end{equation}
-
-For our example, the initial feature points are 
-
-\begin{equation*}
-\left[\begin{array}{ccc}
-X  
-\\ 
-Y
-\end{array}
-\right]=
-\left[
-\begin{array}{cccccccc}
-148.9306 & 187.2747 & 226.0674 & 169.6408 & 192.6433 & 218.8531 & 194.5372\\
-179.0198 & 172.5994 & 174.0397 & 230.2172 & 224.5582 & 223.3328 & 243.8089\\
-\end{array}
-\right]
-\end{equation*}
-
-Applying the inverse affine transform yields
-
-\begin{equation*}
-\left[\begin{array}{ccc}
-x  
-\\ 
-y
-\end{array}
-\right]=
-\left[
-\begin{array}{rrrrrrrrrrr}
-  -11.0275 &   0.2407 &  11.4563 &  -6.2122  &  0.5896 &   8.2183 &   0.6912\\
-   -3.9534  & -4.7745  & -3.6580  &  9.0161  &  8.0800  &  8.2949  & 12.8408
-\end{array}
-\right]
-\end{equation*}
-
-
-Notice that the inverse mapped feature points are zero-centered.  We add $(w/2, h/2)$ so that these warped feature points correctly align with grid B whose first x and y coordinate is at (1,1).\footnote{This uses Matlab notation rather than C++ notation where the first x and y coordinates are at (0,0).}  This gives,
-
-\begin{equation*}
-\left[\begin{array}{ccc}
-x  
-\\ 
-y
-\end{array}
-\right]=
-\left[
-\begin{array}{rrrrrrrrrrr}
-   5.4725  & 16.7407 &  27.9563  & 10.2878  & 17.0896 &  24.7183  & 17.1912 \\
-   12.5466 &  11.7255 &  12.8420 &   25.5161 &  24.5800  & 24.7949 &   29.3408
-\end{array}
-\right]
-\end{equation*}
-
-These points are plotted in Figure~\ref{fig:original_feature_points}.
-
-
-Figure~\ref{Fig:affine_warping} shows the result of affine warping to compute warped grid points and bilinear interpolation to compute pixel intensities on those warped grid points to produce an upright scaled image.  We see that the affine region of interest accurately samples the object of interest and minimizes inclusion of background pixels.  Also, bilinear interpolation produces an accurate representation of the target of interest.  The original feature points are also correctly warped and overlaid on the output image.
-
-We conclude that affine warping is an effective way of extracting an object of interest and associated feature points from a given image.  The affine representation is rich enough to bound many objects of interest while minimizing inclusion of background pixels.  Therefore, this representation method is used in this work.
+During tracking, in the first frame, manually selected affine parameters and feature points are warped to an upright reference position as shown in Figure~\ref{Fig:affine_frame_1}.  During run-time, in every frame, the motion model (discussed next) generates several affine candidate parameter sets.  Each of these sets is used to warp a zero-centered grid.  Bilinear interpolation is then used to compute pixel intensity values at the warped grid points as shown in Figure~\ref{Fig:affine_runtime}.  For the example affine parameter set given in this figure, we see that the affinely warped region accurately samples the object of interest and minimizes inclusion of background pixels.  We now discuss the motion model.
 
 %=======================		
 \section{Model 4: Motion model}
@@ -666,9 +445,20 @@ In this work, we model the object motion by an affine image warp.  The state at 
 %=======================		
 \section{Model 5: Inference model}
 %=======================	
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=0.65\textwidth]{thesis/affineCandidates.pdf}
+								\caption{Different affine parameters will produce different 33x33 outputs.}
+								\label{Fig:affine_candidates}
+								\end{figure}
+
+
 Our goal is to track targets when target dynamics are non-linear and non-Gaussian.  In the state-space approach to time series modeling, the focus is on the \emph{state vector} and its transition from state to state.  In tracking applications, the state vector could correspond to target dynamics.  In economic systems, the state vector could be composed of quantities such as inflation rates, currency exchange rates, inflation, etc.  In weather forecasting, the state vector could be based on hurricane speed, direction and strength.  It is clear that a large range of applications can be modeled using this approach.  However, in most cases, it is difficult to accurately estimate the states.  Noise induced by natural phenomena or erroneous observation can corrupt measurement of the state vector.  A noisy \emph{measurement vector} therefore relates observations to states.  In many cases, the state vector evolution can be modeled as a linear system.  However, since we make no assumptions of linearity, the inference model in this work is based on a sequential Monte Carlo (SMC) filter, the particle filter.  The particle filter has been discussed in Chapter~\ref{chap_TRK}.  Almost all particle filters are based on the sequential importance sampling (SIS) algorithm, including the sampling importance resampling (SIR) filter, auxiliary sampling importance resampling (ASIR) filter and the regularized particle filter (RPF).  The basic difference between these algorithms is the choice of \emph{importance sampling density} and/or modification of the resampling step~\cite{2002_JNL_PF_Arulampalam}.  
 
 In this work, the weights on the posterior are computed using the appearance model for PCA, RVQ or TSVQ, depending on which of these algorithms is being used.  For RVQ for instance, the mean squared reconstruction error is used for the weighting.  An example of the inference process in the particle filter is shown in Figure~\ref{fig:particle_filter_resampling}.  A test density at time $k$ needs to be resampled.  A reference uniform density is generated.  The CDFs (cumulative density function) of both these densities is compared and input points that have large weights are retained.  An example is shown in Figure~\ref{fig:particle_filter_resampling}.  In this work, the number of particles used is $N_p=600$.  Each particle represents the point mass density of a vector $\mathbf{X}$ in $R^6$ corresponding to the 6 parameters required for an affine deformation.
+
+In Figure~\ref{Fig:affine_candidates}, we show 100 candidates warped in this manner.  These candidates are then processed by the inference model, also explained later in the chapter.
+
 
 %For a set of $N$ input points, a set $S$ of $N$ points is created such that each of these points $s_i$ corresponds to the $i$th index of the input CDF Those input points $x_i$ are picked for which the corresponding CDF points, $c_i$ induce a transition in the $i-th$ 
 
