@@ -317,9 +317,9 @@ In this section, we discuss the representation model.  See also Figure~\ref{fig:
 
 								\begin{figure}[t]
 								\centering
-								\subfigure[Affine parameters $(\theta, \lambda_1, \lambda_2, \phi, t_x, t_y)$ corresponding to the bounding box and a few feature points are manually selected.]{\includegraphics[width=0.65\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}}\\
+								\subfigure[Affine parameters $(\theta, \lambda_1, \lambda_2, \phi, x, y)$ corresponding to the bounding box and a few feature points are manually selected.]{\includegraphics[width=0.65\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}}\\
 								\subfigure[Reference position of feature points.]{\includegraphics[width=0.25\textwidth]{thesis/dataset_Dudek_desired_00001.pdf}}
-								\caption{Manual target initialization in the first frame.  The manually selected target and manually selected feature points (top image) are warped to an upright reference position using $(\theta, \lambda_1, \lambda_2, \phi, t_x, t_y)$.  The position of these feature points (lower figure) is kept as reference throughout the tracking process.}
+								\caption{Manual target initialization in the first frame.  The manually selected target and manually selected feature points (top image) are warped to an upright reference position using $(\theta, \lambda_1, \lambda_2, \phi, x, y)$.  The position of these feature points (lower figure) is kept as reference throughout the tracking process.}
 								\label{Fig:affine_frame_1}
 								\end{figure}
 
@@ -346,7 +346,7 @@ Y &= cx + dy + f
 \label{Eq:AffineDecomposition}
 \end{equation}
 
-where the input coordinate (x,y) has been transformed through 6 affine parameters, $a, b, c, d, e, f$ to the output coordinate $(X,Y)$.  Instead of $e$ and $f$, we will be using $t_x$ and $t_y$ respectively.}
+where the input coordinate (x,y) has been transformed through 6 affine parameters, $a, b, c, d, e, f$ to the output coordinate $(X,Y)$.  Instead of $e$ and $f$, we will be using $x$ and $y$ respectively.}
  is given by,
 
 \begin{equation}
@@ -359,7 +359,7 @@ where the input coordinate (x,y) has been transformed through 6 affine parameter
 \label{Eqn:top_level}
 \end{equation}
 
-$t_x$ and $t_y$ are translations in the $x$ and $y$ directions respectively and $\mathbf{H}_A$ is the affine transformation matrix.  The matrix $\mathbf{A}$ above can always be decomposed using the SVD decomposition as the product of orthonormal matrix $\mathbf{U}$ containing the eigenvectors of $\mathbf{A}\mathbf{A}^T$, orthonormal matrix $\mathbf{V}$ containing the eigenvectors  $\mathbf{A}^T\mathbf{A}$ and a diagonal matrix $\mathbf{S}$ containing the eigenvalues of $\mathbf{A}$~\cite{2004_BOOK_CG_Hartley}:
+$x$ and $y$ are translations in the $x$ and $y$ directions respectively and $\mathbf{H}_A$ is the affine transformation matrix.  The matrix $\mathbf{A}$ above can always be decomposed using the SVD decomposition as the product of orthonormal matrix $\mathbf{U}$ containing the eigenvectors of $\mathbf{A}\mathbf{A}^T$, orthonormal matrix $\mathbf{V}$ containing the eigenvectors  $\mathbf{A}^T\mathbf{A}$ and a diagonal matrix $\mathbf{S}$ containing the eigenvalues of $\mathbf{A}$~\cite{2004_BOOK_CG_Hartley}:
 
 \begin{equation}
 \begin{array}{llllllll}
@@ -413,7 +413,7 @@ p   =  \mathrm{css} - \mathrm{scs}, q   =  \mathrm{ccc} + \mathrm{scs}, r  = \ma
 \end{equation}
 \end{enumerate}
 
-During tracking, in the first frame, manually selected affine parameters and feature points are warped to an upright reference position as shown in Figure~\ref{Fig:affine_frame_1}.  During run-time, in every frame, the motion model (discussed next) generates several affine candidate parameter sets.  Each of these sets is used to warp a zero-centered grid.  Bilinear interpolation is then used to compute pixel intensity values at the warped grid points as shown in Figure~\ref{Fig:affine_runtime}.  For the example affine parameter set given in this figure, we see that the affinely warped region accurately samples the object of interest and minimizes inclusion of background pixels.  We now discuss the motion model.
+During tracking, in the first frame, manually selected affine parameters and feature points are warped to an upright reference position as shown in Figure~\ref{Fig:affine_frame_1}.  During run-time, in every frame, the motion model (discussed next) generates several affine candidate parameter sets.  Each of these sets is used to warp a zero-centered grid onto or around the object of interest.  Bilinear interpolation is then used to compute pixel intensity values at the warped grid points as shown in Figure~\ref{Fig:affine_runtime}.  For the example affine parameter set given in this figure, we see that the affinely warped region accurately samples the object of interest and minimizes inclusion of background pixels.  Tracking error for a particular affine parameter set in a frame can be computed by warping the reference feature points from the first frame using this affine parameter set and computing rms error with ground truth feature points for that frame.  We now discuss the motion model.
 
 %=======================		
 \section{Model 4: Motion model}
@@ -427,31 +427,36 @@ In this work, we make two assumptions about the target motion:
 \item \underline{Can be modeled with a gaussian distribution with fixed variance}.  We assume that the motion is brownian and can be modeled with a gaussian distrubution with a fixed variance.  
 \end{itemize}
 
-An advantage of not having an explicit motion model is that arbitrary camera and target motion are allowed.  A disadvantage of this approach in the context of the particle filter is that particles need to be evaluated all around the current target position, rather than only around the projected target position.  We are therefore unable to take advantage of the reduced spatial search-space that comes with a deterministic motion model.  
+An advantage of not having an explicit motion model is that arbitrary camera and target motion are allowed.  A disadvantage of this approach in the context of the particle filter is that particles need to be evaluated all around the current target position, rather than around a predicted target position in a certain direction.  We are therefore unable to take advantage of the reduced spatial search-space that comes with a deterministic motion model.  
 
-Two of the six components of the state vector $\mathbf{X}$ deal with the motion model.  These are the $x$ and $y$ coordinates of the target.  These are modeled as independent gaussian random variables with fixed variance $\sigma_x^2, \sigma_y^2$,
+At time $t$, the goal of the tracking process is to estimate the state vector $\mathbf{X}_t = (\theta, \lambda_1, \lambda_2, \phi, x, y)$.  To keep our model as general as possible, all 6 components of the state vector are modeled as Gaussian random variables but with known variance which is specified in the first frame.  However, in order to simplify sampling from the joint density, it is possible to use certain relaxation criteria such as Markovian dependence, or independence.  We choose the latter to avoid MCMC sampling~\cite{2009_BOOK_Bayes_Hoff} and note that this method works well in practice.  The target motion is therefore represented not in analytic form but as a 6x6 diagonal covariance matrix $\Sigma_X$ centered at $\mathbf{X}_{t-1}$ in the previous frame.  The elements on the diagonal represent variances of the affine parameters, $\sigma_\theta^2, \sigma_{\lambda_1}^2, \sigma_{\lambda_2}^2, \sigma_\phi^2, \sigma_x^2, \sigma_y^2$.  For instance, for the $x$ and $y$ coordinates of the target at time $t$, the probability of the target position is given by,
 
-\begin{align*}
+\begin{align}
 p(x_t|x_{t-1}) &= \mathcal{N}(x_{t-1}, \sigma_x^2) \\
-p(y_t|y_{t-1}) &= \mathcal{N}(y_{t-1}, \sigma_y^2) \\
-\end{align*}
+p(y_t|y_{t-1}) &= \mathcal{N}(y_{t-1}, \sigma_y^2)
+\end{align}
 
-At every frame, we try to estimate a state vector $\mathbf{X}$ in $R^6$.  Two components of this vector, the target coordinates are related to the motion model and the remaining four are related to the affine deformation allowed by the representation model.  To keep our models as general as possible, all 6 components of the state are modeled as Gaussian random variables but with known variance.  However, in order to simplify sampling from the joint density, it is possible to use certain relaxation criteria such as Markovian dependence, or complete independence.  We choose the latter to make the sampling process in the inference model somewhat more straightforward.
-
-Our motion model then consists of 6 uncorrelated gaussian densities.  The target motion is therefore represented not in analytic form but as a 6x6 diagonal covariance matrix $\Sigma_X$ centered at the target position $\mathbf{X}_{t-1}$ in the previous frame.  The elements on the diagonal represent variances of affine parameters, $\sigma_x^2, \sigma_y^2, \sigma_\theta^2, \sigma_s^2, \sigma_\alpha^2, \sigma_\phi^2$.  Several Gaussian distributions are used to handle these changes.  One distribution each is used to handle arbitrary translation in the horizontal direction, vertical direction, scale, rotation.  At every time step, predicted values are sampled from these distributions.  Each predicted value is warped to a standard window size and tested against the existing model.  The predicted value closest to the current model is selected as the next estimate and is used to update the model.  In PCA, the model is the eigenvectors, in RVQ, it's the stage codevectors and in TSVQ, it's the terminal codevectors.  
-
-In this work, we model the object motion by an affine image warp.  The state at time $t$ consists of 6 affine transformation parameters: $x_t,  y_t, \theta_t, s_t, \alpha_t$, and $\phi_t$.
+At every time step, predicted values are sampled from all 6 distributions.  Each predicted set is used to warp a zero-centered grid onto or around the target of interest as explained in the previous section.  Next, we discuss the inference model which is used to select the best set of affine candidates generated by the motion model.
 
 %=======================		
 \section{Model 5: Inference model}
 %=======================	
 								\begin{figure}[t]
 								\centering
+								\subfigure[Reference (uniform) density and test PDF.]{\includegraphics[width=0.4\textwidth]{thesis/particle_filter_pdfs.pdf}}
+								\subfigure[Comparing CDFs.]{\includegraphics[width=0.4\textwidth]{thesis/particle_filter_resampling.pdf}}
+								\subfigure[Particles 4, 7 and 9 are picked repeatedly since they have higher weight.]{\includegraphics[width=0.45\textwidth]{thesis/particle_filter_particles.pdf}}
+								\caption{Particle filter, resampling.}
+								\label{fig:particle_filter_resampling}
+								\end{figure}
+
+
+								\begin{figure}[t]
+								\centering
 								\includegraphics[width=0.65\textwidth]{thesis/affineCandidates.pdf}
 								\caption{Different affine parameters will produce different 33x33 outputs.}
 								\label{Fig:affine_candidates}
 								\end{figure}
-
 
 Our goal is to track targets when target dynamics are non-linear and non-Gaussian.  In the state-space approach to time series modeling, the focus is on the \emph{state vector} and its transition from state to state.  In tracking applications, the state vector could correspond to target dynamics.  In economic systems, the state vector could be composed of quantities such as inflation rates, currency exchange rates, inflation, etc.  In weather forecasting, the state vector could be based on hurricane speed, direction and strength.  It is clear that a large range of applications can be modeled using this approach.  However, in most cases, it is difficult to accurately estimate the states.  Noise induced by natural phenomena or erroneous observation can corrupt measurement of the state vector.  A noisy \emph{measurement vector} therefore relates observations to states.  In many cases, the state vector evolution can be modeled as a linear system.  However, since we make no assumptions of linearity, the inference model in this work is based on a sequential Monte Carlo (SMC) filter, the particle filter.  The particle filter has been discussed in Chapter~\ref{chap_TRK}.  Almost all particle filters are based on the sequential importance sampling (SIS) algorithm, including the sampling importance resampling (SIR) filter, auxiliary sampling importance resampling (ASIR) filter and the regularized particle filter (RPF).  The basic difference between these algorithms is the choice of \emph{importance sampling density} and/or modification of the resampling step~\cite{2002_JNL_PF_Arulampalam}.  
 
@@ -463,14 +468,7 @@ In Figure~\ref{Fig:affine_candidates}, we show 100 candidates warped in this man
 %For a set of $N$ input points, a set $S$ of $N$ points is created such that each of these points $s_i$ corresponds to the $i$th index of the input CDF Those input points $x_i$ are picked for which the corresponding CDF points, $c_i$ induce a transition in the $i-th$ 
 
 
-								\begin{figure}[t]
-								\centering
-								\subfigure[Reference (uniform) density and test PDF.]{\includegraphics[width=0.4\textwidth]{thesis/particle_filter_pdfs.pdf}}
-								\subfigure[Comparing CDFs.]{\includegraphics[width=0.4\textwidth]{thesis/particle_filter_resampling.pdf}}
-								\subfigure[Particles 4, 7 and 9 are picked repeatedly since they have higher weight.]{\includegraphics[width=0.45\textwidth]{thesis/particle_filter_particles.pdf}}
-								\caption{Particle filter, resampling.}
-								\label{fig:particle_filter_resampling}
-								\end{figure}
+
 								
 
 	
