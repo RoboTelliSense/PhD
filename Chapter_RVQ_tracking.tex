@@ -1,10 +1,10 @@
-\include{Chapter0_begin}
-\include{inkscapeLatex}
-\begin{document}
-\begin{FrontMatter}
-\contents %generates the TOC, LOF, and LOT
-\end{FrontMatter}
-\begin{Body}
+%\include{Chapter0_begin}
+%\include{inkscapeLatex}
+%\begin{document}
+%\begin{FrontMatter}
+%\contents %generates the TOC, LOF, and LOT
+%\end{FrontMatter}
+%\begin{Body}
 
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 \chapter{Visual Tracking Using RVQ}
@@ -74,20 +74,21 @@ Here, we extend the work in Ross et. al.~\cite{2008_JNL_subspaceTRK_Ross} using 
 								\label{fig:overview}
 								\end{figure}
 
-Our tracking framework is based on five components as shown in Figure~\ref{fig:overview} .  Each of these components is described in detail in later sections.  Here, we present an overview of each:
+Our goal is to produce estimates at every time frame of the target state, i.e. 6 affine parameters that define a target bounding quad.  In order to accomplish this, our tracking framework is based on five components as shown in Figure~\ref{fig:overview} .  Each of these components is described in detail in later sections.  Here, we present an overview of each:
 
 \begin{enumerate}
-\item \underline{ Target appearance}.  Target appearance is modeled using a learned eigenspace, a trained $\sigma$-tree codebook or a binary balanced-tree codebook for PCA, RVQ and TSVQ respectively.  Refer to Chapter~\ref{chap_RVQ} for a description of RVQ.
+\item \underline{Appearance model}.  The goal of the appearance model is to provide a compact representation of the target's pixel intensities.  In this work, we use a learned eigenspace, a trained $\sigma$-tree codebook or a binary balanced-tree codebook for PCA, RVQ and TSVQ respectively.  Refer to Chapter~\ref{chap_RVQ} for a description of RVQ.
 
-\item \underline{Target representation}.  Several target representation methods are described in Chapter~\ref{chap_Introduction}.  We use the bounding quadrilateral method.  This quad encloses the pixels of a target of interest.  It is also allowed to warp affinely from frame to frame to minimize inclusion of background pixels as the target changes shape, size and orientation.
+\item \underline{Observation model}.  The goal of the observation model is to generate a likelihood score for an observation.  For PCA, the likelihood of a target observation is assumed proportional to the DFFS (distance to feature space).  For RVQ, the likelihood of a target observation is assumed to be proportional to the Euclidean distance to the closest equivalent code-vector, as explained in Chapter~\ref{chap_RVQ}, or partially summed code-vector as explained later in this chapter.  We use 2 methods, maxP and RofE, to compute the equivalent code-vector, and 2 methods, nulE and monR to compute the partially summed code-vector.  These methods are also explained later in this chapter. For TSVQ, the likelihood of a target observation is assumed to be proportional to the Euclidean distance to the closest terminal code-vector.
 
-\item \underline{Target motion}.  In order to keep our work general, we do not assume any deterministic target motion model.  The target is expected to move according to a Wiener process, i.e., brownian motion.  This allows for robust tracking under arbitrary target and camera motion.
+\item \underline{Representation model}.  The goal of the representation model is to provide a means of specifying a target.  Several target representation methods are described in Chapter~\ref{chap_Introduction}.  We use the bounding quadrilateral method.  This quad encloses the pixels of a target of interest.  It is also allowed to warp affinely from frame to frame to minimize inclusion of background pixels as the target changes shape, size and orientation.
 
-\item \underline{Target observations}.  For PCA, the likelihood of a target observation is assumed proportional to the DFFS (distance to feature space).  For RVQ, the likelihood of a target observation is assumed to be proportional to the Euclidean distance to the closest equivalent code-vector, as explained in Chapter~\ref{chap_RVQ}, or partially summed code-vector as explained later in this chapter.  We use 2 methods, maxP and RofE, to compute the equivalent code-vector, and 2 methods, nulE and monR to compute the partially summed code-vector.  These methods are also explained later in this chapter. For TSVQ, the likelihood of a target observation is assumed to be proportional to the Euclidean distance to the closest terminal code-vector.
+\item \underline{Motion  model}.  The goal of the motion model is to specify the motion that the target is expected to follow.  In order to keep our work general, we do not assume any deterministic target motion model.  The target is expected to move according to a Wiener process, i.e., brownian motion.  This allows for robust tracking under arbitrary target and camera motion.
 
-\item \underline{Target state inference}.  In tracking, the correspondence of observations in the current frame to existing targets in the previous frame is generally an ill-posed problem~\cite{2005_CNF_TRK_Yang}.  We use the particle filter to deal with this problem by propagating multiple hypotheses from frame to frame~\cite{1998_JNL_Condensation_IsardBlake}.
-
+\item \underline{Inference model}.  The goal of the inference model is to: (a) weight the likelihoods of various observations and make a decision on which observation should be picked as an estimate for the target position and appearance, and (b) keep a temporal record of which observations were not picked in the previous frames as best estimates but may still potentially be considered in future frames.  In tracking, the correspondence of observations in the current frame to existing targets in the previous frame is generally an ill-posed problem~\cite{2005_CNF_TRK_Yang}.  We use the particle filter to deal with this problem by propagating multiple hypotheses from frame to frame~\cite{1998_JNL_Condensation_IsardBlake}.  The computational complexity of this method does not grow with frames as opposed to the multi-hypothesis tracker (MHT)~\cite{1993_JNL_SURVEYcorresp_Cox}.
 \end{enumerate}
+
+These models work together to produce state estimates at every time frame.  The motion model and the representation model work together to generate 600 affine parameter sets as candidates for the target state.  The observation model takes these affine parameter sets and extracts observations, i.e., candidate window-chips, also called \emph{snippets}~\cite{2007_JNL_IDDM_Barnes} from the image.  It then uses the appearance model to generate a likelihood score for each snippet.  Finally, the inference model picks the snippet with the highest score and goes through a resampling step so that snippets with low likelihood scores are eliminated and snippets with high likelihood scores are repeated.  The affine parameters of these resampled snippets are then given to the motion model in the next frame and the process continues.
 
 %----------------------------------------------
 \subsection{Overview of temporal process}
@@ -99,14 +100,14 @@ Our tracking framework is based on five components as shown in Figure~\ref{fig:o
 								\label{fig:temporal_overview}
 								\end{figure}
 
-In the previous section, we described the five major components of our visual tracking framework.  In this section, we describe the temporal relationship between these components.  Refer to Figure~\ref{fig:temporal_overview} for a graphical overview of this relationship.  A brief description of this temporal process is given below while detailed explanation is given in later sections in this chapter.
+In the previous section, we described the five major components of our visual tracking framework and their mutual interaction.  In this section, we describe the temporal evolution of the tracking process.  Refer to Figure~\ref{fig:temporal_overview} for a graphical overview.  The temporal process is based on 3 distinct phases:
 
 \begin{enumerate}
 \item \underline{Manual initialization}.  The target is identified in the first frame by manually drawing a bounding box around it and identifying certain feature points on it.  For instance, for the Dudek sequence in which a face is tracked, feature points include the outer edges of the eye and points on the lips.  For the car11 sequence in which a car is tracked from the read, feature points include the tail lights.
 
 %The box is allowed to be affinely deformed as discussed later in this chapter.  Template matching then allows a certain number of frames to be designated as initial training frames.  Currently this value is set to $N_B=5$. 
 
-\item \underline{Bootstrapping}.  A particle filter is run for $B$ frames.  The likelihood of observations is computed using the Euclidean distance from the manually segmented target in the first frame.  The $B$ MAP window-chip estimates, also called \emph{image snippets}~\cite{2007_JNL_IDDM_Barnes}, one from each of the $B$ frames are stored.
+\item \underline{Bootstrapping}.  A particle filter is run for $B$ frames.  The likelihood of observations is computed using the Euclidean distance from the manually segmented target in the first frame.  The $B$ maximum aposteriori (MAP) snippets, one from each of the $B$ frames are stored.
 
 \item \underline{Run-time}.  During this step, the learning process and the particle run alternately.  For PCA, the learning process includes updating its eigenbasis with the MAP estimates of the particle filter.  For RVQ and TSVQ, the learning process includes updating their codebooks. 
 \end{enumerate}
@@ -115,7 +116,7 @@ In the previous section, we described the five major components of our visual tr
 %This model ties in multiple possible spatial observations in a temporal framework to enable sequential inference through the tracking process.
 %Every frame after the one-time initialization is tested against the iPCA, bPCA, RVQ and TSVQ models and results are compared.  The Condensation algorithm is used for temporal and spatial integration of observation and state information.  Spatial processing includes generating several candidate window chips (snippets) and picking the one that gives least mean squared reconstruction error.  Temporal processing includes carrying over the posterior density from a frame as the prior density for the next frame.  The snippet that gives the least squared error is retained and added to the pool of training images in FIFO (first-in first-out) fashion, i.e. a moving window of $N_w$ training images is maintained.
 
-The integration of the above-mentioned 5 components in the temporal process just explained enables us to handle the following tracking challenges:
+Our tracking framework based on the 5 models mentioned in the previous section working through the temporal process explained in this section enable us to handle the following tracking challenges:
 
 \begin{itemize}
 \item \underline{Target appearance related}: Target pose changes, lighting changes, structured noise and temporary occlusions.
@@ -123,7 +124,7 @@ The integration of the above-mentioned 5 components in the temporal process just
 \item  \underline{Target motion related}: Arbitrary camera and target motion.
 \end{itemize}
 
-We now discuss each of the 5 components of our tracking framework (see Figure~\ref{fig:overview}).  
+We now discuss each of the 5 models of our tracking framework (see Figure~\ref{fig:overview}).  
 
 %============================
 \section{Model 1: Appearance model}
@@ -208,14 +209,23 @@ Finally, the rms reconstruction error is lower for uniform random data than for 
 \item \underline{Statistically dependent data}: For the Gauss-Markov and Dudek cases, all 4 algorithms display decreasing test error with increasing $Q$ or $P$. The leveling off of the test error, or the "knee-point"~\cite{2009_BOOK_PRML_Escolano}, is visible in all cases.
 \end{itemize}
 \end{enumerate}
-In these experiments, we see that training error of PCA is in general better than RVQ. This is expected since PCA can achieve perfect reconstruction when $Q$ comes close to the number of training examples $N$, $N<<D$.  Test errors however are comparable.  RVQ has 2 knobs, $P$ and $M$. In varying $P$, it acts like PCA in providing successive approximation. In varying $M$, it acts like TSVQ in changing its VC dimension, and therefore its generalization ability.  Given this flexibility, it is expected that RVQ will perform well in tracking experiments.
+In these experiments, we see that training error of PCA is in general better than RVQ. This is expected since PCA can achieve perfect reconstruction when $Q$ comes close to the number of training examples $N$, $N<<D$.  Test errors however are comparable.  RVQ has 2 knobs, $P$ and $M$. In varying $P$, it acts like PCA in providing successive approximation. In varying $M$, it acts like TSVQ in changing its VC dimension, and therefore its generalization ability.  Given this flexibility, it is expected that RVQ will perform well in our tracking framework.
 
 %=======================		
 \section{Model 2: Observation model}
 %=======================
+								\begin{figure}[t]
+								\centering
+								\includegraphics[width=0.65\textwidth]{thesis/affineCandidates.pdf}
+								\caption{Different observations extracted from the frame at time $t$ that will be evaluated to find the snippet that is best explained by the appearance model.  The brightness changes in the various snippets is due to scaling.}
+								\label{Fig:affine_candidates}
+								\end{figure}
+
 An observation model $p(z_t|x_t)$ relates the state $x_t$ at time $t$ to the observation $z_t$ at time $t$.  Unfortunately, it is not possible to estimate the observation model from the data and so reasonable assumptions must be made.  The observations are assumed to be independent of each other as well as of the dynamical process \cite{1998_JNL_Condensation_IsardBlake}. 
 
 %In this work, for PCA, the observation model assumes that the candidate window chips (snippets) in the image that can contain the target were generated from a subspace of the target $\mathbf{U}$ centered at $\mathbf{\mu}$.  For RVQ and TSVQ, the observation model assumes that the candidate snippets were generated from the RVQ and TSVQ codebooks respectively.  
+
+In the first step, the observation model generates observations that will serve as candidates for the target, as shown in Figure~\ref{Fig:affine_candidates}.  
 
 For PCA, it is assumed that an image $\mathbf{x}$ in $\mathbb{R}^D$ is probabilistically generated from a subspace $\mathbf{U}$ spanned by earlier observed images.  The covariance matrix $\Sigma$ of the input training images can be written as $\Sigma = \mathbf{U}\mathbf{\Lambda} \mathbf{V}^T$.  Here $\mathbf{\Lambda}$ is the matrix of eigenvalues.  The distribution is assumed to be Gaussian centered at $\boldsymbol{\mu}$.  The probability of an image being generated under this distribution is inversely proportional to its distance from $\boldsymbol{\mu}$.  This distance can be decomposed into two parts:
 
@@ -418,7 +428,7 @@ During tracking, in the first frame, manually selected affine parameters and fea
 %=======================		
 \section{Model 4: Motion model}
 %=======================		
-The motion model is a mathematical representation of the real or expected motion of the target of interest.  Since tracking is in general an ill-posed problem, it is common to make assumptions about the motion to simplify motion modeling.  Common assumptions such as stationary camera, coherent motion etc. are discussed in Chapter~\ref{chap_Tracking_methods}.
+The motion model is a mathematical representation of the real or expected motion of the target of interest.  Since tracking is in general an ill-posed problem, it is common to make assumptions about the motion to simplify motion modeling.  Common assumptions such as stationary camera, coherent motion etc. are discussed in Chapter~\ref{chap_TRK}.
 
 In this work, we make two assumptions about the target motion:
 
@@ -450,30 +460,12 @@ At every time step, predicted values are sampled from all 6 distributions.  Each
 								\label{fig:particle_filter_resampling}
 								\end{figure}
 
+The inference model makes the final decision of which candidate snippet to pick as the target.  Our inference model makes no assumption of linearity or Gaussianity.  What this means is that we do not assume that the motion or observation models are linear, nor do we assume that the likelihood of finding a target at a particular location has a Gaussian distribution.  Morever, we would like to keep a history of possible target candidate states, 600 in this case, so that soft decisions can be made about the target state at each frame.  In other words, at every frame, even though we make a decision as to which particular snippet best represents the target, we acknowledge that this decision could be erroneous and therefore we propagate other candidates through time.  This allows us to revisit candidate snippets that were not picked in previous frames as the target estimate but that could still have a high probability of being the correct snippet.  Also, we do not want our hypotheses to grow with time.  Keeping all this in mind, we base our inference model on the sequential Monte Carlo (SMC) filter, i.e., the particle filter~\cite{2002_JNL_PF_Arulampalam}.  
 
-								\begin{figure}[t]
-								\centering
-								\includegraphics[width=0.65\textwidth]{thesis/affineCandidates.pdf}
-								\caption{Different affine parameters will produce different 33x33 outputs.}
-								\label{Fig:affine_candidates}
-								\end{figure}
+As mentioned earlier, the weights of the target candidate snippets are computed in the observation model.  An example scenario using only 10 candidate snippets, i.e., particles, at time $t$ is given in Figure~\ref{fig:particle_filter_resampling}.  The test pdf in this figure is generated by normalizing the weights of the target candidate snippets.  In the first step, the inference model picks the 9th snippet as the target estimate since it has highest weight.  In the second step, the inference model resamples the test pdf to remove snippets that have low weight and to repeat snippets that have high weight.  To do this, a reference uniform density is generated.  The CDFs of these 2 densites are then compared.  Only those snippets are kept and repeated that have high weight as shown in the figure.  The new resampled density is then passed to the motion model to generate candidate snippets in the next frame.
 
-Our goal is to track targets when target dynamics are non-linear and non-Gaussian.  In the state-space approach to time series modeling, the focus is on the \emph{state vector} and its transition from state to state.  In tracking applications, the state vector could correspond to target dynamics.  In economic systems, the state vector could be composed of quantities such as inflation rates, currency exchange rates, inflation, etc.  In weather forecasting, the state vector could be based on hurricane speed, direction and strength.  It is clear that a large range of applications can be modeled using this approach.  However, in most cases, it is difficult to accurately estimate the states.  Noise induced by natural phenomena or erroneous observation can corrupt measurement of the state vector.  A noisy \emph{measurement vector} therefore relates observations to states.  In many cases, the state vector evolution can be modeled as a linear system.  However, since we make no assumptions of linearity, the inference model in this work is based on a sequential Monte Carlo (SMC) filter, the particle filter.  The particle filter has been discussed in Chapter~\ref{chap_TRK}.  Almost all particle filters are based on the sequential importance sampling (SIS) algorithm, including the sampling importance resampling (SIR) filter, auxiliary sampling importance resampling (ASIR) filter and the regularized particle filter (RPF).  The basic difference between these algorithms is the choice of \emph{importance sampling density} and/or modification of the resampling step~\cite{2002_JNL_PF_Arulampalam}.  
-
-In this work, the weights on the posterior are computed using the appearance model for PCA, RVQ or TSVQ, depending on which of these algorithms is being used.  For RVQ for instance, the mean squared reconstruction error is used for the weighting.  An example of the inference process in the particle filter is shown in Figure~\ref{fig:particle_filter_resampling}.  A test density at time $k$ needs to be resampled.  A reference uniform density is generated.  The CDFs (cumulative density function) of both these densities is compared and input points that have large weights are retained.  An example is shown in Figure~\ref{fig:particle_filter_resampling}.  In this work, the number of particles used is $N_p=600$.  Each particle represents the point mass density of a vector $\mathbf{X}$ in $R^6$ corresponding to the 6 parameters required for an affine deformation.
-
-In Figure~\ref{Fig:affine_candidates}, we show 100 candidates warped in this manner.  These candidates are then processed by the inference model, also explained later in the chapter.
-
-
+Having explained all 5 models that constitute our tracking framework, we now apply our tracker to several image datasets and present our results.
 %For a set of $N$ input points, a set $S$ of $N$ points is created such that each of these points $s_i$ corresponds to the $i$th index of the input CDF Those input points $x_i$ are picked for which the corresponding CDF points, $c_i$ induce a transition in the $i-th$ 
-
-
-
-								
-
-	
-
-
 %\cite{1992_JNL_MCMC_Carlin}
 
 %=========================
@@ -509,7 +501,7 @@ Here, we present tracking error results for our 6 different trackers, PCA-based,
 
 We have previously described our 5-component tracker comprising appearance, observation, representation, motion and inference models.  All 6 trackers share exactly the same representation, motion and inference models.  However, each has its own appearance and observation models.
 
-All trackers were run on 6 publicly available datasets, Dudek, davidin300, sylv, fish, car4 and car11.  See Figure~\ref{fig:trk_sequences} in Appendix~\ref{App:dataset_snapshots} for snapshots of images in each dataset at 100 image intervals and Table~\ref{Tab:datasets_used} for the various issues in these datasets.  These datasets can be downloaded from~\cite{2008_JNL_subspaceTRK_Ross}.  Tracking error was measured on each of these datasets using the error between ground truth feature points and estimated feature points as shown in Figure~\ref{fig:results_pca__trk_dudek_0007} for the Dudek sequence.
+All trackers were run on 6 publicly available datasets, Dudek, davidin300, sylv, fish, car4 and car11.  See Figure~\ref{fig:trk_sequences} in Appendix~\ref{App:dataset_snapshots} for snapshots of images in each dataset at 100 image intervals and Table~\ref{Tab:datasets_used} for the various challenges in these datasets.  These datasets can be downloaded from~\cite{2008_JNL_subspaceTRK_Ross}.  Tracking error was measured on each of these datasets using the error between ground truth feature points and estimated feature points as shown in Figure~\ref{fig:results_pca__trk_dudek_0007} for the Dudek sequence.
 
 								\begin{figure}[t]
 								\centering
@@ -655,14 +647,14 @@ Finally, in Figure~\ref{fig:results_final_5_configs}, we plot tracking performan
 For the interested reader, the appendix contains detailed results for tracking errors for all 6 datasets, for all RVQ types (maxQ, RofE, nulE, monR), over several RVQ configurations (8x2, 8x4, 8x8, 8x12, 8x16).  Also, detailed graphical results for all 6 datasets, for all RVQ types, for the 8x4 configuration are also presented.
 
 
-\end{Body}
-%##############################################################################################################
-\begin{EndMatter}
-\references 				%generates the bibliography page
-\end{EndMatter}
-\end{document}
-%##############################################################################################################
-
+%\end{Body}
+%%##############################################################################################################
+%\begin{EndMatter}
+%\references 				%generates the bibliography page
+%\end{EndMatter}
+%\end{document}
+%%##############################################################################################################
+%
 
 
 
