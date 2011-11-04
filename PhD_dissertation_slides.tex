@@ -15,7 +15,7 @@
 \end{frame}
 
 %####################################################################################################
-\section{I. Background}
+\section{I. Introduction}
 %####################################################################################################
 \begin{frame}
 \frametitle{Background}
@@ -37,7 +37,7 @@
 \section{II. Tracking}
 %==================================
 %---------------------------------------------------------
-\subsection{(a) Overview}
+\subsection{(a) Introduction}
 %---------------------------------------------------------
 \begin{frame}
 \frametitle{Tracking}
@@ -251,7 +251,7 @@
 \framesubtitle{overview}
 \logoCSIPCPL\mypagenum
 	\begin{figure}				
-		\includegraphics[width=0.9\textwidth]{thesis/Quantization_MSE.pdf}
+		\includegraphics[width=0.9\textwidth]{thesis/Quantization_blockDiagram.pdf}
 	\end{figure}
 \end{frame}
 
@@ -325,11 +325,13 @@
 \frametitle{RVQ}
 \framesubtitle{block diagram}
 \logoCSIPCPL\mypagenum
-	\begin{changemargin}{-1.3in}{0in}
-		\begin{figure}				
-			\includegraphics[width=1.3\textwidth]{thesis/RVQ_blockDiagram.pdf}
-		\end{figure}
-	\end{changemargin}
+\begin{changemargin}{-1.35in}{0in}
+\begin{figure}
+\centering			
+\subfigure[Encoder.]{\includegraphics[width=1.35\textwidth]{thesis/RVQ_encoder_blockDiagram.pdf}}
+\subfigure[Decoder.]{\includegraphics[width=1.15\textwidth]{thesis/RVQ_decoder_blockDiagram.pdf}}
+\end{figure}
+\end{changemargin}
 \end{frame}
 
 
@@ -385,7 +387,7 @@
 
 \begin{frame}[plain]
 \frametitle{RVQ}
-\framesubtitle{Decoding methods.}
+\framesubtitle{decoding methods}
 \logoCSIPCPL\mypagenum
 \begin{changemargin}{-1.3in}{0in}
 \begin{figure}[h]
@@ -400,8 +402,8 @@
 \subsection{(b) Comparisons}
 %--------------------------------------
 \begin{frame}
-\frametitle{RVQ comparison}\logoCSIPCPL\mypagenum
-\framesubtitle{ESVQ}
+\frametitle{Comparison with ESVQ}\logoCSIPCPL\mypagenum
+\framesubtitle{}
 	\begin{itemize}
 		\item ESVQ
 			\begin{itemize}
@@ -427,8 +429,8 @@
 \end{frame}
 
 \begin{frame}[plain]
-\frametitle{Comparison}
-\framesubtitle{ESVQ, TSVQ}
+\frametitle{Comparison with ESVQ, TSVQ}
+\framesubtitle{}
 \logoCSIPCPL\mypagenum
 \begin{changemargin}{-1.3in}{0in}
 \begin{figure}		
@@ -476,17 +478,17 @@
 
 
 %--------------------------------------------------------
-\subsection{(c) Image classification (Barnes, 2007)}
+\subsection{(c) Image classification}
 %--------------------------------------------------------
 \begin{frame}
-\frametitle{RVQ classification}
+\frametitle{Image classification\footnote{Barnes, 2007}}
 \framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka \\(training phase)}
 \logoCSIPCPL\mypagenum
 	\begin{figure}		
-		\includegraphics[height=0.35\textheight]{thesis/RVQ_SatelliteSriLanka_1_snippets.png}			
+		\includegraphics[height=0.3\textheight]{thesis/RVQ_SatelliteSriLanka_1_snippets.png}			
 	\end{figure}
 	\begin{figure}		
-		\includegraphics[height=0.40\textheight]{thesis/RVQ_SatelliteSriLanka_2_codebooks.png}			
+		\includegraphics[height=0.35\textheight]{thesis/RVQ_SatelliteSriLanka_2_codebooks.png}			
 	\end{figure}
 \end{frame}
 
@@ -494,11 +496,11 @@
 
 
 \begin{frame}
-\frametitle{RVQ classification}
+\frametitle{Image classification\footnote{Barnes, 2007}}
 \framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka\\(testing phase)}
 \logoCSIPCPL\mypagenum
 	\begin{figure}		
-		\includegraphics[height=0.6\textheight]{thesis/RVQ_SatelliteSriLanka_3_labeling.png}
+		\includegraphics[height=0.5\textheight]{thesis/RVQ_SatelliteSriLanka_3_labeling.png}
 		\caption{\hspace{1.3in}{\color{yellow}yellow}: dirt paths \\\hspace{1.3in}{\color{blue}blue}: rivers \\\hspace{1.3in}{\color{red}red}: paved roads \\\hspace{1.3in}{\color{green}green}: train tracks}
 	\end{figure}
 \end{frame}
@@ -552,9 +554,109 @@
 \end{figure}
 \end{frame}
 
+%------------------------------------------------------
+\subsection{(a) Representation model}
+%------------------------------------------------------
+\begin{frame}[plain]
+\frametitle{Affine warping}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\scriptsize
+\begin{changemargin}{-1.3in}{0in}
+\begin{equation*}
+\begin{array}{llllllll}
+\mathbf{A} &= \left[\begin{array}{lll}a & b \\ c & d\\ \end{array}\right] \\
+&=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t} \\
+&={\color{blue}(\mathbf{U}\mathbf{V}^t)}{\color{red}\mathbf{V}}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}\\
+&={\color{blue}\mathbf{R}(\theta)}{\color{red}\mathbf{R}(-\phi)}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{R} (\phi)}\\
+&={\color{blue}\RotMatrixTheta}{\color{red}\RotMatrixminusPhi}{\color{darkgreen}\EigenvalueMatrix}{\color{red}\RotMatrixPhi}\\\\
+\end{array}
+\label{Eq:AffineDecomposition}
+\end{equation*}
+\end{changemargin}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Inverse affine transform}
+\framesubtitle{one time initialization}
+\logoCSIPCPL\mypagenum
+In first frame
+\begin{itemize}
+\item given target affine parameters and ground truth feature points
+\item apply inverse affine transform on ground truth points to warp them to canonical position, and save this position $(\mathbf{x, y})$
+\end{itemize}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.6\textwidth]{thesis/dataset_Dudek_00001_inverseAffine.pdf}
+\label{fig:original_feature_points}
+\end{figure}
+\end{frame}
+
+
+
 
 %------------------------------------------------------
-\subsection{(a) Appearance model}
+\subsection{(b) Motion model}
+%------------------------------------------------------
+\begin{frame}
+\frametitle{Generating track candidates}
+\framesubtitle{run-time}
+\logoCSIPCPL\mypagenum
+Use random affine deformation to model motion
+\begin{itemize}
+\item Perturb affine parameters
+\item For each affine set, 
+\begin{itemize}
+\item apply forward affine transform on zero-centered canonical grid 
+\item bilinear interpolation to extract ROI, one per affine set, as shown below
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.35\textwidth]{thesis/affineCandidates.pdf}
+\label{Fig:affine_candidates}
+\end{figure}
+\end{itemize}
+\item For set corresponding to least reconstruction error, apply forward affine transform to $(\mathbf{x, y})$ and compare with ground truth to get track error
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[plain]
+\frametitle{1st forward affine transform}
+\framesubtitle{get ROI}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+Density of grid points is greater in the horizontal direction.
+\begin{figure}[t]
+\centering
+\fbox{\includegraphics[width=1.3\textwidth]{thesis/dataset_Dudek_00001_forwardAffine.pdf}}
+\end{figure}
+\end{changemargin}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{2nd forward affine transform}
+\framesubtitle{overlay feature points on ROI}
+appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtained in first frame
+\logoCSIPCPL\mypagenum
+\scriptsize
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.55\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}
+\label{Fig:overall}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------------
+\subsection{(c) Appearance model}
 %------------------------------------------------------
 
 %PCA
@@ -628,9 +730,18 @@
 \end{figure}
 \end{frame}
 
+\begin{frame}
+\frametitle{Sample 8x4 RVQ codebook}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{figure}
+\includegraphics[height=0.75\textheight]{thesis/1_Dudek__aRVQ_08_04_1000_0_RofE__170_codebook.pdf}
+\end{figure}	
+\end{frame}
+
 
 %------------------------------------------------------
-\subsection{(b) Observation model}
+\subsection{(d) Observation model}
 %------------------------------------------------------
 \begin{frame}
 \frametitle{Observation model}
@@ -675,108 +786,6 @@ p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\
 
 
 %------------------------------------------------------
-\subsection{(c) Representation model}
-%------------------------------------------------------
-\begin{frame}[plain]
-\frametitle{Affine warping}
-\framesubtitle{}
-\logoCSIPCPL\mypagenum
-\scriptsize
-\begin{changemargin}{-1.3in}{0in}
-\begin{equation}
-\begin{array}{llllllll}
-\mathbf{A} &= \left[\begin{array}{lll}a & b \\ c & d\\ \end{array}\right] \\
-&=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t} \\
-&={\color{blue}(\mathbf{U}\mathbf{V}^t)}{\color{red}\mathbf{V}}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}\\
-&={\color{blue}\mathbf{R}(\theta)}{\color{red}\mathbf{R}(-\phi)}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{R} (\phi)}\\
-&={\color{blue}\RotMatrixTheta}{\color{red}\RotMatrixminusPhi}{\color{darkgreen}\EigenvalueMatrix}{\color{red}\RotMatrixPhi}\\\\
-\end{array}
-\label{Eq:AffineDecomposition}
-\end{equation}
-\end{changemargin}
-\end{frame}
-
-
-
-\begin{frame}
-\frametitle{Inverse affine transform}
-\framesubtitle{one time initialization}
-\logoCSIPCPL\mypagenum
-In first frame
-\begin{itemize}
-\item given target affine parameters and ground truth feature points
-\item apply inverse affine transform on ground truth points to warp them to canonical position, and save this position $(\mathbf{x, y})$
-\end{itemize}
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.6\textwidth]{thesis/dataset_Dudek_00001_inverseAffine.pdf}
-\label{fig:original_feature_points}
-\end{figure}
-\end{frame}
-
-
-
-
-%------------------------------------------------------
-\subsection{(d) Motion model}
-%------------------------------------------------------
-\begin{frame}
-\frametitle{Generating track candidates}
-\framesubtitle{use random affine deformation to model motion}
-\logoCSIPCPL\mypagenum
-During run-time
-\begin{itemize}
-\item Perturb affine parameters
-\item For each affine set, 
-\begin{itemize}
-\item apply forward affine transform on zero-centered canonical grid 
-\item bilinear interpolation to extract ROI, one per affine set, as shown below
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.35\textwidth]{thesis/affineCandidates.pdf}
-\label{Fig:affine_candidates}
-\end{figure}
-\end{itemize}
-\item For set corresponding to least reconstruction error, apply forward affine transform to $(\mathbf{x, y})$ and compare with ground truth to get track error
-\end{itemize}
-\end{frame}
-
-
-
-
-
-
-
-
-\begin{frame}[plain]
-\frametitle{1st forward affine transform}
-\framesubtitle{get ROI}
-\logoCSIPCPL\mypagenum
-\begin{changemargin}{-1.3in}{0in}
-Density of grid points is greater in the horizontal direction.
-\begin{figure}[t]
-\centering
-\fbox{\includegraphics[width=1.3\textwidth]{thesis/dataset_Dudek_00001_forwardAffine.pdf}}
-\end{figure}
-\end{changemargin}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{2nd forward affine transform}
-\framesubtitle{overlay feature points on ROI}
-appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtained in first frame
-\logoCSIPCPL\mypagenum
-\scriptsize
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.55\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}
-\label{Fig:overall}
-\end{figure}
-\end{frame}
-
-
-%------------------------------------------------------
 \subsection{(e) Inference model}
 %------------------------------------------------------
 \begin{frame}
@@ -796,70 +805,8 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 
 
 
-\begin{frame}
-\frametitle{Sample 8x4 RVQ codebook}
-\framesubtitle{}
-\logoCSIPCPL\mypagenum
-\begin{figure}
-\includegraphics[height=0.75\textheight]{thesis/1_Dudek__aRVQ_08_04_1000_0_RofE__170_codebook.pdf}
-\end{figure}	
-\end{frame}
 
-%%===================================================
-%\subsection{\ \ \ \ usage: video analysis}
-%%===================================================
-%\begin{frame}
-%\frametitle{Action recognition using RVQ}
-%\framesubtitle{Weizmann dataset}
-%\logoCSIPCPL
-%	10 different actions to be classified
-%	\begin{figure}	
-%		\includegraphics[width=1.0\textwidth]{thesis/RVQ_HMM_IPCV2010_Weizmann_dataset.pdf}
-%	\end{figure}
-%	\hspace{0.6in}
-%	\multiinclude[<+>][format=jpg, start=0, graphics={width=0.6\textwidth}]{thesis/RVQ_HMM_denis_silhouette}
-%\end{frame}
-%
-%
-%\begin{frame}[plain]
-%\frametitle{Action recognition using RVQ}
-%	\begin{changemargin}{-1.3in}{0in}
-%	\begin{figure}	
-%		\includegraphics[width=1.35\textwidth]{thesis/RVQ_HMM_IPCV2010_blockDiagram.pdf}
-%	\end{figure}
-%	\end{changemargin}
-%\end{frame}
-%
-%
-%\begin{frame}
-%\frametitle{Action recognition using RVQ}
-%\framesubtitle{action confusion (all methods: fixed windows)	 \tiny{\footnote{S. M. Aslam, C. F. Barnes, and A. F. Bobick, Video action recognition using residual vector quantization and hidden markov models," in \emph{International Conference on Image Processing, Computer Vision, and Pattern Recognition, 2010}.}}}
-%\logoCSIPCPL
-%	\begin{figure}
-%		\centering	
-%		\subfigure[Our method]
-%		{
-%			\includegraphics[width=.45\textwidth]{thesis/Proposal_fig7a_RVQ_HMM_Weizmann_TabularResults_us.pdf}
-%			\label{fig:Weizmann_TabularResults_us}	
-%		}
-%		\subfigure[Gorelick et al.]
-%		{
-%			\includegraphics[width=0.40\textwidth]{thesis/Proposal_fig7b_RVQ_HMM_Weizmann_TabularResults_gorelick.pdf}
-%			\label{fig:Weizmann_TabularResults_gorelick}	
-%		}
-%		\subfigure[Manor et al.]
-%		{
-%			\includegraphics[width=0.45\textwidth]{thesis/Proposal_fig7c_RVQ_HMM_Weizmann_TabularResults_manor.pdf}
-%			\label{fig:Weizmann_TabularResults_irani}	
-%		}
-%		\subfigure[Ali et al.]
-%		{
-%			\includegraphics[width=0.40\textwidth]{thesis/Proposal_fig7d_RVQ_HMM_Weizmann_TabularResults_shah.pdf}
-%			\label{fig:Weizmann_TabularResults_shah}	
-%		}												
-%		\label{fig:Weizmann_TabularResults}			
-%	\end{figure}
-%\end{frame}
+
 
 %=======================================
 \section{V. Results}
@@ -951,7 +898,7 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 \vspace{-0.2in}
 \begin{figure}[h!]
 \centering
-\subfigure[PCA]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
+\subfigure[PCA.]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
 \subfigure[TSVQ.]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5b_tsvq.pdf}\label{fig:results_final_5b}}
 \subfigure[maxP.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5c_maxP.pdf}\label{fig:results_final_5c}}
 \subfigure[RofE.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5d_RofE.pdf}\label{fig:results_final_5d}}
@@ -988,9 +935,6 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 \end{frame}
 
 
-%=======================================
-\section{VII. Future work}
-%=======================================
 \begin{frame}
 \frametitle{Future work}
 \framesubtitle{}
