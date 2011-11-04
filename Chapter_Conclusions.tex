@@ -3,17 +3,18 @@
 \label{chap_conclusions}	
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-In this thesis, we demonstrated successful application of RVQ for visual tracking over a variety of datasets, and compared our results with PCA and TSVQ based tracking.  We have based our design on a well-known method for visual tracking~\cite{2008_JNL_subspaceTRK_Ross}.  The advantage of using an existing tracking framework is that it allows our newer RVQ based tracking method to be compared more easily with existing methods in the literature.
+In this work, we demonstrated successful application of RVQ for visual tracking over a variety of datasets, and compared our results with PCA and TSVQ based tracking.  We have based our design on a well-known method for visual tracking~\cite{2008_JNL_subspaceTRK_Ross}.  The advantage of using an existing tracking framework is that it allows our newer RVQ based tracking method to be compared more easily with existing methods in the literature.
 
 Based on our work, we draw the following conclusions:
 
 \begin{enumerate}
-\item \underline{Performance comparison}.  We chose three metrics to compare PCA, TSVQ and RVQ.  A fourth metric is added which counts number of lost drifts.
+\item \underline{Performance comparison}.  We chose five metrics to compare PCA, TSVQ and RVQ.  A sixth metric is added which counts number of lost tracks.
 \begin{enumerate}
 \item \underline{Best possible performance}.  PCA and RVQ performed best in half the times each.  TSVQ never performed best.  However, of the 3 times that PCA performed best, in 2 cases, the performance difference was not significantly better than RVQ.  Moreover, and perhaps more importantly, RVQ performed best in the two most challenging datasets, Dudek and davidin300 since they both have multiple sources of noise.
-\item \underline{Best mean performance}.  Here, RVQ performed best in twice the number of scenarios as PCA.  TSVQ had the worst mean performance.
+\item \underline{Mean performance over parameters}.  Here, RVQ performed best in twice the number of scenarios as PCA.  TSVQ had the worst mean performance.
 \item \underline{Memory cost=16 vectors}.  Here PCA performed best in twice the number of scenarios as RVQ .
-\item \underline{Memory cost=32 vectors}.  Here RVQ completely outperformed PCA and TSVQ.  This is understandable since the capacity of RVQ to explain an underlying distribution grows exponentially as $M^P$.  Moreover, we have used $M=2, 4, 8$ ensuring that we do not increase our VC dimension too much so as to start over-fitting.
+\item \underline{Memory cost=32 vectors}.  Here RVQ completely outperformed PCA and TSVQ.  This is understandable since the capacity of RVQ to explain an underlying distribution grows exponentially as $M^P$.  At 8x4, RVQ has enough capacity to track well without over-fitting.
+\item \underline{Mean performance over datasets}.  Here, PCA with $Q=16$ has best performance.  However, if performance is averaged over datasets and parameters, then RofE and monR perform best.  Of the different RVQ parameters, 8x4 has best performance.
 \item \underline{Lost tracks}.  There was only one lost track for monR.  This is understandable since monR is a greedy approach.  The lost track was in davidin300 which is a challenging dataset.
 \end{enumerate}
 
