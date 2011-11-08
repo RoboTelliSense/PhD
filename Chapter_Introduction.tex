@@ -23,7 +23,7 @@ Object tracking, target tracking, or simply tracking, can be defined as estimati
 	\label{fig:TRK_illustration}
 \end{figure}
 
-Recently, there has been a surge in interest in tracking due to several reasons: (a) proliferation of powerful computers, (b) availability of high quality and inexpensive video cameras, and (c) an increasing need for automated video analysis.  However, many practical difficulties are encountered visual tracking.  Some of these challenges include, 
+Recently, there has been a surge in interest in tracking due to several reasons: (a) proliferation of powerful computers, (b) availability of high quality and inexpensive video cameras, and (c) an increasing need for automated video analysis.  However, in practice, many difficulties are encountered in visual tracking.  Some of these challenges include, 
 
 \begin{itemize}
 \item Loss of information caused by projecting 3D world objects onto 2D images
@@ -65,7 +65,7 @@ Several algorithms have been employed for single and multiple target tracking.  
 The different target representations shown in Figure~\ref{fig:TRK_objectRepresentations} lend themselves to the following general categories of trackers:
 
 \begin{itemize}
-\item \underline{Point tracker}.  Targets represented using centroids or multiple points are commonly tracked using point trackers.  This form of tracking is closely tied to radar tracking.  As a matter of fact, the same techniques used in radar tracking are used.  Commonly used techniques include Kalman filters, particle filters and the Probabilistic Data Association Filter (PDAF) \cite{1983_JNL_JPDAF_Fortmann}.
+\item \underline{Point tracker}.  Targets represented using centroids or multiple points are commonly tracked using point trackers.  This form of tracking is closely tied to radar tracking.  As a matter of fact, the same techniques used in radar tracking are used.  Commonly used techniques include Kalman filtering, particle filtering~\cite{2002_JNL_PF_Arulampalam}, the \emph{probabilistic data association filter} (PDAF)~\cite{1975_JNL_PDAF_BarShalom}, the \emph{joint probabilistic data association filter} (JPDAF)~\cite{1983_JNL_JPDAF_Fortmann} and the \emph{multiple hypothesis tracker} (MHT)~\cite{1979_JNL_MTT_Reid}.
 \item \underline{Region tracker}.  Targets represented using bounding boxes are commonly tracked using region tracking.  Widely used tracking methods in this category are template matching and mean shift tracking \cite{2002_JNL_MeanShift_Comaniciu}.
 \item \underline{Contour tracker}.  Targets represented using shape information are commonly represented using splines and tracked using active contours \cite{2000_BOOK_ActiveVision_Blake} and level sets \cite{1995_JNL_LevelSets_Malladi}.
 \end{itemize}
@@ -77,8 +77,9 @@ A closely associated problem is that of data association.  An overview of data a
 %===================
 \begin{figure}[t]
 	\center
-	\includegraphics[width=1.15\textwidth]{thesis/TRK_overview.pdf}
-	\caption{Visual tracking pre-processing steps, object representations and tracking methods adapted from \cite{2006_JNL_SURVEYtrk_Yilmaz}.}
+	\fbox{
+	\includegraphics[width=1\textwidth]{thesis/TRK_overview.pdf}}
+	\caption{Visual tracking, pre-processing steps, object representations and tracking methods~\cite{2006_JNL_SURVEYtrk_Yilmaz}.  In this work, we use the \emph{view subspace} method.}
 	\label{TRK_overviewDiagram}
 \end{figure}
 
@@ -88,9 +89,9 @@ It is common to apply pre-processing steps before tracking is initiated.  Some o
 \begin{itemize}
 \item \underline{Downsampling}.  This step is commonly carried out to reduce computational complexity.
 \item \underline{Normalization}.  This step is commonly used to normalize brightness variation in temporal sequences.
-\item \underline{Stabilization}.  Camera jitter is a common problem in tracking, especially in outdoor scenarios, or where cameras are hand-held.  Different camera stabilization algorithms have been proposed to reduce the effect of camera motion.  An overview can be found in \cite{2006_WHITE_stab_Sachs, 1999_JNL_stab_Engelsberg}
-\item \underline{Background modeling}.  Several methods have been suggested for background modeling.  A commonly used method is the Multi-gaussian algorithm \cite{1999_CNF_RealTimeTracking_Stauffer}.  An overview of background modeling methods can be found in \cite{1999_CNF_Wallflower_Toyama}.
-\item \underline{Feature extraction}.  It is common to extract features from the target of interest and apply the algorithms mentioned above in the feature domain rather than the raw spatial domain.  Commonly used features include color, edges, corners, motion, texture, depth and spatial intensity probability distribution.  For instance, corner detection \cite{1988_CNF_CombinedCornerEdgeDetector_Harris,2004_JNL_SIFT_Mikolajczyk} can be used to extract points of interest within the target which are then tracked using point trackers. 
+\item \underline{Stabilization}.  Camera jitter is a common problem in tracking, especially in outdoor scenarios, or where cameras are hand-held.  Different camera stabilization algorithms have been proposed to reduce the effect of camera motion.  An overview can be found in \cite{2006_WHITE_stab_Sachs, 1999_JNL_stab_Engelsberg}.
+\item \underline{Background modeling}.  Several methods have been suggested for background modeling.  A commonly used method is the multi-Gaussian algorithm \cite{1999_CNF_RealTimeTracking_Stauffer}.  An overview of background modeling methods can be found in \cite{1999_CNF_Wallflower_Toyama}.
+\item \underline{Feature extraction}.  It is common to extract features from the target of interest and apply the algorithms mentioned above in the feature domain rather than in the raw spatial domain.  Commonly used features include color, edges, corners, motion, texture, depth and spatial intensity probability distribution.  For instance, corner detection \cite{1988_CNF_CombinedCornerEdgeDetector_Harris,2004_JNL_SIFT_Mikolajczyk} can be used to extract points of interest within the target which are then tracked using point trackers. 
 \end{itemize}
 
 An overview of these pre-processing steps, different object representations, and tracking methods is given in Figure~\ref{TRK_overviewDiagram}.
@@ -98,7 +99,7 @@ An overview of these pre-processing steps, different object representations, and
 %#################################
 \section{Current work}
 %#################################
-In this work, we use a technique called Residual Vector Quantization (RVQ) for tracking.  This technique is explained in detail in Chapter~\ref{chap_RVQ}.  In this introductory chapter, we just mention that RVQ has been in use in the signal processing community since 1982 \cite{1982_CNF_SpeechRVQ_JuangGray} when it was introduced for speech compression.  Even today, this method is still mainly used in speech processing.  The first application of RVQ for image analysis was in 2007 \cite{2007_JNL_IDDM_Barnes} where it was used to analyze damage caused by Hurricane Katrina in 2005 and the Sri Lankan Tsunami in 2007.  As of today, only two journals and less than 10 conference papers exist on the usage of RVQ for image analysis.  We build on this and present the first usage of RVQ for video analysis.  The two use cases we use are visual recognition and visual tracking.  The main emphasis however, is placed on visual tracking.
+In this work, we use a technique called Residual Vector Quantization (RVQ) for tracking.  RVQ was first introduced in 1982 in the context of speech compression~\cite{1982_CNF_SpeechRVQ_JuangGray}.  The first application of RVQ for image analysis appeared in 2007 where this method was used to analyze damage caused by Hurricane Katrina in the United States~\cite{2007_JNL_Katrina_Barnes}.  Our work presents the first usage of RVQ for any form of video analysis. 
 
 %#################################
 \section{Outline}
@@ -107,10 +108,11 @@ So far, we've briefly discussed three things in this introductory chapter: (a) t
 
 \begin{itemize}
 \item \underline{Chapter 2.  Residual Vector Quantization}.  In this chapter, we discuss RVQ, give the mathematical notation involved, and discuss design, optimality and implementation issues.  A comparison with other vector quantization methods is also given.
-\item \underline{Chapter 3.  RVQ in computer vision (recognition)}.  In this chapter, we first show that it is possible to use RVQ for face recognition.  We then turn to using RVQ for action recognition in image sequences.  We build on this transition to employ RVQ for tracking in the next chapters.
-\item \underline{Chapter 4.  Tracking methods}.  In this chapter, an overview of existing tracking methods is given before usage of RVQ in tracking is introduced in the next chapter.
-\item \underline{Chapter 5.  RVQ in computer vision (tracking)}.  This is the most detailed chapter and builds on the groundwork laid in earlier chapters in an attempt to solve the visual tracking problem.  We compare RVQ tracking with two existing well known methods, PCA (Principal Components Analysis) tracking and TSVQ (Tree Structured Vector Quantization) tracking.  Seven different datasets are used that cover a variety of scenarios including indoors, outdoors, day-time, night-time, human, vehicle and object tracking, rigid and non-rigid object tracking, lighting change, structured noise, camera motion, target pose and expression changes, and temporary occlusions.  Results for over ten thousand hours of simulations are presented and analyzed.
+\item \underline{Chapter 3.  Tracking methods}.  In this chapter, an overview of existing tracking methods is given.
+\item \underline{Chapter 4.  RVQ tracking}.  In this chapter, visual tracking using RVQ is explained.  Comparison is also made with tracking using two well known methods, \emph{principal component analysis} (PCA) and \emph{tree-structured vector quantization} (TSVQ).  Six publicly available datasets are used that cover a variety of scenarios including indoors, outdoors, day-time, night-time, human, vehicle and object tracking, rigid and non-rigid object tracking, lighting change, structured noise, camera motion, target pose and expression changes, and temporary occlusions.  
+\item \underline{Chapter 5.  Results}.  In this chapter, results of PCA, TSVQ and RVQ based tracking are presented and compared.
 \item \underline{Chapter 6.  Conclusions}.  This chapter wraps up this thesis briefly restating objectives, summarizing results, presenting conclusions and laying out a ground map for future work.
+\item \underline{Chapter 7.  Appendices}.  This chapter includes detailed plots for the interested reader.
 \end{itemize}
 
 
