@@ -1448,19 +1448,19 @@
    \par\endgroup
 }
 
-\newenvironment{preface}
+\newenvironment{summary}
 {
-   \typeout{*****************      Preface     ******************}
+   \typeout{*****************      Summary     ******************}
    \if@openright\cleardoublepage\else\clearpage\fi
    \phantomsection%
    \if@proposal
       \addcontentsline{toc}{section}{%
-         \texorpdfstring{\MakeUppercase{Preface}}{Preface}}%
-      \chapter*{\MakeUppercase{Preface}}
+         \texorpdfstring{\MakeUppercase{Summary}}{Summary}}%
+      \chapter*{\MakeUppercase{Summary}}
    \else
       \addcontentsline{toc}{chapter}{%
-         \texorpdfstring{\MakeUppercase{Preface}}{Preface}}%
-      \chapter*{\MakeUppercase{Preface}}
+         \texorpdfstring{\MakeUppercase{Summary}}{Summary}}%
+      \chapter*{\MakeUppercase{Summary}}
    \fi
    %\vskip 0.5in
    \begingroup

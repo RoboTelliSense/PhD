@@ -11,23 +11,34 @@
 
 %##############################################################################################################
 \begin{document}
-\begin{FrontMatter}
-\contents %generates the TOC, LOF, and LOT
-\end{FrontMatter}
+
 %##############################################################################################################
 
 
+
+
+
+\begin{FrontMatter}
+
 \begin{dedication}
-To my parents, my wife, and my children
+To my parents, my wife and my children.
 \end{dedication}
 
 \begin{acknowledgement}
-Thanks to all \newpage
+I would like to thank my advisor, Dr Christopher Barnes, for helping me in learning about a new and exciting method, residual vector quantization, my co-advisor, Dr Aaron Bobick, for his input and critiques on matters related to computer vision, and my committee for their feedback and guidance.\newpage
 \end{acknowledgement}
 
-\begin{preface}
-	hello
-\end{preface}
+\contents %generates the TOC, LOF, and LOT
+
+\end{FrontMatter}
+
+
+
+\begin{summary}
+In this work, our goal is to track visual targets using residual vector quantization (RVQ).  We compare our results with principal components analysis (PCA) and tree structured vector quantization (TSVQ) based tracking.
+
+This work is significant since PCA is commonly used in the Pattern Recognition, Machine Learning and Computer Vision communities. On the other hand, TSVQ is commonly used in the Signal Processing and data compression communities. RVQ with more than two stages has not received much attention due to the difficulty in producing stable designs. In this work, we bring together these different approaches into an integrated tracking framework and show that RVQ tracking performs best according to multiple criteria. Moreover, an advantage of our approach is a learning-based tracker that builds the target model while it tracks, thus avoiding the costly step of building target models prior to tracking.
+\end{summary}
 
 \begin{Body}	
 \include{Chapter_Introduction}

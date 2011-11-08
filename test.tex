@@ -108,8 +108,42 @@ backgroundcolor=\color{light-gray}}
 
 \begin{Body}	
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-\chapter{Introduction}
-%\section{Problem overview}
+\begin{table}[t]
+\caption{Datasets used for RVQ tracking.}
+\footnotesize
+\begin{tabular}{p{0.6in}|p{0.6in}p{0.6in}p{0.4in}p{0.4in}cccccc}
+Dataset 		&Scenario	     &\parbox[c]{0.4in}{\center Time of \\day} 	&\parbox[c]{0.26in}{\center Target of \\interest}  &\parbox{0.3in}{\center Rigid \\target} 	&\parbox{0.4in}{\center Lighting change 1-5 \\(5 most severe)}  	&\parbox{0.5in}{\center Structured \\noise} 	&\parbox{0.4in}{\center Camera \\motion} 	&\parbox{0.3in}{\center Pose \\change} 	&\parbox{0.45in}{\center Expression \\change} 	&\parbox{0.3in}{\center Temporary \\occlusion} 	\\\hline
+Dudek 		&Indoors		&N/A 				&face 		&no 	&2 	&yes 	&yes 	&yes 	&yes 	&yes 		\\\hline
+davidin300 	&Indoors		&N/A				&face			&no	&3		&yes	&yes	&yes	&yes	&no		\\\hline
+sylv			&Indoors		&N/A				&toy			&yes	&2		&no	&yes	&yes	&N/A	&no		\\\hline
+fish			&Indoors		&N/A				&object		&yes	&5		&no	&yes	&no	&N/A	&no		\\\hline
+car4			&Outdoors 	&day, sunny		&vehicle		&yes	&2		&no	&yes	&yes	&N/A	&no		\\\hline
+car11			&Outdoors	&night			&vehicle		&yes	&1		&no	&yes	&yes	&N/A	&no		\\\hline
+\end{tabular}
+\label{Tab:datasets_used}
+\end{table}
+
+
+\begin{table}[t]
+\caption{Publicly available datasets used for RVQ tracking.  For lighting change, a value of 1 indicates mild lighting change while a value of 5 indicates severe lighting change.  Structured noise includes taking off and putting on eye-glasses.}
+\footnotesize
+\centering
+\begin{tabular}{|l|c|c|c|c|c|c|}\hline
+							&\textbf{Dudek} & \textbf{davidin300} & \textbf{sylv} & \textbf{fish} & \textbf{car4} & \textbf{car11}\\\hline
+\textbf{Scenario} 		&Indoors &Indoors &Indoors &Indoors &Outdoors &Outdoors\\\hline
+\textbf{Time of day}	&N/A &N/A &N/A &N/A &day &night\\\hline
+\textbf{Target of interest} &face &face & toy &inanimate object & vehicle & vehicle\\\hline
+\textbf{Rigid target} &no &no & no &yes &yes &yes\\\hline
+\textbf{Lighting change}	 &2 &3 &2 &5 &2 &1 \\\hline
+\textbf{Sudden target motion} &yes &yes &no &yes &no &no\\\hline
+\textbf{Structured noise}&yes &yes &no&no&no&no\\\hline
+\textbf{Camera motion}&yes&yes&yes&yes&yes&yes\\\hline
+\textbf{Pose change}&yes&yes&yes&no&yes&yes\\\hline
+\textbf{Expression change}&yes&yes&N/A &N/A &N/A &N/A\\\hline
+\textbf{Temporary occlusion}&yes&yes&no&no&no&no\\\hline
+\end{tabular}
+\label{Tab:datasets_used}
+\end{table}
 
 
 

@@ -139,6 +139,7 @@ We now discuss each of the 5 models of our tracking framework (see Figure~\ref{f
 In this section, we discuss the representation model.  See also Figure~\ref{fig:TRK_objectRepresentations} in the introductory chapter that shows different target representations.  In many situations, it is necessary to track a visual target that is undergoing deformations.  Several targets of interest fall in this category, particularly non-rigid targets such as humans.  Even rigid objects can undergo deformation in a matter of seconds as shown in Figure~\ref{Fig:PETS2001_deformation}.  
 
 								\begin{table}[t]
+								\caption{2D transformations.}
 								\centering
 								\begin{tabular}{| l | c | c | p{2.5in} |}
 								\hline
@@ -148,7 +149,6 @@ In this section, we discuss the representation model.  See also Figure~\ref{fig:
 								& & & \\ Similarity & 5 & $\SimMatrix$ & scaling and rigid motion\\  & & & \\ \hline
 								& & & \\ Euclidean & 4 & $\EucMatrix$ & rigid motion (rotation, translation) \\  & & & \\ \hline
 								\end{tabular}\
-								\caption{2D transformations}
 								\label{table:2Dtransformations}
 								\end{table}
 
@@ -351,7 +351,7 @@ It is hoped that investigating reconstruction errors will aid in understanding t
 
 We use four datasets in $\mathbb{R}^{1089}$: (a) Uniform random variable, (b) Gaussian random variable, (c) Gauss-Markov random variable, and (d) images from the Dudek sequence. The reason for using $\mathbb{R}^{1089}$ is that our targets for all our tracking datasets are warped to a canonical size of 33-pixel height and 33-pixel width (33x33=1089). In all cases, we take 100 examples and split them up using an 80/20 rule, i.e. 80 training examples and 20 test examples. 10 cross-validation runs are used. In each cross-validation run, the training and test examples are picked randomly in the 80/20 ratio.
 
-Results for PCA, RVQp, RVQm and TSVQ are shown in Figures~\ref{fig:PCA_results}, \ref{fig:RVQ_results_varyingP} \ref{fig:RVQ_results_varyingM} and \ref{fig:TSVQ_results} respectively.  We make the following observations from these figures:
+Results for PCA, RVQp, RVQm and TSVQ are shown in Figures~\ref{fig:PCA_results}, \ref{fig:RVQ_results_varyingP}, \ref{fig:RVQ_results_varyingM} and \ref{fig:TSVQ_results} respectively.  We make the following observations from these figures:
 
 \begin{enumerate}
 \item \textbf{Training error}. Training error is always less than test error, as expected. Also, for each of the algorithms individually, we observe,
