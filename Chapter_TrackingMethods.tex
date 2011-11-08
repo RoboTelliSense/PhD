@@ -10,7 +10,18 @@
 \chapter{Tracking Methods}
 \label{chap_TRK}	
 %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-Visual tracking is an important and difficult area of computer vision that has received a lot of attention in the literature.  Refer to~\cite{2006_JNL_SURVEYtrk_Trucco, 2006_JNL_SURVEYtrk_Yilmaz, 2008_REP_SURVEYtrk_Cannons} for surveys on this topic.
+In this chapter, we provide an overview of tracking methods that have been reported in the literature.  The outline of this chapter is as follows,
+
+\begin{itemize}
+\item \underline{Bayesian estimation}.  Bayesian estimation is a general framework for target state estimation, and has been applied to the three major categories of tracking, point tracking, region tracking and contour tracking.  We use this approach in this work as well.  Therefore, this chapter begins with providing an overview of this method.
+\item \underline{Point tracking}.  Point tracking is the first of three tracking categories.  The methods used in computer vision are very similar to the methods in the radar tracking literature.
+\item \underline{Region tracking}.  Region tracking is the second tracking category.  In this method, entire regions are tracked.  In this work, we use a sub-category of this approach called \emph{subspace tracking}.
+\item \underline{Contour tracking}.  Contour tracking is the third and last tracking category.  In this method, target contours are tracked.
+\item \underline{Example trackers}.  After discussing the above topics, we provide examples of some trackers that have received attention in the literature.
+\item \underline{Subspace tracking}.  Finally, we discuss subspace tracking, a form of region tracking.  This section leads up to the approach we have used in this work, PCA, TSVQ and RVQ based tracking.
+\end{itemize}
+
+As mentioned earlier, visual tracking is an important and difficult area of computer vision and has received a lot of attention in the literature.  Refer to~\cite{2006_JNL_SURVEYtrk_Trucco, 2006_JNL_SURVEYtrk_Yilmaz, 2008_REP_SURVEYtrk_Cannons} for surveys on this topic.
 
 The biggest challenge in tracking is difficulty in handling changes in target appearance~\cite{2008_JNL_subspaceTRK_Ross}.  Intrinsic variations include pose variation and shape deformations.  Extrinsic variations include illumination change, camera motion, camera viewpoint and occlusions.  In order to simplify the process of tracking, it is common to make certain assumptions.  These assumptions fall under two broad categories:
 
@@ -18,7 +29,7 @@ The biggest challenge in tracking is difficulty in handling changes in target ap
 								\begin{figure}[t]
 								\center
 								\includegraphics[width=0.7\textwidth]{thesis/PRML_PGM_overview.pdf}
-								\caption{Tracking, big picture.}
+								\caption{The process of tracking within the probabilistic graphical model hierarchy.}
 								\label{fig:TRK_big_picture}
 								\end{figure}
 
@@ -35,7 +46,7 @@ The biggest challenge in tracking is difficulty in handling changes in target ap
 								\label{TRK_overviewDiagram}
 								\end{figure}
 
-Furthermore, several pre-processing steps may be required before tracking can be initiated.  These include stabilization for video registration, normalization, downsampling, background modeling and feature extraction.  Refer to~\cite{1999_CNF_Wallflower_Toyama} for a survey on background modeling. Commonly used features include corners, area, color, intensity distributions, contour descriptors and depth.
+As stated previously, several pre-processing steps may be required before tracking can be initiated.  These include stabilization for video registration, normalization, downsampling, background modeling and feature extraction.  Commonly used features include raw pixel values, corners, area, color information, intensity distributions, contour descriptors and depth.  In this work, the only pre-processing step we carry out is feature extraction of raw pixels that are expected to belong to the target of interest.
 
 								\begin{figure}[t]
 								\center
@@ -49,7 +60,7 @@ Furthermore, several pre-processing steps may be required before tracking can be
 %#######################		
 \section{Bayesian estimation}
 %#######################
-A commonly used formulation for tracking is based on Bayesian estimation.  In this framework, target kinematics are modeled as the latent states of a time-dynamic system~\cite{2002_JNL_PF_Arulampalam}.  Time-dynamic systems are based on two models: (a) \emph{state prediction model}, ${f_t:R^D \times R^D \rightarrow R^D}$, describing state evolution, and (b) \emph{observation model}, ${h_t:R^N \times R^N \rightarrow R^N}$, relating observations to the states.  These models are described as,
+A commonly used formulation for tracking is based on Bayesian estimation, and is used in this work as well.  In this framework, target kinematics are modeled as the latent states of a time-dynamic system~\cite{2002_JNL_PF_Arulampalam}.  Time-dynamic systems are based on two models: (a)~\emph{state prediction model}, ${f_t:\mathbb{R}^D \times \mathbb{R}^D \rightarrow \mathbb{R}^D}$, describing state evolution, and (b)~\emph{observation model}, ${h_t:\mathbb{R}^N \times \mathbb{R}^N \rightarrow\mathbb{R}^N}$, relating observations to the states.  These models are described as,
 
 \begin{align}
 \mathbf{x}_t &= f_t(\mathbf{x}_{t-1}, \mathbf{v}_{t-1}) \notag\\
@@ -57,11 +68,11 @@ A commonly used formulation for tracking is based on Bayesian estimation.  In th
 \label{Eq:TDS}
 \end{align}
 
-$\mathbf{v} \in R^D$ is an independent, identically-distributed (IID) process noise sequence.  $\mathbf{n} \in R^N$ is an IID measurement noise sequence.  The goal is to find the estimate of the state $\mathbf{x}_t$ at time $t$, based on all observations $\mathbf{Z}_t={\{\mathbf{z}_i, i=1,...,T\}}$.   $\mathbf{z}_t$ is the observation vector at time $t$.  
+$\mathbf{v} \in \mathbb{R}^D$ is an independent, identically-distributed (IID) process noise sequence.  $\mathbf{n} \in \mathbb{R}^N$ is an IID measurement noise sequence.  The goal is to find the estimate of the state $\mathbf{x}_t$ at time $t$, based on all observations $\mathbf{Z}_t={\{\mathbf{z}_i, i=1,...,T\}}$.   $\mathbf{z}_t$ is the observation vector at time $t$.  
 
 At this point, it is interesting to place the process of tracking in the bigger picture of probabilistic graphical models, as shown in Figure~\ref{fig:TRK_big_picture}.  Mathematically, hidden Markov models (HMMs) can also be written using evolution and observation models even though the method was developed independently of time dynamic systems \cite{2007_BOOK_PRML_Bishop}.  
 
-This two stage model lends itself well to Bayesian inference \cite{2002_JNL_PF_Arulampalam}.  The reason is that observations can be used as evidence to modulate the prior distribution on the states.  We can then infer the posterior distribution on the states using Bayes' Rule.  Mathematically, the Chapman Kolmogorov equation predicts the next state by combining information from the state prediction model $p(\mathbf{x}_t| \mathbf{x}_{t-1})$ and all previous observations $\mathbf{Z}_{t-1}$.  %This is given in Equation~\ref{Eqn:TRK_prediction}.
+The two stage time-dynamic model described above lends itself well to Bayesian inference~\cite{2002_JNL_PF_Arulampalam}.  The reason is that observations can be used as evidence to modulate the prior distribution on the states.  We can then infer the posterior distribution on the states using Bayes' Rule.  Mathematically, the Chapman Kolmogorov equation predicts the next state by combining information from the state prediction model $p(\mathbf{x}_t| \mathbf{x}_{t-1})$ and all previous observations $\mathbf{Z}_{t-1}$.  %This is given in Equation~\ref{Eqn:TRK_prediction}.
 
 {%\Large
 \begin{equation}
@@ -133,31 +144,24 @@ A variety of particle filters have now been introduced.   According to~\cite{200
 %\item Calculate the posterior ($p(\mathbf{x}_k | \mathbf{x}_{k-1})$.  First normalize weights.  Then resample using normalized-weights and sampled-prior. 
 %\end{itemize}
 
+In this section, we discussed the Bayesian approach to tracking.  This approach can be used for point, region or contour tracking.
 
 
 
-
-
-
-
-
-%#######################		
-\section{Traditional methods}
-%#######################
-
-
-\subsection{Point tracking}
 %==========================
-The problem of point tracking in the field of Computer Vision is similar to the problem of point tracking in the field of Radar Signal Processing.  This problem has been extensively studied and is also known as the \emph{data association} problem.  In Computer Vision, an additional pre-processing step, \emph{interest-point detection}, is required to extract points of interest from the scene.  Point tracking methods can be broadly categorized into statistical methods and deterministic methods.
+\section{Point tracking}
+%==========================
+The problem of point tracking in the field of computer vision is similar to the problem of point tracking in the field of radar signal processing.  This problem has been extensively studied and is also known as the \emph{data association} problem.  In Computer Vision, an additional pre-processing step, \emph{interest-point detection}, is required to extract points of interest from the scene.  Point tracking methods can be broadly categorized into statistical methods and deterministic methods.
 
-There are three main statistical methods for point tracking.  The \emph{Probability Data Association Filter (PDAF)} provides a computationally efficient method of data association for single targets \cite{1975_JNL_PDAF_BarShalom}.  It is largely based on the Kalman Filter.  However, it has a mechanism of accounting for clutter.  The primary difference between the Kalman filter and the PDAF algorithm is in the computation of the innovations process during the update stage.  For multiple targets, this algorithm is generalized by the \emph{Joint Probability Data Association Filter (JPDAF)}~\cite{1983_JNL_JPDAF_Fortmann}.  The \emph{Multiple Hypothesis Tracker (MHT)} handles multiple targets in non-linear conditions~\cite{1979_JNL_MTT_Reid}.  MHT requires ever-expanding memory as more and more data is processed.  However, computationally practical versions of MHT have been reported \cite{1996_JNL_EfficientMHT_Cox, 1994_CNF_MLPMHT_Streit}.  It may be noted that a carefully designed MHT can provide better performance than the PDAF and JPDAF algorithms \cite{2009_JNL_PDAF_Barshalom}.  Additional details can be found in a survey by Cox \cite{1993_JNL_SURVEYcorresp_Cox}.  
+There are three main statistical methods for point tracking.  The \emph{Probability Data Association Filter (PDAF)} provides a computationally efficient method of data association for single targets~\cite{1975_JNL_PDAF_BarShalom}.  It is largely based on the Kalman Filter.  However, it has a mechanism of accounting for clutter.  The primary difference between the Kalman filter and the PDAF algorithm is in the computation of the innovations process during the update stage.  For multiple targets, this algorithm is generalized by the \emph{Joint Probability Data Association Filter (JPDAF)}~\cite{1983_JNL_JPDAF_Fortmann}.  The \emph{Multiple Hypothesis Tracker (MHT)} handles multiple targets in non-linear conditions~\cite{1979_JNL_MTT_Reid}.  MHT requires ever-expanding memory as more and more data is processed.  However, computationally practical versions of MHT have been reported~\cite{1996_JNL_EfficientMHT_Cox, 1994_CNF_MLPMHT_Streit}.  It may be noted that a carefully designed MHT can provide better performance than the PDAF and JPDAF algorithms~\cite{2009_JNL_PDAF_Barshalom}.  Additional details can be found in a survey by Cox~\cite{1993_JNL_SURVEYcorresp_Cox}.  
 
 Statistical methods have a number of shortcomings.  First, the assumption that points move independently is not always valid.  Second, measurements are not always distributed normally around their predicted position.  Third, there are a number of parameters to estimate, such as apriori probabilities for false measurements and missed detections.  And finally, statistical methods can be computationally demanding \cite{2001_JNL_MotionCorrespondence_Veenman}.  To deal with these shortcomings, a number of researchers have worked on deterministic methods for point tracking.
 
-Most deterministic methods minimize a cost of associating a target to an observation.  This correspondence cost is usually a combination of several constraints \cite{2006_JNL_SURVEYtrk_Yilmaz}: (a) proximity, (b) maximum velocity, (c) smooth motion, (d) common motion, and (e) rigidity.  A \emph{zero-scan} algorithm uses one frame for correspondence and picks the maximum likelihood hypothesis at every time frame.  On the other hand, a \emph{multiple-scan} algorithm uses multiple frames for correspondence \cite{1979_JNL_MTT_Reid}.    Sethi and Jain \cite{1987_JNL_FeatureTrajectories_Sethi} use path coherence and motion smoothness for solving the correspondence problem.  Unlike many previous approaches, they solve the correspondence problem using multiple frames rather than two.  Salari and Sethi \cite{1990_JNL_PointCorresp_Salari} extend this work to handle occlusions.  Rangarajan and Shah \cite{1991_JNL_MotionCorrespondence_Rangarajan} use a greedy non-iterative algorithm with a fixed number of feature points while allowing for temporary occlusion and missing point detections.  A \emph{common-motion} constraint is introduced in \cite{2001_JNL_MotionCorrespondence_Veenman}.  According to this constraint, two points lying on the same object should move coherently.  Finally, a generic and widely used one-to-one correspondence algorithm is the Hungarian algorithm \cite{1955_JNL_HungarianMethod_Kuhn}.
+Most deterministic methods minimize a cost of associating a target to an observation.  This correspondence cost is usually a combination of several constraints \cite{2006_JNL_SURVEYtrk_Yilmaz}: (a) proximity, (b) maximum velocity, (c) smooth motion, (d) common motion, and (e) rigidity.  A \emph{zero-scan} algorithm uses one frame for correspondence and picks the maximum likelihood hypothesis at every time frame.  On the other hand, a \emph{multiple-scan} algorithm uses multiple frames for correspondence~\cite{1979_JNL_MTT_Reid}.    Sethi and Jain~\cite{1987_JNL_FeatureTrajectories_Sethi} use path coherence and motion smoothness for solving the correspondence problem.  Unlike many previous approaches, they solve the correspondence problem using multiple frames rather than two.  Salari and Sethi \cite{1990_JNL_PointCorresp_Salari} extend this work to handle occlusions.  Rangarajan and Shah \cite{1991_JNL_MotionCorrespondence_Rangarajan} use a greedy non-iterative algorithm with a fixed number of feature points while allowing for temporary occlusion and missing point detections.  In~\cite{2001_JNL_MotionCorrespondence_Veenman}, a \emph{common-motion} constraint is introduced.  According to this constraint, two points lying on the same object should move coherently.  Finally, a generic and widely used one-to-one correspondence algorithm is the Hungarian algorithm~\cite{1955_JNL_HungarianMethod_Kuhn}.
 
-\subsection{Region tracking}
-%==================================================
+%==========================
+\section{Region tracking}
+%==========================
 Several methods for tracking regions have been proposed in the literature.  We describe some of the more popular methods in the next few paragraphs.
 
 \emph{Template matching} is one of the most common methods for tracking regions.  This method involves matching the sub-region of an image with a template.  A variety of distance measures have been used in template matching.  Some commonly used distance measures are SSD (sum of squared differences), SAD (sum of absolute differences) and correlation (CORR).  These measures can be computed using the following equations:
@@ -169,40 +173,45 @@ SAD(x,y)  &=\sum_{x'}\sum_{y'} |I(x+x', y+y')-t(x', y')| \\
 CORR(x,y) &=\sum_{x'}\sum_{y'} I(x+x', y+y') t(x', y') \notag
 \end{align}
 
-SAD is widely used in the video coding literature.  As a matter of fact, it is used in almost all current video codecs, i.e., MPEG-1, MPEG-2, MPEG-4, H.261, H.263, and H.264.  The method of template matching has been applied in many areas of Computer Vision, including tracking.  Some examples of the usage of template matching are head tracking \cite{1998_CNF_HeadTracking_Birchfield}, motion identification \cite{1998_CNF_Tracking_Lipton, 2001_JNL_MotionTemplates_Bobick}, contour matching \cite{2009_CNF_HumanDetection_Beleznai}, human detection \cite{2010_JNL_HumanDetectionSegmentation_Lin}, pedestrian detection \cite{1997_CNF_PedestrianDetection_Oren}, finger tracking \cite{1995_CNF_Tracking_Rehg}, object recognition \cite{2000_CNF_MLtemplateMatching_Olson} and track initialization \cite{1998_CNF_Tracking_Lipton, 2010_CNF_TrkRVQ_Aslam}.  The advantages of template matching are simple implementation and robustness to short-term, gradual changes in appearance.  The disadvantages of template matching are high computational cost, failure under occlusions, and the need for updating over time.  However, methods exist to overcome some of these shortcomings.  Fast template matching \cite{2002_CNF_FastTemplateMatching_SchweitzerBellWu} and template updating are some of the solutions \cite{1998_CNF_Tracking_Lipton} proposed in the literature.
+SAD is widely used in the video coding literature.  As a matter of fact, it is used in almost all current video codecs, i.e., MPEG-1, MPEG-2, MPEG-4, H.261, H.263, and H.264.  The method of template matching has been applied in many areas of Computer Vision, including tracking.  Some examples of the usage of template matching are head tracking~\cite{1998_CNF_HeadTracking_Birchfield}, motion identification~\cite{1998_CNF_Tracking_Lipton, 2001_JNL_MotionTemplates_Bobick}, contour matching~\cite{2009_CNF_HumanDetection_Beleznai}, human detection~\cite{2010_JNL_HumanDetectionSegmentation_Lin}, pedestrian detection~\cite{1997_CNF_PedestrianDetection_Oren}, finger tracking~\cite{1995_CNF_Tracking_Rehg}, object recognition~\cite{2000_CNF_MLtemplateMatching_Olson} and track initialization~\cite{1998_CNF_Tracking_Lipton, 2010_CNF_TrkRVQ_Aslam}.  The advantages of template matching are simple implementation and robustness to short-term, gradual changes in appearance.  The disadvantages of template matching are failure under occlusions, and the need for updating over time.  A solution to the template updating problem is presented in~\cite{1998_CNF_Tracking_Lipton}.
 
-A number of researchers have used density based methods to track regions.  The Bhattacharya coefficient $\rho$ for two densities $p_i(x)$, and an associated distance measure, the Bhattacharya distance $B$ \cite{1967_JNL_Bhattacharyya_Kailath} have been commonly used to compare densities.  $\rho$ and $B$ are given by 
+%Fast template matching~\cite{2002_CNF_FastTemplateMatching_SchweitzerBellWu}
 
-\begin{align}
-\rho &= \int p_1(x)p_2(x) \notag\\
-B &= -\text{ln}(\rho)
-\label{Eq:Bhattacharya}
-\end{align}
+A number of researchers have used density based methods to track regions.  A commonly used method of density tracking is the \emph{mean-shift} algorithm.  In this algorithm, the gradient vector of the density is computed.  Repeated iterations lead to a local mode of the density~\cite{2002_JNL_MeanShiftFeatureSpaceAnalysis_Comaniciu}.  
 
-A commonly used method of density tracking is the \emph{mean-shift} algorithm.  In this algorithm, the gradient vector of the density is computed.  Repeated iterations lead to a local mode of the density.  This algorithm starts with a Parzen non-parametric density for $n$ data points, $x_i$, $i=1..n$, in $d$-dimensional space $R^d$.  This density is given by \cite{2007_BOOK_PRML_Bishop},
+%This algorithm starts with a Parzen non-parametric density for $n$ data points, $x_i$, $i=1..n$, in $d$-dimensional space $R^d$.  This density is given by \cite{2007_BOOK_PRML_Bishop},
+ 
 
-\begin{equation}
-f(\mathbf{x}) = \frac{1}{nh^D}\sum_i K(\frac{\mathbf{x}-\mathbf{x}_i}{h})
-\label{Eq:ParzenDensity}
-\end{equation} 
+%The Bhattacharya coefficient $\rho$ for two densities $p_i(x)$, and an associated distance measure, the Bhattacharya distance $B$ \cite{1967_JNL_Bhattacharyya_Kailath} have been commonly used to compare densities.  $\rho$ and $B$ are given by 
+%
+%\begin{align}
+%\rho &= \int p_1(x)p_2(x) \notag\\
+%B &= -\text{ln}(\rho)
+%\label{Eq:Bhattacharya}
+%\end{align}
 
-where $h^D$ is the volume of a hypercube of side $h$ in $R^d$.  The gradient of this density is given by
 
-\begin{equation}
-\nabla f(\mathbf{x}) = \frac{2c}{nh^{D+2}} 
-\left[ \sum_{i=1}^n  g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right) \right] 
-\left[ \frac{ \sum_{i=1}^n  \mathbf{\mathbf{x}_i}g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right)}{\sum_{i=1}^n  g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right)} -\mathbf{x}\right] 
-\end{equation}
+%\begin{equation}
+%f(\mathbf{x}) = \frac{1}{nh^D}\sum_i K(\frac{\mathbf{x}-\mathbf{x}_i}{h})
+%\label{Eq:ParzenDensity}
+%\end{equation} 
+%
+%where $h^D$ is the volume of a hypercube of side $h$ in $R^d$.  The gradient of this density is given by
+%
+%\begin{equation}
+%\nabla f(\mathbf{x}) = \frac{2c}{nh^{D+2}} 
+%\left[ \sum_{i=1}^n  g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right) \right] 
+%\left[ \frac{ \sum_{i=1}^n  \mathbf{\mathbf{x}_i}g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right)}{\sum_{i=1}^n  g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right)} -\mathbf{x}\right] 
+%\end{equation}
+%
+%where $c$ is a constant, $\left[ \sum_{i=1}^n  g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right) \right]$ is proportional to the density estimate at \textbf{x}, and $\left[ \frac{ \sum_{i=1}^n  \mathbf{\mathbf{x}_i}g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right)}{\sum_{i=1}^n  g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right)} -\mathbf{x}\right]$ is the \emph{mean-shift}.  The mean-shift always points in the direction of the density gradient, i.e., direction of maximum increase of the density.  Repeated application of this formula results in a series of mean-shift vectors which define a path leading to a stationary point of the estimated density \cite{2002_JNL_MeanShift_Comaniciu}.  This method has been successfully used in a number of scenarios including human tracking in dense crowds \cite{2000_CNF_RealTimeTrackingMeanShift_Comaniciu}, compressed video tracking \cite{2009_CNF_Compensation_Aslam} and airborne tracking in infra-red images \cite{2003_JNL_AirborneIRtracking_Yilmaz}.  
 
-where $c$ is a constant, $\left[ \sum_{i=1}^n  g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right) \right]$ is proportional to the density estimate at \textbf{x}, and $\left[ \frac{ \sum_{i=1}^n  \mathbf{\mathbf{x}_i}g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right)}{\sum_{i=1}^n  g \left({ \left\|   \frac{\mathbf{x}-\mathbf{x}_i}{h}\right\| }^2 \right)} -\mathbf{x}\right]$ is the \emph{mean-shift}.  The mean-shift always points in the direction of the density gradient, i.e., direction of maximum increase of the density.  Repeated application of this formula results in a series of mean-shift vectors which define a path leading to a stationary point of the estimated density \cite{2002_JNL_MeanShift_Comaniciu}.  This method has been successfully used in a number of scenarios including human tracking in dense crowds \cite{2000_CNF_RealTimeTrackingMeanShift_Comaniciu}, compressed video tracking \cite{2009_CNF_Compensation_Aslam} and airborne tracking in infra-red images \cite{2003_JNL_AirborneIRtracking_Yilmaz}.  
+Finally, \emph{optical flow} is a method of computing the motion between two successive frames.  Since motion computation is an ill-posed problem, two constraints are commonly used to compute a solution: (a) brightness constraint, i.e. $I(x,y,t) = I(x+\delta x,y+\delta y,t+\delta t)$ and, (b) smooth velocity constraint, i.e. $\nabla^2 u + \nabla^2 v$, where $I(x,y,t)$ is an image pixel in image $I$ at location $(x,y)$ at time $t$, $u=dx/dt$ is the velocity in the x-direction, and $v=dy/dt$ is the velocity in the y-direction.  An iterative scheme to compute optical flow is given by Horn and Schunk~\cite{1981_JNL_OpticalFlow_HornSchunck}.  An alternate method is given by Lucas and Kanade~\cite{1981_CNF_IterativeImageRegistration_LucasKanade}.  A comparison of optical flow techniques can be found in~\cite{1994_JNL_PerfOpticalFlow_Barron}.  Motion information is a useful feature in tracking.  However, in many tracking scenarios, optical flow assumptions of brightness constancy do not hold.  This is particularly true when multiple targets are being tracked and occlusions are common.  Nevertheless, some attempts at robust tracking have been made in these difficult situations~\cite{1996_CNF_MultipleMotionsFlowFields_Black}.
 
-Finally, \emph{optical flow} is a method of computing the motion between two successive frames.  Since motion computation is an ill-posed problem, two constraints are commonly used to compute a solution: (a) brightness constraint, i.e. $I(x,y,t) = I(x+\delta x,y+\delta y,t+\delta t)$ and, (b) smooth velocity constraint, i.e. $\nabla^2 u + \nabla^2 v$, where $I(x,y,t)$ is an image pixel in image $I$ at location $(x,y)$ at time $t$, $u=dx/dt$ is the velocity in the x-direction, and $v=dy/dt$ is the velocity in the y-direction.  An iterative scheme to compute optical flow is given by Horn and Schunk \cite{1981_JNL_OpticalFlow_HornSchunck}.  An alternate method is given by Lucas and Kanade \cite{1981_CNF_IterativeImageRegistration_LucasKanade}.  A comparison of optical flow techniques can be found in \cite{1994_JNL_PerfOpticalFlow_Barron}.  Motion information is a useful feature in tracking.  However, in many tracking scenarios, optical flow assumptions of brightness constancy do not hold.  This is particularly true when multiple targets are being tracked and occlusions are common.  Nevertheless, some attempts at robust tracking have been made in these difficult situations \cite{1996_CNF_MultipleMotionsFlowFields_Black}.
-
-\subsection{Contour tracking}
+%==========================
+\section{Contour tracking}
 %============================
-The third and final tracking method we discuss is contour tracking.  We describe some of the methods in this category in the next few paragraphs.
-
-A closed contour can be represented by an Elliptical Fourier decomposition \cite{1982_JNL_EllipticalFourier_Kuhl} given by
+The third and final tracking method we discuss is contour tracking.   A method of representing a closed contour using ellipses as basis functions is the Elliptical Fourier decomposition~\cite{1982_JNL_EllipticalFourier_Kuhl} given by
 
 \begin{align}
 \centering
@@ -214,9 +223,7 @@ A closed contour can be represented by an Elliptical Fourier decomposition \cite
 	\left[ \begin{array}{ccc}x(t) \\y(t) \end{array}\right] &=\left[ \begin{array}{ccc}a_0\\c_0 \end{array}\right] + \sum_{k=1}^K \left[ \begin{array}{ccc}a_k & b_k\\c_k & d_k \end{array}\right]\left[ \begin{array}{ccc}cos(kt)\\sin(kt) \end{array}\right]
 \end{align}
 
-This method has been used for contour tracking in infra-red images \cite{2010_CNF_VehicleContour_Aslam}.  However, this method has not been widely used for tracking.  We mention this technique for the sake of completeness, and to compare it to other contour based methods.  One of the reasons that this method has not been widely adopted for tracking is that it is difficult to incorporate prior information in the parameterization of Equation \ref{eq:EllipticalFourierTransform}.  The next few techniques address this issue.
-
-The \emph{snakes} method \cite{1988_JNL_Snakes_Kass} is a contour evolution method.  In this method, a spline curve is represented parametrically as $\mathbf{v}(s) = (x(s), y(s))$.  Its energy functional is given by
+However, due to the difficulty in incorporating prior information in this representation, as well as the non-intuitiveness of the computed Fourier coefficients, this method has not been widely used for contour tracking~\cite{2010_CNF_VehicleContour_Aslam}.  A widely used method is the \emph{snakes} method~\cite{1988_JNL_Snakes_Kass} in which a parameterized curve $\mathbf{v}(s) = (x(s), y(s))$, such as a B-spline curve, is allowed to evolve while minimizing an energy functional,
 
 \begin{align}
 E_{snake} &= \int_0^1 E_{snake}(\mathbf{v}(s)) \notag\\
@@ -224,61 +231,61 @@ E_{snake} &= \int_0^1 E_{snake}(\mathbf{v}(s)) \notag\\
 \label{Eq:Snakes}
 \end{align}
 
-where $E_{int}$ is the internal energy of the spline, and can be written as a sum of two terms: (a) membrane energy ($\frac{\alpha}{2}(x_s^2 + y_s^2)$), and (b) thin-plate energy ($\frac{\beta}{2}(x_{ss}^2 + y_{ss}^2)$).  $E_{ext}$ is the external energy and is derived from the image.  This additional term makes it possible to incorporate prior information about the image.  This is in contrast to Elliptical Fourier Descriptors.  A commonly used external energy term is the gradient evaluated along the contour.  In this case, Equation \ref{Eq:Snakes} can be written as
+where $E_{int}$ is the internal energy of the spline, and can be written as a sum of two terms: (a) membrane energy ($\frac{\alpha}{2}(x_s^2 + y_s^2)$), and (b) thin-plate energy ($\frac{\beta}{2}(x_{ss}^2 + y_{ss}^2)$).  $E_{ext}$ is the external energy and is derived from the image, for instance by computing the gradient evaluated along the contour.  This additional term makes it possible to incorporate prior information about the image.  If the gradient is used, then Equation~\ref{Eq:Snakes} can be written as
 
 \begin{equation}
 	\label{eq:SnakesEnergy1}
 	E=\int_0^1 \left[\frac{\alpha}{2}(x_s^2 + y_s^2) + \frac{\beta}{2}(x_{ss}^2 + y_{ss}^2) - \left[\nabla{(x(s), y(s))}\right]\right]dt
 \end{equation}
 
-In order to model more complex shapes, level-sets were introduced in \cite{1995_JNL_LevelSets_Malladi}.  In this formulation, a contour is represented as the zero crossings in a level-set grid.  The evolution of the contour is governed by changing the grid values \cite{2006_JNL_SURVEYtrk_Yilmaz}.  Snakes have been used in a variety of applications, including walker tracking \cite{1994_CNF_WalkingFiguresXYT_Niyogi}, head tracking \cite{2001_JNL_ProbabilisticDataAssociation_Rasmussen}, and vehicle and hand tracking \cite{1999_JNL_KalmanSnakes_Peterfreund}.
+Snakes have been used in a variety of applications, including walker tracking~\cite{1994_CNF_WalkingFiguresXYT_Niyogi}, head tracking~\cite{2001_JNL_ProbabilisticDataAssociation_Rasmussen}, and vehicle and hand tracking~\cite{1999_JNL_KalmanSnakes_Peterfreund}.  In order to model more complex shapes, level-sets were introduced in~\cite{1995_JNL_LevelSets_Malladi}.  In this formulation, a contour is represented as the zero crossings in a level-set grid.  The evolution of the contour is governed by changing the grid values~\cite{2006_JNL_SURVEYtrk_Yilmaz}.  
 
-A further extension to the snakes model is the \emph{active-appearance model}, or "smart" snake model, proposed by Cootes et al. \cite{1995_JNL_ActiveModels_Cootes}.  In this approach, structural constraints derived from a training set are imposed on the model.  This is done to guide the shape evolution.  As a result, this method captures the natural variability within a class of shapes.  The advantage over snakes is that shape deformation is always consistent with the training set.  This method has also been applied to tracking.  Examples include human tracking \cite{1994_CNF_ContourTracking_BaumbergHogg, 2003_JNL_ActiveShapeTracking_Koschan}.
+A further extension to the snakes model is the \emph{active-appearance model}, or "smart" snake model, proposed by Cootes et al.~\cite{1995_JNL_ActiveModels_Cootes}.  In this approach, structural constraints derived from a training set are imposed on the model.  This is done to guide the shape evolution.  As a result, this method captures the natural variability within a class of shapes.  The advantage over snakes is that shape deformation is always consistent with the training set.  This method has also been applied to tracking, for instance to human tracking~\cite{1994_CNF_ContourTracking_BaumbergHogg, 2003_JNL_ActiveShapeTracking_Koschan}.
 
-
-\subsection{Complete trackers}
+%==========================
+\section{Example trackers}
 %=================
 The tracking techniques mentioned in the last three sections, i.e. point tracking, region tracking and contour tracking, have been applied to a variety of applications.  In particular, a lot of attention has been given to human tracking.  In the following few paragraphs, we summarize the major research in this important area.
 
 
 \begin{itemize}
-\item \underline{KidsRoom \cite{1997_CNF_ClosedWorldTracking_Intille}}:  This system tracks little children in a reasonably realistic environment.  A background model is used to generate blobs.  Four features are used for tracking: average normalized color, distance, velocity and size.  
+\item \underline{KidsRoom~\cite{1997_CNF_ClosedWorldTracking_Intille}}:  This system tracks little children in a reasonably realistic environment.  A background model is used to generate blobs.  Four features are used for tracking: average normalized color, distance, velocity and size.  
 
-\item \underline{Pfinder \cite{1997_JNL_Pfinder_Wren}}.  This work popularized background subtraction \cite{2006_JNL_SURVEYtrk_Yilmaz}.  The advantage of background subtraction is that it can lead to a blob based representation.  Such a representation reduces the degrees of freedom in going from individual pixels to blobs.  In this sense, it is a form of regularization.  The Pfinder system tracks a single user.  The features used for tracking include skin color and 2D shape contour for head, hands and feet.  For each pixel, a likelihood is computed for each of the blob models.  The class membership likelihoods are resolved using spatial and connectivity constraints.  A major drawback of this system is the process of initialization in which a user is required to carry out specific actions.
+\item \underline{Pfinder~\cite{1997_JNL_Pfinder_Wren}}.  This work popularized background subtraction \cite{2006_JNL_SURVEYtrk_Yilmaz}.  The advantage of background subtraction is that it can lead to a blob based representation.  Such a representation reduces the degrees of freedom in going from individual pixels to blobs.  The Pfinder system tracks a single user.  The features used for tracking include skin color and 2D shape contour for head, hands and feet.  For each pixel, a likelihood is computed for each of the blob models.  The class membership likelihoods are resolved using spatial and connectivity constraints.  A major drawback of this system is the process of initialization in which a user is required to carry out specific actions.
 
-\item \underline{CMU \cite{1998_CNF_Tracking_Lipton}}.  This is a classification and tracking system.  This system is based on the fact that properties of template matching and temporal differencing (DT) are complementary.  When the target is stationary, template matching is at its most robust, while DT does not do well.  If the target is moving, template matching does not do well while DT does.  This system classifies and tracks humans and cars based on size and \emph{dispersedness} ($\frac{{perimeter}^2}{area}$).  MLE is used for classification.  The templates are updated using an IIR filter.
+\item \underline{CMU~\cite{1998_CNF_Tracking_Lipton}}.  This is a classification and tracking system.  This system is based on the fact that properties of template matching and temporal differencing (DT) are complementary.  When the target is stationary, template matching is at its most robust, while DT does not do well.  If the target is moving, template matching does not do well while DT does.  This system classifies and tracks humans and cars based on size and \emph{dispersedness} ($\frac{{perimeter}^2}{area}$).  MLE is used for classification.  The templates are updated using an IIR filter.
 
-\item \underline{W4 \cite{2000_JNL_W4_Haritaoglu}}:  This system detects foreground objects using a background, bimodal-gaussian, intensity distribution.  No use of color is made.  In comparison, Pfinder uses color information.  Another difference is that unlike Pfinder, W4 does not assume that there is only one person in the scene.  The features used are shape and appearance models.  Besides tracking humans, this system can recognize simple events such as carrying, leaving or exchanging bags.
+\item \underline{W4~\cite{2000_JNL_W4_Haritaoglu}}:  This system detects foreground objects using a background, bimodal-Gaussian, intensity distribution.  No use of color is made.  In comparison, Pfinder uses color information.  Another difference is that unlike Pfinder, W4 does not assume that there is only one person in the scene.  The features used are shape and appearance models.  Besides tracking humans, this system can recognize simple events such as carrying, leaving or exchanging bags.
 
-\item \underline{Bramble \cite{2001_CNF_TRKhuman_Isard}}.  This system uses a known camera model and ground plane.  It can therefore track humans in 3D.  The state estimation is done using particle filters.  
+\item \underline{Bramble~\cite{2001_CNF_TRKhuman_Isard}}.  This system uses a known camera model and ground plane.  It can therefore track humans in 3D.  The state estimation is done using particle filters.  
 
-\item \underline{Zhao and Nevatia \cite{2004_CNF_TrackingPeople_Zhao}}.  This state-of-the-art tracker simultaneously tracks up to 13 people in a crowd.  The researchers use a color-histogram based mean-shift tracker for appearance model correspondence.  The human body is modeled using a 3-ellipsoid, one for the head, one for the torso, and one for the legs.  The prior has spatial and temporal components.  The spatial prior penalizes unnecessary overlapping of targets and blobs with small sizes.  The temporal prior encourages smoothness and trajectory connectivity.  The likelihood is computed using background exclusion and correspondences.  The MAP estimate is computed using MCMC sampling.  State estimation for velocity is done using the Kalman filter.
+\item \underline{Zhao and Nevatia~\cite{2004_CNF_TrackingPeople_Zhao}}.  This tracker simultaneously tracks up to 13 people in a crowd.  The researchers use a color-histogram based mean-shift tracker for appearance model correspondence.  The human body is modeled using a 3-ellipsoid, one for the head, one for the torso, and one for the legs.  The prior has spatial and temporal components.  The spatial prior penalizes unnecessary overlapping of targets and blobs with small sizes.  The temporal prior encourages smoothness and trajectory connectivity.  The likelihood is computed using background exclusion and correspondences.  The MAP estimate is computed using Markov Chain Monte Carlo (MCMC) sampling.  State estimation for velocity is done using the Kalman filter.
 
-\item \underline{Brostow and Cipolla \cite{2006_CNF_TRKhuman_Brostow}}  This tracker is also state-of-the-art.  An unsupervised Bayesian clustering method is used to detect individuals moving in crowded scenarios.  Interestingly, the only feature used is motion.  No training data is used, nor is there any appearance model.  The idea is to probabilistically cluster regions moving in unison.  Motion initialization is done using optical flow.  Subsequently, normalized cross correlation is used to match corners.  Regions with similar motion are clustered to form targets.
+\item \underline{Brostow and Cipolla~\cite{2006_CNF_TRKhuman_Brostow}}  In this tracker, an unsupervised Bayesian clustering method is used to detect individuals moving in crowded scenarios.  Interestingly, the only feature used is motion.  No training data is used, nor is there any appearance model.  The idea is to probabilistically cluster regions moving in unison.  Motion initialization is done using optical flow.  Subsequently, normalized cross correlation is used to match corners.  Regions with similar motion are clustered to form targets.
 \end{itemize}
 
-%#######################		
+%==========================	
 \section{Subspace based tracking}
-%#######################
-An adaptive subspace representation has several advantages:
+%==========================
+Subspace based tracking is a form of region tracking.  It is discussed here separately from region tracking since we use this approach in this work.  Therefore, this method is discussed in more detail.
+
+One of the main factors limiting visual tracking is the lack of suitable appearance models~\cite{2003_JNL_TRKsubspace_Jepson}.  In subspace based tracking, the basic assumption is that the evolving target appearance can be modeled using a lower dimensional subspace computed using PCA, or a few code-vectors computed using a VQ based method.  This approach has the following advantages:
 
 \begin{itemize}
-\item \textbf{Compact representation}.  A subspace represenation using say PCA or RVQ allows storage of a few basis eigenvectors or stage codevectors to capture variations in the target appearance.
+\item \textbf{Compact representation}.  A subspace representation using say PCA or RVQ allows storage of a few basis eigenvectors or stage code-vectors to capture variations in the target appearance.
 \item \textbf{Object recognition}.  This method facilitates object recognition since an appearance model is built for each target.
 \item \textbf{Continuous model update}.  As mentioned earlier, changes in target appearance are a big challenge in target tracking.  Online model updating allows the target appearance to be built dynamically.
-\item \textbf{Less offline training data required}.  In many instances, few training examples are available that have the same distribution as the expected tracking scenario.  Systems that rely on offline training ignore the information available during online tracking.  An adaptive subspace representation can be used effectively in these scenarios since models are built and maintained online.
+\item \textbf{Less offline training data required}.  Since the models are built online, less training examples are typically required.
 \item \textbf{No optimization}.  No complex optimization is required.
-\item \textbf{Camera motion}.  This representation does not depend on background maintenance and can therefore be used with moving cameras.
 \end{itemize}
 
+A disadvantage of this approach is that the tracker is prone to drift if the online appearance model is updated incorrectly.  In~\cite{2006_JNL_SURVEYtrk_Yilmaz}, subspace based tracking is mentioned under the category of view-based approaches.  View-based approaches can be interpreted to mean one of three approaches:
 
-One of the main factors limiting visual tracking is the lack of suitable appearance models~\cite{2003_JNL_TRKsubspace_Jepson}.  A solution to this problem is to use view-based representations of objects.  The view-based approach can be interpreted to mean one of three approaches:
-
-\begin{itemize}
-\item \underline{Multi-camera approach.}  As the name suggests, several cameras are used to generate simultaneous views of an object from different angles \cite{2000_JNL_EasyLiv_Krumm}.  
-\item \underline{VBR approach (training phase).}  In this approach, a limited number of views of an object are sampled as it is rotated about the x, y and z axes of rotation during a training phase.  This approach forms the basis of view-based recognition (VBR) and allows replacing the matching of a single 3D model with matching a large number of 2D models~\cite{1992_JNL_VBR_Breuel, 1993_CNF_Gestures_Darrell}.
-\item \underline{Online appearance approach (testing phase).}  In this approach, several views of an object are captured as it is tracked online and used to model the dynamic appearnce of the object~\cite{2008_JNL_subspaceTRK_Ross}.
-\end{itemize}
+\begin{enumerate}
+\item \underline{Multi-camera approach}.  As the name suggests, several cameras are used to generate simultaneous views of an object from different angles~\cite{2000_JNL_EasyLiv_Krumm}.  
+\item \underline{VBR approach}.  In this approach, a limited number of views of an object are sampled as it is rotated about the x, y and z axes of rotation during a training phase.  This approach forms the basis of view-based recognition (VBR) and allows replacing the matching of a single 3D model with matching a large number of 2D models~\cite{1992_JNL_VBR_Breuel, 1993_CNF_Gestures_Darrell}.
+\item \underline{Online appearance approach}.  In this approach, several views of an object are captured as it is tracked online and used to model the dynamic appearance of the object~\cite{2008_JNL_subspaceTRK_Ross}.
+\end{enumerate}
 								\begin{figure}[t]
 								\center
 								\includegraphics[height=0.6\textheight]{thesis/1991_JNL_TRKsub_Ullman_fig3.png}
@@ -286,7 +293,7 @@ One of the main factors limiting visual tracking is the lack of suitable appeara
 								\label{fig:1991_JNL_TRKsub_Ullman_fig3}
 								\end{figure}
 
-In this work, we do not focus on the multi-camera approach.  We start our discussion with the VBR approach and transition to the online appearance approach for two reasons: (a) it historically predates the online appearance approach, and (b) it naturally leads to the online appearance approach.
+In this work, we do not focus on the multi-camera approach.  We start our discussion with the VBR approach and transition to the online appearance approach for two reasons: (a) it historically predates the online appearance approach, and (b) it naturally leads to the online appearance approach, which is the approach that we take.
 
 In order to classify or recognize complex articulated objects, a large range of appearances are required.  One approach has been to use interpolation of appearance from a small number of views.  \cite{1991_JNL_Recog_Ullman} makes the assumption that all possible views of an object after 3D transformations such as rotation, translation and scaling can be expressed as the linear combination of other views of the same object.  Therefore, object matching is done by finding the distance between the linear subspace (or low dimensional manifold) defined by previous views and an observed object, rather than measuring the distance between the object and each of the stored views.  Figure~\ref{fig:1991_JNL_TRKsub_Ullman_fig3} shows an example of generating different car views using linear combinations of existing views.  
 
@@ -299,11 +306,11 @@ In order to classify or recognize complex articulated objects, a large range of 
 								\label{fig:1992_JNL_VBR_Breuel_fig1}
 								\end{figure}
 
-A generalization to this approach points out that exact representations do not always exist for continuous functions in terms of simpler functions~\cite{1990_JNL_Network_Poggio}.  However, good and general approximating representations may exist.  For instance, interpolation can be used for hypersurface reconstruction.  Since this problem is ill-posed, i.e. generally there's not enough data for a unique reconstruction, various assumptions such as smoothness are made.  These forms of regularization can be justifed using Bayesian MAP estimation.  A theoretical framework is then developed based on regularization techniques to create a three-layer network called a \emph{regularization network} which is useful for approximation, such as interpolation.
+%A generalization to this approach points out that exact representations do not always exist for continuous functions in terms of simpler functions~\cite{1990_JNL_Network_Poggio}.  However, good and general approximating representations may exist.  For instance, interpolation can be used for hypersurface reconstruction.  Since this problem is ill-posed, i.e. generally there's not enough data for a unique reconstruction, various assumptions such as smoothness are made.  These forms of regularization can be justifed using Bayesian MAP estimation.  A theoretical framework is then developed based on regularization techniques to create a three-layer network called a \emph{regularization network} which is useful for approximation, such as interpolation.
 
-A step forward in the justification of view-based representations is presented in  \cite{1992_JNL_VBR_Breuel}, where it is shown that 300 views need to be stored for each view-based model to achieve an error rate smaller than that of optimal 3D matching algorithms.  An example of such a matching is shown in Figure~\ref{fig:1992_JNL_VBR_Breuel_fig1}.%In these experiments, 1000 images of bent paper clips were used, each paper clip being represented by 20 line segments.  The system developed was then used to recognize real world 3D objects from several Canny edge detection generated 2D views.
+A step forward in the justification of view-based representations is presented in~\cite{1992_JNL_VBR_Breuel}, where it is shown that 300 views need to be stored for each view-based model to achieve an error rate smaller than that of optimal 3D matching algorithms.  An example of such a matching is shown in Figure~\ref{fig:1992_JNL_VBR_Breuel_fig1}.%In these experiments, 1000 images of bent paper clips were used, each paper clip being represented by 20 line segments.  The system developed was then used to recognize real world 3D objects from several Canny edge detection generated 2D views.
 
-A fundamental question here is how to learn an appropriate set of view models.  As mentioned earlier, in traditional tracking approaches, such as normalized correlation or template matching, there is a limitation that the image motion must be simple, such as translation and the viewpoint must be fixed or changing slowly.  \cite{1993_CNF_Gestures_Darrell} tackle this challenge by using sets of view models, rather than simple templates.  In this approach, a data-driven method of using normalized correlation scores to automatically construct a set of view models is developed.  One initial model is specified by the user using a cursor.  The target object is tracked using normalized correlation.  The search function correlation scores are saved so that when they fall below a certain threshold, a new model can be added to the search set using the image at the offset with the best current score.  Over time, a family of view models that sample the aspect space are accumulated.  Two thresholds are maintained, one for deciding if track has been lost, and the other sets the level at which a new model should be added.  This method is then used to recognize human gestures.
+A fundamental question here is how to learn an appropriate set of view models.  As mentioned earlier, in traditional tracking approaches, such as normalized correlation or template matching, there is a limitation that the image motion must be simple, such as translation and the viewpoint must be fixed or changing slowly.  In~\cite{1993_CNF_Gestures_Darrell}, this challenge is tackled by using sets of view models, rather than simple templates.  In this approach, a data-driven method of using normalized correlation scores to automatically construct a set of view models is developed.  One initial model is specified by the user using a cursor.  The target object is tracked using normalized correlation.  The search function correlation scores are saved so that when they fall below a certain threshold, a new model can be added to the search set using the image at the offset with the best current score.  Over time, a family of view models that sample the aspect space are accumulated.  Two thresholds are maintained, one for deciding if track has been lost, and the other sets the level at which a new model should be added.  This method is then used to recognize human gestures.
 
 								\begin{figure}[t]
 								\center
@@ -320,7 +327,7 @@ A fundamental question here is how to learn an appropriate set of view models.  
 
 A multi-view method that deals with illumination changes, to which SSD (sum of squared differences) or correlation based tracking is sensitive to, is presented in \cite{1996_TRK_region_Hager}.  A set of 5 basis images is created offline for a single face under a single view but different illumination conditions.  Images with maximum singular values in the SVD decomposition are retained for the basis.  These basis images are then used to approximate the object under any illumination condition.  This work also accounts for geometric changes in the face through affine warping.  
 
-The transition of VBR to view-based tracking is first made in the seminal work of \emph{eigentracking} presented in \cite{1998_JNL_Eigentracking_Black}.  This is an adoption of initial work in the area of PCA based methods to efficiently represent several views \cite{1995_JNL_ActiveModels_Cootes, 1991_CNF_Eigenfaces_Turk}.  Before this work, eigenspace representations had focused on the problem of object recognition and had only peripherally addressed the problem of object tracking over time.  Additionally, it was assumed that the object of interest could be located in the image, segmented and transformed into canonical form for matching with the eigenspace.  However, this is not always possible and eigenspace reconstruction methods are not invariant to image transformations such as translation, scaling and rotation.  Two primary observations are made in this work that have formed the basis of current subspace tracking methods:
+The transition of VBR to view-based tracking is first made in the seminal work of \emph{eigentracking} presented in~\cite{1998_JNL_Eigentracking_Black}.  This is an adoption of initial work in the area of PCA based methods to efficiently represent several views \cite{1995_JNL_ActiveModels_Cootes, 1991_CNF_Eigenfaces_Turk}.  Before this work, eigenspace representations had focused on the problem of object recognition and had only peripherally addressed the problem of object tracking over time.  Additionally, it was assumed that the object of interest could be located in the image, segmented and transformed into canonical form for matching with the eigenspace.  However, this is not always possible and eigenspace reconstruction methods are not invariant to image transformations such as translation, scaling and rotation.  Two primary observations are made in this work that have formed the basis of current subspace tracking methods:
 
 								\begin{figure}[t]
 								\center
@@ -346,11 +353,9 @@ The transition of VBR to view-based tracking is first made in the seminal work o
 \item \underline{Affine transformation.} Instead of storing all views of the object to be tracked or learn interpolating surfaces in the eigenspace, an affine transformation is allowed between the input image and the subspace.
 \end{enumerate}
 
-A fundamental issue of whether to create one eigenspace for all classes or one eigenspace per class is addressed in~\cite{1997_JNL_EigenTRK_Moghaddam}.  The classes correspond to $M$ human head orientations with $N$ examples in every class.  In a \emph{parametric} eigenspace, one eigenspace is created for all $NM$ images.  On the other hand, in a \emph{view-based} eigenspace, one eigenspace is created for each of $M$ head orientations, each with $N$ users per eigenspace.  Since multiple views of a face form a connected non-convex region \cite{1994_JNL_FaceTop_Bichsel}, the analogy of using a parametric versus a view-based eigenspace approach is that of modeling a complex distribution by a single cluster model or the union of several component clusters respectively.  It is expected that the latter approach will give better image reconstruction results and that is seen in Figure~\ref{fig:parametric_vs_viewBased_eigenspace}.  
+A fundamental issue of whether to create one eigenspace for all classes or one eigenspace per class is addressed in~\cite{1997_JNL_EigenTRK_Moghaddam}.  The classes correspond to $M$ human head orientations with $N$ examples in every class.  In a \emph{parametric} eigenspace, one eigenspace is created for all $NM$ images.  On the other hand, in a \emph{view-based} eigenspace, one eigenspace is created for each of $M$ head orientations, each with $N$ users per eigenspace.  Since multiple views of a face form a connected non-convex region \cite{1994_JNL_FaceTop_Bichsel}, the analogy of using a parametric versus a view-based eigenspace approach is that of modeling a complex distribution by a single cluster model or the union of several component clusters respectively.  It is expected that the latter approach will give better image reconstruction results as seen in Figure~\ref{fig:parametric_vs_viewBased_eigenspace}.  
 
-The state of the art in subspace tracking is presented in \cite{2008_JNL_subspaceTRK_Ross}.  In this work, the authors initially create an offline eigenbasis.  Subsequent images are added using an incremental PCA update with a forgetting factor to update the eigenbasis every 5 frames.  They use a particle filter for motion parameter estimation.  Pose, expression, lighting, temporary occlusion and structured appearance changes are all addressed and tracked successfully.
-
-In \cite{2003_JNL_TRKsubspace_Jepson}, phase is chosen as the basis of the appearance model since it provides some amplitude and illumination independence.  They compute the optimal image warp from the stable properties of image appearance.  They develop a $\mathcal{WSL}$ tracker, where $\mathcal{S}$ rerers to the stable component, $\mathcal{L}$ refers to the "lost" component, and $\mathcal{W}$ refers to the wandering component.  The $\mathcal{S}$ component captures the behavior of the stable and slowly varying image observations when and where they occur.  The $\mathcal{L}$ component accounts for data outliers which arise as a result of tracking failures due to tracking, occlusion, or noise.  The $\mathcal{W}$ component allows for adaptation to short term image appearance changes.  A mixture model is used to model these 3 components.  The image feature used to generate the mixture model is the phase.  The model is learned online using the EM algorithm.  This method can handle variations in pose, illumination and expression.  However, since pixels are treated independently, within the target region, a notion of an object being tracked does not exist.  This can result in modeling the background as well. 
+Recently, a tracker based on online updating of a PCA eigenspace was presented in~\cite{2008_JNL_subspaceTRK_Ross}.  In this work, the authors use incremental PCA and a particle filter to build an online incremental basis.  It is assumed that observations are generated from this eigenspace.  In~\cite{2003_JNL_TRKsubspace_Jepson}, phase is chosen as the basis of the appearance model since it provides some amplitude and illumination independence.  An optimal image warp is computed from the stable properties of image appearance.  A $\mathcal{WSL}$ tracker is created, where $\mathcal{S}$ refers to the stable component, $\mathcal{L}$ refers to the "lost" component, and $\mathcal{W}$ refers to the wandering component.  The $\mathcal{S}$ component captures the behavior of the stable and slowly varying image observations when and where they occur.  The $\mathcal{L}$ component accounts for data outliers which arise as a result of tracking failures due to tracking, occlusion, or noise.  The $\mathcal{W}$ component allows for adaptation to short term image appearance changes.  A mixture model is used to model these 3 components.  The image feature used to generate the mixture model is the phase.  The model is learned online using the EM algorithm.  This method can handle variations in pose, illumination and expression.  However, since pixels are treated independently, within the target region, a notion of an object being tracked does not exist.  This can result in modeling the background as well. 
 
 								\begin{figure}[t]
 								\centering	
@@ -360,9 +365,9 @@ In \cite{2003_JNL_TRKsubspace_Jepson}, phase is chosen as the basis of the appea
 								\label{fig:2008_JNL_TRKsub_Skocaj}				
 								\end{figure}
 
-\cite{2008_JNL_TRKsubs_Skocaj} try to find the error associated with using an incremental PCA update algorithm versus using the optimal batch PCA algorithm.  They build eigenspaces of various dimensions from 720 images of 20 objects taken from the Columbia University Image Library (COIL-100)  \cite{Web_COIL}.  Figure~\ref{fig:2008_JNL_TRKsub_Skocaj} shows the mean squared reconstruction errors (MSRE) for the batch and various incremental methods.  In all experiments, squared reconstruction error degradation is less than 10\%.  Moreover, the sequential order in which the images are presented influences results.  It is pointed out that to obtain good results, the initial images should be heterogenous encompassing different objects and views.  This results in an evolving eigenspace that is rich and comprehensive enough in the beginning and is not specialized for representing a specific object only.  In this work, it is also shown that the reconstruction errors of the various incremental weighted PCA methods (\emph{WincA, WincX}) do not differ significantly from the results of the batch weighted method (\emph{Wbatch}).  This method is used by \cite{2010_CNF_TRKsubs_Qian} for object tracking in a manner quite similar to the approach used in \cite{2008_JNL_subspaceTRK_Ross}.  They sample a collection of image patches and likelihood of each image patch is generated by reconstruction.  Comparison is made between PCA subspace tracking with and without weighting prior observations.  They show that temporal weighting the data results in less background clutter penetrating the target of interest and therefore leads to better occlusion handling in tracking.  Another incremental PCA update algorithm is developed by \cite{2004_JNL_TRKsubs_Li}.  They also propose an incremental algorithm robust PCA in addition to standard PCA.
+In~\cite{2008_JNL_TRKsubs_Skocaj}, the researchers try to find the error associated with using an incremental PCA update algorithm versus using the optimal batch PCA algorithm.  They build eigenspaces of various dimensions from 720 images of 20 objects taken from the Columbia University Image Library (COIL-100)~\cite{Web_COIL}.  Figure~\ref{fig:2008_JNL_TRKsub_Skocaj} shows the mean squared reconstruction errors (MSRE) for the batch and various incremental methods.  In all experiments, squared reconstruction error degradation is less than 10\%.  Moreover, the sequential order in which the images are presented influences results.  It is pointed out that to obtain good results, the initial images should be heterogeneous encompassing different objects and views.  This results in an evolving eigenspace that is rich and comprehensive enough in the beginning and is not specialized for representing a specific object only.  In this work, it is also shown that the reconstruction errors of the various incremental weighted PCA methods (\emph{WincA, WincX}) do not differ significantly from the results of the batch weighted method (\emph{Wbatch}).  This method is used by~\cite{2010_CNF_TRKsubs_Qian} for object tracking in a manner quite similar to the approach used in~\cite{2008_JNL_subspaceTRK_Ross}.  They sample a collection of image patches and likelihood of each image patch is generated by reconstruction.  Comparison is made between PCA subspace tracking with and without weighting prior observations.  They show that temporal weighting the data results in less background clutter penetrating the target of interest and therefore leads to better occlusion handling in tracking.  Another incremental PCA update algorithm is developed by \cite{2004_JNL_TRKsubs_Li}.  They also propose an incremental algorithm robust PCA in addition to standard PCA.
 
-Having discussed traditional and subspace based tracking methods, we now turn to the usage of RVQ in tracking.
+Having discussed RVQ and tracking methods, we now turn to the usage of RVQ in tracking.
 
 
 %								\begin{figure}[t]
