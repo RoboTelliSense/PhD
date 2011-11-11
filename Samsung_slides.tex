@@ -1,0 +1,982 @@
+\include{begin}
+\include{inkscapeLatex}
+%####################################################################################################
+\title{Target Tracking \\ Using \\Residual Vector Quantization}
+%####################################################################################################
+\begin{frame}[plain]\logoCSIPCPL\logoTechTower
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\logoCSIPCPL\logoTechTower
+	\setcounter{tocdepth}{1}	
+	\tableofcontents
+\end{frame}
+
+%####################################################################################################
+\section{I. Introduction}
+%####################################################################################################
+\begin{frame}
+\frametitle{Background}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\vspace{0.2in}
+\begin{itemize}
+\item 2005: Dr Altunbasak, hierarchical motion vector estimation, background modeling
+\item {\color{blue}Interest}: pattern recognition, signal processing
+\item 2007: switched to Dr Bobick, robust computer vision on compressed video
+\item 2010: Dr Barnes + Dr Bobick, RVQ as a pattern recognition method extended to several images
+\end{itemize}
+\begin{figure}
+\includegraphics[width=0.73\textwidth]{thesis/professors.pdf}
+\end{figure}
+\end{frame}
+
+%==================================
+\section{II. Tracking}
+%==================================
+%---------------------------------------------------------
+\subsection{(a) Introduction}
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{definition}
+\logoCSIPCPL\mypagenum
+	Estimate and maintain {\color{red}target state} over {\color{red}time}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_overviewDiagram.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{big picture}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.9\textwidth]{thesis/PRML_PGM_overview.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{relationship with HMM}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[height=0.3\textheight]{thesis/HMM_flowDiagram.pdf}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/HMM_flowDiagram2.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{update}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_update.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{prediction}
+\logoCSIPCPL\mypagenum
+	Chapman Kolmogorov equation
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_prediction.pdf}
+	\end{figure}
+\end{frame}
+
+%---------------------------------------------------------
+\subsection{(b) Radars}
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Originally: radars}
+\framesubtitle{Kalman Filter}
+\logoCSIPCPL\mypagenum
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_blockDiagram.pdf}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Radar tracking\footnote{Bar-Shalom et al., 2009}}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}
+\subfigure[US Navy, long-range surveillance]{\includegraphics[height=0.2\textheight]{thesis/TRK_PDAF_example_US_Navy_ROTHR.png}}\hspace{0.2in}
+\subfigure[Theater High Altitude Area Defense]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_THAAD.png}}
+\subfigure[long-range surveillance against ICBMs]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_Cobra.png}}\hspace{0.2in}
+\subfigure[long-range surveillance against ICBMs]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_SBX.png}}
+\end{figure}
+\end{frame}
+
+
+
+%---------------------------------------------------------
+\subsection{(c) Computer vision}
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{target representations\footnote{Yilmaz, 2006}}
+\logoCSIPCPL\mypagenum
+\begin{figure}[t]
+\center
+\includegraphics[width=0.8\textwidth]{thesis/2006_JNL_TRKsurvey_Shah_fig1.png}
+\caption{Target representations.  (a) Centroid, (b) multiple points,(c) rectangular bounding box, (d) elliptical bounding region, (e) articulated shape model, (f) skeleton, (g) contour control points, (h) contour, (i) silhouette \cite{2006_JNL_SURVEYtrk_Yilmaz}.}
+\label{fig:TRK_objectRepresentations}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Pre-processing}
+\logoCSIPCPL\mypagenum
+	{\color{red}Steps}
+	\begin{enumerate}
+		\item Downsampling
+		\item Normalization
+		\item Stabilization
+		\item Background modeling
+		\item Feature Extraction
+	\end{enumerate}
+	\vspace{0.1in}
+	{\color{red}Features}
+	\begin{enumerate}
+		\item Color
+		\item Edges
+		\item Corners
+		\item Motion
+		\item Texture
+		\item Depth
+		\item Density
+	\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+\frametitle{Visual tracking}
+\framesubtitle{overview\tiny{\footnote {Yilmaz et.al., 2006}}}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+\begin{figure}
+\includegraphics[width=1.1\textwidth]{thesis/TRK_overview.pdf}
+\end{figure}	
+\end{changemargin}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Region tracking}
+\framesubtitle{overview}
+\logoCSIPCPL\mypagenum
+	\begin{enumerate}
+		\item Template matching
+			\begin{itemize}
+				\item fixed templates: reliable over short durations 
+			\end{itemize}
+		\item Subspace methods
+			\begin{itemize}
+				\item usually learned with PCA
+				\item model variations in lighting and pose
+				\item disadvantages: object specific, training
+			\end{itemize}			
+		\item Probability density
+			\begin{itemize}
+				\item robustness under image distortions and occlusions
+				\item fast to learn
+				\item disadvantage: lack of expressiveness, registration can be difficult
+			\end{itemize}
+		\item Motion
+			\begin{itemize}
+				\item optical flow works well for small displacements
+				\item block matching for large motion
+				\item computing motion vectors is computationally complex
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Subspace tracking}
+\framesubtitle{prior work}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=0.7\textwidth]{thesis/TrackingPapers_SubspaceTracking_1998_Black_fig9.png}
+	\end{figure}
+\myFootnoteCitation{1998_JNL_Eigentracking_Black}{IJCV}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Subspace tracking}
+\framesubtitle{prior work}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TrackingPapers_SubspaceTracking_2008_Ross_fig10.png}
+	\end{figure}
+\myFootnoteCitation{2008_JNL_subspaceTRK_Ross}{IJCV}
+\end{frame}
+
+
+
+%####################################################################################################
+\section{III. RVQ}
+%####################################################################################################
+%--------------------------------------
+\subsection{(a) Introduction}
+%--------------------------------------
+
+\begin{frame}
+\frametitle{Quantization}
+\framesubtitle{overview}
+\logoCSIPCPL\mypagenum
+	\begin{figure}				
+		\includegraphics[width=0.9\textwidth]{thesis/Quantization_blockDiagram.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+\begin{frame}[plain]
+\frametitle{Lloyd Max conditions}
+\framesubtitle{Optimal code-vectors}
+\logoCSIPCPL\mypagenum
+	\begin{changemargin}{-1.3in}{0in}
+		\begin{figure}				
+			\includegraphics[height=0.8\textheight]{thesis/Quantization_optimalCodevectors.pdf}
+		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+
+
+%\begin{frame}
+%\frametitle{Lloyd Max conditions}
+%\framesubtitle{Optimal partitions}
+%\logoCSIPCPL\mypagenum
+%	\begin{figure}				
+%		\includegraphics[width=1.0\textwidth]{thesis/Quantization_optimalPartitions.pdf}
+%	\end{figure}
+%\end{frame}
+%
+%
+%
+%\begin{frame}[plain]
+%\frametitle{Lloyd Max conditions}
+%\framesubtitle{Optimal partitions (cont.)}
+%\logoCSIPCPL\mypagenum
+%	\begin{changemargin}{-1.3in}{0in}
+%		\begin{figure}				
+%			\includegraphics[height=0.8\textheight]{thesis/Quantization_optimalPartitions2.pdf}
+%		\end{figure}
+%	\end{changemargin}
+%\end{frame}
+
+
+\begin{frame}
+\frametitle{Vector Quantization}
+\framesubtitle{types}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+		\item Unstructured
+			\begin{itemize}
+				\item Exhaustive Search (ESVQ)
+			\end{itemize}
+		\item Structured
+		\begin{itemize}
+			\item Tree Structured (TSVQ)
+			\item Transform
+			\item Product
+				\begin{itemize}
+					\item Mean-removed
+					\item Shape-gain
+					\item Residual (RVQ)
+				\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+\frametitle{RVQ}
+\framesubtitle{block diagram}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.35in}{0in}
+\begin{figure}
+\centering			
+\subfigure[Encoder.]{\includegraphics[width=1.35\textwidth]{thesis/RVQ_encoder_blockDiagram.pdf}}
+\subfigure[Decoder.]{\includegraphics[width=1.15\textwidth]{thesis/RVQ_decoder_blockDiagram.pdf}}
+\end{figure}
+\end{changemargin}
+\end{frame}
+
+
+%\begin{frame}
+%\frametitle{RVQ}
+%\framesubtitle{distortion}
+%\logoCSIPCPL\mypagenum
+%	\begin{figure}				
+%		\includegraphics[width=1.0\textwidth]{thesis/RVQ_distortion.pdf}
+%	\end{figure}
+%\end{frame}
+
+
+
+\begin{frame}
+\frametitle{RVQ}
+\framesubtitle{tree structure}
+\logoCSIPCPL\mypagenum
+%	\begin{figure}				
+%		\includegraphics[width=1.0\textwidth]{thesis/RVQ_graphicalReconstruction.pdf}
+%	\end{figure}
+\begin{figure}[t]
+\centering
+\subfigure[Unentangled tree using a 3x2 encoder codebook.]{\includegraphics[width=0.75\textwidth]{thesis/RVQ_trg_1_to_7_equivalentCVs.pdf}}
+\subfigure[Entanglement using a 2x4 encoder codebook.]{\includegraphics[width=0.75\textwidth]{thesis/RVQ_trg_1_to_7_equivalentCVs_2.pdf}}
+\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+\frametitle{RVQ}
+\framesubtitle{coupled K-means}
+\logoCSIPCPL\mypagenum
+	\begin{itemize}
+	\item $M$: number of code-vectors per stage
+	\item $P$: number of stages
+	\item $x_i$: input data point
+	\item $\mu_\rho^k$: stage code-vector at $\rho$-th stage that maps to $k$-th equivalent code-vector
+	\end{itemize}
+	\begin{changemargin}{-1.3in}{0in}
+	\begin{align}
+	\label{Eq:RVQmeans}
+	e&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, \ldots P\}\notag\\
+	&={\RVQerroralternate}, \ \ \rho=\{1, 2, \ldots P\}
+	\end{align}
+%		\begin{figure}				
+%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_CAC_derivation.pdf}
+%		\end{figure}
+	\end{changemargin}
+\end{frame}
+
+\begin{frame}[plain]
+\frametitle{RVQ}
+\framesubtitle{decoding methods}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+\begin{figure}[h]
+\centering
+\subfigure{\includegraphics[width=0.6\textwidth]{thesis/RVQ_CAC_toyExample_3x2.pdf}}				\subfigure{\includegraphics[width=0.6\textwidth]{thesis/RVQ_CAC_toyExample_8x2.pdf}}
+\end{figure}
+\end{changemargin}
+\end{frame}
+
+
+%--------------------------------------
+\subsection{(b) Comparisons}
+%--------------------------------------
+\begin{frame}
+\frametitle{Comparison with ESVQ}\logoCSIPCPL\mypagenum
+\framesubtitle{}
+	\begin{itemize}
+		\item ESVQ
+			\begin{itemize}
+				\item $K=2^{rD}$ code-vectors
+				\item Computations: $O(2^{rD})$
+				\item Memory: $O(2^{rD})$
+				\item Exponential in computations and memory
+			\end{itemize}
+		\item RVQ
+			\begin{itemize}
+				\item $D={M^P}$ code-vectors
+				\item M code-vectors for each of P stages
+				\item Computations: $O(MP)$
+				\item Memory: $O(MP)$
+				\item Linear in computations and memory
+			\end{itemize}
+	\end{itemize}
+	Generally, structurally constrained quantizers cannot provide performance as good as ESVQ
+	\begin{itemize}
+		\item RVQ can handle higher dimensions due to linear complexity
+		\item Better performance than ESVQ possible, for given implementation cost
+	\end{itemize}	
+\end{frame}
+
+\begin{frame}[plain]
+\frametitle{Comparison with ESVQ, TSVQ}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+\begin{figure}		
+\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithESVQ_TSVQ.pdf}			
+\end{figure}
+\end{changemargin}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{PCA}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{figure}		
+\includegraphics[width=0.7\textwidth]{thesis/PRML_PCA_geometricDerivation_step1.pdf}			
+\end{figure}
+\end{frame}
+
+
+%\begin{frame}[plain]
+%\frametitle{RVQ comparison}
+%\framesubtitle{2. with TSVQ}
+%\logoCSIPCPL\mypagenum
+%%	\begin{changemargin}{-1.3in}{0in}
+%%		\begin{figure}				
+%%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithTSVQ.pdf}
+%%		\end{figure}
+%%	\end{changemargin}
+%\end{frame}
+
+
+
+%\begin{frame}[plain]
+%\frametitle{RVQ comparison}
+%\framesubtitle{3. with PCA}
+%\logoCSIPCPL\mypagenum
+%	\begin{changemargin}{-1.3in}{0in}
+%		\begin{figure}				
+%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithPCA.pdf}
+%		\end{figure}
+%	\end{changemargin}
+%\end{frame}
+
+
+%--------------------------------------------------------
+\subsection{(c) Image classification}
+%--------------------------------------------------------
+\begin{frame}
+\frametitle{Image classification\footnote{Barnes, 2007}}
+\framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka \\(training phase)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}		
+		\includegraphics[height=0.3\textheight]{thesis/RVQ_SatelliteSriLanka_1_snippets.png}			
+	\end{figure}
+	\begin{figure}		
+		\includegraphics[height=0.35\textheight]{thesis/RVQ_SatelliteSriLanka_2_codebooks.png}			
+	\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Image classification\footnote{Barnes, 2007}}
+\framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka\\(testing phase)}
+\logoCSIPCPL\mypagenum
+	\begin{figure}		
+		\includegraphics[height=0.5\textheight]{thesis/RVQ_SatelliteSriLanka_3_labeling.png}
+		\caption{\hspace{1.3in}{\color{yellow}yellow}: dirt paths \\\hspace{1.3in}{\color{blue}blue}: rivers \\\hspace{1.3in}{\color{red}red}: paved roads \\\hspace{1.3in}{\color{green}green}: train tracks}
+	\end{figure}
+\end{frame}
+
+
+%=======================================
+\section{IV. RVQ tracking}
+%=======================================
+\begin{frame}
+\frametitle{Experimental overview}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\textwidth]{thesis/PhD_experimentalOverview.pdf}
+\label{fig:overview}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[plain]
+\frametitle{Temporal evolution}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{changemargin}{-1.3in}{0in}
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.3\textwidth]{thesis/PhD_experimentalTemporalOverview.pdf}
+\label{fig:temporal_overview}
+\end{figure}
+\end{changemargin}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Publicly available datasets\footnote{Ross et. al. 2008}}
+\framesubtitle{Dudek, davidin300, sylv, fish, car4, car11}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[h!]
+\centering\subfigure{\includegraphics[height=0.41in]{thesis/seq_1_Dudek.png}\label{fig:trk_pca_1a}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_2_davidin300.png}\label{fig:trk_pca_1b}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_3_sylv.png}\label{fig:trk_pca_1c}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_5_fish.png}\label{fig:trk_pca_1d}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_6_car4.png}\label{fig:trk_pca_1d}}
+\subfigure{\includegraphics[height=0.41in]{thesis/seq_7_car11.png}\label{fig:trk_pca_1d}}
+\label{fig:trk_sequences}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------------
+\subsection{(a) Representation model}
+%------------------------------------------------------
+\begin{frame}[plain]
+\frametitle{Affine warping}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\scriptsize
+\begin{changemargin}{-1.3in}{0in}
+\begin{equation*}
+\begin{array}{llllllll}
+\mathbf{A} &= \left[\begin{array}{lll}a & b \\ c & d\\ \end{array}\right] \\
+&=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t} \\
+&={\color{blue}(\mathbf{U}\mathbf{V}^t)}{\color{red}\mathbf{V}}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}\\
+&={\color{blue}\mathbf{R}(\theta)}{\color{red}\mathbf{R}(-\phi)}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{R} (\phi)}\\
+&={\color{blue}\RotMatrixTheta}{\color{red}\RotMatrixminusPhi}{\color{darkgreen}\EigenvalueMatrix}{\color{red}\RotMatrixPhi}\\\\
+\end{array}
+\label{Eq:AffineDecomposition}
+\end{equation*}
+\end{changemargin}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Inverse affine transform}
+\framesubtitle{one time initialization}
+\logoCSIPCPL\mypagenum
+In first frame
+\begin{itemize}
+\item given target affine parameters and ground truth feature points
+\item apply inverse affine transform on ground truth points to warp them to canonical position, and save this position $(\mathbf{x, y})$
+\end{itemize}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.6\textwidth]{thesis/dataset_Dudek_00001_inverseAffine.pdf}
+\label{fig:original_feature_points}
+\end{figure}
+\end{frame}
+
+
+
+
+%------------------------------------------------------
+\subsection{(b) Motion model}
+%------------------------------------------------------
+\begin{frame}
+\frametitle{Generating track candidates}
+\framesubtitle{run-time}
+\logoCSIPCPL\mypagenum
+Use random affine deformation to model motion
+\begin{itemize}
+\item Perturb affine parameters
+\item For each affine set, 
+\begin{itemize}
+\item apply forward affine transform on zero-centered canonical grid 
+\item bilinear interpolation to extract ROI, one per affine set, as shown below
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.35\textwidth]{thesis/affineCandidates.pdf}
+\label{Fig:affine_candidates}
+\end{figure}
+\end{itemize}
+\item For set corresponding to least reconstruction error, apply forward affine transform to $(\mathbf{x, y})$ and compare with ground truth to get track error
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[plain]
+\frametitle{1st forward affine transform}
+\framesubtitle{get ROI}
+\logoCSIPCPL\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+Density of grid points is greater in the horizontal direction.
+\begin{figure}[t]
+\centering
+\fbox{\includegraphics[width=1.3\textwidth]{thesis/dataset_Dudek_00001_forwardAffine.pdf}}
+\end{figure}
+\end{changemargin}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{2nd forward affine transform}
+\framesubtitle{overlay feature points on ROI}
+appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtained in first frame
+\logoCSIPCPL\mypagenum
+\scriptsize
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.55\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}
+\label{Fig:overall}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------------
+\subsection{(c) Appearance model}
+%------------------------------------------------------
+
+%PCA
+\begin{frame}
+\frametitle{PCA}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\subfigure[Uniform.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Uniform.pdf}}
+\subfigure[Gaussian.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_GaussMarkov.pdf}}
+\subfigure[Dudek sequence.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Dudek.pdf}}
+\label{fig:PCA_results}
+\end{figure}
+\end{frame}
+
+%RVQ appearance model (varying P)
+\begin{frame}
+\frametitle{RVQ, $M=4$, varying $P$}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}
+\subfigure[Uniform.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Uniform.pdf}}
+\subfigure[Gaussian.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_GaussMarkov.pdf}}
+\subfigure[Dudek sequence.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_8x4_Dudek.pdf}}
+\end{figure}
+\end{frame}
+
+
+%TSVQ
+\begin{frame}
+\frametitle{TSVQ (binary, balanced-tree)}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\subfigure[Uniform.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Uniform.pdf}}
+\subfigure[Gaussian.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_GaussMarkov.pdf}}
+\subfigure[Dudek sequence.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Dudek.pdf}}
+\label{fig:TSVQ_results}
+\end{figure}
+\end{frame}
+
+
+
+
+%RVQ appearance model (varying M)
+\begin{frame} 
+\frametitle{RVQ, $P=8$, varying $M$}
+\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\subfigure[Uniform.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_uniform.pdf}}
+\subfigure[Gaussian.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Gaussian.pdf}}
+\subfigure[Gauss-Markov.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_GaussMarkov.pdf}}
+\subfigure[Dudek sequence.]
+{\includegraphics[width=0.45\textwidth]{thesis/RVQ_Dudek.pdf}}
+\label{fig:RVQ_results_varyingM}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Sample 8x4 RVQ codebook}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{figure}
+\includegraphics[height=0.75\textheight]{thesis/1_Dudek__aRVQ_08_04_1000_0_RofE__170_codebook.pdf}
+\end{figure}	
+\end{frame}
+
+
+%------------------------------------------------------
+\subsection{(d) Observation model}
+%------------------------------------------------------
+\begin{frame}
+\frametitle{Observation model}
+\framesubtitle{PCA}
+\logoCSIPCPL\mypagenum
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{thesis/PRML_PCA_problem.pdf}
+\caption{In $\mathbb{R}^2$, a reduced eigenspace means that eigenvector $u_2$ is discarded.  Vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ have the same projection error on eigenvector $u_1$ even though $\mathbf{x}_1$ is closer to the mean $\boldsymbol\mu$ of the training data $\mathbf{x}_i$.}
+\label{fig:PRML_PCA_problem}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Observation model}
+\framesubtitle{PCA}
+\logoCSIPCPL\mypagenum
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
+\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
+\label{fig:1997_JNL_DIFSDFFS_Moghaddam}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Observation model}
+\framesubtitle{PCA, RVQ, TSVQ}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item PCA and RVQ both do not define a proper density in the observation space
+\item For PCA, we use DFFS
+\item For RVQ, we use
+\begin{equation}
+p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\dr\big)}}
+\end{equation}
+\item For TSVQ, the observation model is the same as RVQ with $\lambda=0$
+\end{itemize}
+\end{frame}
+
+
+%------------------------------------------------------
+\subsection{(e) Inference model}
+%------------------------------------------------------
+\begin{frame}
+\frametitle{Particle filter}
+\framesubtitle{Sequential Importance Resampling Filter}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item sampling is done in 6-D affine space
+\item to avoid curse of dimensionality, each parameter is considered independent
+\item moreover, MCMC not required
+\end{itemize}
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
+\end{figure}	
+\end{frame}
+
+
+
+
+
+
+
+%=======================================
+\section{V. Results}
+%=======================================
+
+%-------------------------------------------------
+\subsection{(a) Best performance}
+%-------------------------------------------------
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{best tracking performance}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\scriptsize
+\input{thesis/results_final_1_best}
+\subfigure[Best tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1a_best.pdf}\label{fig:results_final_1a_best}}\hspace{0.1in}
+\subfigure[\%age of datasets over which best tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_1b_best_percent.pdf}\label{fig:results_final_1b_best_percent}}
+\end{figure}
+\end{frame}
+
+%-------------------------------------------------
+\subsection{(b) Mean performance over params.}
+%-------------------------------------------------
+
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{mean performance}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\scriptsize
+\input{thesis/results_final_2_mean}
+\subfigure[Mean tracking error for each algorithm.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2a_mean.pdf}\label{fig:results_final_2a_mean}}\hspace{0.1in}
+\subfigure[\%age of datasets over which best mean tracking error is achieved over all parameters.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_2b_mean_percent.pdf}\label{fig:results_final_2b_mean_percent}}
+\label{fig:results_final_2_mean}
+\end{figure}
+\end{frame}
+
+%-------------------------------------------------
+\subsection{(c) Memory=16 vectors}
+%-------------------------------------------------
+
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{memory=16 vectors}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\scriptsize
+\input{thesis/results_final_3_16}
+\subfigure[Tracking error for each algorithm with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_3a_16.pdf}\label{fig:results_final_3a_16}}\hspace{0.1in}
+\subfigure[\%age of datasets over which best tracking error is achieved with 16 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_3b_16_percent.pdf}\label{fig:results_final_3b_16_percent}}
+\label{fig:results_final_3_16}
+\end{figure}
+\end{frame}
+
+
+%-------------------------------------------------
+\subsection{(d) Memory=32 vectors}
+%-------------------------------------------------
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{memory=32 vectors}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{figure}[t]
+\centering
+\scriptsize
+\input{thesis/results_final_4_32}
+\subfigure[Tracking error for each algorithm with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_4a_32.pdf}\label{fig:results_final_4a_32}}\hspace{0.1in}
+\subfigure[\%age of datasets over which best tracking error is achieved with 32 eigenvectors/code-vectors stored in memory.]{\includegraphics[width=0.47\textwidth]{thesis/results_final_4b_32_percent.pdf}\label{fig:results_final_4b_32_percent}}
+\label{fig:results_final_4_32}
+\end{figure}
+\end{frame}
+
+
+%-------------------------------------------------
+\subsection{(e) Mean performance over datasets}
+%-------------------------------------------------
+\begin{frame}
+\frametitle{Results}
+\framesubtitle{over all configurations}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\vspace{-0.2in}
+\begin{figure}[h!]
+\centering
+\subfigure[PCA.]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5a_pca_.pdf}\label{fig:results_final_5a_pca_}}
+\subfigure[TSVQ.]{\includegraphics[width=0.225\textwidth, angle=90]{thesis/results_final_5b_tsvq.pdf}\label{fig:results_final_5b}}
+\subfigure[maxP.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5c_maxP.pdf}\label{fig:results_final_5c}}
+\subfigure[RofE.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5d_RofE.pdf}\label{fig:results_final_5d}}
+\subfigure[nulE.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5e_nulE.pdf}\label{fig:results_final_5e}}
+\subfigure[monR.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5f_monR.pdf}\label{fig:results_final_5f}}
+\subfigure[maxP, RofE, nulE, monR.]{\includegraphics[width=0.3\textwidth]{thesis/results_final_5g_8x2_8x4_8x8.pdf}\label{fig:results_final_5g_8x2_8x4_8x8}}
+\caption{Tracking results (5 of 5), comparison of tracking performance as parameters for each algorithm are varied.  In (d), we see that over all RVQ algorithms, RofE has best mean performance.  In (g) it is clear that the best RVQ configuration is 8x4.}
+\label{fig:results_final_5_configs}
+\end{figure}
+\end{frame}
+
+%=======================================
+\section{VI. Conclusions}
+%=======================================
+\begin{frame}
+\frametitle{Conclusions}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item \underline{Best possible performance}.  PCA and RVQ performed best in half the times each.  TSVQ never performed best.  However, of the 3 times that PCA performed best, in 2 cases, the performance difference was not significantly better than RVQ.  Moreover, and perhaps more importantly, RVQ performed best in the two most challenging datasets, Dudek and davidin300 since they both have multiple sources of noise.
+\item \underline{Best mean performance}.  Here, RVQ performed best in twice the number of scenarios as PCA.  TSVQ had the worst mean performance.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Conclusions}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item \underline{Memory cost=16 vectors}.  Here PCA performed best in twice the number of scenarios as RVQ .
+\item \underline{Memory cost=32 vectors}.  Here RVQ completely outperformed PCA and TSVQ.  This is understandable since the capacity of RVQ to explain an underlying distribution grows exponentially as $M^P$.  Moreover, we have used $M=2, 4, 8$ ensuring that we do not increase our VC dimension too much so as to start over-fitting
+\item \underline{Lost tracks}.  There was only one lost track for monR.  This is understandable since monR is a greedy approach.  The lost track was in davidin300 which is a challenging dataset.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Future work}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{enumerate}
+\item Compare with non-linear manifold learning methods
+\item Relationship to Ding and He, 2004
+\item Multi-spectral data
+\end{enumerate}
+\end{frame}
+
+%=======================================
+\section{Questions}
+%=======================================
+\begin{frame}
+\frametitle{Open source}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\setcounter{subfigure}{0}
+\begin{itemize}
+\item All PhD work released under open source license
+\item git clone, or download as zip
+{\color{blue}\underline{\url{https://github.com/SalmanAslamPhD/phd}}}
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{thesis/github.png}
+\end{figure}
+\item To run tracker, run main.m
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{}
+\logoCSIPCPL\mypagenum
+		QUESTIONS
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{thesis/00465.png}
+\end{figure}
+
+\end{frame}
+
+%####################################################################################################
+\include{end}
+%####################################################################################################
+
