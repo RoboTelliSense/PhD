@@ -18,6 +18,27 @@
 \section{I. Introduction}
 %####################################################################################################
 \begin{frame}
+\frametitle{Goal and contribution}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item Goal: 
+\begin{enumerate}
+\item Use PCA (commonly used in pattern recognition, machine learning, computer vision) in a learning-tracking framework
+\item Also use TSVQ and RVQ (commonly used in signal processing and data compression) in a learning-tracking framework 
+\item Compare performance of all 3 algorithms
+\end{enumerate}
+\vspace{0.2in}
+\item Contribution:
+\begin{enumerate}
+\item Novel methodology of RVQ and TSVQ employment in a visual tracking framework
+\item Identification of conditions under which PCA, TSVQ, or RVQ perform best in tracking
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Background}
 \framesubtitle{}
 \logoCSIPCPL\mypagenum
@@ -419,9 +440,12 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \frametitle{RVQ}
 \framesubtitle{design-time: sample 8x4 codebook}
 \logoCSIPCPL\mypagenum
-\begin{figure}
-\includegraphics[height=0.75\textheight]{thesis/1_Dudek__aRVQ_08_04_1000_0_RofE__170_codebook.pdf}
-\end{figure}	
+\setcounter{subfigure}{0}
+\begin{figure}[h!]
+\centering\subfigure{\includegraphics[height=0.41in]{thesis/seq_1_Dudek.png}\label{fig:trk_pca_1a}}
+\subfigure{\includegraphics[height=0.65\textheight]{thesis/1_Dudek__aRVQ_08_04_1000_0_RofE__170_codebook.pdf}
+}
+\end{figure}
 \end{frame}
 
 
@@ -747,8 +771,8 @@ Density of grid points is greater in the horizontal direction.
 
 %PCA
 \begin{frame}
-\frametitle{PCA}
-\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\frametitle{Appearance model}
+\framesubtitle{PCA: 80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
 \logoCSIPCPL\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
@@ -762,9 +786,9 @@ Density of grid points is greater in the horizontal direction.
 
 %RVQ appearance model (varying P)
 \begin{frame}
-\frametitle{RVQ, $M=4$, varying $P$}
-\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
-\logoCSIPCPL\mypagenum
+\frametitle{Appearance model}
+\framesubtitle{RVQ, $M=4$, varying $P$: 80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}
 \subfigure[Uniform.]
@@ -781,9 +805,9 @@ Density of grid points is greater in the horizontal direction.
 
 %TSVQ
 \begin{frame}
-\frametitle{TSVQ (binary, balanced-tree)}
-\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
-\logoCSIPCPL\mypagenum
+\frametitle{Appearance model}
+\framesubtitle{TSVQ (binary, balanced): 80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \subfigure[Uniform.]{\includegraphics[width=0.45\textwidth]{thesis/TSVQ_Uniform.pdf}}
@@ -799,9 +823,9 @@ Density of grid points is greater in the horizontal direction.
 
 %RVQ appearance model (varying M)
 \begin{frame} 
-\frametitle{RVQ, $P=8$, varying $M$}
-\framesubtitle{80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
-\logoCSIPCPL\mypagenum
+\frametitle{Appearance model}
+\framesubtitle{RVQ, $P=8$, varying $M$: 80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \subfigure[Uniform.]
@@ -867,15 +891,20 @@ p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\
 \subsection{(e) State inference}
 %------------------------------------------------------
 \begin{frame}
-\frametitle{Particle filter}
-\framesubtitle{Sequential Importance Resampling Filter}
-\logoCSIPCPL\mypagenum
-\begin{itemize}
-\item sampling is done in 6-D affine space
-\end{itemize}
-\begin{figure}
-\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
-\end{figure}	
+\frametitle{State inference}
+\framesubtitle{Particle filter: Sequential Importance Resampling Filter}
+\mypagenum
+\scriptsize
+sampling is done in 6-D affine space
+
+								\begin{figure}[t]
+								\centering
+								\subfigure[Reference (uniform) density and test PDF.]{\includegraphics[width=0.38\textwidth]{thesis/particle_filter_pdfs.pdf}}
+								\subfigure[Comparing CDFs.]{\includegraphics[width=0.38\textwidth]{thesis/particle_filter_resampling.pdf}}
+								\subfigure[Particles 4, 7 and 9 are picked repeatedly.]{\includegraphics[width=0.43\textwidth]{thesis/particle_filter_particles.pdf}}
+								\caption{Particle filter, resampling.}
+								\label{fig:particle_filter_resampling}
+								\end{figure}
 \end{frame}
 
 
@@ -1010,6 +1039,19 @@ p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Conclusions}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item If dataset has different forms of noise, such as blur, lighting change, pose change, then RVQ performs better
+\item If dataset has one form of noise, such as lighting change, then PCA performs better
+\item Reason is that for PCA, first eigenvector explains maximum variance
+\item Subsequent eigenvectors are constrained
+\item RVQ is not constrained
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Future work}
@@ -1020,6 +1062,8 @@ p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\
 \item Compare with non-linear manifold learning methods
 \item Relationship to Ding and He, 2004
 \item Multi-spectral data
+\item Multi-target
+\item Increase stage refinement in RVQ
 \end{enumerate}
 \end{frame}
 
