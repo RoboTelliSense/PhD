@@ -120,7 +120,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -257,7 +257,7 @@
            y="191.40764"
            x="81.518738"
            id="tspan2989"
-           sodipodi:role="line">1. Representation model</tspan></text>
+           sodipodi:role="line">1. Target representation</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886"
@@ -284,7 +284,7 @@
            y="244.20935"
            x="82.954285"
            id="tspan2989-8"
-           sodipodi:role="line">2. Motion model</tspan></text>
+           sodipodi:role="line">2. Target motion</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886-6"
@@ -365,7 +365,7 @@
            y="344.10999"
            x="82.558777"
            id="tspan2989-7"
-           sodipodi:role="line">5. Inference model</tspan></text>
+           sodipodi:role="line">5. State inference</tspan></text>
       <path
          inkscape:connector-curvature="0"
          id="path3886-44"

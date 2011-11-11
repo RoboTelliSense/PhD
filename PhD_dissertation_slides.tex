@@ -47,6 +47,12 @@
 	\begin{figure}
 		\includegraphics[width=1.0\textwidth]{thesis/TRK_overviewDiagram.pdf}
 	\end{figure}
+	\vspace{0.2in}
+	2 step process
+	\begin{itemize}
+	\item Prediction: predict states using model
+	\item Update: correction applied to prediction after observation arrives
+	\end{itemize}
 \end{frame}
 
 
@@ -71,20 +77,122 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \frametitle{Tracking}
 \framesubtitle{Step 2 of 2: update}
 \logoCSIPCPL\mypagenum
-	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_update.pdf}
-	\end{figure}
+\begin{figure}
+\includegraphics[height=0.8\textheight]{thesis/TRK_EQN_update.pdf}
+\end{figure}
 \end{frame}
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{Example: 1D tracking with particle filter}
+\logoCSIPCPL\mypagenum
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
+\end{figure}	
+\end{frame}
+
 
 
 \begin{frame}
 \frametitle{Tracking}
-\framesubtitle{big picture}
+\framesubtitle{probabilistic graphical models}
 \logoCSIPCPL\mypagenum
 	\begin{figure}
 		\includegraphics[width=0.9\textwidth]{thesis/PRML_PGM_overview.pdf}
 	\end{figure}
 \end{frame}
+
+
+%---------------------------------------------------------
+\subsection{(b) Computer vision}
+%---------------------------------------------------------
+
+\begin{frame}
+\frametitle{Visual tracking}
+\framesubtitle{components\tiny{\footnote {Yilmaz et.al., 2006}}}
+\logoCSIPCPL\mypagenum
+\begin{figure}
+\includegraphics[height=0.8\textheight]{thesis/TRK_overview.pdf}
+\end{figure}	
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Target representations\footnote{Yilmaz, 2006}}
+\framesubtitle{}
+\logoCSIPCPL\mypagenum
+\begin{figure}[t]
+\center
+\includegraphics[width=0.8\textwidth]{thesis/2006_JNL_TRKsurvey_Shah_fig1.png}
+\caption{Target representations.  (a) Centroid, (b) multiple points,(c) rectangular bounding box, (d) elliptical bounding region, (e) articulated shape model, (f) skeleton, (g) contour control points, (h) contour, (i) silhouette \cite{2006_JNL_SURVEYtrk_Yilmaz}.}
+\label{fig:TRK_objectRepresentations}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Region tracking}
+\framesubtitle{overview}
+\logoCSIPCPL\mypagenum
+	\begin{enumerate}
+		\item Template matching
+			\begin{itemize}
+				\item simple
+				\item fixed templates: reliable over short durations 
+			\end{itemize}
+		\item Subspace methods
+			\begin{itemize}
+				\item usually learned with PCA
+				\item model variations in lighting and pose
+				\item training data required
+			\end{itemize}			
+		\item Probability density
+			\begin{itemize}
+				\item robustness under image distortions and occlusions
+				\item fast to learn
+				\item registration can be difficult
+			\end{itemize}
+		\item Motion
+			\begin{itemize}
+				\item optical flow works well for small displacements
+				\item block matching for large motion
+				\item computing motion vectors is computationally complex
+			\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Region tracking}
+\framesubtitle{Subspace tracking: prior work}
+\logoCSIPCPL\mypagenum
+\vspace{0.1in}
+1998: first work on subspace tracking
+	\begin{figure}
+		\includegraphics[width=0.6\textwidth]{thesis/TrackingPapers_SubspaceTracking_1998_Black_fig9.png}
+	\end{figure}
+\myFootnoteCitation{1998_JNL_Eigentracking_Black}{IJCV}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Region tracking}
+\framesubtitle{Subspace tracking: prior work}
+\logoCSIPCPL\mypagenum
+\vspace{0.1in}
+2008: 10 years later, state of the art in subspace tracking
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{thesis/TrackingPapers_SubspaceTracking_2008_Ross_fig10.png}
+\end{figure}
+\myFootnoteCitation{2008_JNL_subspaceTRK_Ross}{IJCV}
+\end{frame}
+
+
+
+
 
 
 %%---------------------------------------------------------
@@ -116,116 +224,44 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 
 
 
-%---------------------------------------------------------
-\subsection{(c) Computer vision}
-%---------------------------------------------------------
-\begin{frame}
-\frametitle{Tracking}
-\framesubtitle{target representations\footnote{Yilmaz, 2006}}
-\logoCSIPCPL\mypagenum
-\begin{figure}[t]
-\center
-\includegraphics[width=0.8\textwidth]{thesis/2006_JNL_TRKsurvey_Shah_fig1.png}
-\caption{Target representations.  (a) Centroid, (b) multiple points,(c) rectangular bounding box, (d) elliptical bounding region, (e) articulated shape model, (f) skeleton, (g) contour control points, (h) contour, (i) silhouette \cite{2006_JNL_SURVEYtrk_Yilmaz}.}
-\label{fig:TRK_objectRepresentations}
-\end{figure}
-\end{frame}
-
-
-
-\begin{frame}
-\frametitle{Pre-processing}
-\logoCSIPCPL\mypagenum
-	{\color{red}Steps}
-	\begin{enumerate}
-		\item Downsampling
-		\item Normalization
-		\item Stabilization
-		\item Background modeling
-		\item Feature Extraction
-	\end{enumerate}
-	\vspace{0.1in}
-	{\color{red}Features}
-	\begin{enumerate}
-		\item Color
-		\item Edges
-		\item Corners
-		\item Motion
-		\item Texture
-		\item Depth
-		\item Density
-	\end{enumerate}
-\end{frame}
 
 
 
 
-\begin{frame}[plain]
-\frametitle{Visual tracking}
-\framesubtitle{overview\tiny{\footnote {Yilmaz et.al., 2006}}}
-\logoCSIPCPL\mypagenum
-\begin{changemargin}{-1.3in}{0in}
-\begin{figure}
-\includegraphics[width=1.1\textwidth]{thesis/TRK_overview.pdf}
-\end{figure}	
-\end{changemargin}
-\end{frame}
+
+%\begin{frame}
+%\frametitle{Pre-processing}
+%\logoCSIPCPL\mypagenum
+%	{\color{red}Steps}
+%	\begin{enumerate}
+%		\item Downsampling
+%		\item Normalization
+%		\item Stabilization
+%		\item Background modeling
+%		\item Feature Extraction
+%	\end{enumerate}
+%	\vspace{0.1in}
+%	{\color{red}Features}
+%	\begin{enumerate}
+%		\item Color
+%		\item Edges
+%		\item Corners
+%		\item Motion
+%		\item Texture
+%		\item Depth
+%		\item Density
+%	\end{enumerate}
+%\end{frame}
 
 
 
 
-\begin{frame}
-\frametitle{Region tracking}
-\framesubtitle{overview}
-\logoCSIPCPL\mypagenum
-	\begin{enumerate}
-		\item Template matching
-			\begin{itemize}
-				\item fixed templates: reliable over short durations 
-			\end{itemize}
-		\item Subspace methods
-			\begin{itemize}
-				\item usually learned with PCA
-				\item model variations in lighting and pose
-				\item disadvantages: object specific, training
-			\end{itemize}			
-		\item Probability density
-			\begin{itemize}
-				\item robustness under image distortions and occlusions
-				\item fast to learn
-				\item disadvantage: lack of expressiveness, registration can be difficult
-			\end{itemize}
-		\item Motion
-			\begin{itemize}
-				\item optical flow works well for small displacements
-				\item block matching for large motion
-				\item computing motion vectors is computationally complex
-			\end{itemize}
-	\end{enumerate}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Subspace tracking}
-\framesubtitle{prior work}
-\logoCSIPCPL\mypagenum
-	\begin{figure}
-		\includegraphics[width=0.7\textwidth]{thesis/TrackingPapers_SubspaceTracking_1998_Black_fig9.png}
-	\end{figure}
-\myFootnoteCitation{1998_JNL_Eigentracking_Black}{IJCV}
-\end{frame}
 
 
 
-\begin{frame}
-\frametitle{Subspace tracking}
-\framesubtitle{prior work}
-\logoCSIPCPL\mypagenum
-	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/TrackingPapers_SubspaceTracking_2008_Ross_fig10.png}
-	\end{figure}
-\myFootnoteCitation{2008_JNL_subspaceTRK_Ross}{IJCV}
-\end{frame}
+
+
+
 
 
 
@@ -235,66 +271,57 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 %--------------------------------------
 \subsection{(a) Introduction}
 %--------------------------------------
+\begin{frame}
+\frametitle{Quantization}
+\framesubtitle{design-time}
+\logoCSIPCPL\mypagenum
+\begin{figure}				
+\includegraphics[width=1.0\textwidth]{thesis/Quantization_design_time.pdf}
+\end{figure}
+minimize distortion objective function
+\begin{equation*}
+e=\sum\limits_{k=1}^{K} \int\limits_{b_k}^{b_{k+1}}(x-y_k)^2f_X(x)
+\end{equation*}
+\end{frame}
+
+
+
 
 \begin{frame}
 \frametitle{Quantization}
-\framesubtitle{overview}
+\framesubtitle{design-time optimality: Lloyd Max conditions}
 \logoCSIPCPL\mypagenum
-	\begin{figure}				
-		\includegraphics[width=0.9\textwidth]{thesis/Quantization_blockDiagram.pdf}
-	\end{figure}
+\begin{figure}				
+\includegraphics[height=0.75\textheight]{thesis/Quantization_optimalCodevectors.pdf}
+\end{figure}
 \end{frame}
 
 
-
-
-
-\begin{frame}[plain]
-\frametitle{Lloyd Max conditions}
-\framesubtitle{Optimal code-vectors}
+\begin{frame}
+\frametitle{Quantization}
+\framesubtitle{run-time}
 \logoCSIPCPL\mypagenum
-	\begin{changemargin}{-1.3in}{0in}
-		\begin{figure}				
-			\includegraphics[height=0.8\textheight]{thesis/Quantization_optimalCodevectors.pdf}
-		\end{figure}
-	\end{changemargin}
+\begin{itemize}
+\item Quantizer $\mathcal{Q}$ maps input $\mathbf{x}_i$ to code-vector $\mathbf{y}_k$
+\end{itemize}
+\begin{figure}				
+\includegraphics[width=0.9\textwidth]{thesis/Quantization_blockDiagram.pdf}
+\end{figure}
 \end{frame}
 
 
-
-%\begin{frame}
-%\frametitle{Lloyd Max conditions}
-%\framesubtitle{Optimal partitions}
-%\logoCSIPCPL\mypagenum
-%	\begin{figure}				
-%		\includegraphics[width=1.0\textwidth]{thesis/Quantization_optimalPartitions.pdf}
-%	\end{figure}
-%\end{frame}
-%
-%
-%
-%\begin{frame}[plain]
-%\frametitle{Lloyd Max conditions}
-%\framesubtitle{Optimal partitions (cont.)}
-%\logoCSIPCPL\mypagenum
-%	\begin{changemargin}{-1.3in}{0in}
-%		\begin{figure}				
-%			\includegraphics[height=0.8\textheight]{thesis/Quantization_optimalPartitions2.pdf}
-%		\end{figure}
-%	\end{changemargin}
-%\end{frame}
 
 
 \begin{frame}
 \frametitle{Vector Quantization}
-\framesubtitle{types}
+\framesubtitle{types and advantages}
 \logoCSIPCPL\mypagenum
-	\begin{itemize}
-		\item Unstructured
+	\begin{enumerate}
+		\item Unstructured VQ
 			\begin{itemize}
 				\item Exhaustive Search (ESVQ)
 			\end{itemize}
-		\item Structured
+		\item Structured VQ
 		\begin{itemize}
 			\item Tree Structured (TSVQ)
 			\item Transform
@@ -305,17 +332,109 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 					\item Residual (RVQ)
 				\end{itemize}
 		\end{itemize}
+	\end{enumerate}
+	\vspace{0.2in}
+	Makhoul, 1985 showed,
+	\begin{itemize}
+	\item decorrelation through rotation
+	\item code-vector placement to take advantage of non-linear dependency
+	\item cell-shape to take advantage of higher dimensionality
 	\end{itemize}
 \end{frame}
 
 
+\begin{frame}
+\frametitle{RVQ}
+\framesubtitle{introduction}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item $M$: number of code-vectors per stage
+\item $P$: number of stages
+\item pick one code-vector from each stage and add
+\item $K=M^P$ possible such direct-sum additions
+\item $K$ equivalent code-vectors, $y_k$
+\item $y_k = \mu_1^{(k)} + \mu_2^{(k)} + \ldots + \mu_P^{(k)}$
+\end{itemize}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.7\textwidth]{thesis/RVQ.pdf}
+\end{figure}
+\end{frame}
 
+
+\begin{frame}
+\frametitle{RVQ}
+\framesubtitle{introduction: example, equivalent code-vectors}
+\logoCSIPCPL\mypagenum
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.5\textwidth]{thesis/RVQ_introduction.pdf}
+\end{figure}
+\end{frame}
+
+
+%--------------------------------------
+\subsection{(b) Design-time}
+%--------------------------------
+\begin{frame}
+\frametitle{RVQ}
+\framesubtitle{design-time}
+\logoCSIPCPL\mypagenum
+\begin{itemize}
+\item $x_i$: input data point
+\item $\mu_\rho^{(k)}$: stage code-vector at $\rho$-th stage that maps to $k$-th equivalent code-vector, $y_k$
+\end{itemize}
+\scriptsize
+\begin{align}
+e &= \KmeansError\notag\\
+&= \KmeansSum{\bigg[\RVQmultipleKmeansone\bigg]}^2, \ \ \rho=1\notag\\
+&= \KmeansSum{\bigg[\RVQmultipleKmeanstwo\bigg]}^2, \ \ \rho=2\notag\\
+&\ \ \ \  \ \ \ \vdots\notag\\
+&=\KmeansSum{\bigg[\RVQmultipleKmeansT\bigg]}^2, \ \ \rho=P\notag
+\end{align}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{RVQ}
+\framesubtitle{design-time (cont.)}
+\logoCSIPCPL\mypagenum
+\scriptsize
+\begin{align*}
+e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, \ldots P\}\notag\\
+&={\RVQerroralternate}, \ \ \rho=\{1, 2, \ldots P\}
+\end{align*}
+\vspace{0.1in}
+\normalsize
+\begin{itemize}
+\item $\mu_\rho^{(k)}$ can be computed using Lloyd Max conditions
+\item This step is called the causal anti-causal (CAC) condition in Barnes, 1993
+\item We call it a coupled K-means condition
+\item $\mu_\rho^{(k)}$ is a causal anti-causal centroid
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{RVQ}
+\framesubtitle{design-time: sample 8x4 codebook}
+\logoCSIPCPL\mypagenum
+\begin{figure}
+\includegraphics[height=0.75\textheight]{thesis/1_Dudek__aRVQ_08_04_1000_0_RofE__170_codebook.pdf}
+\end{figure}	
+\end{frame}
+
+
+%--------------------------------------
+\subsection{(c) Run-time}
+%--------------------------------------
 
 \begin{frame}[plain]
 \frametitle{RVQ}
-\framesubtitle{block diagram}
+\framesubtitle{run-time: block diagram}
 \logoCSIPCPL\mypagenum
 \begin{changemargin}{-1.35in}{0in}
+\setcounter{subfigure}{0}
 \begin{figure}
 \centering			
 \subfigure[Encoder.]{\includegraphics[width=1.35\textwidth]{thesis/RVQ_encoder_blockDiagram.pdf}}
@@ -336,96 +455,70 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 
 
 
+
+
 \begin{frame}
 \frametitle{RVQ}
-\framesubtitle{tree structure}
+\framesubtitle{run-time: example}
 \logoCSIPCPL\mypagenum
-%	\begin{figure}				
-%		\includegraphics[width=1.0\textwidth]{thesis/RVQ_graphicalReconstruction.pdf}
-%	\end{figure}
+\begin{itemize}
+\item During design-time, 3x2 codebook generated from training data: $S$=\{1, 2, ... 7\}
+\item reconstruction starts at 0
+\end{itemize}
 \begin{figure}[t]
 \centering
-\subfigure[Unentangled tree using a 3x2 encoder codebook.]{\includegraphics[width=0.75\textwidth]{thesis/RVQ_trg_1_to_7_equivalentCVs.pdf}}
-\subfigure[Entanglement using a 2x4 encoder codebook.]{\includegraphics[width=0.75\textwidth]{thesis/RVQ_trg_1_to_7_equivalentCVs_2.pdf}}
+\includegraphics[width=0.9\textwidth]{thesis/RVQ_trg_1_to_7_equivalentCVs.pdf}
+%\subfigure[Entanglement using a 2x4 encoder codebook.]{\includegraphics[width=0.75\textwidth]{thesis/RVQ_trg_1_to_7_equivalentCVs_2.pdf}}
 \end{figure}
 \end{frame}
 
 
 
-
-\begin{frame}[plain]
+\begin{frame}
 \frametitle{RVQ}
-\framesubtitle{coupled K-means}
+\framesubtitle{run-time: 4 encoding methods}
 \logoCSIPCPL\mypagenum
-	\begin{itemize}
-	\item $M$: number of code-vectors per stage
-	\item $P$: number of stages
-	\item $x_i$: input data point
-	\item $\mu_\rho^k$: stage code-vector at $\rho$-th stage that maps to $k$-th equivalent code-vector
-	\end{itemize}
-	\begin{changemargin}{-1.3in}{0in}
-	\begin{align}
-	\label{Eq:RVQmeans}
-	e&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, \ldots P\}\notag\\
-	&={\RVQerroralternate}, \ \ \rho=\{1, 2, \ldots P\}
-	\end{align}
-%		\begin{figure}				
-%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_CAC_derivation.pdf}
-%		\end{figure}
-	\end{changemargin}
+\begin{enumerate}
+\item \underline{maxP}: In this method, RVQ decoding is carried out so that maximum stages $P$ are used.
+\item \underline{RofE}: In this method, realm of experience coding is used.  In other words, a test vector is decoded such that the decode path traversed belongs to the set of training decode paths.
+\item \underline{nulE}: In this method, null encoding is used.  Reconstruction rms error is checked at every stage.  If at any stage, rms error is not reduced, that stage is skipped.
+\item \underline{monR}: In this method, monotonic rms error is a condition.  If this condition is not met, decoding stops.
+\end{enumerate}
 \end{frame}
 
+
+
 \begin{frame}[plain]
 \frametitle{RVQ}
-\framesubtitle{decoding methods}
+\framesubtitle{run-time: 4 encoding methods, example}
 \logoCSIPCPL\mypagenum
 \begin{changemargin}{-1.3in}{0in}
+\setcounter{subfigure}{0}
 \begin{figure}[h]
 \centering
-\subfigure{\includegraphics[width=0.6\textwidth]{thesis/RVQ_CAC_toyExample_3x2.pdf}}				\subfigure{\includegraphics[width=0.6\textwidth]{thesis/RVQ_CAC_toyExample_8x2.pdf}}
+\subfigure[reconstruct 8]{\includegraphics[width=0.6\textwidth]{thesis/RVQ_CAC_toyExample_3x2.pdf}}				\subfigure[reconstruct 13]{\includegraphics[width=0.6\textwidth]{thesis/RVQ_CAC_toyExample_8x2.pdf}}
 \end{figure}
 \end{changemargin}
 \end{frame}
 
 
 %--------------------------------------
-\subsection{(b) Comparisons}
+\subsection{(d) Comparisons}
 %--------------------------------------
-\begin{frame}
-\frametitle{Comparison with ESVQ}\logoCSIPCPL\mypagenum
+\begin{frame}[plain]
+\frametitle{Comparison with ESVQ, TSVQ}
 \framesubtitle{}
-	\begin{itemize}
-		\item ESVQ
-			\begin{itemize}
-				\item $K=2^{rD}$ code-vectors
-				\item Computations: $O(2^{rD})$
-				\item Memory: $O(2^{rD})$
-				\item Exponential in computations and memory
-			\end{itemize}
-		\item RVQ
-			\begin{itemize}
-				\item $D={M^P}$ code-vectors
-				\item M code-vectors for each of P stages
-				\item Computations: $O(MP)$
-				\item Memory: $O(MP)$
-				\item Linear in computations and memory
-			\end{itemize}
-	\end{itemize}
+\mypagenum
+\begin{changemargin}{-1.3in}{0in}
+\begin{figure}		
+\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithESVQ_TSVQ.pdf}			
+\end{figure}
 	Generally, structurally constrained quantizers cannot provide performance as good as ESVQ
 	\begin{itemize}
 		\item RVQ can handle higher dimensions due to linear complexity
 		\item Better performance than ESVQ possible, for given implementation cost
 	\end{itemize}	
-\end{frame}
 
-\begin{frame}[plain]
-\frametitle{Comparison with ESVQ, TSVQ}
-\framesubtitle{}
-\logoCSIPCPL\mypagenum
-\begin{changemargin}{-1.3in}{0in}
-\begin{figure}		
-\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithESVQ_TSVQ.pdf}			
-\end{figure}
 \end{changemargin}
 \end{frame}
 
@@ -433,12 +526,16 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 
 
 \begin{frame}
-\frametitle{PCA}
+\frametitle{Comparison with PCA}
 \framesubtitle{}
 \logoCSIPCPL\mypagenum
 \begin{figure}		
-\includegraphics[width=0.7\textwidth]{thesis/PRML_PCA_geometricDerivation_step1.pdf}			
+\includegraphics[width=0.6\textwidth]{thesis/PRML_PCA_geometricDerivation_step1.pdf}			
 \end{figure}
+\begin{itemize}
+\item In PCA, goal is to minimize orthogonal distance to subspace
+\item In VQ, goal is to minimize Euclidean distance to closest centroid
+\end{itemize}
 \end{frame}
 
 
@@ -468,7 +565,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 
 
 %--------------------------------------------------------
-\subsection{(c) Image classification}
+\subsection{(e) Image classification}
 %--------------------------------------------------------
 \begin{frame}
 \frametitle{Image classification\footnote{Barnes, 2007}}
@@ -545,32 +642,28 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \end{frame}
 
 %------------------------------------------------------
-\subsection{(a) Representation model}
+\subsection{(a) Target representation}
 %------------------------------------------------------
-\begin{frame}[plain]
-\frametitle{Affine warping}
-\framesubtitle{}
+\begin{frame}
+\frametitle{Target representation}
+\framesubtitle{affine warping}
 \logoCSIPCPL\mypagenum
-\scriptsize
-\begin{changemargin}{-1.3in}{0in}
 \begin{equation*}
-\begin{array}{llllllll}
-\mathbf{A} &= \left[\begin{array}{lll}a & b \\ c & d\\ \end{array}\right] \\
-&=\mathbf{U}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t} \\
-&={\color{blue}(\mathbf{U}\mathbf{V}^t)}{\color{red}\mathbf{V}}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{V}^t}\\
-&={\color{blue}\mathbf{R}(\theta)}{\color{red}\mathbf{R}(-\phi)}{\color{darkgreen}\mathbf{S}}{\color{red}\mathbf{R} (\phi)}\\
-&={\color{blue}\RotMatrixTheta}{\color{red}\RotMatrixminusPhi}{\color{darkgreen}\EigenvalueMatrix}{\color{red}\RotMatrixPhi}\\\\
+\begin{array}{cllll}
+\left[\begin{array}{l}X\\Y\\1\end{array}\right]   &=& \AffMatrix \left[\begin{array}{l}x\\y\\1\end{array}\right]\\
+\mathbf{\acute{x}} &=& \left[\begin{array}{cccc}\mathbf{A} & \mathbf{t}\\\mathbf{0}^T & 1\end{array}\right] \mathbf{x}\\
+&=& \mathbf{A}\mathbf{x} + \mathbf{t}\\
+&=& \mathbf{H}_A \mathbf{x}\\
 \end{array}
-\label{Eq:AffineDecomposition}
+\label{Eqn:top_level}
 \end{equation*}
-\end{changemargin}
 \end{frame}
 
 
 
 \begin{frame}
-\frametitle{Inverse affine transform}
-\framesubtitle{one time initialization}
+\frametitle{Target representation}
+\framesubtitle{inverse affine transform: one time initialization}
 \logoCSIPCPL\mypagenum
 In first frame
 \begin{itemize}
@@ -588,11 +681,11 @@ In first frame
 
 
 %------------------------------------------------------
-\subsection{(b) Motion model}
+\subsection{(b) Target motion}
 %------------------------------------------------------
 \begin{frame}
-\frametitle{Generating track candidates}
-\framesubtitle{run-time}
+\frametitle{Target motion}
+\framesubtitle{Generating track candidates: run-time}
 \logoCSIPCPL\mypagenum
 Use random affine deformation to model motion
 \begin{itemize}
@@ -619,7 +712,7 @@ Use random affine deformation to model motion
 
 
 \begin{frame}[plain]
-\frametitle{1st forward affine transform}
+\frametitle{Target motion}
 \framesubtitle{get ROI}
 \logoCSIPCPL\mypagenum
 \begin{changemargin}{-1.3in}{0in}
@@ -633,11 +726,14 @@ Density of grid points is greater in the horizontal direction.
 
 
 \begin{frame}
-\frametitle{2nd forward affine transform}
+\frametitle{Target motion}
 \framesubtitle{overlay feature points on ROI}
-appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtained in first frame
 \logoCSIPCPL\mypagenum
-\scriptsize
+\begin{itemize}
+\item apply forward affine transform to canonical feature points $\mathbf{x,y}$ obtained in first frame
+\item compare with ground truth
+\item compute tracking error
+\end{itemize}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.55\textwidth]{thesis/dataset_Dudek_with_feature_points_00001.pdf}
@@ -720,14 +816,6 @@ appy forward affine transform to canonical feature points $\mathbf{x,y}$ obtaine
 \end{figure}
 \end{frame}
 
-\begin{frame}
-\frametitle{Sample 8x4 RVQ codebook}
-\framesubtitle{}
-\logoCSIPCPL\mypagenum
-\begin{figure}
-\includegraphics[height=0.75\textheight]{thesis/1_Dudek__aRVQ_08_04_1000_0_RofE__170_codebook.pdf}
-\end{figure}	
-\end{frame}
 
 
 %------------------------------------------------------
@@ -776,7 +864,7 @@ p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\
 
 
 %------------------------------------------------------
-\subsection{(e) Inference model}
+\subsection{(e) State inference}
 %------------------------------------------------------
 \begin{frame}
 \frametitle{Particle filter}
@@ -784,8 +872,6 @@ p(\mathbf{x}_i|\Phi) = \frac{e^{-\big(\dr\big)}} {\sum\limits_{i=1}^N e^{-\big(\
 \logoCSIPCPL\mypagenum
 \begin{itemize}
 \item sampling is done in 6-D affine space
-\item to avoid curse of dimensionality, each parameter is considered independent
-\item moreover, MCMC not required
 \end{itemize}
 \begin{figure}
 \includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
