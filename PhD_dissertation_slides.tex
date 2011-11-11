@@ -24,7 +24,7 @@
 \vspace{0.2in}
 \begin{itemize}
 \item 2005: Dr Altunbasak, hierarchical motion vector estimation, background modeling
-\item {\color{blue}Interest}: pattern recognition, signal processing
+\item {\color{blue}interest}: pattern recognition, signal processing, computer vision
 \item 2007: switched to Dr Bobick, robust computer vision on compressed video
 \item 2010: Dr Barnes + Dr Bobick, RVQ as a pattern recognition method extended to several images
 \end{itemize}
@@ -53,6 +53,32 @@
 
 \begin{frame}
 \frametitle{Tracking}
+\framesubtitle{Step 1 of 2: prediction (Chapman Kolmogorov)}
+\logoCSIPCPL\mypagenum
+\begin{table}
+\begin{tabular}{|l|l|}\hline
+$x_k$ & state at time $k$\\\hline
+$Z_{k-1}$ &  all observations till time $k-1$\\\hline
+\end{tabular}
+\end{table}
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_prediction.pdf}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Tracking}
+\framesubtitle{Step 2 of 2: update}
+\logoCSIPCPL\mypagenum
+	\begin{figure}
+		\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_update.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Tracking}
 \framesubtitle{big picture}
 \logoCSIPCPL\mypagenum
 	\begin{figure}
@@ -61,68 +87,32 @@
 \end{frame}
 
 
-
-
-
-\begin{frame}
-\frametitle{Tracking}
-\framesubtitle{relationship with HMM}
-\logoCSIPCPL\mypagenum
-	\begin{figure}
-		\includegraphics[height=0.3\textheight]{thesis/HMM_flowDiagram.pdf}
-	\end{figure}
-	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/HMM_flowDiagram2.pdf}
-	\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{Tracking}
-\framesubtitle{update}
-\logoCSIPCPL\mypagenum
-	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_update.pdf}
-	\end{figure}
-\end{frame}
-
-
-
-\begin{frame}
-\frametitle{Tracking}
-\framesubtitle{prediction}
-\logoCSIPCPL\mypagenum
-	Chapman Kolmogorov equation
-	\begin{figure}
-		\includegraphics[width=1.0\textwidth]{thesis/TRK_EQN_prediction.pdf}
-	\end{figure}
-\end{frame}
-
-%---------------------------------------------------------
-\subsection{(b) Radars}
-%---------------------------------------------------------
-\begin{frame}
-\frametitle{Originally: radars}
-\framesubtitle{Kalman Filter}
-\logoCSIPCPL\mypagenum
-\begin{figure}
-\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_blockDiagram.pdf}
-\end{figure}
-\end{frame}
-
-
-
-\begin{frame}
-\frametitle{Radar tracking\footnote{Bar-Shalom et al., 2009}}
-\framesubtitle{}
-\logoCSIPCPL\mypagenum
-\setcounter{subfigure}{0}
-\begin{figure}
-\subfigure[US Navy, long-range surveillance]{\includegraphics[height=0.2\textheight]{thesis/TRK_PDAF_example_US_Navy_ROTHR.png}}\hspace{0.2in}
-\subfigure[Theater High Altitude Area Defense]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_THAAD.png}}
-\subfigure[long-range surveillance against ICBMs]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_Cobra.png}}\hspace{0.2in}
-\subfigure[long-range surveillance against ICBMs]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_SBX.png}}
-\end{figure}
-\end{frame}
+%%---------------------------------------------------------
+%\subsection{(b) Radars}
+%%---------------------------------------------------------
+%\begin{frame}
+%\frametitle{Originally: radars}
+%\framesubtitle{Kalman Filter}
+%\logoCSIPCPL\mypagenum
+%\begin{figure}
+%\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_blockDiagram.pdf}
+%\end{figure}
+%\end{frame}
+%
+%
+%
+%\begin{frame}
+%\frametitle{Radar tracking\footnote{Bar-Shalom et al., 2009}}
+%\framesubtitle{}
+%\logoCSIPCPL\mypagenum
+%\setcounter{subfigure}{0}
+%\begin{figure}
+%\subfigure[US Navy, long-range surveillance]{\includegraphics[height=0.2\textheight]{thesis/TRK_PDAF_example_US_Navy_ROTHR.png}}\hspace{0.2in}
+%\subfigure[Theater High Altitude Area Defense]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_THAAD.png}}
+%\subfigure[long-range surveillance against ICBMs]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_Cobra.png}}\hspace{0.2in}
+%\subfigure[long-range surveillance against ICBMs]{\includegraphics[height=0.2\textheight]{thesis/TRK_JPDAF_example_SBX.png}}
+%\end{figure}
+%\end{frame}
 
 
 
