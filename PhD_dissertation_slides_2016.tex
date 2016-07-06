@@ -1,15 +1,17 @@
-\include{begin}
+\include{begin_2016}
 \include{inkscapeLatex}
 %####################################################################################################
 \title{Target Tracking \\ Using \\Residual Vector Quantization}
 %####################################################################################################
-\begin{frame}[plain]\logoCSIPCPL\logoTechTower
+\begin{frame}[plain]
+\logoTree
 	\titlepage
+
 \end{frame}
 
 \begin{frame}
 \frametitle{Outline}
-\logoCSIPCPL\logoTechTower
+\logoTree
 	\setcounter{tocdepth}{1}	
 	\tableofcontents
 \end{frame}
@@ -18,9 +20,49 @@
 \section{I. Introduction}
 %####################################################################################################
 \begin{frame}
+\frametitle{Introduction}
+\framesubtitle{Bio (salman at gatech.edu)}
+\begin{changemargin}{-0.18in}{0in}
+\vspace{-0.1in}
+{\color{red}Education}
+\begin{enumerate}\scriptsize
+\item 2011: PhD, Georgia Tech
+\item 2008: MS ECE, Georgia Tech
+\item 1995: BE EE, US Air Force Academy
+\end{enumerate}
+{\color{red}Research interests}
+\begin{enumerate}\scriptsize
+\item Simulation, Navigation and Control
+\item Pattern recognition
+\end{enumerate}
+{\color{red}Experience}
+\begin{enumerate}\scriptsize
+\item 2012-15: Associate Professor, CAE
+\item 2011: Samsung Research Labs (Dallas, Texas)
+\item 2010: Qualcomm Multimedia Research (San Diego, California)
+\item 2009: Nvidia Video Research Group (Santa Clara, California)
+\item 2008: Nvidia Video Algorithms Group (Santa Clara, California)
+\item 2007: Siemens Global CoC for Intelligent Video (Atlanta, Georgia)
+\item 2003: Radar triangulation system
+\item 2002: Aircraft deployment patterns of enemy fighters
+\item 2001: V/UHF Jammers
+\item 1995: US Department of Defense, Washington DC
+%\begin{itemize}\scriptsize
+%\item PC-bus plug-in hardware
+%\item accompanying software
+%\item off-the-shelf receivers, tuners, amplifiers
+%\item demonstrated in Air Headquarters
+%\end{itemize}
+
+\end{enumerate}
+\end{changemargin}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Goal and contribution}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item Goal: 
 \begin{enumerate}
@@ -38,21 +80,7 @@
 \end{frame}
 
 
-\begin{frame}
-\frametitle{Background}
-\framesubtitle{}
-\logoCSIPCPL\mypagenum
-\vspace{0.2in}
-\begin{itemize}
-\item 2005: Dr Altunbasak, hierarchical motion vector estimation, background modeling
-\item {\color{blue}interest}: pattern recognition, signal processing, computer vision
-\item 2007: switched to Dr Bobick, robust computer vision on compressed video
-\item 2010: Dr Barnes + Dr Bobick, RVQ as a pattern recognition method extended to several images
-\end{itemize}
-\begin{figure}
-\includegraphics[width=0.73\textwidth]{thesis/professors.pdf}
-\end{figure}
-\end{frame}
+
 
 %==================================
 \section{II. Tracking}
@@ -63,7 +91,7 @@
 \begin{frame}
 \frametitle{Tracking}
 \framesubtitle{definition}
-\logoCSIPCPL\mypagenum
+\mypagenum
 	Estimate and maintain {\color{red}target state} over {\color{red}time}
 	\begin{figure}
 		\includegraphics[width=1.0\textwidth]{thesis/TRK_overviewDiagram.pdf}
@@ -81,7 +109,7 @@
 \begin{frame}
 \frametitle{Tracking}
 \framesubtitle{Step 1 of 2: prediction (Chapman Kolmogorov)}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{table}
 \begin{tabular}{|l|l|}\hline
 $x_k$ & state at time $k$\\\hline
@@ -97,7 +125,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \begin{frame}
 \frametitle{Tracking}
 \framesubtitle{Step 2 of 2: update}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}
 \includegraphics[height=0.8\textheight]{thesis/TRK_EQN_update.pdf}
 \end{figure}
@@ -106,7 +134,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \begin{frame}
 \frametitle{Tracking}
 \framesubtitle{Example: 1D tracking with particle filter}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}
 \includegraphics[width=1.0\textwidth]{thesis/TRK_ParticleFilter_multimodalPDF.pdf}
 \end{figure}	
@@ -117,7 +145,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \begin{frame}
 \frametitle{Tracking}
 \framesubtitle{probabilistic graphical models}
-\logoCSIPCPL\mypagenum
+\mypagenum
 	\begin{figure}
 		\includegraphics[width=0.9\textwidth]{thesis/PRML_PGM_overview.pdf}
 	\end{figure}
@@ -131,7 +159,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \begin{frame}
 \frametitle{Visual tracking}
 \framesubtitle{components\tiny{\footnote {Yilmaz et.al., 2006}}}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}
 \includegraphics[height=0.8\textheight]{thesis/TRK_overview.pdf}
 \end{figure}	
@@ -141,11 +169,11 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \begin{frame}
 \frametitle{Target representations\footnote{Yilmaz, 2006}}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}[t]
 \center
 \includegraphics[width=0.8\textwidth]{thesis/2006_JNL_TRKsurvey_Shah_fig1.png}
-\caption{Target representations.  (a) Centroid, (b) multiple points,(c) rectangular bounding box, (d) elliptical bounding region, (e) articulated shape model, (f) skeleton, (g) contour control points, (h) contour, (i) silhouette \cite{2006_JNL_SURVEYtrk_Yilmaz}.}
+\caption{Target representations.  (a) Centroid, (b) multiple points,(c) rectangular bounding box, (d) elliptical bounding region, (e) articulated shape model, (f) skeleton, (g) contour control points, (h) contour, (i) silhouette.}
 \label{fig:TRK_objectRepresentations}
 \end{figure}
 \end{frame}
@@ -154,7 +182,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \begin{frame}
 \frametitle{Region tracking}
 \framesubtitle{overview}
-\logoCSIPCPL\mypagenum
+\mypagenum
 	\begin{enumerate}
 		\item Template matching
 			\begin{itemize}
@@ -186,15 +214,14 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 
 
 \begin{frame}
-\frametitle{Region tracking}
+\frametitle{Region tracking}\footnote{Black, 1998}
 \framesubtitle{Subspace tracking: prior work}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \vspace{0.1in}
 1998: first work on subspace tracking
 	\begin{figure}
 		\includegraphics[width=0.6\textwidth]{thesis/TrackingPapers_SubspaceTracking_1998_Black_fig9.png}
 	\end{figure}
-\myFootnoteCitation{1998_JNL_Eigentracking_Black}{IJCV}
 \end{frame}
 
 
@@ -202,13 +229,13 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \begin{frame}
 \frametitle{Region tracking}
 \framesubtitle{Subspace tracking: prior work}
-\logoCSIPCPL\mypagenum
+\footnote{Ross 2008}
+\mypagenum
 \vspace{0.1in}
 2008: 10 years later, state of the art in subspace tracking
 \begin{figure}
 \includegraphics[width=0.9\textwidth]{thesis/TrackingPapers_SubspaceTracking_2008_Ross_fig10.png}
 \end{figure}
-\myFootnoteCitation{2008_JNL_subspaceTRK_Ross}{IJCV}
 \end{frame}
 
 
@@ -222,7 +249,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 %\begin{frame}
 %\frametitle{Originally: radars}
 %\framesubtitle{Kalman Filter}
-%\logoCSIPCPL\mypagenum
+%\mypagenum
 %\begin{figure}
 %\includegraphics[width=1.0\textwidth]{thesis/TRK_KalmanFilter_blockDiagram.pdf}
 %\end{figure}
@@ -233,7 +260,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 %\begin{frame}
 %\frametitle{Radar tracking\footnote{Bar-Shalom et al., 2009}}
 %\framesubtitle{}
-%\logoCSIPCPL\mypagenum
+%\mypagenum
 %\setcounter{subfigure}{0}
 %\begin{figure}
 %\subfigure[US Navy, long-range surveillance]{\includegraphics[height=0.2\textheight]{thesis/TRK_PDAF_example_US_Navy_ROTHR.png}}\hspace{0.2in}
@@ -252,7 +279,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 
 %\begin{frame}
 %\frametitle{Pre-processing}
-%\logoCSIPCPL\mypagenum
+%\mypagenum
 %	{\color{red}Steps}
 %	\begin{enumerate}
 %		\item Downsampling
@@ -295,7 +322,7 @@ $Z_{k-1}$ &  all observations till time $k-1$\\\hline
 \begin{frame}
 \frametitle{Quantization}
 \framesubtitle{design-time}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}				
 \includegraphics[width=1.0\textwidth]{thesis/Quantization_design_time.pdf}
 \end{figure}
@@ -311,7 +338,7 @@ e=\sum\limits_{k=1}^{K} \int\limits_{b_k}^{b_{k+1}}(x-y_k)^2f_X(x)
 \begin{frame}
 \frametitle{Quantization}
 \framesubtitle{design-time optimality: Lloyd Max conditions}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}				
 \includegraphics[height=0.75\textheight]{thesis/Quantization_optimalCodevectors.pdf}
 \end{figure}
@@ -321,7 +348,7 @@ e=\sum\limits_{k=1}^{K} \int\limits_{b_k}^{b_{k+1}}(x-y_k)^2f_X(x)
 \begin{frame}
 \frametitle{Quantization}
 \framesubtitle{run-time}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item Quantizer $\mathcal{Q}$ maps input $\mathbf{x}_i$ to code-vector $\mathbf{y}_k$
 \end{itemize}
@@ -336,7 +363,7 @@ e=\sum\limits_{k=1}^{K} \int\limits_{b_k}^{b_{k+1}}(x-y_k)^2f_X(x)
 \begin{frame}
 \frametitle{Vector Quantization}
 \framesubtitle{types and advantages}
-\logoCSIPCPL\mypagenum
+\mypagenum
 	\begin{enumerate}
 		\item Unstructured VQ
 			\begin{itemize}
@@ -367,7 +394,7 @@ e=\sum\limits_{k=1}^{K} \int\limits_{b_k}^{b_{k+1}}(x-y_k)^2f_X(x)
 \begin{frame}
 \frametitle{RVQ}
 \framesubtitle{introduction}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item $M$: number of code-vectors per stage
 \item $P$: number of stages
@@ -386,7 +413,7 @@ e=\sum\limits_{k=1}^{K} \int\limits_{b_k}^{b_{k+1}}(x-y_k)^2f_X(x)
 \begin{frame}
 \frametitle{RVQ}
 \framesubtitle{introduction: example, equivalent code-vectors}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.5\textwidth]{thesis/RVQ_introduction.pdf}
@@ -400,7 +427,7 @@ e=\sum\limits_{k=1}^{K} \int\limits_{b_k}^{b_{k+1}}(x-y_k)^2f_X(x)
 \begin{frame}
 \frametitle{RVQ}
 \framesubtitle{design-time}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item $x_i$: input data point
 \item $\mu_\rho^{(k)}$: stage code-vector at $\rho$-th stage that maps to $k$-th equivalent code-vector, $y_k$
@@ -419,7 +446,7 @@ e &= \KmeansError\notag\\
 \begin{frame}
 \frametitle{RVQ}
 \framesubtitle{design-time (cont.)}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \scriptsize
 \begin{align*}
 e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, \ldots P\}\notag\\
@@ -439,7 +466,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{RVQ}
 \framesubtitle{design-time: sample 8x4 codebook}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[h!]
 \centering\subfigure{\includegraphics[height=0.41in]{thesis/seq_1_Dudek.png}\label{fig:trk_pca_1a}}
@@ -456,7 +483,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}[plain]
 \frametitle{RVQ}
 \framesubtitle{run-time: block diagram}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{changemargin}{-1.35in}{0in}
 \setcounter{subfigure}{0}
 \begin{figure}
@@ -471,7 +498,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 %\begin{frame}
 %\frametitle{RVQ}
 %\framesubtitle{distortion}
-%\logoCSIPCPL\mypagenum
+%\mypagenum
 %	\begin{figure}				
 %		\includegraphics[width=1.0\textwidth]{thesis/RVQ_distortion.pdf}
 %	\end{figure}
@@ -484,7 +511,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{RVQ}
 \framesubtitle{run-time: example}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item During design-time, 3x2 codebook generated from training data: $S$=\{1, 2, ... 7\}
 \item reconstruction starts at 0
@@ -501,7 +528,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{RVQ}
 \framesubtitle{run-time: 4 encoding methods}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{enumerate}
 \item \underline{maxP}: In this method, RVQ decoding is carried out so that maximum stages $P$ are used.
 \item \underline{RofE}: In this method, realm of experience coding is used.  In other words, a test vector is decoded such that the decode path traversed belongs to the set of training decode paths.
@@ -515,7 +542,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}[plain]
 \frametitle{RVQ}
 \framesubtitle{run-time: 4 encoding methods, example}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{changemargin}{-1.3in}{0in}
 \setcounter{subfigure}{0}
 \begin{figure}[h]
@@ -552,7 +579,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{Comparison with PCA}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}		
 \includegraphics[width=0.6\textwidth]{thesis/PRML_PCA_geometricDerivation_step1.pdf}			
 \end{figure}
@@ -566,7 +593,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 %\begin{frame}[plain]
 %\frametitle{RVQ comparison}
 %\framesubtitle{2. with TSVQ}
-%\logoCSIPCPL\mypagenum
+%\mypagenum
 %%	\begin{changemargin}{-1.3in}{0in}
 %%		\begin{figure}				
 %%			\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithTSVQ.pdf}
@@ -579,7 +606,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 %\begin{frame}[plain]
 %\frametitle{RVQ comparison}
 %\framesubtitle{3. with PCA}
-%\logoCSIPCPL\mypagenum
+%\mypagenum
 %	\begin{changemargin}{-1.3in}{0in}
 %		\begin{figure}				
 %			\includegraphics[width=1.3\textwidth]{thesis/RVQ_comparisonWithPCA.pdf}
@@ -594,7 +621,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{Image classification\footnote{Barnes, 2007}}
 \framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka \\(training phase)}
-\logoCSIPCPL\mypagenum
+\mypagenum
 	\begin{figure}		
 		\includegraphics[height=0.3\textheight]{thesis/RVQ_SatelliteSriLanka_1_snippets.png}			
 	\end{figure}
@@ -609,7 +636,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{Image classification\footnote{Barnes, 2007}}
 \framesubtitle{\small Satellite imagery: pre-Tsunami Sri Lanka\\(testing phase)}
-\logoCSIPCPL\mypagenum
+\mypagenum
 	\begin{figure}		
 		\includegraphics[height=0.5\textheight]{thesis/RVQ_SatelliteSriLanka_3_labeling.png}
 		\caption{\hspace{1.3in}{\color{yellow}yellow}: dirt paths \\\hspace{1.3in}{\color{blue}blue}: rivers \\\hspace{1.3in}{\color{red}red}: paved roads \\\hspace{1.3in}{\color{green}green}: train tracks}
@@ -623,7 +650,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{Experimental overview}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \centering
@@ -637,7 +664,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}[plain]
 \frametitle{Temporal evolution}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{changemargin}{-1.3in}{0in}
 \begin{figure}[t]
@@ -652,7 +679,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{Publicly available datasets\footnote{Ross et. al. 2008}}
 \framesubtitle{Dudek, davidin300, sylv, fish, car4, car11}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[h!]
 \centering\subfigure{\includegraphics[height=0.41in]{thesis/seq_1_Dudek.png}\label{fig:trk_pca_1a}}
@@ -671,7 +698,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{Target representation}
 \framesubtitle{affine warping}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{equation*}
 \begin{array}{cllll}
 \left[\begin{array}{l}X\\Y\\1\end{array}\right]   &=& \AffMatrix \left[\begin{array}{l}x\\y\\1\end{array}\right]\\
@@ -688,7 +715,7 @@ e	&= \KmeansSum{\bigg[\RVQmultipleKmeansonealternate\bigg]}^2, \ \ \rho=\{1, 2, 
 \begin{frame}
 \frametitle{Target representation}
 \framesubtitle{inverse affine transform: one time initialization}
-\logoCSIPCPL\mypagenum
+\mypagenum
 In first frame
 \begin{itemize}
 \item given target affine parameters and ground truth feature points
@@ -710,7 +737,7 @@ In first frame
 \begin{frame}
 \frametitle{Target motion}
 \framesubtitle{Generating track candidates: run-time}
-\logoCSIPCPL\mypagenum
+\mypagenum
 Use random affine deformation to model motion
 \begin{itemize}
 \item Perturb affine parameters
@@ -738,7 +765,7 @@ Use random affine deformation to model motion
 \begin{frame}[plain]
 \frametitle{Target motion}
 \framesubtitle{get ROI}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{changemargin}{-1.3in}{0in}
 Density of grid points is greater in the horizontal direction.
 \begin{figure}[t]
@@ -752,7 +779,7 @@ Density of grid points is greater in the horizontal direction.
 \begin{frame}
 \frametitle{Target motion}
 \framesubtitle{overlay feature points on ROI}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item apply forward affine transform to canonical feature points $\mathbf{x,y}$ obtained in first frame
 \item compare with ground truth
@@ -773,7 +800,7 @@ Density of grid points is greater in the horizontal direction.
 \begin{frame}
 \frametitle{Appearance model}
 \framesubtitle{PCA: 80/20 cross-validation, 10 runs, $\mathbb{R}^{1089}$}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \subfigure[Uniform.]{\includegraphics[width=0.45\textwidth]{thesis/PCA_Uniform.pdf}}
@@ -848,7 +875,7 @@ Density of grid points is greater in the horizontal direction.
 \begin{frame}
 \frametitle{Observation model}
 \framesubtitle{PCA}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{thesis/PRML_PCA_problem.pdf}
@@ -861,11 +888,12 @@ Density of grid points is greater in the horizontal direction.
 \begin{frame}
 \frametitle{Observation model}
 \framesubtitle{PCA}
-\logoCSIPCPL\mypagenum
+\footnote{Moghaddam 1997}
+\mypagenum
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.5\textwidth]{thesis/1998_JNL_ProbVisLearning_Moghaddam_fig3.png}
-\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood \cite{1997_JNL_EigenTRK_Moghaddam}.}
+\caption{Graphical illustration of DFFS (distance-from-feature-space) and DIFS (distance-in-feature-space).  The feature space is $\mathbf{F}$ while the subspace orthogonal to the feature space is $\bar{\mathbf{F}}$.  DFFS is the signal residual error and DIFS is the $\mathbf{F}$-space likelihood.}
 \label{fig:1997_JNL_DIFSDFFS_Moghaddam}
 \end{figure}
 \end{frame}
@@ -874,7 +902,7 @@ Density of grid points is greater in the horizontal direction.
 \begin{frame}
 \frametitle{Observation model}
 \framesubtitle{PCA, RVQ, TSVQ}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item PCA and RVQ both do not define a proper density in the observation space
 \item For PCA, we use DFFS
@@ -923,7 +951,7 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Results}
 \framesubtitle{best tracking performance}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \centering
@@ -941,7 +969,7 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Results}
 \framesubtitle{mean performance}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \centering
@@ -960,7 +988,7 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Results}
 \framesubtitle{memory=16 vectors}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \centering
@@ -979,7 +1007,7 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Results}
 \framesubtitle{memory=32 vectors}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{figure}[t]
 \centering
@@ -998,7 +1026,7 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Results}
 \framesubtitle{over all configurations}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \vspace{-0.2in}
 \begin{figure}[h!]
@@ -1021,7 +1049,7 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Conclusions}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item \underline{Best possible performance}.  PCA and RVQ performed best in half the times each.  TSVQ never performed best.  However, of the 3 times that PCA performed best, in 2 cases, the performance difference was not significantly better than RVQ.  Moreover, and perhaps more importantly, RVQ performed best in the two most challenging datasets, Dudek and davidin300 since they both have multiple sources of noise.
 \item \underline{Best mean performance}.  Here, RVQ performed best in twice the number of scenarios as PCA.  TSVQ had the worst mean performance.
@@ -1031,7 +1059,7 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Conclusions}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item \underline{Memory cost=16 vectors}.  Here PCA performed best in twice the number of scenarios as RVQ .
 \item \underline{Memory cost=32 vectors}.  Here RVQ completely outperformed PCA and TSVQ.  This is understandable since the capacity of RVQ to explain an underlying distribution grows exponentially as $M^P$.  Moreover, we have used $M=2, 4, 8$ ensuring that we do not increase our VC dimension too much so as to start over-fitting
@@ -1042,7 +1070,7 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Conclusions}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \begin{itemize}
 \item If dataset has different forms of noise, such as blur, lighting change, pose change, then RVQ performs better
 \item If dataset has one form of noise, such as lighting change, then PCA performs better
@@ -1053,19 +1081,19 @@ sampling is done in 6-D affine space
 \end{frame}
 
 
-\begin{frame}
-\frametitle{Future work}
-\framesubtitle{}
-\logoCSIPCPL\mypagenum
-\setcounter{subfigure}{0}
-\begin{enumerate}
-\item Compare with non-linear manifold learning methods
-\item Relationship to Ding and He, 2004
-\item Multi-spectral data
-\item Multi-target
-\item Increase stage refinement in RVQ
-\end{enumerate}
-\end{frame}
+%\begin{frame}
+%\frametitle{Future work}
+%\framesubtitle{}
+%\mypagenum
+%\setcounter{subfigure}{0}
+%\begin{enumerate}
+%\item Compare with non-linear manifold learning methods
+%\item Relationship to Ding and He, 2004
+%\item Multi-spectral data
+%\item Multi-target
+%\item Increase stage refinement in RVQ
+%\end{enumerate}
+%\end{frame}
 
 %=======================================
 \section{Questions}
@@ -1073,22 +1101,18 @@ sampling is done in 6-D affine space
 \begin{frame}
 \frametitle{Open source}
 \framesubtitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 \setcounter{subfigure}{0}
 \begin{itemize}
-\item All PhD work released under open source license
+\item All work released under open source license
 \item git clone, or download as zip
-{\color{blue}\underline{\url{https://github.com/SalmanAslamPhD/phd}}}
-\begin{figure}
-\includegraphics[width=0.9\textwidth]{thesis/github.png}
-\end{figure}
-\item To run tracker, run main.m
+\small{\color{blue}\underline{\url{https://github.com/SalmanAslamRoboTelliSense}}}
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{}
-\logoCSIPCPL\mypagenum
+\mypagenum
 		QUESTIONS
 \begin{figure}
 \includegraphics[width=1.0\textwidth]{thesis/00465.png}
